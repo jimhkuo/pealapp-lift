@@ -1,3 +1,9 @@
+import AssemblyKeys._ // put this at the top of the file
+
+assemblySettings
+
+mainClass in assembly := Some("bootstrap.liftweb.Start")
+
 name := "PealApp-lift"
 
 version := "0.1"
@@ -32,7 +38,7 @@ libraryDependencies ++= {
   )
 }
 
-seq(com.github.retronym.SbtOneJar.oneJarSettings: _*)
+//seq(com.github.retronym.SbtOneJar.oneJarSettings: _*)
 
 resourceGenerators in Compile <+= (resourceManaged, baseDirectory) map
 { (managedBase, base) =>
@@ -43,5 +49,12 @@ resourceGenerators in Compile <+= (resourceManaged, baseDirectory) map
   } yield {
     Sync.copy(from, to)
     to
+  }
+}
+
+mergeStrategy in assembly <<= (mergeStrategy in assembly) { (old) =>
+  {
+    case "about.html" => MergeStrategy.rename
+    case x => old(x)
   }
 }

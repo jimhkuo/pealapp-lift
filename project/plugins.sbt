@@ -9,9 +9,13 @@ libraryDependencies <+= sbtVersion(v => v match {
     "com.github.siasia" %% "xsbt-web-plugin" % "0.12.0-0.2.11.1"
 })
 
-resolvers += Resolver.url(
-  "sbt-plugin-releases",
-  new URL("http://scalasbt.artifactoryonline.com/scalasbt/sbt-plugin-releases/")
-)(Resolver.ivyStylePatterns)
+//resolvers += Resolver.url(
+//  "sbt-plugin-releases",
+//  new URL("http://scalasbt.artifactoryonline.com/scalasbt/sbt-plugin-releases/")
+//)(Resolver.ivyStylePatterns)
 
-addSbtPlugin("com.github.retronym" % "sbt-onejar" % "0.8")
+//addSbtPlugin("com.github.retronym" % "sbt-onejar" % "0.8")
+
+resolvers += Resolver.url("artifactory", url("http://scalasbt.artifactoryonline.com/scalasbt/sbt-plugin-releases"))(Resolver.ivyStylePatterns)
+
+addSbtPlugin("com.eed3si9n" % "sbt-assembly" % "0.8.4")
