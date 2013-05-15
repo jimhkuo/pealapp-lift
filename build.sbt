@@ -34,3 +34,14 @@ libraryDependencies ++= {
 
 seq(com.github.retronym.SbtOneJar.oneJarSettings: _*)
 
+resourceGenerators in Compile <+= (resourceManaged, baseDirectory) map
+{ (managedBase, base) =>
+  val webappBase = base / "src" / "main" / "webapp"
+  for {
+    (from, to) <- webappBase ** "*" x rebase(webappBase, managedBase /
+      "main" / "webapp")
+  } yield {
+    Sync.copy(from, to)
+    to
+  }
+}
