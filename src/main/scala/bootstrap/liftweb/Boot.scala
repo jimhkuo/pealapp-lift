@@ -1,15 +1,12 @@
-import net.liftweb.http.{RewriteResponse, ParsePath, RewriteRequest, LiftRules}
+package bootstrap.liftweb
+
+import net.liftweb.http.LiftRules
 import net.liftweb.sitemap.{SiteMap, Menu}
 import net.liftweb.common.Full
 
 class Boot {
   def boot {
     LiftRules.addToPackages("code")
-    LiftRules.rewrite.append {
-      case RewriteRequest(
-      ParsePath(List("account", acctName), _, _, _), _, _) =>
-        RewriteResponse("dynamic" :: Nil, Map("name" -> acctName))
-    }
 
     val entries = List(
       Menu.i("Home") / "index",
