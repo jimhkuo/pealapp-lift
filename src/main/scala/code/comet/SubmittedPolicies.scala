@@ -8,6 +8,7 @@ import util._
 class SubmittedPolicies extends CometActor with CometListener {
   private var msgs: Vector[String] = Vector()
 
+  //this is where registration occurs
   def registerWith = PealAnalyser
 
   override def lowPriority = {
