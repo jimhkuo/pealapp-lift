@@ -6,7 +6,7 @@ import http._
 import actor._
 
 object ChatServer extends LiftActor with ListenerManager {
-  private var msgs = Vector("Welcome")
+  private var msgs = Vector[String]()
 
   def createUpdate = msgs
 
