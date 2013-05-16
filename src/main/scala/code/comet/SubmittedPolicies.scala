@@ -5,7 +5,7 @@ import net.liftweb._
 import http._
 import util._
 
-class Chat extends CometActor with CometListener {
+class SubmittedPolicies extends CometActor with CometListener {
   private var msgs: Vector[String] = Vector()
 
   def registerWith = PealAnalyser
