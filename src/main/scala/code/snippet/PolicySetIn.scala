@@ -5,11 +5,11 @@ import net.liftweb._
 import http._
 import js._
 import JsCmds._
-import comet.ChatServer
+import comet.PealAnalyser
 
 object PolicySetIn {
   def render = SHtml.onSubmit(s => {
-    ChatServer ! s
+    PealAnalyser ! s
     SetValById("chat_in", "")
   })
 }

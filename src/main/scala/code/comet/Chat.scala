@@ -8,7 +8,7 @@ import util._
 class Chat extends CometActor with CometListener {
   private var msgs: Vector[String] = Vector()
 
-  def registerWith = ChatServer
+  def registerWith = PealAnalyser
 
   override def lowPriority = {
     case v: Vector[String] => msgs = v; reRender()
