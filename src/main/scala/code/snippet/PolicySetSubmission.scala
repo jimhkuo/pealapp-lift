@@ -7,7 +7,7 @@ import js._
 import JsCmds._
 import comet.PealAnalyser
 
-object PolicySetIn {
+object PolicySetSubmission {
   def render = SHtml.onSubmit(s => {
     PealAnalyser ! s
     SetValById("chat_in", "")
