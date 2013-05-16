@@ -19,7 +19,6 @@ object Start extends App {
   webctx.setWar(webappDirFromJar)
   webctx.setContextPath("/")
 
-
   server.setHandler(webctx)
   server.start
   server.join

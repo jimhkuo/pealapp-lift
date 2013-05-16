@@ -14,13 +14,6 @@ libraryDependencies += "com.novocode" % "junit-interface" % "0.8" % "test->defau
 
 libraryDependencies += "org.scalatest" % "scalatest_2.10" % "1.9.1" % "test"
 
-//AKKA and spray stuff
-//resolvers += "Typesafe Repository" at "http://repo.typesafe.com/typesafe/releases/"
-//resolvers += "spray repo" at "http://repo.spray.io"
-//libraryDependencies += "com.typesafe.akka" %% "akka-actor" % "2.1.2"
-//libraryDependencies += "io.spray" % "spray-can" % "1.1-M7"
-//libraryDependencies += "io.spray" % "spray-routing" % "1.1-M7"
-
 //Lift stuff
 seq(com.github.siasia.WebPlugin.webSettings :_*)
 
@@ -32,9 +25,6 @@ libraryDependencies ++= {
     "org.eclipse.jetty.orbit" % "javax.servlet" % "3.0.0.v201112011016" % "container,compile" artifacts Artifact("javax.servlet", "jar", "jar")
   )
 }
-
-//one-jar stuff
-//seq(com.github.retronym.SbtOneJar.oneJarSettings: _*)
 
 //the following two blocks are needed for assembly
 resourceGenerators in Compile <+= (resourceManaged, baseDirectory) map
@@ -55,3 +45,12 @@ mergeStrategy in assembly <<= (mergeStrategy in assembly) { (old) =>
     case x => old(x)
   }
 }
+
+//AKKA and spray stuff
+//resolvers += "Typesafe Repository" at "http://repo.typesafe.com/typesafe/releases/"
+//resolvers += "spray repo" at "http://repo.spray.io"
+//libraryDependencies += "com.typesafe.akka" %% "akka-actor" % "2.1.2"
+//libraryDependencies += "io.spray" % "spray-can" % "1.1-M7"
+//libraryDependencies += "io.spray" % "spray-routing" % "1.1-M7"
+//one-jar stuff
+//seq(com.github.retronym.SbtOneJar.oneJarSettings: _*)
