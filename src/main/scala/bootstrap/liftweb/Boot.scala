@@ -11,7 +11,7 @@ class Boot {
 
     val entries = List(
       Menu.i("Home") / "index",
-      Menu.i("About us") / "second",
+      Menu.i("About us") / "aboutus",
       Menu(Loc("Static", Link(List("static"), true, "/static/index"), "Some static page"))
     )
     LiftRules.setSiteMap(SiteMap(entries: _*))
