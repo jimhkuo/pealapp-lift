@@ -1,5 +1,6 @@
 addSbtPlugin("com.github.mpeltonen" % "sbt-idea" % "1.4.0")
 
+//Lift stuff
 libraryDependencies <+= sbtVersion(v => v match {
   case "0.11.0" => "com.github.siasia" %% "xsbt-web-plugin" % "0.11.0-0.2.8"
   case "0.11.1" => "com.github.siasia" %% "xsbt-web-plugin" % "0.11.1-0.2.10"
@@ -9,13 +10,14 @@ libraryDependencies <+= sbtVersion(v => v match {
     "com.github.siasia" %% "xsbt-web-plugin" % "0.12.0-0.2.11.1"
 })
 
+// one-jar stuff
 //resolvers += Resolver.url(
 //  "sbt-plugin-releases",
 //  new URL("http://scalasbt.artifactoryonline.com/scalasbt/sbt-plugin-releases/")
 //)(Resolver.ivyStylePatterns)
-
 //addSbtPlugin("com.github.retronym" % "sbt-onejar" % "0.8")
 
+//needed by assembly
 resolvers += Resolver.url("artifactory", url("http://scalasbt.artifactoryonline.com/scalasbt/sbt-plugin-releases"))(Resolver.ivyStylePatterns)
 
 addSbtPlugin("com.eed3si9n" % "sbt-assembly" % "0.8.4")
