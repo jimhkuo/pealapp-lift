@@ -8,6 +8,7 @@ import actor._
 object PealAnalyser extends LiftActor with ListenerManager {
   private var msgs = Vector[String]()
 
+  //defines the message to send when we update listeners
   def createUpdate = msgs
 
   //action when receiving a message
