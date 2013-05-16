@@ -13,7 +13,7 @@ object PealAnalyser extends LiftActor with ListenerManager {
 
   //action when receiving a message
   override def lowPriority = {
-    case s: String => msgs :+= s; updateListeners()
+    case s: String if (s.length > 0) => msgs :+= s; updateListeners()
   }
 }
  
