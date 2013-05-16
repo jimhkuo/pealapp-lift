@@ -7,7 +7,7 @@ import js._
 import JsCmds._
 import comet.ChatServer
 
-object ChatIn {
+object PolicySetIn {
   def render = SHtml.onSubmit(s => {
     ChatServer ! s
     SetValById("chat_in", "")
