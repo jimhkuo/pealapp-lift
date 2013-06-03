@@ -17,17 +17,17 @@ pred returns [Boolean e]
 	| id3=IDENT
 	;
 
-rule returns [Integer i]
+rule returns [Double i]
 	: 'if' pred NUMBER
 	;
 
-pol returns [Integer i]
+pol returns [Double i]
 	: '+' (rule)* 'default' NUMBER
 	| 'max' (rule)* 'default' NUMBER
 	| 'min' (rule)* 'default' NUMBER
 	;
 
-pSet returns [Integer i]
+pSet returns [Double i]
 	: pol 
 	| 'max' '('id1=pSet',' id2=pSet')'
 	| 'min' '('id3=pSet',' id4=pSet')'

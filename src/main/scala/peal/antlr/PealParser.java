@@ -1,4 +1,4 @@
-// $ANTLR 3.4 /Users/jkuo/PealApp-lift/antlr/Peal.g 2013-06-03 11:24:35
+// $ANTLR 3.4 /Users/jkuo/PealApp-lift/antlr/Peal.g 2013-06-03 11:25:32
 
 package peal.antlr;
 
@@ -122,9 +122,9 @@ public class PealParser extends Parser {
 
 
     // $ANTLR start "rule"
-    // /Users/jkuo/PealApp-lift/antlr/Peal.g:20:1: rule returns [Integer i] : 'if' pred NUMBER ;
-    public final Integer rule() throws RecognitionException {
-        Integer i = null;
+    // /Users/jkuo/PealApp-lift/antlr/Peal.g:20:1: rule returns [Double i] : 'if' pred NUMBER ;
+    public final Double rule() throws RecognitionException {
+        Double i = null;
 
 
         try {
@@ -155,9 +155,9 @@ public class PealParser extends Parser {
 
 
     // $ANTLR start "pol"
-    // /Users/jkuo/PealApp-lift/antlr/Peal.g:24:1: pol returns [Integer i] : ( '+' ( rule )* 'default' NUMBER | 'max' ( rule )* 'default' NUMBER | 'min' ( rule )* 'default' NUMBER );
-    public final Integer pol() throws RecognitionException {
-        Integer i = null;
+    // /Users/jkuo/PealApp-lift/antlr/Peal.g:24:1: pol returns [Double i] : ( '+' ( rule )* 'default' NUMBER | 'max' ( rule )* 'default' NUMBER | 'min' ( rule )* 'default' NUMBER );
+    public final Double pol() throws RecognitionException {
+        Double i = null;
 
 
         try {
@@ -322,18 +322,18 @@ public class PealParser extends Parser {
 
 
     // $ANTLR start "pSet"
-    // /Users/jkuo/PealApp-lift/antlr/Peal.g:30:1: pSet returns [Integer i] : ( pol | 'max' '(' id1= pSet ',' id2= pSet ')' | 'min' '(' id3= pSet ',' id4= pSet ')' );
-    public final Integer pSet() throws RecognitionException {
-        Integer i = null;
+    // /Users/jkuo/PealApp-lift/antlr/Peal.g:30:1: pSet returns [Double i] : ( pol | 'max' '(' id1= pSet ',' id2= pSet ')' | 'min' '(' id3= pSet ',' id4= pSet ')' );
+    public final Double pSet() throws RecognitionException {
+        Double i = null;
 
 
-        Integer id1 = null;
+        Double id1 = null;
 
-        Integer id2 = null;
+        Double id2 = null;
 
-        Integer id3 = null;
+        Double id3 = null;
 
-        Integer id4 = null;
+        Double id4 = null;
 
 
         try {
