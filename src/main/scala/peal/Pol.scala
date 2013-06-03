@@ -1,5 +1,3 @@
 package peal
 
-class Pol extends PolicySet {
-
-}
+class Pol(val rules: List[Rule], val defaultScore: Double)
