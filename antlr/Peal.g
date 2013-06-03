@@ -13,10 +13,28 @@ package peal.antlr;
 }
 
 pred returns [Boolean e]
-	: 'trust' id1=COMPARE id2=NUMBER
+	: id1=IDENT '=' id2=IDENT 
+	| id3=IDENT
 	;
 
+rule returns [Integer i]
+	: 'if' pred NUMBER
+	;
 
+pol returns [Integer i]
+	: '+' (rule)* 'default' NUMBER
+	| 'max' (rule)* 'default' NUMBER
+	| 'min' (rule)* 'default' NUMBER
+	;
+
+pSet returns [Integer i]
+	: pol 
+	;
+
+cond returns [Boolean e]
+	: NUMBER '<' pSet
+	| pSet '<=' NUMBER
+	;
 
 NUMBER : ('.'|'0'..'9'|'-'|'E')+;
 COMPARE : ('>' | '>=' | '<' | '<=');
