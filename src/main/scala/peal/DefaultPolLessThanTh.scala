@@ -2,7 +2,7 @@ package peal
 
 import peal.synthesis.DefaultSet
 
-class PolLessThanTh(pol: Pol, th: Double) extends DefaultSet {
+class DefaultPolLessThanTh(pol: Pol, th: Double) extends DefaultSet {
   def synthesis: String = pol.defaultScore match {
     case s if s > th => ""
     case _ =>
