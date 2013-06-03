@@ -29,6 +29,8 @@ pol returns [Integer i]
 
 pSet returns [Integer i]
 	: pol 
+	| 'max' '('id1=pSet',' id2=pSet')'
+	| 'min' '('id3=pSet',' id4=pSet')'
 	;
 
 cond returns [Boolean e]

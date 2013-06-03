@@ -1,4 +1,4 @@
-// $ANTLR 3.4 /Users/jkuo/PealApp-lift/antlr/Peal.g 2013-06-03 11:18:20
+// $ANTLR 3.4 /Users/jkuo/PealApp-lift/antlr/Peal.g 2013-06-03 11:24:35
 
 package peal.antlr;
 
@@ -16,6 +16,9 @@ public class PealLexer extends Lexer {
     public static final int T__13 = 13;
     public static final int T__14 = 14;
     public static final int T__15 = 15;
+    public static final int T__16 = 16;
+    public static final int T__17 = 17;
+    public static final int T__18 = 18;
     public static final int COMPARE = 4;
     public static final int IDENT = 5;
     public static final int NUMBER = 6;
@@ -47,10 +50,10 @@ public class PealLexer extends Lexer {
         try {
             int _type = T__8;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/jkuo/PealApp-lift/antlr/Peal.g:11:6: ( '+' )
-            // /Users/jkuo/PealApp-lift/antlr/Peal.g:11:8: '+'
+            // /Users/jkuo/PealApp-lift/antlr/Peal.g:11:6: ( '(' )
+            // /Users/jkuo/PealApp-lift/antlr/Peal.g:11:8: '('
             {
-                match('+');
+                match('(');
 
             }
 
@@ -67,10 +70,10 @@ public class PealLexer extends Lexer {
         try {
             int _type = T__9;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/jkuo/PealApp-lift/antlr/Peal.g:12:6: ( '<' )
-            // /Users/jkuo/PealApp-lift/antlr/Peal.g:12:8: '<'
+            // /Users/jkuo/PealApp-lift/antlr/Peal.g:12:6: ( ')' )
+            // /Users/jkuo/PealApp-lift/antlr/Peal.g:12:8: ')'
             {
-                match('<');
+                match(')');
 
             }
 
@@ -87,11 +90,10 @@ public class PealLexer extends Lexer {
         try {
             int _type = T__10;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/jkuo/PealApp-lift/antlr/Peal.g:13:7: ( '<=' )
-            // /Users/jkuo/PealApp-lift/antlr/Peal.g:13:9: '<='
+            // /Users/jkuo/PealApp-lift/antlr/Peal.g:13:7: ( '+' )
+            // /Users/jkuo/PealApp-lift/antlr/Peal.g:13:9: '+'
             {
-                match("<=");
-
+                match('+');
 
             }
 
@@ -108,10 +110,10 @@ public class PealLexer extends Lexer {
         try {
             int _type = T__11;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/jkuo/PealApp-lift/antlr/Peal.g:14:7: ( '=' )
-            // /Users/jkuo/PealApp-lift/antlr/Peal.g:14:9: '='
+            // /Users/jkuo/PealApp-lift/antlr/Peal.g:14:7: ( ',' )
+            // /Users/jkuo/PealApp-lift/antlr/Peal.g:14:9: ','
             {
-                match('=');
+                match(',');
 
             }
 
@@ -128,11 +130,10 @@ public class PealLexer extends Lexer {
         try {
             int _type = T__12;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/jkuo/PealApp-lift/antlr/Peal.g:15:7: ( 'default' )
-            // /Users/jkuo/PealApp-lift/antlr/Peal.g:15:9: 'default'
+            // /Users/jkuo/PealApp-lift/antlr/Peal.g:15:7: ( '<' )
+            // /Users/jkuo/PealApp-lift/antlr/Peal.g:15:9: '<'
             {
-                match("default");
-
+                match('<');
 
             }
 
@@ -149,10 +150,10 @@ public class PealLexer extends Lexer {
         try {
             int _type = T__13;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/jkuo/PealApp-lift/antlr/Peal.g:16:7: ( 'if' )
-            // /Users/jkuo/PealApp-lift/antlr/Peal.g:16:9: 'if'
+            // /Users/jkuo/PealApp-lift/antlr/Peal.g:16:7: ( '<=' )
+            // /Users/jkuo/PealApp-lift/antlr/Peal.g:16:9: '<='
             {
-                match("if");
+                match("<=");
 
 
             }
@@ -170,11 +171,10 @@ public class PealLexer extends Lexer {
         try {
             int _type = T__14;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/jkuo/PealApp-lift/antlr/Peal.g:17:7: ( 'max' )
-            // /Users/jkuo/PealApp-lift/antlr/Peal.g:17:9: 'max'
+            // /Users/jkuo/PealApp-lift/antlr/Peal.g:17:7: ( '=' )
+            // /Users/jkuo/PealApp-lift/antlr/Peal.g:17:9: '='
             {
-                match("max");
-
+                match('=');
 
             }
 
@@ -191,10 +191,10 @@ public class PealLexer extends Lexer {
         try {
             int _type = T__15;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/jkuo/PealApp-lift/antlr/Peal.g:18:7: ( 'min' )
-            // /Users/jkuo/PealApp-lift/antlr/Peal.g:18:9: 'min'
+            // /Users/jkuo/PealApp-lift/antlr/Peal.g:18:7: ( 'default' )
+            // /Users/jkuo/PealApp-lift/antlr/Peal.g:18:9: 'default'
             {
-                match("min");
+                match("default");
 
 
             }
@@ -207,15 +207,78 @@ public class PealLexer extends Lexer {
     }
     // $ANTLR end "T__15"
 
+    // $ANTLR start "T__16"
+    public final void mT__16() throws RecognitionException {
+        try {
+            int _type = T__16;
+            int _channel = DEFAULT_TOKEN_CHANNEL;
+            // /Users/jkuo/PealApp-lift/antlr/Peal.g:19:7: ( 'if' )
+            // /Users/jkuo/PealApp-lift/antlr/Peal.g:19:9: 'if'
+            {
+                match("if");
+
+
+            }
+
+            state.type = _type;
+            state.channel = _channel;
+        } finally {
+            // do for sure before leaving
+        }
+    }
+    // $ANTLR end "T__16"
+
+    // $ANTLR start "T__17"
+    public final void mT__17() throws RecognitionException {
+        try {
+            int _type = T__17;
+            int _channel = DEFAULT_TOKEN_CHANNEL;
+            // /Users/jkuo/PealApp-lift/antlr/Peal.g:20:7: ( 'max' )
+            // /Users/jkuo/PealApp-lift/antlr/Peal.g:20:9: 'max'
+            {
+                match("max");
+
+
+            }
+
+            state.type = _type;
+            state.channel = _channel;
+        } finally {
+            // do for sure before leaving
+        }
+    }
+    // $ANTLR end "T__17"
+
+    // $ANTLR start "T__18"
+    public final void mT__18() throws RecognitionException {
+        try {
+            int _type = T__18;
+            int _channel = DEFAULT_TOKEN_CHANNEL;
+            // /Users/jkuo/PealApp-lift/antlr/Peal.g:21:7: ( 'min' )
+            // /Users/jkuo/PealApp-lift/antlr/Peal.g:21:9: 'min'
+            {
+                match("min");
+
+
+            }
+
+            state.type = _type;
+            state.channel = _channel;
+        } finally {
+            // do for sure before leaving
+        }
+    }
+    // $ANTLR end "T__18"
+
     // $ANTLR start "NUMBER"
     public final void mNUMBER() throws RecognitionException {
         try {
             int _type = NUMBER;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/jkuo/PealApp-lift/antlr/Peal.g:39:8: ( ( '.' | '0' .. '9' | '-' | 'E' )+ )
-            // /Users/jkuo/PealApp-lift/antlr/Peal.g:39:10: ( '.' | '0' .. '9' | '-' | 'E' )+
+            // /Users/jkuo/PealApp-lift/antlr/Peal.g:41:8: ( ( '.' | '0' .. '9' | '-' | 'E' )+ )
+            // /Users/jkuo/PealApp-lift/antlr/Peal.g:41:10: ( '.' | '0' .. '9' | '-' | 'E' )+
             {
-                // /Users/jkuo/PealApp-lift/antlr/Peal.g:39:10: ( '.' | '0' .. '9' | '-' | 'E' )+
+                // /Users/jkuo/PealApp-lift/antlr/Peal.g:41:10: ( '.' | '0' .. '9' | '-' | 'E' )+
                 int cnt1 = 0;
                 loop1:
                 do {
@@ -268,10 +331,10 @@ public class PealLexer extends Lexer {
         try {
             int _type = COMPARE;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/jkuo/PealApp-lift/antlr/Peal.g:40:9: ( ( '>' | '>=' | '<' | '<=' ) )
-            // /Users/jkuo/PealApp-lift/antlr/Peal.g:40:11: ( '>' | '>=' | '<' | '<=' )
+            // /Users/jkuo/PealApp-lift/antlr/Peal.g:42:9: ( ( '>' | '>=' | '<' | '<=' ) )
+            // /Users/jkuo/PealApp-lift/antlr/Peal.g:42:11: ( '>' | '>=' | '<' | '<=' )
             {
-                // /Users/jkuo/PealApp-lift/antlr/Peal.g:40:11: ( '>' | '>=' | '<' | '<=' )
+                // /Users/jkuo/PealApp-lift/antlr/Peal.g:42:11: ( '>' | '>=' | '<' | '<=' )
                 int alt2 = 4;
                 int LA2_0 = input.LA(1);
 
@@ -300,14 +363,14 @@ public class PealLexer extends Lexer {
                 }
                 switch (alt2) {
                     case 1:
-                        // /Users/jkuo/PealApp-lift/antlr/Peal.g:40:12: '>'
+                        // /Users/jkuo/PealApp-lift/antlr/Peal.g:42:12: '>'
                     {
                         match('>');
 
                     }
                     break;
                     case 2:
-                        // /Users/jkuo/PealApp-lift/antlr/Peal.g:40:18: '>='
+                        // /Users/jkuo/PealApp-lift/antlr/Peal.g:42:18: '>='
                     {
                         match(">=");
 
@@ -315,14 +378,14 @@ public class PealLexer extends Lexer {
                     }
                     break;
                     case 3:
-                        // /Users/jkuo/PealApp-lift/antlr/Peal.g:40:25: '<'
+                        // /Users/jkuo/PealApp-lift/antlr/Peal.g:42:25: '<'
                     {
                         match('<');
 
                     }
                     break;
                     case 4:
-                        // /Users/jkuo/PealApp-lift/antlr/Peal.g:40:31: '<='
+                        // /Users/jkuo/PealApp-lift/antlr/Peal.g:42:31: '<='
                     {
                         match("<=");
 
@@ -348,8 +411,8 @@ public class PealLexer extends Lexer {
         try {
             int _type = IDENT;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/jkuo/PealApp-lift/antlr/Peal.g:41:7: ( ( 'a' .. 'z' | 'A' .. 'Z' ) ( 'a' .. 'z' | 'A' .. 'Z' | '0' .. '9' )* )
-            // /Users/jkuo/PealApp-lift/antlr/Peal.g:41:9: ( 'a' .. 'z' | 'A' .. 'Z' ) ( 'a' .. 'z' | 'A' .. 'Z' | '0' .. '9' )*
+            // /Users/jkuo/PealApp-lift/antlr/Peal.g:43:7: ( ( 'a' .. 'z' | 'A' .. 'Z' ) ( 'a' .. 'z' | 'A' .. 'Z' | '0' .. '9' )* )
+            // /Users/jkuo/PealApp-lift/antlr/Peal.g:43:9: ( 'a' .. 'z' | 'A' .. 'Z' ) ( 'a' .. 'z' | 'A' .. 'Z' | '0' .. '9' )*
             {
                 if ((input.LA(1) >= 'A' && input.LA(1) <= 'Z') || (input.LA(1) >= 'a' && input.LA(1) <= 'z')) {
                     input.consume();
@@ -360,7 +423,7 @@ public class PealLexer extends Lexer {
                 }
 
 
-                // /Users/jkuo/PealApp-lift/antlr/Peal.g:41:30: ( 'a' .. 'z' | 'A' .. 'Z' | '0' .. '9' )*
+                // /Users/jkuo/PealApp-lift/antlr/Peal.g:43:30: ( 'a' .. 'z' | 'A' .. 'Z' | '0' .. '9' )*
                 loop3:
                 do {
                     int alt3 = 2;
@@ -408,10 +471,10 @@ public class PealLexer extends Lexer {
         try {
             int _type = WS;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/jkuo/PealApp-lift/antlr/Peal.g:42:4: ( ( ' ' | '\\t' | '\\n' | '\\r' | '\\f' )+ )
-            // /Users/jkuo/PealApp-lift/antlr/Peal.g:42:6: ( ' ' | '\\t' | '\\n' | '\\r' | '\\f' )+
+            // /Users/jkuo/PealApp-lift/antlr/Peal.g:44:4: ( ( ' ' | '\\t' | '\\n' | '\\r' | '\\f' )+ )
+            // /Users/jkuo/PealApp-lift/antlr/Peal.g:44:6: ( ' ' | '\\t' | '\\n' | '\\r' | '\\f' )+
             {
-                // /Users/jkuo/PealApp-lift/antlr/Peal.g:42:6: ( ' ' | '\\t' | '\\n' | '\\r' | '\\f' )+
+                // /Users/jkuo/PealApp-lift/antlr/Peal.g:44:6: ( ' ' | '\\t' | '\\n' | '\\r' | '\\f' )+
                 int cnt4 = 0;
                 loop4:
                 do {
@@ -462,8 +525,8 @@ public class PealLexer extends Lexer {
     // $ANTLR end "WS"
 
     public void mTokens() throws RecognitionException {
-        // /Users/jkuo/PealApp-lift/antlr/Peal.g:1:8: ( T__8 | T__9 | T__10 | T__11 | T__12 | T__13 | T__14 | T__15 | NUMBER | COMPARE | IDENT | WS )
-        int alt5 = 12;
+        // /Users/jkuo/PealApp-lift/antlr/Peal.g:1:8: ( T__8 | T__9 | T__10 | T__11 | T__12 | T__13 | T__14 | T__15 | T__16 | T__17 | T__18 | NUMBER | COMPARE | IDENT | WS )
+        int alt5 = 15;
         alt5 = dfa5.predict(input);
         switch (alt5) {
             case 1:
@@ -531,31 +594,55 @@ public class PealLexer extends Lexer {
             }
             break;
             case 9:
-                // /Users/jkuo/PealApp-lift/antlr/Peal.g:1:56: NUMBER
+                // /Users/jkuo/PealApp-lift/antlr/Peal.g:1:56: T__16
+            {
+                mT__16();
+
+
+            }
+            break;
+            case 10:
+                // /Users/jkuo/PealApp-lift/antlr/Peal.g:1:62: T__17
+            {
+                mT__17();
+
+
+            }
+            break;
+            case 11:
+                // /Users/jkuo/PealApp-lift/antlr/Peal.g:1:68: T__18
+            {
+                mT__18();
+
+
+            }
+            break;
+            case 12:
+                // /Users/jkuo/PealApp-lift/antlr/Peal.g:1:74: NUMBER
             {
                 mNUMBER();
 
 
             }
             break;
-            case 10:
-                // /Users/jkuo/PealApp-lift/antlr/Peal.g:1:63: COMPARE
+            case 13:
+                // /Users/jkuo/PealApp-lift/antlr/Peal.g:1:81: COMPARE
             {
                 mCOMPARE();
 
 
             }
             break;
-            case 11:
-                // /Users/jkuo/PealApp-lift/antlr/Peal.g:1:71: IDENT
+            case 14:
+                // /Users/jkuo/PealApp-lift/antlr/Peal.g:1:89: IDENT
             {
                 mIDENT();
 
 
             }
             break;
-            case 12:
-                // /Users/jkuo/PealApp-lift/antlr/Peal.g:1:77: WS
+            case 15:
+                // /Users/jkuo/PealApp-lift/antlr/Peal.g:1:95: WS
             {
                 mWS();
 
@@ -570,56 +657,59 @@ public class PealLexer extends Lexer {
 
     protected DFA5 dfa5 = new DFA5(this);
     static final String DFA5_eotS =
-            "\2\uffff\1\15\1\uffff\3\12\1\11\6\uffff\1\12\1\25\2\12\1\11\1\uffff" +
-                    "\1\12\1\uffff\1\31\1\32\1\12\2\uffff\2\12\1\36\1\uffff";
+            "\5\uffff\1\20\1\uffff\3\15\1\14\6\uffff\1\15\1\30\2\15\1\14\1\uffff" +
+                    "\1\15\1\uffff\1\34\1\35\1\15\2\uffff\2\15\1\41\1\uffff";
     static final String DFA5_eofS =
-            "\37\uffff";
+            "\42\uffff";
     static final String DFA5_minS =
-            "\1\11\1\uffff\1\75\1\uffff\1\145\1\146\1\141\1\60\6\uffff\1\146" +
+            "\1\11\4\uffff\1\75\1\uffff\1\145\1\146\1\141\1\60\6\uffff\1\146" +
                     "\1\60\1\170\1\156\1\60\1\uffff\1\141\1\uffff\2\60\1\165\2\uffff" +
                     "\1\154\1\164\1\60\1\uffff";
     static final String DFA5_maxS =
-            "\1\172\1\uffff\1\75\1\uffff\1\145\1\146\1\151\1\172\6\uffff\1\146" +
+            "\1\172\4\uffff\1\75\1\uffff\1\145\1\146\1\151\1\172\6\uffff\1\146" +
                     "\1\172\1\170\1\156\1\172\1\uffff\1\141\1\uffff\2\172\1\165\2\uffff" +
                     "\1\154\1\164\1\172\1\uffff";
     static final String DFA5_acceptS =
-            "\1\uffff\1\1\1\uffff\1\4\4\uffff\1\12\1\11\1\13\1\14\1\3\1\2\5\uffff" +
-                    "\1\3\1\uffff\1\6\3\uffff\1\7\1\10\3\uffff\1\5";
+            "\1\uffff\1\1\1\2\1\3\1\4\1\uffff\1\7\4\uffff\1\15\1\14\1\16\1\17" +
+                    "\1\6\1\5\5\uffff\1\6\1\uffff\1\11\3\uffff\1\12\1\13\3\uffff\1\10";
     static final String DFA5_specialS =
-            "\37\uffff}>";
+            "\42\uffff}>";
     static final String[] DFA5_transitionS = {
-            "\2\13\1\uffff\2\13\22\uffff\1\13\12\uffff\1\1\1\uffff\2\11\1" +
-                    "\uffff\12\11\2\uffff\1\2\1\3\1\10\2\uffff\4\12\1\7\25\12\6\uffff" +
-                    "\3\12\1\4\4\12\1\5\3\12\1\6\15\12",
+            "\2\16\1\uffff\2\16\22\uffff\1\16\7\uffff\1\1\1\2\1\uffff\1\3" +
+                    "\1\4\2\14\1\uffff\12\14\2\uffff\1\5\1\6\1\13\2\uffff\4\15\1" +
+                    "\12\25\15\6\uffff\3\15\1\7\4\15\1\10\3\15\1\11\15\15",
             "",
-            "\1\14",
             "",
-            "\1\16",
+            "",
+            "",
             "\1\17",
-            "\1\20\7\uffff\1\21",
-            "\12\22\7\uffff\4\12\1\22\25\12\6\uffff\32\12",
+            "",
+            "\1\21",
+            "\1\22",
+            "\1\23\7\uffff\1\24",
+            "\12\25\7\uffff\4\15\1\25\25\15\6\uffff\32\15",
             "",
             "",
             "",
             "",
             "",
             "",
-            "\1\24",
-            "\12\12\7\uffff\32\12\6\uffff\32\12",
-            "\1\26",
             "\1\27",
-            "\12\22\7\uffff\4\12\1\22\25\12\6\uffff\32\12",
+            "\12\15\7\uffff\32\15\6\uffff\32\15",
+            "\1\31",
+            "\1\32",
+            "\12\25\7\uffff\4\15\1\25\25\15\6\uffff\32\15",
             "",
-            "\1\30",
-            "",
-            "\12\12\7\uffff\32\12\6\uffff\32\12",
-            "\12\12\7\uffff\32\12\6\uffff\32\12",
             "\1\33",
             "",
+            "\12\15\7\uffff\32\15\6\uffff\32\15",
+            "\12\15\7\uffff\32\15\6\uffff\32\15",
+            "\1\36",
             "",
-            "\1\34",
-            "\1\35",
-            "\12\12\7\uffff\32\12\6\uffff\32\12",
+            "",
+            "\1\37",
+            "\1\40",
+            "\12\15\7\uffff\32\15\6\uffff\32\15",
             ""
     };
 
@@ -654,7 +744,7 @@ public class PealLexer extends Lexer {
         }
 
         public String getDescription() {
-            return "1:1: Tokens : ( T__8 | T__9 | T__10 | T__11 | T__12 | T__13 | T__14 | T__15 | NUMBER | COMPARE | IDENT | WS );";
+            return "1:1: Tokens : ( T__8 | T__9 | T__10 | T__11 | T__12 | T__13 | T__14 | T__15 | T__16 | T__17 | T__18 | NUMBER | COMPARE | IDENT | WS );";
         }
     }
 
