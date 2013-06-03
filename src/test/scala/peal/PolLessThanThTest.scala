@@ -7,21 +7,25 @@ class PolLessThanThTest extends ShouldMatchersForJUnit {
 
   @Test
   def testCanDoSimpleSynthesisWhenDefaultGreaterThanTh() {
-    val q = new Predicate("q1")
-    val p = new Pol(List(new Rule(q, 0.5)), 1)
+    val p = new Pol(List(new Rule(new Predicate("q1"), 0.5)), 1)
     val defaultSet = new PolLessThanTh(p, 0.6)
     defaultSet.synthesis should be("") // in CNF
   }
 
   @Test
   def testCanDoSimpleSynthesisWhenDefaultLessThanTh() {
-    val q = new Predicate("q1")
-    val p = new Pol(List(new Rule(q, 0.5)), 0)
+    val p = new Pol(List(new Rule(new Predicate("q1"), 0.5)), 0)
     val defaultSet = new PolLessThanTh(p, 0.6)
 
-    defaultSet.synthesis should be("!q1 ") // in CNF
+    defaultSet.synthesis should be("!q1") // in CNF
+  }
 
-    println(defaultSet.synthesis)
+  @Test
+  def testCanDoSimpleSynthesisWhenDefaultLessThanThTwoRules() {
+    val p = new Pol(List(new Rule(new Predicate("q1"), 0.5), new Rule(new Predicate("q2"), 0.3)), 0)
+    val defaultSet = new PolLessThanTh(p, 0.6)
+
+    defaultSet.synthesis should be("!q1 !q2") // in CNF
   }
 
 }
