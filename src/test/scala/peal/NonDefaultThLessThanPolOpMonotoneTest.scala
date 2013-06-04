@@ -29,7 +29,7 @@ class NonDefaultThLessThanPolOpMonotoneTest extends ShouldMatchersForJUnit {
   }
 
   @Test
-  def testCanComputeM1AsPerExample2InSynthesisPdf() {
+  def testComputeM1AsPerExample2InSynthesisPdf() {
     val rule5 = new Rule(new Predicate("q5"), 0.5)
     val rule3 = new Rule(new Predicate("q3"), 0.2)
     val rule4 = new Rule(new Predicate("q4"), 0.3)
