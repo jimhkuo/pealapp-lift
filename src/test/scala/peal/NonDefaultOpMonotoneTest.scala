@@ -3,6 +3,7 @@ package peal
 import org.scalatest.junit.ShouldMatchersForJUnit
 import org.junit.{Ignore, Test}
 
+
 class NonDefaultOpMonotoneTest extends ShouldMatchersForJUnit {
 
   @Ignore
