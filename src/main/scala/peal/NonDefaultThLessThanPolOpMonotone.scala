@@ -9,13 +9,26 @@ class NonDefaultThLessThanPolOpMonotone(pol: Pol, th: Double) extends NonDefault
 
   def enumOne(): Set[Set[Rule]] = {
     val sortedRulesByScore = pol.rules.sortBy(_.score)
+    val t = sortedRulesByScore.map(_.score).scanLeft(0.0)((remaining, score) => remaining + score).drop(1)
 
-    val m1 = Set[Set[Rule]]()
+    var m1 = Set[Set[Rule]]()
 
-    def enumOne(x: Set[Rule], sum: Double, index: Integer) {
+    def enumOne(x: Set[Rule], index: Integer) {
+      val sum = x.map(_.score).sum
+      if (th < sum) {
+        m1 += x
+      }
+      else {
+        var j = index - 1
+        while ((j > 0) && (th < (t(j) + sum))) {
+          enumOne(x + sortedRulesByScore(j), j)
+          j -= 1
+        }
+      }
     }
 
-    Set()
+    enumOne(Set[Rule](), sortedRulesByScore.size)
+    m1
   }
 
 }

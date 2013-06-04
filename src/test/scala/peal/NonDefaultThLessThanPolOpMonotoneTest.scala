@@ -45,4 +45,15 @@ class NonDefaultThLessThanPolOpMonotoneTest extends ShouldMatchersForJUnit {
 
     sortedP should be("q1,q2,q3,q4,q5")
   }
+
+  @Test
+  def testComputePartialSum() {
+    val s = List(0.1, 0.2, 0.2, 0.3, 0.5)
+    val t = List(0.1, 0.3, 0.5, 0.8, 1.3)
+
+    val c = s.scanLeft(0.0)((remaining, item) => remaining + item).drop(1)
+
+    println(c)
+
+  }
 }
