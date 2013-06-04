@@ -15,4 +15,5 @@ class NonDefaultPolLessThanThOpMonotoneTest extends ShouldMatchersForJUnit {
     //assume M1 is the whole set
     pSet.synthesis should be("!q1") // in CNF
   }
+
 }

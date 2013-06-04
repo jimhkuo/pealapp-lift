@@ -4,5 +4,5 @@ trait NonDefaultSet {
 
   def synthesis: String
 
-  def not = synthesis.replaceAll(" ", "\n") //this is not done yet
+  def not = synthesis.replaceAll("q", "!q").replaceAll(" ", "X").replaceAll("\n", " ").replaceAll("X", "\n")
 }
