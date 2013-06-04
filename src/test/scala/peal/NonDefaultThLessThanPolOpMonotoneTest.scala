@@ -11,9 +11,22 @@ class NonDefaultThLessThanPolOpMonotoneTest extends ShouldMatchersForJUnit {
   @Test
   def testSimpleCaseM1IsWholeSet() {
     val p = new Pol(List(new Rule(new Predicate("q1"), 0.6)), 1)
-    val pSet = new NonDefaultThLessThanPolOpMonotone(p, 0.6)
+    val pSet = new NonDefaultThLessThanPolOpMonotone(p, 0.5)
     //assume M1 is the whole set
     pSet.synthesis should be("q1") // in CNF
+  }
+
+  @Test
+  def testExample2InSynthesisPdf() {
+    val rule5 = new Rule(new Predicate("q5"), 0.5)
+    val rule3 = new Rule(new Predicate("q3"), 0.2)
+    val rule4 = new Rule(new Predicate("q4"), 0.3)
+    val rule2 = new Rule(new Predicate("q2"), 0.2)
+    val rule1 = new Rule(new Predicate("q1"), 0.1)
+    val p = new Pol(List(rule5, rule3, rule4, rule2, rule1), 1)
+    val pSet = new NonDefaultThLessThanPolOpMonotone(p, 0.5)
+
+    pSet.synthesis should be("q4 q5\nq3 q5\nq2 q5\nq1 q5\nq2 q3 q4\nq1 q3 q4\nq1 q2 q4")
   }
 
   @Test
