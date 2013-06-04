@@ -2,6 +2,7 @@ package peal
 
 import org.scalatest.junit.ShouldMatchersForJUnit
 import org.junit.Test
+import peal.domain.{Rule, Predicate, Pol}
 
 class NonDefaultPolLessThanThOpMinTest extends ShouldMatchersForJUnit {
 
