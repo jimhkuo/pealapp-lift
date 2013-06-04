@@ -1,7 +1,6 @@
 package peal
 
 import peal.synthesis.NonDefaultSet
-import scala.collection.immutable.Set
 import peal.domain.{Rule, Pol}
 import scala._
 
