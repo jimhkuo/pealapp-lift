@@ -1,13 +1,12 @@
 package peal
 
 import org.scalatest.junit.ShouldMatchersForJUnit
-import org.junit.{Ignore, Test}
+import org.junit.Test
 import peal.domain.{Rule, Predicate, Pol}
 
 
 class NonDefaultThLessThanPolOpMonotoneTest extends ShouldMatchersForJUnit {
 
-  @Ignore
   @Test
   def testSimpleCaseM1IsWholeSet() {
     val p = new Pol(List(new Rule(new Predicate("q1"), 0.6)), 1)
@@ -26,7 +25,7 @@ class NonDefaultThLessThanPolOpMonotoneTest extends ShouldMatchersForJUnit {
     val p = new Pol(List(rule5, rule3, rule4, rule2, rule1), 1)
     val pSet = new NonDefaultThLessThanPolOpMonotone(p, 0.5)
 
-    pSet.synthesis should be("q4 q5\nq3 q5\nq2 q5\nq1 q5\nq2 q3 q4\nq1 q3 q4\nq1 q2 q4")
+    pSet.synthesis should be("q4 q2 q1\nq5 q2\nq5 q1\nq5 q4\nq4 q2 q3\nq4 q3 q1\nq5 q3")
   }
 
   @Test

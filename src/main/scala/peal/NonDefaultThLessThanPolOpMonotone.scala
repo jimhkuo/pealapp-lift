@@ -5,7 +5,7 @@ import peal.domain.{Rule, Pol}
 import scala._
 
 class NonDefaultThLessThanPolOpMonotone(pol: Pol, th: Double) extends NonDefaultSet {
-  def synthesis: String = enumOne().map(_.mkString(" ")).mkString("\n")
+  def synthesis: String = enumOne().map(_.map(_.q.name).mkString(" ")).mkString("\n")
 
   def enumOne(): Set[Set[Rule]] = {
     val sortedRulesByScore = pol.rules.sortBy(_.score)
