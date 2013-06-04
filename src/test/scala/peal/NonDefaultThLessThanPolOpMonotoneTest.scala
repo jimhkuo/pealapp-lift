@@ -29,6 +29,18 @@ class NonDefaultThLessThanPolOpMonotoneTest extends ShouldMatchersForJUnit {
       Set("q2", "q3", "q4"),
       Set("q1", "q3", "q4"),
       Set("q1", "q2", "q4")))
+  }
 
+  @Test
+  def testRuleSorting() {
+    val p = new Pol(List(new Rule(new Predicate("q5"), 0.5),
+      new Rule(new Predicate("q2"), 0.2),
+      new Rule(new Predicate("q4"), 0.3),
+      new Rule(new Predicate("q3"), 0.2),
+      new Rule(new Predicate("q1"), 0.1)), 1)
+
+    val sortedP = p.rules.sortBy(_.score).map(_.q.name).mkString(",")
+
+    sortedP should be("q1,q2,q3,q4,q5")
   }
 }
