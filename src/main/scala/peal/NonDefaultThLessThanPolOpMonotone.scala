@@ -3,6 +3,7 @@ package peal
 import peal.synthesis.NonDefaultSet
 import scala.collection.immutable.Set
 import peal.domain.{Rule, Pol}
+import scala._
 
 class NonDefaultThLessThanPolOpMonotone(pol: Pol, th: Double) extends NonDefaultSet {
   def synthesis: String = ""
@@ -13,7 +14,7 @@ class NonDefaultThLessThanPolOpMonotone(pol: Pol, th: Double) extends NonDefault
     var m1 = Set[Set[Rule]]()
 
     def enumOne(x: Set[Rule], sum: Double, index: Integer) {
-      if (th < sum) {
+      if (sum > th) {
         m1 += x
       }
       else {

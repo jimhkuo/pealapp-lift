@@ -25,11 +25,14 @@ class NonDefaultThLessThanPolOpMonotoneTest extends ShouldMatchersForJUnit {
     val p = new Pol(List(rule5, rule3, rule4, rule2, rule1), 1)
     val pSet = new NonDefaultThLessThanPolOpMonotone(p, 0.5)
 
-    pSet.enumOne() should be(Set(Set(rule4, rule5),
+    pSet.enumOne() should have size (7)
+    pSet.enumOne() should be(Set(
+      Set(rule1, rule3, rule4),
+      Set(rule4, rule5),
       Set(rule3, rule5),
       Set(rule2, rule5),
+      Set(rule1, rule5),
       Set(rule2, rule3, rule4),
-      Set(rule1, rule3, rule4),
       Set(rule1, rule2, rule4)))
   }
 
