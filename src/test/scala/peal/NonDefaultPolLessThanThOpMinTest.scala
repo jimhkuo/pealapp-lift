@@ -24,6 +24,6 @@ class NonDefaultPolLessThanThOpMinTest extends ShouldMatchersForJUnit {
   def testSimpleCaseMultipleScoresLessThanTh() {
     val p = new Pol(List(new Rule(new Predicate("q1"), 0.5), new Rule(new Predicate("q2"), 0.2), new Rule(new Predicate("q3"), 0.4)), 1)
     val pSet = new NonDefaultPolLessThanThOpMin(p, 0.6)
-    pSet.synthesis should be("or q1 q2 q3")
+    pSet.synthesis should be("(or q1 q2 q3)")
   }
 }
