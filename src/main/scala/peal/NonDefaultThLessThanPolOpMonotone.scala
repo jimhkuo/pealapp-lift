@@ -5,7 +5,19 @@ import peal.domain.{Rule, Pol}
 import scala._
 
 class NonDefaultThLessThanPolOpMonotone(pol: Pol, th: Double) extends NonDefaultSet {
-  def synthesis: String = enumOne().map(_.map(_.q.name).mkString("(and ", " ", ")")).mkString("or ", " ", "")
+  def synthesis: String = {
+    val m1 = enumOne()
+
+    val m2 = m1.size match {
+      case s if s > 1 => m1.map(_.map(_.q.name).mkString("(and ", " ", ")"))
+      case _ => m1.map(_.map(_.q.name).mkString(" "))
+    }
+
+    m2.size match {
+      case s if s > 1 => "(" + m2.mkString("or ", " ", "") + ")"
+      case _ => "(" + m2.mkString(" ") + ")"
+    }
+  }
 
   def enumOne(): Set[Set[Rule]] = {
     val sortedRulesByScore = pol.rules.sortBy(_.score)
