@@ -26,7 +26,6 @@ class DefaultPolLessThanThTest extends ShouldMatchersForJUnit {
     val p = new Pol(List(new Rule(new Predicate("q1"), 0.5), new Rule(new Predicate("q2"), 0.3)), 0)
     val defaultSet = new DefaultPolLessThanTh(p, 0.6)
 
-    defaultSet.synthesis should be("and (not q1) (not q2)")
+    defaultSet.synthesis should be("(and (not q1) (not q2))")
   }
-
 }

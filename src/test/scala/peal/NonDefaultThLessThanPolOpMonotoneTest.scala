@@ -12,7 +12,7 @@ class NonDefaultThLessThanPolOpMonotoneTest extends ShouldMatchersForJUnit {
     val p = new Pol(List(new Rule(new Predicate("q1"), 0.6)), 1)
     val pSet = new NonDefaultThLessThanPolOpMonotone(p, 0.5)
     //assume M1 is the whole set
-    pSet.synthesis should be("(q1)") // in CNF
+    pSet.synthesis should be("(q1)")
   }
 
   @Test
@@ -20,7 +20,7 @@ class NonDefaultThLessThanPolOpMonotoneTest extends ShouldMatchersForJUnit {
     val p = new Pol(List(new Rule(new Predicate("q1"), 0.6)), 1)
     val pSet = new NonDefaultThLessThanPolOpMonotone(p, 0.5)
     //assume M1 is the whole set
-    pSet.not should be("(not (q1))") // in CNF
+    pSet.not should be("(not (q1))")
   }
 
   @Test
