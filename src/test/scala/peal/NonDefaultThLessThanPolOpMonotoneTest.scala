@@ -8,10 +8,18 @@ import peal.domain.{Rule, Predicate, Pol}
 class NonDefaultThLessThanPolOpMonotoneTest extends ShouldMatchersForJUnit {
 
   @Test
-  def testSimpleCaseM1IsEmpty() {
+  def testSimpleCaseM1IsEmptyBecauseSumLessTh() {
     val p = new Pol(List(new Rule(new Predicate("q1"), 0.4)), 1)
     val pSet = new NonDefaultThLessThanPolOpMonotone(p, 0.5)
-    //M1 is the whole set
+    //M1 is empty
+    pSet.synthesis should be("false")
+  }
+
+  @Test
+  def testSimpleCaseM1IsEmptyBecauseSumEqualTh() {
+    val p = new Pol(List(new Rule(new Predicate("q1"), 0.5)), 1)
+    val pSet = new NonDefaultThLessThanPolOpMonotone(p, 0.5)
+    //M1 is empty
     pSet.synthesis should be("false")
   }
 
