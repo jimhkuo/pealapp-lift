@@ -7,6 +7,9 @@ import peal.domain.{Rule, Predicate, Pol}
 
 class NonDefaultPolLessThanThOpMonotoneTest extends ShouldMatchersForJUnit {
 
+  //empty disjunction is false
+  //empty conjunction is true
+
   @Test
   def testSimpleCaseM1IsEmpty() {
     val p = new Pol(List(new Rule(new Predicate("q1"), 0.6)), 1)
