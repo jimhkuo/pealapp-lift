@@ -10,7 +10,7 @@ class DefaultPolLessThanThTest extends ShouldMatchersForJUnit {
   def testCanDoSimpleSynthesisWhenDefaultGreaterThanTh() {
     val p = new Pol(List(new Rule(new Predicate("q1"), 0.5)), 1)
     val defaultSet = new DefaultPolLessThanTh(p, 0.6)
-    defaultSet.synthesis should be("")
+    defaultSet.synthesis should be("false")
   }
 
   @Test
