@@ -13,28 +13,29 @@ package peal.antlr;
 package peal.antlr;
 }
 
-pred : id1=IDENT '=' id2=IDENT 
-	| id3=IDENT
-	;
+//pred : id1=IDENT '=' id2=IDENT 
+//	| id3=IDENT
+//	;
 
-rule returns [Double i]
-	: '(' 'if' pred NUMBER ')' 
-	;
+//rule returns [Double i]
+//	: '(' 'if' pred NUMBER ')' 
+//	;
 
-cond returns [Boolean e]
-	: NUMBER '<' pSet
-	| pSet '<=' NUMBER
-	;
+//co/nd returns [Boolean e]
+//	: NUMBER '<' pSet
+//	| pSet '<=' NUMBER
+//	;
 
-pol returns [Double i]
-	: '+' '(' (rule)* ')' 'default' NUMBER
+//pol returns [Double i]
+//	: '+' '(' (rule)* ')' 'default' NUMBER
 //	| 'ma' '(' (rule)* ')' 'default' NUMBER
 //	| 'mi' '(' (rule)* ')' 'default' NUMBER
 	;
 
 
 
-pSet    : pol ;
+//pSet    : pol ;
+
 //	| '(' exp ')'
 //	| 'max' '(' exp ',' exp ')'
 //	;
@@ -52,7 +53,7 @@ pSet    : pol ;
 //pSet2 	: (pol)
 //	;
 
-term 	: ex1=NUMBER 
+term 	: ex1=IDENT 
 	|'(' ex2=expression ')'
 	|'max' '(' ex3=expression ',' ex4=expression  ')'
 	|'min' '(' ex5=expression ',' ex6=expression  ')'
