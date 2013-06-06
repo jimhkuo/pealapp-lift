@@ -28,22 +28,40 @@ cond returns [Boolean e]
 
 pol returns [Double i]
 	: '+' '(' (rule)* ')' 'default' NUMBER
-	| 'max' '(' (rule)* ')' 'default' NUMBER
-	| 'min' '(' (rule)* ')' 'default' NUMBER
+//	| 'ma' '(' (rule)* ')' 'default' NUMBER
+//	| 'mi' '(' (rule)* ')' 'default' NUMBER
 	;
 
 
 
-pSet    : (pol | 'max' '(' pSet1 ',' pSet2 ')')
+pSet    : pol 
+	| 'max' '(' exp ',' exp ')'
 	;
 
-pSet1	: (pol | pSet)
+exp 	:	mult ('+' mult)*
 	;
 
-
-pSet2 	: (pol| pSet)
+mult1	: pol ('*' pol)
 	;
-	
+
+//pSet1	: (pol|pSet)
+//	;
+
+
+//pSet2 	: (pol)
+//	;
+term    : ex1=NUMBER 
+	|'(' ex2=expression ')'
+	|'max' '(' ex3=expression ',' ex4=expression  ')'
+	|'min' '(' ex5=expression ',' ex6=expression  ')'
+	; 
+
+expression 
+	: ex1=mult ('+' ex2=mult )*
+	; 
+
+mult	: ex1=term ('*' ex2=term )*
+	; 
 
 NUMBER : ('.'|'0'..'9'|'-'|'E')+;
 COMPARE : ('>' | '>=' | '<' | '<=');
