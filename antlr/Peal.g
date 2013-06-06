@@ -30,7 +30,7 @@ package peal.antlr;
 //	: '+' '(' (rule)* ')' 'default' NUMBER
 //	| 'ma' '(' (rule)* ')' 'default' NUMBER
 //	| 'mi' '(' (rule)* ')' 'default' NUMBER
-	;
+//	;
 
 
 
