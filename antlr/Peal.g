@@ -12,8 +12,7 @@ package peal.antlr;
 package peal.antlr;
 }
 
-pred returns [Boolean e]
-	: id1=IDENT '=' id2=IDENT 
+pred : id1=IDENT '=' id2=IDENT 
 	| id3=IDENT
 	;
 
@@ -28,12 +27,10 @@ pol returns [Double i]
 	;
 
 pSet    : pol 
-	| 'max' pol',' pSet1 
-	| 'min' pol',' pSet1
-	;
-
-pSet1 	: pol
-	| pSet
+//	| 'min' '(' pol ',' pSet ')'
+	| 'min' '(' pSet ',' pol ')'
+	| 'max' '(' pol ',' pSet ')'
+	| 'max' '(' pSet ',' pol ')'
 	;
 
 cond returns [Boolean e]
