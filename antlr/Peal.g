@@ -29,11 +29,12 @@ pol returns [Double i]
 
 pSet returns [Double i]
 	: pol 
-	| 'max' '('id1=pol',' id2=pSet')'
-	| 'min' '('id3=pSet',' id4=pSet')'
+	| 'max' '('id1=pol',' id2=pol ')'
+	| 'min' '('id3=pol',' id4=pol ')'
 	;
 
-pSet1 	: pSet
+pSet1 	: pol
+	| pSet
 	;
 
 cond returns [Boolean e]
