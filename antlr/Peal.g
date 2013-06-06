@@ -27,15 +27,11 @@ pol returns [Double i]
 	| 'min' '(' (rule)* ')' 'default' NUMBER
 	;
 
-pSet returns [Double i]
-	: pol 
-	| 'max' '('id1=pol',' id2=pol ')'
-	| 'min' '('id3=pol',' id4=pol ')'
+pSet    : pol 
+	| 'max' '(' pol',' pSet ')'
+	| 'min' '(' pol',' pSet ')'
 	;
 
-pSet1 	: pol
-	| pSet
-	;
 
 cond returns [Boolean e]
 	: NUMBER '<' pSet
