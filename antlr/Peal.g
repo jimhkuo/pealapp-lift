@@ -2,6 +2,7 @@ grammar Peal;
 
 options {
 language = Java;
+output=AST;
 }
 
 @header {
@@ -20,23 +21,27 @@ rule returns [Double i]
 	: '(' 'if' pred NUMBER ')' 
 	;
 
+cond returns [Boolean e]
+	: NUMBER '<' pSet
+	| pSet '<=' NUMBER
+	;
+
 pol returns [Double i]
 	: '+' '(' (rule)* ')' 'default' NUMBER
 	| 'max' '(' (rule)* ')' 'default' NUMBER
 	| 'min' '(' (rule)* ')' 'default' NUMBER
 	;
 
-pSet    : pol 
-//	| 'min' '(' pol ',' pSet ')'
-	| 'min' '(' pSet ',' pol ')'
-	| 'max' '(' pol ',' pSet ')'
-	| 'max' '(' pSet ',' pol ')'
+pSet    : pol
+	| '(' exp ')'
+	| 'max' '(' exp ',' exp ')'
+	;
+	
+exp 	: mult
 	;
 
-cond returns [Boolean e]
-	: NUMBER '<' pSet
-	| pSet '<=' NUMBER
-	;
+mult 	:	pSet
+	;	
 
 NUMBER : ('.'|'0'..'9'|'-'|'E')+;
 COMPARE : ('>' | '>=' | '<' | '<=');
