@@ -2,7 +2,6 @@ grammar Peal;
 
 options {
 language = Java;
-output=AST;
 }
 
 @header {
@@ -34,16 +33,16 @@ pol returns [Double i]
 
 
 
-pSet    : pol 
-	| '(' exp ')'
-	| 'max' '(' exp ',' exp ')'
-	;
+pSet    : pol ;
+//	| '(' exp ')'
+//	| 'max' '(' exp ',' exp ')'
+//	;
 
-exp 	: mult1 ('+' mult1)*
-	;
+//exp 	: mult1 ('+' mult1)*
+///	;
 
-mult1	: pol ('*' pol)*
-	;
+//mult1	: pSet ('*' pSet)*
+//	;
 
 //pSet1	: (pol|pSet)
 //	;
@@ -51,17 +50,20 @@ mult1	: pol ('*' pol)*
 
 //pSet2 	: (pol)
 //	;
-term    : ex1=NUMBER 
+
+term 	: ex1=NUMBER 
 	|'(' ex2=expression ')'
 	|'max' '(' ex3=expression ',' ex4=expression  ')'
 	|'min' '(' ex5=expression ',' ex6=expression  ')'
 	; 
 
-expression 
-	: ex1=mult ('+' ex2=mult )*
+expression
+	: ex1=mult 
+	('+' ex2=mult)*
 	; 
 
-mult	: ex1=term ('*' ex2=term )*
+mult 	: ex1=term 
+	('*' ex2=term	)*
 	; 
 
 NUMBER : ('.'|'0'..'9'|'-'|'E')+;
