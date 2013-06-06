@@ -35,13 +35,14 @@ pol returns [Double i]
 
 
 pSet    : pol 
+	| '(' exp ')'
 	| 'max' '(' exp ',' exp ')'
 	;
 
-exp 	:	mult ('+' mult)*
+exp 	: mult1 ('+' mult1)*
 	;
 
-mult1	: pol ('*' pol)
+mult1	: pol ('*' pol)*
 	;
 
 //pSet1	: (pol|pSet)
