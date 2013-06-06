@@ -18,19 +18,22 @@ pred returns [Boolean e]
 	;
 
 rule returns [Double i]
-	: 'if' pred NUMBER
+	: '(' 'if' pred NUMBER ')' 
 	;
 
 pol returns [Double i]
-	: '+' (rule)* 'default' NUMBER
-	| 'max' (rule)* 'default' NUMBER
-	| 'min' (rule)* 'default' NUMBER
+	: '+' '(' (rule)* ')' 'default' NUMBER
+	| 'max' '(' (rule)* ')' 'default' NUMBER
+	| 'min' '(' (rule)* ')' 'default' NUMBER
 	;
 
 pSet returns [Double i]
 	: pol 
-	| 'max' '('id1=pSet',' id2=pSet')'
+	| 'max' '('id1=pol',' id2=pSet')'
 	| 'min' '('id3=pSet',' id4=pSet')'
+	;
+
+pSet1 	: pSet
 	;
 
 cond returns [Boolean e]
