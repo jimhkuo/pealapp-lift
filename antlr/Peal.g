@@ -32,16 +32,18 @@ pol returns [Double i]
 	| 'min' '(' (rule)* ')' 'default' NUMBER
 	;
 
-pSet    : pol
-	| '(' exp ')'
-	| 'max' '(' exp ',' exp ')'
-	;
-	
-exp 	: mult
+
+
+pSet    : (pol | 'max' '(' pSet1 ',' pSet2 ')')
 	;
 
-mult 	:	pSet
-	;	
+pSet1	: (pol | pSet)
+	;
+
+
+pSet2 	: (pol| pSet)
+	;
+	
 
 NUMBER : ('.'|'0'..'9'|'-'|'E')+;
 COMPARE : ('>' | '>=' | '<' | '<=');
