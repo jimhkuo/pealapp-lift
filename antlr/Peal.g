@@ -2,6 +2,7 @@ grammar Peal;
 
 options {
 language = Java;
+output = AST;
 }
 
 @header {
