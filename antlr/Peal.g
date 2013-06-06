@@ -28,10 +28,13 @@ pol returns [Double i]
 	;
 
 pSet    : pol 
-	| 'max' '(' pol',' pSet ')'
-	| 'min' '(' pol',' pSet ')'
+	| 'max' pol',' pSet1 
+	| 'min' pol',' pSet1
 	;
 
+pSet1 	: pol
+	| pSet
+	;
 
 cond returns [Boolean e]
 	: NUMBER '<' pSet
