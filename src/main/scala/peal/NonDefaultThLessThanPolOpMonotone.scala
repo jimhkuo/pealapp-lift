@@ -8,7 +8,7 @@ class NonDefaultThLessThanPolOpMonotone(pol: Pol, th: Double) extends NonDefault
   def synthesis: String = {
     val m1 = enumOne()
 
-    if (m1.size != 0) {
+    if (m1.nonEmpty) {
       val m1Sets = m1.size match {
         case s if s > 1 => m1.map(_.map(_.q.name).mkString("(and ", " ", ")"))
         case _ => m1.map(_.map(_.q.name).mkString(" "))
