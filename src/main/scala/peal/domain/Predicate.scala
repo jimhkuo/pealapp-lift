@@ -1,3 +1,3 @@
 package peal.domain
 
-class Predicate(val name: String)
+case class Predicate(name: String, content: String)
