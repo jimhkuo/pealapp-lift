@@ -7,13 +7,15 @@ output = AST;
 
 @header {
 package peal.antlr;
+import peal.domain.*;
 }
 
 @lexer::header {
 package peal.antlr;
 }
 
-pred : id1=IDENT '=' id2=IDENT 
+pred 	returns [Double i]
+	: id1=IDENT '=' id2=IDENT 
 	| id3=IDENT
 	;
 
