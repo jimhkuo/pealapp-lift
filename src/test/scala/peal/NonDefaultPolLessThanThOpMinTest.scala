@@ -22,6 +22,13 @@ class NonDefaultPolLessThanThOpMinTest extends ShouldMatchersForJUnit {
   }
 
   @Test
+  def testSimpleCaseScoreLessThanThDifferentDefault() {
+    val p = new Pol(List(new Rule(new Predicate("q1"), 0.5)), 0)
+    val pSet = new NonDefaultPolLessThanThOpMin(p, 0.6)
+    pSet.synthesis should be("q1")
+  }
+
+  @Test
   def testSimpleCaseScoreLessThanTh() {
     val p = new Pol(List(new Rule(new Predicate("q1"), 0.5)), 1)
     val pSet = new NonDefaultPolLessThanThOpMin(p, 0.6)
