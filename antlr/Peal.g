@@ -32,9 +32,9 @@ pol returns [Double i]
 	| 'min' '(' (rule)* ')' 'default' NUMBER
 	;
 
-pSet    : pol ;
-	| '(' exp ')'
-	| 'max' '(' exp ',' exp ')'
+pSet    : pol 
+	| 'max' '(' pol ',' pol ')'
+	| 'min' '(' pol ',' pol ')'
 	;
 
 
