@@ -2,7 +2,6 @@ grammar Peal;
 
 options {
 language = Java;
-output = AST;
 }
 
 @header {
@@ -13,6 +12,9 @@ import peal.domain.*;
 @lexer::header {
 package peal.antlr;
 }
+
+program : 'cond' '=' 'pSet' '<=' NUMBER
+	'pSet' '=' ;
 
 pred 	returns [Double i]
 	: id1=IDENT '=' id2=IDENT 
