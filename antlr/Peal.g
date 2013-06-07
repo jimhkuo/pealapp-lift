@@ -13,6 +13,18 @@ import peal.domain.*;
 package peal.antlr;
 }
 
+//want to deal with
+//cond = pSet <= 0.5
+//pSet = max(b1, b2)
+//b1 = min ((q1 0.2) (q2 0.4) (q3 0.9)) default 1
+//b2 = + ((q4 0.1) (q5 0.2) (q6 0.2)) default 0
+//q1 = true
+//q2 = true
+//q3 = true
+//q4 = false
+//q5 = true
+//q6 = false
+
 program : 'cond' '=' 'pSet' '<=' NUMBER
 	'pSet' '=' ;
 
