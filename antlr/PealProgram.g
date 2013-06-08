@@ -19,8 +19,9 @@ package peal.antlr;
 //b1 = min ((q1 0.2) (q2 0.4) (q3 0.9)) default 1
 //b2 = + ((q4 0.1) (q5 0.2) (q6 0.2)) default 0
 
+//use a map to store these values
 program : 'cond' '=' IDENT '<=' NUMBER 
-  IDENT '=' 'max' '(' IDENT ',' IDENT ')'
+  (IDENT '=' 'max' '(' IDENT ',' IDENT ')' | IDENT '=' 'min' '(' IDENT ',' IDENT ')')
   (IDENT '=' pol)*
 	;
 
