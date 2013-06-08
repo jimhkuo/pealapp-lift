@@ -18,25 +18,19 @@ package peal.antlr;
 //pSet = max(b1, b2)
 //b1 = min ((q1 0.2) (q2 0.4) (q3 0.9)) default 1
 //b2 = + ((q4 0.1) (q5 0.2) (q6 0.2)) default 0
-//q1 = true
-//q2 = true
-//q3 = true
-//q4 = false
-//q5 = true
-//q6 = false
 
-program : 'cond' '=' IDENT '<=' NUMBER NEWLINE
+program : 'cond' '=' IDENT '<=' NUMBER 
   IDENT '=' 'max' '(' IDENT ',' IDENT ')'
+  (IDENT '=' pol)*
 	;
 
-//pred 	returns [Double i]
-//	: id1=IDENT '=' id2=IDENT 
-//	| id3=IDENT
-//	;
+pol	: '+' '(' (rule)* ')' 'default' NUMBER
+	| 'max' '(' (rule)* ')' 'default' NUMBER
+	| 'min' '(' (rule)* ')' 'default' NUMBER
+	;
 
-//rule returns [Double i]
-//	: '(' 'if' pred NUMBER ')' 
-//	;
+rule 	: '(' IDENT NUMBER ')' 
+	;
 
 //cond returns [Boolean e]
 //	: NUMBER '<' pSet
@@ -57,6 +51,6 @@ program : 'cond' '=' IDENT '<=' NUMBER NEWLINE
 
 NUMBER : ('.'|'0'..'9'|'-'|'E')+;
 COMPARE : ('>' | '>=' | '<' | '<=');
-NEWLINE:'\r'? '\n' ;
+NEWLINE:'\r'? '\n' { $channel = HIDDEN;};
 IDENT : ('a'..'z' | 'A'..'Z')('a'..'z' | 'A'..'Z' | '0'..'9')*;
 WS : (' ' | '\t' | '\n' | '\r' | '\f')+ { $channel = HIDDEN;};
