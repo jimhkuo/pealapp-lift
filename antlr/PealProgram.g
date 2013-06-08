@@ -11,6 +11,7 @@ import peal.domain.*;
 
 @members {
 HashMap pols = new HashMap();
+List<Rule> l = new ArrayList<Rule>();
 }
 
 @lexer::header {
@@ -24,15 +25,15 @@ package peal.antlr;
 //b2 = + ((q4 0.1) (q5 0.2) (q6 0.2)) default 0
 
 //use a map to store these values
-program : 'cond' '=' id1=IDENT '<=' NUMBER 
+program : 'cond' '=' id1=IDENT '<=' NUMBER {l = new ArrayList<Rule>();}
   (id2=IDENT '=' 'max' '(' id3=IDENT ',' id4=IDENT ')' | id2=IDENT '=' 'min' '(' id3=IDENT ',' id4=IDENT ')')
   (id5=IDENT '=' pol {pols.put($id5, $po.p);})*
 	;
 
-pol	returns [Pol p]
-	: '+' '(' (rule)* ')' 'default' NUMBER
-	| 'max' '(' (rule)* ')' 'default' NUMBER
-	| 'min' '(' (rule)* ')' 'default' NUMBER
+pol	returns [Pol p] 
+	:  '+' '(' (rule {l += $rule.r;})* ')' 'default' NUMBER 
+	| 'max' '(' (rule {l += $rule.r;})* ')' 'default' NUMBER
+	| 'min' '(' (rule {l += $rule.r;})* ')' 'default' NUMBER 
 	;
 
 rule 	returns [Rule r]
