@@ -31,9 +31,9 @@ program : 'cond' '=' id1=IDENT '<=' NUMBER {l = new ArrayList<Rule>();}
 	;
 
 pol	returns [Pol p] 
-	:  '+' '(' (rule {l += $rule.r;})* ')' 'default' NUMBER 
-	| 'max' '(' (rule {l += $rule.r;})* ')' 'default' NUMBER
-	| 'min' '(' (rule {l += $rule.r;})* ')' 'default' NUMBER 
+	:  '+' '(' (rule {l += $rule.r;})* ')' 'default' NUMBER {$p = new Pol(l.clone(), $NUMBER);}
+	| 'max' '(' (rule {l += $rule.r;})* ')' 'default' NUMBER {$p = new Pol(l.clone(), $NUMBER);}
+	| 'min' '(' (rule {l += $rule.r;})* ')' 'default' NUMBER {$p = new Pol(l.clone(), $NUMBER);}
 	;
 
 rule 	returns [Rule r]
