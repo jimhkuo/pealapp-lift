@@ -10,7 +10,7 @@ import peal.domain.*;
 }
 
 @members {
-HashMap pols = new HashMap();
+Map<String, Pol> pols = new HashMap<String, Pol>();
 List<Rule> l = new ArrayList<Rule>();
 }
 
