@@ -6,6 +6,7 @@ language = Java;
 
 @header {
 package peal.antlr;
+import java.util.*;
 import peal.domain.*;
 }
 
@@ -27,17 +28,17 @@ package peal.antlr;
 //use a map to store these values
 program : 'cond' '=' id1=IDENT '<=' NUMBER {l = new ArrayList<Rule>();}
   (id2=IDENT '=' 'max' '(' id3=IDENT ',' id4=IDENT ')' | id2=IDENT '=' 'min' '(' id3=IDENT ',' id4=IDENT ')')
-  (id5=IDENT '=' pol {pols.put($id5, $po.p);})*
+  (id5=IDENT '=' pol {pols.put($id5, $pol.p);})*
 	;
 
 pol	returns [Pol p] 
-	:  '+' '(' (rule {l += $rule.r;})* ')' 'default' NUMBER {$p = new Pol(l.clone(), $NUMBER);}
-	| 'max' '(' (rule {l += $rule.r;})* ')' 'default' NUMBER {$p = new Pol(l.clone(), $NUMBER);}
-	| 'min' '(' (rule {l += $rule.r;})* ')' 'default' NUMBER {$p = new Pol(l.clone(), $NUMBER);}
+	:  '+' '(' (rule {l.add($rule.r);})* ')' 'default' NUMBER {$p = new Pol(new ArrayList(l), $NUMBER.text);}
+	| 'max' '(' (rule {l.add($rule.r);})* ')' 'default' NUMBER {$p = new Pol(new ArrayList(l), $NUMBER.text);}
+	| 'min' '(' (rule {l.add($rule.r);})* ')' 'default' NUMBER {$p = new Pol(new ArrayList(l), $NUMBER.text);} //need to map string to double
 	;
 
 rule 	returns [Rule r]
-	: '(' IDENT NUMBER ')' {$r = new Rule(new Predicate($IDENT),$NUMBER);}
+	: '(' IDENT NUMBER ')' {$r = new Rule(new Predicate($IDENT.text, ""),$NUMBER.text);}
 	;
 
 //cond returns [Boolean e]
