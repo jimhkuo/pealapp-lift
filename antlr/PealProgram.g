@@ -9,6 +9,10 @@ package peal.antlr;
 import peal.domain.*;
 }
 
+@members {
+HashMap pols = new HashMap();
+}
+
 @lexer::header {
 package peal.antlr;
 }
@@ -20,17 +24,19 @@ package peal.antlr;
 //b2 = + ((q4 0.1) (q5 0.2) (q6 0.2)) default 0
 
 //use a map to store these values
-program : 'cond' '=' IDENT '<=' NUMBER 
-  (IDENT '=' 'max' '(' IDENT ',' IDENT ')' | IDENT '=' 'min' '(' IDENT ',' IDENT ')')
-  (IDENT '=' pol)*
+program : 'cond' '=' id1=IDENT '<=' NUMBER 
+  (id2=IDENT '=' 'max' '(' id3=IDENT ',' id4=IDENT ')' | id2=IDENT '=' 'min' '(' id3=IDENT ',' id4=IDENT ')')
+  (id5=IDENT '=' pol {pols.put($id5, $po.p);})*
 	;
 
-pol	: '+' '(' (rule)* ')' 'default' NUMBER
+pol	returns [Pol p]
+	: '+' '(' (rule)* ')' 'default' NUMBER
 	| 'max' '(' (rule)* ')' 'default' NUMBER
 	| 'min' '(' (rule)* ')' 'default' NUMBER
 	;
 
-rule 	: '(' IDENT NUMBER ')' 
+rule 	returns [Rule r]
+	: '(' IDENT NUMBER ')' {$r = new Rule(new Predicate($IDENT),$NUMBER);}
 	;
 
 //cond returns [Boolean e]
