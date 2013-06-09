@@ -8,6 +8,8 @@ language = Java;
 package peal.antlr;
 import java.util.*;
 import peal.domain.*;
+import org.antlr.runtime.BitSet;
+
 }
 
 @members {
@@ -26,15 +28,15 @@ package peal.antlr;
 //b2 = + ((q4 0.1) (q5 0.2) (q6 0.2)) default 0
 
 //use a map to store these values
-program : 'cond' '=' id1=IDENT '<=' NUMBER {l = new ArrayList<Rule>();}
+program	: 'cond' '=' id1=IDENT '<=' NUMBER {l = new ArrayList<Rule>();}
   (id2=IDENT '=' 'max' '(' id3=IDENT ',' id4=IDENT ')' | id2=IDENT '=' 'min' '(' id3=IDENT ',' id4=IDENT ')')
-  (id5=IDENT '=' pol {pols.put($id5, $pol.p);})*
+  (id5=IDENT '=' pol {pols.put($id5.text, $pol.p);})*
 	;
 
 pol	returns [Pol p] 
-	:  '+' '(' (rule {l.add($rule.r);})* ')' 'default' NUMBER {$p = new Pol(new ArrayList(l), Double.valueOf($NUMBER.text);}
-	| 'max' '(' (rule {l.add($rule.r);})* ')' 'default' NUMBER {$p = new Pol(new ArrayList(l), Double.valueOf($NUMBER.text));}
-	| 'min' '(' (rule {l.add($rule.r);})* ')' 'default' NUMBER {$p = new Pol(new ArrayList(l), Double.valueOf($NUMBER.text));} //need to map string to double
+	:  '+' '(' (rule {l.add($rule.r);})* ')' 'default' NUMBER {$p = new Pol(new ArrayList<Rule>(l), Double.valueOf($NUMBER.text);}
+	| 'max' '(' (rule {l.add($rule.r);})* ')' 'default' NUMBER {$p = new Pol(new ArrayList<Rule>(l), Double.valueOf($NUMBER.text));}
+	| 'min' '(' (rule {l.add($rule.r);})* ')' 'default' NUMBER {$p = new Pol(new ArrayList<Rule>(l), Double.valueOf($NUMBER.text));} //need to map string to double
 	;
 
 rule 	returns [Rule r]
