@@ -6,7 +6,8 @@ language = Java;
 
 @header {
 package peal.antlr;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
 import peal.domain.*;
 import org.antlr.runtime.BitSet;
 
@@ -14,7 +15,7 @@ import org.antlr.runtime.BitSet;
 
 @members {
 Map<String, Pol> pols = new HashMap<String, Pol>();
-List<Rule> l = new ArrayList<Rule>();
+scala.collection.mutable.ListBuffer<Rule> l = new scala.collection.mutable.ListBuffer<Rule>();
 }
 
 @lexer::header {
@@ -28,15 +29,15 @@ package peal.antlr;
 //b2 = + ((q4 0.1) (q5 0.2) (q6 0.2)) default 0
 
 //use a map to store these values
-program	: 'cond' '=' id1=IDENT '<=' NUMBER {l = new ArrayList<Rule>();}
+program	: 'cond' '=' id1=IDENT '<=' NUMBER {l =  new scala.collection.mutable.ListBuffer<Rule>();}
   (id2=IDENT '=' 'max' '(' id3=IDENT ',' id4=IDENT ')' | id2=IDENT '=' 'min' '(' id3=IDENT ',' id4=IDENT ')')
   (id5=IDENT '=' pol {pols.put($id5.text, $pol.p);})*
 	;
 
 pol	returns [Pol p] 
-	:  '+' '(' (rule {l.add($rule.r);})* ')' 'default' NUMBER {$p = new Pol(new ArrayList<Rule>(l), Double.valueOf($NUMBER.text));}
-	| 'max' '(' (rule {l.add($rule.r);})* ')' 'default' NUMBER {$p = new Pol(new ArrayList<Rule>(l), Double.valueOf($NUMBER.text));}
-	| 'min' '(' (rule {l.add($rule.r);})* ')' 'default' NUMBER {$p = new Pol(new ArrayList<Rule>(l), Double.valueOf($NUMBER.text));} //need to map string to double
+	:  '+' '(' (rule {l.append($rule.r);})* ')' 'default' NUMBER {$p = new Pol(l.toList(), Double.valueOf($NUMBER.text));}
+	| 'max' '(' (rule {l.append($rule.r);})* ')' 'default' NUMBER {$p = new Pol(l.toList(), Double.valueOf($NUMBER.text));}
+	| 'min' '(' (rule {l.append($rule.r);})* ')' 'default' NUMBER {$p = new Pol(l.toList(), Double.valueOf($NUMBER.text));} //need to map string to double
 	;
 
 rule 	returns [Rule r]
