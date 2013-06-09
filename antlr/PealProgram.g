@@ -28,7 +28,7 @@ package peal.antlr;
 //b2 = + ((q4 0.1) (q5 0.2) (q6 0.2)) default 0
 
 //use a map to store these values
-program	: 'cond' '=' id1=IDENT '<=' NUMBER 
+program	: 'cond' '=' id1=IDENT '<=' NUMBER //invoke MaxLessThanTh
   (id2=IDENT '=' 'max' '(' id3=IDENT ',' id4=IDENT ')' | id2=IDENT '=' 'min' '(' id3=IDENT ',' id4=IDENT ')')
   (id5=IDENT '=' pol {pols.put($id5.text, $pol.p);})*
 	;
