@@ -2,6 +2,8 @@ package peal
 
 import peal.synthesis.NonDefaultSet
 import peal.domain.Pol
+import scala.collection.JavaConversions._
+
 
 class NonDefaultPolLessThanThOpMin(pol: Pol, th: Double) extends NonDefaultSet {
   def synthesis: String = pol.rules.filter(th > _.score).size match {

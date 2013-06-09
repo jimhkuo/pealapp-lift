@@ -3,6 +3,7 @@ package peal
 import org.junit.Test
 import org.scalatest.junit.ShouldMatchersForJUnit
 import peal.domain.{Rule, Predicate, Pol}
+import scala.collection.JavaConversions._
 
 class MinLessThanThTest extends ShouldMatchersForJUnit {
 

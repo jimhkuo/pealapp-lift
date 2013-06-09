@@ -3,6 +3,8 @@ package peal
 import peal.synthesis.NonDefaultSet
 import peal.domain.{Rule, Pol}
 import scala._
+import scala.collection.JavaConversions._
+
 
 class NonDefaultThLessThanPolOpMonotone(pol: Pol, th: Double) extends NonDefaultSet {
   def synthesis: String = {

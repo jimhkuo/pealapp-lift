@@ -1,5 +1,7 @@
 package peal.domain
 
 
+import scala.collection.JavaConversions._
 
-class Pol(val rules: List[Rule], val defaultScore: Double)
+
+class Pol(val rules: java.util.List[Rule], val defaultScore: Double)

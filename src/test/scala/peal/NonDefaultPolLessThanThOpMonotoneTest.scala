@@ -3,6 +3,7 @@ package peal
 import org.scalatest.junit.ShouldMatchersForJUnit
 import org.junit.Test
 import peal.domain.{Rule, Predicate, Pol}
+import scala.collection.JavaConversions._
 
 
 class NonDefaultPolLessThanThOpMonotoneTest extends ShouldMatchersForJUnit {

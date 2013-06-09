@@ -3,6 +3,8 @@ package peal
 import org.junit.Test
 import org.scalatest.junit.ShouldMatchersForJUnit
 import peal.domain.{Rule, Predicate, Pol}
+import scala.collection.mutable.ListBuffer
+import scala.collection.JavaConversions._
 
 class PolLessThanThTest extends ShouldMatchersForJUnit {
 
@@ -20,6 +22,12 @@ class PolLessThanThTest extends ShouldMatchersForJUnit {
     val phi = new PolLessThanTh(p, 0.6)
 
     phi.synthesis should be("(or (not q1) q1)")
+  }
+
+  @Test
+  def testJava() {
+      val l = ListBuffer[Rule]()
+//    l.
   }
 
 
