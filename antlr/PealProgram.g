@@ -28,12 +28,13 @@ package peal.antlr;
 //b2 = + ((q4 0.1) (q5 0.2) (q6 0.2)) default 0
 
 //use a map to store these values
-program	: 'cond' '=' id1=IDENT '<=' NUMBER {l =  new ArrayList<Rule>();}
+program	: 'cond' '=' id1=IDENT '<=' NUMBER 
   (id2=IDENT '=' 'max' '(' id3=IDENT ',' id4=IDENT ')' | id2=IDENT '=' 'min' '(' id3=IDENT ',' id4=IDENT ')')
   (id5=IDENT '=' pol {pols.put($id5.text, $pol.p);})*
 	;
 
 pol	returns [Pol p] 
+@init {l = new ArrayList<Rule>(); }
 	:  '+' '(' (rule {l.add($rule.r);})* ')' 'default' NUMBER {$p = new Pol(l, Double.valueOf($NUMBER.text));}
 	| 'max' '(' (rule {l.add($rule.r);})* ')' 'default' NUMBER {$p = new Pol(l, Double.valueOf($NUMBER.text));}
 	| 'min' '(' (rule {l.add($rule.r);})* ')' 'default' NUMBER {$p = new Pol(l, Double.valueOf($NUMBER.text));} //need to map string to double
