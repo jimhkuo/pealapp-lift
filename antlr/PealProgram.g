@@ -32,13 +32,13 @@ program : 'cond' '=' id1=IDENT '<=' NUMBER {l = new ArrayList<Rule>();}
 	;
 
 pol	returns [Pol p] 
-	:  '+' '(' (rule {l.add($rule.r);})* ')' 'default' NUMBER {$p = new Pol(new ArrayList(l), $NUMBER.text);}
-	| 'max' '(' (rule {l.add($rule.r);})* ')' 'default' NUMBER {$p = new Pol(new ArrayList(l), $NUMBER.text);}
-	| 'min' '(' (rule {l.add($rule.r);})* ')' 'default' NUMBER {$p = new Pol(new ArrayList(l), $NUMBER.text);} //need to map string to double
+	:  '+' '(' (rule {l.add($rule.r);})* ')' 'default' NUMBER {$p = new Pol(new ArrayList(l), Double.valueOf($NUMBER.text);}
+	| 'max' '(' (rule {l.add($rule.r);})* ')' 'default' NUMBER {$p = new Pol(new ArrayList(l), Double.valueOf($NUMBER.text));}
+	| 'min' '(' (rule {l.add($rule.r);})* ')' 'default' NUMBER {$p = new Pol(new ArrayList(l), Double.valueOf($NUMBER.text));} //need to map string to double
 	;
 
 rule 	returns [Rule r]
-	: '(' IDENT NUMBER ')' {$r = new Rule(new Predicate($IDENT.text, ""),$NUMBER.text);}
+	: '(' IDENT NUMBER ')' {$r = new Rule(new Predicate($IDENT.text, ""),Double.valueOf($NUMBER.text));}
 	;
 
 //cond returns [Boolean e]

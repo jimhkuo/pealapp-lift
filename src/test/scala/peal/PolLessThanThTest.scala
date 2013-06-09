@@ -21,4 +21,6 @@ class PolLessThanThTest extends ShouldMatchersForJUnit {
 
     phi.synthesis should be("(or (not q1) q1)")
   }
+
+
 }
