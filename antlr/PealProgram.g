@@ -8,13 +8,16 @@ language = Java;
 package peal.antlr;
 import java.util.*;
 import peal.domain.*;
+import peal.*;
 import org.antlr.runtime.BitSet;
+import peal.synthesis.TopSet;
 
 }
 
 @members {
 Map<String, Pol> pols = new HashMap<String, Pol>();
 List<Rule> l = new ArrayList<Rule>();
+TopSet top = null;
 }
 
 @lexer::header {
@@ -29,7 +32,10 @@ package peal.antlr;
 
 //use a map to store these values
 program	: 'cond' '=' id1=IDENT '<=' NUMBER //invoke MaxLessThanTh
-  (id2=IDENT '=' 'max' '(' id3=IDENT ',' id4=IDENT ')' | id2=IDENT '=' 'min' '(' id3=IDENT ',' id4=IDENT ')')
+  (id2=IDENT '=' 'max' '(' id3=IDENT ',' id4=IDENT ')' 
+  	{top = new MaxLessThanTh(pols.get($id3.text),pols.get($id4.text), Double.valueOf($NUMBER.text));} 
+  | id2=IDENT '=' 'min' '(' id3=IDENT ',' id4=IDENT ')')
+  	{top = new MinLessThanTh(pols.get($id3.text),pols.get($id4.text), Double.valueOf($NUMBER.text));}
   (id5=IDENT '=' pol {pols.put($id5.text, $pol.p);})*
 	;
 
