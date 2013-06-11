@@ -32,6 +32,7 @@ package peal.antlr;
 
 //use a map to store these values
 program	: 'cond' '=' id1=IDENT '<=' NUMBER //invoke MaxLessThanTh
+  (id5=IDENT '=' pol {pols.put($id5.text, $pol.p);})*
   (
   id2=IDENT '=' 'max' '(' id3=IDENT ',' id4=IDENT ')' 
   	{pSet = new MaxLessThanTh(pols.get($id3.text),pols.get($id4.text), Double.valueOf($NUMBER.text));} 
@@ -39,7 +40,6 @@ program	: 'cond' '=' id1=IDENT '<=' NUMBER //invoke MaxLessThanTh
   id2=IDENT '=' 'min' '(' id3=IDENT ',' id4=IDENT ')'
   	{pSet = new MinLessThanTh(pols.get($id3.text),pols.get($id4.text), Double.valueOf($NUMBER.text));}
   )
-  (id5=IDENT '=' pol {pols.put($id5.text, $pol.p);})*
 	;
 
 pol	returns [Pol p] 
