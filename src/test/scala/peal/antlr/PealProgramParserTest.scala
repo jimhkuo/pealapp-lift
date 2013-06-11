@@ -30,6 +30,8 @@ class PealProgramParserTest extends ShouldMatchersForJUnit {
     pols("b2").rules.size should be(3)
     pols("b3").rules.size should be(2)
     pols("b4").rules.size should be(1)
+
+
   }
 
 }
