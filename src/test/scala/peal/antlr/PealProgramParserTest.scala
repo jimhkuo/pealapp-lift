@@ -16,7 +16,8 @@ class PealProgramParserTest extends ShouldMatchersForJUnit {
 
   @Test
   def testCanParseSampleInput() {
-    val input = "cond = pSet <= 0.5\npSet = max(b1, b2)\n" +
+    val input = "cond = pSet <= 0.5\n" +
+      "pSet = max(b1, b2)\n" +
       "b1 = min ((q1 0.2) (q2 0.4) (q3 0.9)) default 1\n" +
       "b2 = + ((q4 0.1) (q5 0.2) (q6 0.2)) default 0 " +
       "b3 = + ((q7 0.19) (q8 0.9)) default 0.1 " +
@@ -30,6 +31,8 @@ class PealProgramParserTest extends ShouldMatchersForJUnit {
     pols("b2").rules.size should be(3)
     pols("b3").rules.size should be(2)
     pols("b4").rules.size should be(1)
+
+    println(pealProgrmParser.pSet.synthesis)
 
 
   }
