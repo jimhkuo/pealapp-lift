@@ -3,7 +3,6 @@ package peal.antlr
 import org.junit.Test
 import org.antlr.runtime.{CommonTokenStream, ANTLRStringStream}
 import org.scalatest.junit.ShouldMatchersForJUnit
-import scala.collection.JavaConversions._
 
 class PealProgramParserTest extends ShouldMatchersForJUnit {
 
@@ -25,10 +24,10 @@ class PealProgramParserTest extends ShouldMatchersForJUnit {
 
     val pealProgrmParser = getParser(input)
     pealProgrmParser.program()
-    val pols = pealProgrmParser.pols
+    //    val pols = pealProgrmParser.pols
 
-    pols("b1").rules.size should be(3)
-    pols("b2").rules.size should be(3)
+    //    pols("b1").rules.size should be(3)
+    //    pols("b2").rules.size should be(3)
     //    pols("b3").rules.size should be(2)
     //    pols("b4").rules.size should be(1)
 
