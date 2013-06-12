@@ -18,8 +18,6 @@ class PealProgramParserTest extends ShouldMatchersForJUnit {
     val input = "cond = pSet <= 0.5" +
       "b1 = min ((q1 0.2) (q2 0.4) (q3 0.9)) default 1" +
       "b2 = + ((q4 0.1) (q5 0.2) (q6 0.2)) default 0 " +
-      //      "b3 = + ((q7 0.19) (q8 0.9)) default 0.1 " +
-      //      "b4 = + ((q9 0.15)) default 0.8 " +
       "pSet = max(b1, b2)"
 
     val pealProgrmParser = getParser(input)

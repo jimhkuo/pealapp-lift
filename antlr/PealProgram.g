@@ -17,7 +17,7 @@ import peal.synthesis.TopSet;
 @members {
 Map<String, Pol> pols = new HashMap<String, Pol>();
 List<Rule> l = new ArrayList<Rule>();
-TopSet pSet = null;
+public TopSet pSet = null;
 }
 
 @lexer::header {

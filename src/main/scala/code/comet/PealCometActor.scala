@@ -7,10 +7,15 @@ import net.liftweb.http.js.jquery.JqJE._
 import net.liftweb.http.js.JsCmds._
 import scala.xml.Text
 import net.liftweb.http.js.{JsMember, JsExp}
+import org.antlr.runtime.{CommonTokenStream, ANTLRStringStream}
+import peal.antlr.{PealProgramParser, PealProgramLexer}
 
 
 class PealCometActor extends CometActor {
-  var inputPolicies = ""
+  var inputPolicies = "cond = pSet <= 0.5\n" +
+    "b1 = min ((q1 0.2) (q2 0.4) (q3 0.9)) default 1\n" +
+    "b2 = + ((q4 0.1) (q5 0.2) (q6 0.2)) default 0\n" +
+    "pSet = max(b1, b2)"
 
   def render = {
     this ! Init
@@ -19,7 +24,7 @@ class PealCometActor extends CometActor {
       <div>
         <h3>Input policies:</h3>
         <div>
-          {SHtml.ajaxTextarea("", s => {
+          {SHtml.ajaxTextarea(inputPolicies, s => {
           inputPolicies = s; _Noop
         }, "id" -> "policies", "cols" -> "30", "rows" -> "20")}
         </div>
@@ -41,8 +46,28 @@ class PealCometActor extends CometActor {
 
   override def lowPriority = {
     case Init =>
-    case Compute => partialUpdate(JqId("result") ~> JqHtml(Text("got: " + inputPolicies)))
+    case Compute => onCompute(inputPolicies)
+    case Result(output) => partialUpdate(JqId("result") ~> JqHtml(Text(output)))
+    case Error(message) => partialUpdate(JqId("result") ~> JqHtml(Text(message)))
     case Clear => partialUpdate(JqId("policies") ~> JqVal(""))
+  }
+
+  private def onCompute(input: String) {
+    try {
+      val pealProgrmParser = getParser(input)
+      pealProgrmParser.program()
+      val result = pealProgrmParser.pSet.synthesis
+      this ! Result(result)
+    } catch {
+      case e: Exception => this ! Error(e.getMessage)
+    }
+  }
+
+  private def getParser(input: String) = {
+    val charStream = new ANTLRStringStream(input)
+    val lexer = new PealProgramLexer(charStream)
+    val tokenStream = new CommonTokenStream(lexer)
+    new PealProgramParser(tokenStream)
   }
 }
 
@@ -51,6 +76,10 @@ case object Init
 case object Clear
 
 case object Compute
+
+case class Result(output: String)
+
+case class Error(output: String)
 
 object JqVal {
 
