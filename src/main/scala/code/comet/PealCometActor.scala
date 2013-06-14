@@ -20,20 +20,28 @@ class PealCometActor extends CometActor {
   def render = {
     this ! Init
 
+    def f(a: Int)(b: Int) = a + b
+    val x = f(10)(_)
+
     <form class="lift:form.ajax">
       <div>
         <h3>Input policies:</h3>
         <div>
-          {SHtml.ajaxTextarea(inputPolicies, s => {
-          inputPolicies = s; _Noop
+          {//            SHtml.textarea("foo", inputPolicies = _)
+          //            SHtml.textarea("foo", s => inputPolicies = s)
+          //            SHtml.textarea("foo", "prefix " + _)}{SHtml.ajaxTextarea(inputPolicies, s => {
+          inputPolicies = s;
+          _Noop
         }, "id" -> "policies", "cols" -> "30", "rows" -> "20")}
         </div>
         <div>
           {SHtml.ajaxButton("Ajax Submit", () => {
-          this ! Compute; _Noop
+          this ! Compute;
+          _Noop
         }) ++
           SHtml.ajaxButton("Clear", () => {
-            this ! Clear; _Noop
+            this ! Clear;
+            _Noop
           })}
         </div>
         <div>
