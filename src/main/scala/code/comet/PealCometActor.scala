@@ -27,9 +27,9 @@ class PealCometActor extends CometActor {
       <div>
         <h3>Input policies:</h3>
         <div>
-          {//            SHtml.textarea("foo", inputPolicies = _)
-          //            SHtml.textarea("foo", s => inputPolicies = s)
-          //            SHtml.textarea("foo", "prefix " + _)}{SHtml.ajaxTextarea(inputPolicies, s => {
+          {SHtml.textarea("foo", inputPolicies = _)
+        SHtml.textarea("foo", s => inputPolicies = s)
+        SHtml.textarea("foo", "prefix " + _)}{SHtml.ajaxTextarea(inputPolicies, s => {
           inputPolicies = s;
           _Noop
         }, "id" -> "policies", "cols" -> "30", "rows" -> "20")}
