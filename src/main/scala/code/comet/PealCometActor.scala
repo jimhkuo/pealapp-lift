@@ -62,7 +62,9 @@ class PealCometActor extends CometActor {
     case Result(output) => partialUpdate(JqId("result") ~> JqHtml(Text(output)))
     case Error(message) => partialUpdate(JqId("result") ~> JqHtml(Text(message)))
     case Clear => partialUpdate(JqId("policies") ~> JqVal(""))
-    case Reset => partialUpdate(JqId("policies") ~> JqVal(defaultInput))
+    case Reset =>
+      inputPolicies = defaultInput
+      partialUpdate(JqId("policies") ~> JqVal(defaultInput))
   }
 
   private def onCompute(input: String) {
@@ -73,7 +75,7 @@ class PealCometActor extends CometActor {
       val result = pealProgrmParser.pSet.synthesis
       this ! Result(result)
     } catch {
-      case e: Exception => this ! Error(e.getMessage)
+      case e: Exception => this ! Error("bad")
     }
   }
 
