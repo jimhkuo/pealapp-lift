@@ -4,7 +4,7 @@ class ScalaTest {
 
   @Test
   def test() {
-    val a = "a" _
+    //    val a = "a" _
 
   }
 

@@ -9,9 +9,10 @@ import scala.xml.Text
 import net.liftweb.http.js.{JsMember, JsExp}
 import org.antlr.runtime.{CommonTokenStream, ANTLRStringStream}
 import peal.antlr.{PealProgramParser, PealProgramLexer}
+import net.liftweb.common.Loggable
 
 
-class PealCometActor extends CometActor {
+class PealCometActor extends CometActor with Loggable {
   val defaultInput = "cond = pSet <= 0.5\n" +
     "b1 = min ((q1 0.2) (q2 0.4) (q3 0.9)) default 1\n" +
     "b2 = + ((q4 0.1) (q5 0.2) (q6 0.2)) default 0\n" +
@@ -69,14 +70,29 @@ class PealCometActor extends CometActor {
 
   private def onCompute(input: String) {
 
+    val pealProgrmParser = getParser(input)
     try {
-      val pealProgrmParser = getParser(input)
       pealProgrmParser.program()
-      val result = pealProgrmParser.pSet.synthesis
+      val pSet = pealProgrmParser.pSet
+      val result = pSet.synthesis
       this ! Result(result)
     } catch {
-      case e: Exception => this ! Error("bad")
+      //      case e: RecognitionException => {
+      //        dealWithIt(e)
+      //        this ! Error(pealProgrmParser.getErrorMessage(e, PealProgramParser.tokenNames))
+      //        println("pl: " + pealProgrmParser.getErrorMessage(e, PealProgramParser.tokenNames))
+      //        e.printStackTrace()
+      //        logger.error("exception caught", e)
+      //        this ! Error(e.getMessage)
+      //      }
+      case e1: Exception =>
+        dealWithIt(e1)
     }
+  }
+
+  private def dealWithIt(e: Exception) {
+    println("pl: " + e.getMessage)
+    this ! Error(e.getMessage)
   }
 
   private def getParser(input: String) = {

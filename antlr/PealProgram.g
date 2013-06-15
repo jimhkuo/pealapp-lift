@@ -18,6 +18,12 @@ import peal.synthesis.TopSet;
 Map<String, Pol> pols = new HashMap<String, Pol>();
 List<Rule> l = new ArrayList<Rule>();
 public TopSet pSet = null;
+  @Override
+  public void reportError(RecognitionException e) {
+    String msg = getErrorMessage(e, PealProgramParser.tokenNames);
+    throw new RuntimeException(msg); 
+  }
+
 }
 
 @lexer::header {

@@ -13,6 +13,18 @@ class PealProgramParserTest extends ShouldMatchersForJUnit {
     new PealProgramParser(tokenStream)
   }
 
+
+  @Test(expected = classOf[RuntimeException])
+  def testInValidInput() {
+    val input = "co" +
+      "b2 = + ((q4 0.1) (q5 0.2) (q6 0.2)) default 0 " +
+      "pSet = max(b1, b2)"
+
+    val pealProgrmParser = getParser(input)
+    pealProgrmParser.program()
+
+  }
+
   @Test
   def testCanParseSampleInput() {
     val input = "cond = pSet <= 0.5" +
