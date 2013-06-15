@@ -12,10 +12,11 @@ import peal.antlr.{PealProgramParser, PealProgramLexer}
 
 
 class PealCometActor extends CometActor {
-  var inputPolicies = "cond = pSet <= 0.5\n" +
+  val defaultInput = "cond = pSet <= 0.5\n" +
     "b1 = min ((q1 0.2) (q2 0.4) (q3 0.9)) default 1\n" +
     "b2 = + ((q4 0.1) (q5 0.2) (q6 0.2)) default 0\n" +
     "pSet = max(b1, b2)"
+  var inputPolicies = defaultInput
 
   def render = {
     this ! Init
@@ -29,20 +30,24 @@ class PealCometActor extends CometActor {
         <h3>Input policies:</h3>
         <div>
           {SHtml.ajaxTextarea(inputPolicies, s => {
-          inputPolicies = s;
+          inputPolicies = s
           _Noop
         }, "id" -> "policies", "cols" -> "30", "rows" -> "20")}
         </div>
         <div>
-          {SHtml.ajaxButton("Ajax Submit", () => {
-          this ! Compute;
+          {SHtml.ajaxButton("Submit", () => {
+          this ! Compute
           _Noop
         }) ++
+          SHtml.ajaxButton("Reset", () => {
+            this ! Reset
+            _Noop
+          }) ++
           SHtml.ajaxButton("Clear", () => {
-            this ! Clear;
+            this ! Clear
             _Noop
           })}
-        </div>
+        </div> <br/>
         <div>
           <h3>Result:</h3>
           <div id="result"></div>
@@ -57,9 +62,11 @@ class PealCometActor extends CometActor {
     case Result(output) => partialUpdate(JqId("result") ~> JqHtml(Text(output)))
     case Error(message) => partialUpdate(JqId("result") ~> JqHtml(Text(message)))
     case Clear => partialUpdate(JqId("policies") ~> JqVal(""))
+    case Reset => partialUpdate(JqId("policies") ~> JqVal("" + defaultInput))
   }
 
   private def onCompute(input: String) {
+
     try {
       val pealProgrmParser = getParser(input)
       pealProgrmParser.program()
@@ -81,6 +88,8 @@ class PealCometActor extends CometActor {
 case object Init
 
 case object Clear
+
+case object Reset
 
 case object Compute
 

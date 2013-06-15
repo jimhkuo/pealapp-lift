@@ -11,6 +11,7 @@ class Boot {
 
     val entries = List(
       Menu.i("Home") / "index",
+      //      Menu.i("Home") / "peal",
       Menu.i("Peal") / "peal",
       Menu.i("About us") / "aboutus",
       Menu(Loc("Static", Link(List("static"), true, "/static/index"), "Some static page"))
