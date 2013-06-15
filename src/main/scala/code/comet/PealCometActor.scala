@@ -62,7 +62,7 @@ class PealCometActor extends CometActor {
     case Result(output) => partialUpdate(JqId("result") ~> JqHtml(Text(output)))
     case Error(message) => partialUpdate(JqId("result") ~> JqHtml(Text(message)))
     case Clear => partialUpdate(JqId("policies") ~> JqVal(""))
-    case Reset => partialUpdate(JqId("policies") ~> JqVal("" + defaultInput))
+    case Reset => partialUpdate(JqId("policies") ~> JqVal(defaultInput))
   }
 
   private def onCompute(input: String) {
