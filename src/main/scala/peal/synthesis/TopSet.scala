@@ -4,4 +4,5 @@ trait TopSet {
 
   def synthesis: String
 
+  def not = "(not " + synthesis + ")"
 }

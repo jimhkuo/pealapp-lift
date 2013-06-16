@@ -24,7 +24,6 @@ class PealProgramParserTest extends ShouldMatchersForJUnit {
 
     val pealProgrmParser = getParser(input)
     pealProgrmParser.program()
-
   }
 
   @Test

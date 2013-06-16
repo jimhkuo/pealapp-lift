@@ -68,8 +68,14 @@ class PealCometActor extends CometActor with Loggable {
       partialUpdate(JqId("policies") ~> JqVal(defaultInput))
   }
 
-  private def onCompute(input: String) {
+  private def getParser(input: String) = {
+    val charStream = new ANTLRStringStream(input)
+    val lexer = new PealProgramLexer(charStream)
+    val tokenStream = new CommonTokenStream(lexer)
+    new PealProgramParser(tokenStream)
+  }
 
+  private def onCompute(input: String) {
     val pealProgrmParser = getParser(input)
     try {
       pealProgrmParser.program()
@@ -93,13 +99,6 @@ class PealCometActor extends CometActor with Loggable {
   private def dealWithIt(e: Exception) {
     println("pl: " + e.getMessage)
     this ! Error(e.getMessage)
-  }
-
-  private def getParser(input: String) = {
-    val charStream = new ANTLRStringStream(input)
-    val lexer = new PealProgramLexer(charStream)
-    val tokenStream = new CommonTokenStream(lexer)
-    new PealProgramParser(tokenStream)
   }
 }
 

@@ -60,23 +60,6 @@ rule 	returns [Rule r]
 	: '(' IDENT NUMBER ')' {$r = new Rule(new Predicate($IDENT.text, ""),Double.valueOf($NUMBER.text));}
 	;
 
-//cond returns [Boolean e]
-//	: NUMBER '<' pSet
-//	| pSet '<=' NUMBER
-//	;
-
-//pol returns [Double i]
-//	: '+' '(' (rule)* ')' 'default' NUMBER
-//	| 'max' '(' (rule)* ')' 'default' NUMBER
-//	| 'min' '(' (rule)* ')' 'default' NUMBER
-//	;
-
-//pSet    : pol 
-//	| 'max' '(' pol ',' pol ')'
-//	| 'min' '(' pol ',' pol ')'
-//	;
-
-
 NUMBER : ('.'|'0'..'9'|'-'|'E')+;
 COMPARE : ('>' | '>=' | '<' | '<=');
 NEWLINE:'\r'? '\n' { $channel = HIDDEN;};
