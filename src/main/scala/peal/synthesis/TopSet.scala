@@ -4,5 +4,6 @@ trait TopSet {
 
   def synthesis: String
 
-  def not = "(not " + synthesis + ")"
+  def notPhi = "(assert (not " + synthesis + "))\n" +
+    "(check-sat)"
 }

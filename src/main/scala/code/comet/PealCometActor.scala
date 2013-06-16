@@ -61,7 +61,7 @@ class PealCometActor extends CometActor with Loggable {
     case Init =>
     case Compute => onCompute(inputPolicies)
     case Result(output) => partialUpdate(JqId("result") ~> JqHtml(Text(output)))
-    case Error(message) => partialUpdate(JqId("result") ~> JqHtml(Text(message)))
+    case Error(message) => partialUpdate(JqId("result") ~> JqText(message))
     case Clear => partialUpdate(JqId("policies") ~> JqVal(""))
     case Reset =>
       inputPolicies = defaultInput
@@ -80,7 +80,7 @@ class PealCometActor extends CometActor with Loggable {
     try {
       pealProgrmParser.program()
       val pSet = pealProgrmParser.pSet
-      val result = pSet.not
+      val result = pSet.notPhi
       this ! Result(result)
     } catch {
       //      case e: RecognitionException => {

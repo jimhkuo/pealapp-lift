@@ -1,20 +1,19 @@
 package bootstrap.liftweb
 
 import net.liftweb.http.LiftRules
-import net.liftweb.sitemap.{Loc, SiteMap, Menu}
+import net.liftweb.sitemap.{SiteMap, Menu}
 import net.liftweb.common.Full
-import net.liftweb.sitemap.Loc.Link
 
 class Boot {
   def boot {
     LiftRules.addToPackages("code")
 
     val entries = List(
-      Menu.i("Home") / "index",
+      Menu.i("Peal") / "index"
       //      Menu.i("Home") / "peal",
-      Menu.i("Peal") / "peal",
-      Menu.i("About us") / "aboutus",
-      Menu(Loc("Static", Link(List("static"), true, "/static/index"), "Some static page"))
+      //      Menu.i("Peal") / "peal",
+      , Menu.i("About us") / "aboutus"
+      //    ,  Menu(Loc("Static", Link(List("static"), true, "/static/index"), "Some static page"))
     )
     LiftRules.setSiteMap(SiteMap(entries: _*))
 
