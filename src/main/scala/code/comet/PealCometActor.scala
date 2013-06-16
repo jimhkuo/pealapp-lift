@@ -5,7 +5,7 @@ import http._
 import util._
 import net.liftweb.http.js.jquery.JqJE._
 import net.liftweb.http.js.JsCmds._
-import scala.xml.Text
+import scala.xml.{NodeSeq, Text}
 import net.liftweb.http.js.{JsMember, JsExp}
 import org.antlr.runtime.{CommonTokenStream, ANTLRStringStream}
 import peal.antlr.{PealProgramParser, PealProgramLexer}
@@ -60,8 +60,8 @@ class PealCometActor extends CometActor with Loggable {
   override def lowPriority = {
     case Init =>
     case Compute => onCompute(inputPolicies)
-    case Result(output) => partialUpdate(JqId("result") ~> JqHtml(Text(output)))
-    case Error(message) => partialUpdate(JqId("result") ~> JqText(message))
+    case Result(output) => partialUpdate(JqId("result") ~> JqHtml(output))
+    case Error(message) => partialUpdate(JqId("result") ~> JqHtml(Text(message)))
     case Clear => partialUpdate(JqId("policies") ~> JqVal(""))
     case Reset =>
       inputPolicies = defaultInput
@@ -80,7 +80,9 @@ class PealCometActor extends CometActor with Loggable {
     try {
       pealProgrmParser.program()
       val pSet = pealProgrmParser.pSet
-      val result = pSet.header + "\n" + pSet.notPhi + "\n(get-model)\n"
+      val result = <pre>
+        {pSet.header}{pSet.notPhi}
+        (get-model)</pre>
       this ! Result(result)
     } catch {
       //      case e: RecognitionException => {
@@ -110,7 +112,7 @@ case object Reset
 
 case object Compute
 
-case class Result(output: String)
+case class Result(output: NodeSeq)
 
 case class Error(output: String)
 
