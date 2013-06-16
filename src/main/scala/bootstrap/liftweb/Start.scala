@@ -8,7 +8,12 @@ import java.net.URL
 object Start extends App {
 
   val connector = new SelectChannelConnector()
-  connector.setPort(8080)
+  if (args.length > 0) {
+    connector.setPort(args(0).toInt)
+  }
+  else {
+    connector.setPort(8080)
+  }
   val server = new Server()
   server.addConnector(connector)
 
