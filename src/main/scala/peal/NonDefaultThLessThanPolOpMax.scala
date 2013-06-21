@@ -12,8 +12,7 @@ class NonDefaultThLessThanPolOpMax(pol: Pol, th: Double) extends NonDefaultSet {
     rules.size match {
       case 0 => "false"
       case 1 => rules.map(_.q.name).mkString("")
+      case _ => rules.map(_.q.name).mkString("(or ", " ", ")")
     }
   }
-
-
 }
