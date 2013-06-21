@@ -37,7 +37,7 @@ class NonDefaultThLessThanPolOpMonotoneTest extends ShouldMatchersForJUnit {
     val p = new Pol(List(new Rule(new Predicate("q1"), 0.6)), 1)
     val pSet = new NonDefaultThLessThanPolOpMonotone(p, 0.5)
     //M1 is the whole set
-    pSet.not should be("(not (q1))")
+    pSet.notPhi should be("(not (q1))")
   }
 
   @Test
@@ -63,7 +63,7 @@ class NonDefaultThLessThanPolOpMonotoneTest extends ShouldMatchersForJUnit {
     val p = new Pol(List(rule5, rule3, rule4, rule2, rule1), 1)
     val pSet = new NonDefaultThLessThanPolOpMonotone(p, 0.5)
 
-    pSet.not should be("(not (or (and q4 q2 q3) (and q4 q3 q1) (and q5 q2) (and q5 q3) (and q5 q4) (and q5 q1) (and q4 q2 q1)))")
+    pSet.notPhi should be("(not (or (and q4 q2 q3) (and q4 q3 q1) (and q5 q2) (and q5 q3) (and q5 q4) (and q5 q1) (and q4 q2 q1)))")
     //    pSet.not should be("(and (or (not q4) (not q2) (not q1)) (or (not q5) (not q2)) (or (not q5) (not q1)) (or (not q5) (not q4)) (or (not q4) (not q2) (not q3)) (or (not q4) (not q3) (not q1)) (or (not q5) (not q3)))")
   }
 
