@@ -28,5 +28,4 @@ class NonDefaultThLessThanPolOpMaxTest extends ShouldMatchersForJUnit {
     val pSet = new NonDefaultThLessThanPolOpMax(p, 0.5)
     pSet.synthesis should be("(or q1 q2)")
   }
-
 }
