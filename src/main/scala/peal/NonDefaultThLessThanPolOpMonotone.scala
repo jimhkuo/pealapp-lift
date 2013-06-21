@@ -12,13 +12,13 @@ class NonDefaultThLessThanPolOpMonotone(pol: Pol, th: Double) extends NonDefault
 
     if (m1.nonEmpty) {
       val m1Sets = m1.size match {
-        case s if s > 1 => m1.map(_.map(_.q.name).mkString("(and ", " ", ")"))
-        case _ => m1.map(_.map(_.q.name).mkString(" "))
+        case 1 => m1.map(_.map(_.q.name).mkString(" "))
+        case _ => m1.map(_.map(_.q.name).mkString("(and ", " ", ")"))
       }
 
       m1Sets.size match {
-        case s if s > 1 => "(" + m1Sets.mkString("or ", " ", "") + ")"
-        case _ => "(" + m1Sets.mkString(" ") + ")"
+        case 1 => "(" + m1Sets.mkString(" ") + ")"
+        case _ => "(" + m1Sets.mkString("or ", " ", "") + ")"
       }
     }
     else {
