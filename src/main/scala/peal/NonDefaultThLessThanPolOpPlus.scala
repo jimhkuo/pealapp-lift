@@ -6,7 +6,7 @@ import scala._
 import scala.collection.JavaConversions._
 
 
-class NonDefaultThLessThanPolOpMonotone(pol: Pol, th: Double) extends NonDefaultSet {
+class NonDefaultThLessThanPolOpPlus(pol: Pol, th: Double) extends NonDefaultSet {
   def synthesis: String = {
     val m1 = enumOne()
 
