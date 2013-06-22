@@ -6,6 +6,7 @@ import scala.collection.JavaConversions._
 
 
 class NonDefaultPolLessThanThOpAntitone(pol: Pol, th: Double) extends NonDefaultSet {
+  //TODO not done
   def synthesis: String = {
     val rules = pol.rules.filter(th > _.score)
     rules.size match {

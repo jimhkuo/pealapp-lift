@@ -7,6 +7,7 @@ import scala.collection.JavaConversions._
 
 class NonDefaultPolLessThanThOpAntitoneTest extends ShouldMatchersForJUnit {
 
+  //TODO M2 computation only works for * operator
   @Ignore("wip")
   @Test
   def testExample3InSynthesisPdf() {
