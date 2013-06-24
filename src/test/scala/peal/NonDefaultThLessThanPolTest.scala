@@ -146,4 +146,10 @@ class NonDefaultThLessThanPolTest extends ShouldMatchersForJUnit {
     pSet.synthesis should be("(not q1)")
   }
 
+  @Test
+  def testMultipleScoresMin() {
+    val p = new Pol(List(new Rule(new Predicate("q1"), 0.5), new Rule(new Predicate("q2"), 0.2), new Rule(new Predicate("q3"), 0.4)), Min, 1)
+    val pSet = new NonDefaultThLessThanPol(p, 0.6)
+    pSet.synthesis should be("(not (or q1 q2 q3))")
+  }
 }
