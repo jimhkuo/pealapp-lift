@@ -80,9 +80,8 @@ class PealCometActor extends CometActor with Loggable {
     try {
       pealProgrmParser.program()
       val pSet = pealProgrmParser.pSet
-      val result = <pre>
-        {pSet.header}{pSet.notPhi}
-        (get-model)</pre>
+      val result = <pre>{pSet.header}{pSet.notPhi}
+(get-model)</pre>
       this ! Result(result)
     } catch {
       //      case e: RecognitionException => {
