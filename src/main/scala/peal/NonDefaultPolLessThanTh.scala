@@ -16,6 +16,6 @@ class NonDefaultPolLessThanTh(pol: Pol, th: Double) extends NonDefaultSet {
         case _ => rules.map(_.q.name).mkString("(or ", " ", ")")
       }
     case Plus | Max => new NonDefaultThLessThanPol(pol, th).notPhi
-    case _ => throw new RuntimeException("trying to generate unsupported operator in NonDefaultPolLessThanTh")
+    case s => throw new RuntimeException("trying to synthesise with unsupported operator " + s + " in NonDefaultPolLessThanTh")
   }
 }
