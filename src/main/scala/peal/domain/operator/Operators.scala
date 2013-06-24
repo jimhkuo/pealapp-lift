@@ -1,7 +1,9 @@
 package peal.domain.operator
 
-object Plus
+trait Operators
 
-object Min
+object Plus extends Operators
 
-object Max
+object Min extends Operators
+
+object Max extends Operators

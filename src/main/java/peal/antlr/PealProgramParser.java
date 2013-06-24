@@ -1,4 +1,4 @@
-// $ANTLR 3.4 /Users/jkuo/PealApp-lift/antlr/PealProgram.g 2013-06-24 10:36:31
+// $ANTLR 3.4 /Users/jkuo/PealApp-lift/antlr/PealProgram.g 2013-06-24 10:46:52
 
 package peal.antlr;
 
@@ -9,6 +9,9 @@ import peal.PolLessThanTh;
 import peal.domain.Pol;
 import peal.domain.Predicate;
 import peal.domain.Rule;
+import peal.domain.operator.Max$;
+import peal.domain.operator.Min$;
+import peal.domain.operator.Plus$;
 import peal.synthesis.TopSet;
 
 import java.util.ArrayList;
@@ -389,7 +392,7 @@ public class PealProgramParser extends Parser {
 
                     NUMBER4 = (Token) match(input, NUMBER, FOLLOW_NUMBER_in_pol208);
 
-                    p = new Pol(l, Double.valueOf((NUMBER4 != null ? NUMBER4.getText() : null)));
+                    p = new Pol(l, Plus$.MODULE$, Double.valueOf((NUMBER4 != null ? NUMBER4.getText() : null)));
 
                 }
                 break;
@@ -438,7 +441,7 @@ public class PealProgramParser extends Parser {
 
                     NUMBER6 = (Token) match(input, NUMBER, FOLLOW_NUMBER_in_pol230);
 
-                    p = new Pol(l, Double.valueOf((NUMBER6 != null ? NUMBER6.getText() : null)));
+                    p = new Pol(l, Max$.MODULE$, Double.valueOf((NUMBER6 != null ? NUMBER6.getText() : null)));
 
                 }
                 break;
@@ -487,7 +490,7 @@ public class PealProgramParser extends Parser {
 
                     NUMBER8 = (Token) match(input, NUMBER, FOLLOW_NUMBER_in_pol252);
 
-                    p = new Pol(l, Double.valueOf((NUMBER8 != null ? NUMBER8.getText() : null)));
+                    p = new Pol(l, Min$.MODULE$, Double.valueOf((NUMBER8 != null ? NUMBER8.getText() : null)));
 
                 }
                 break;

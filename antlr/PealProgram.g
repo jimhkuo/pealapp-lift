@@ -55,9 +55,9 @@ program	: 'cond' '=' id1=IDENT '<=' NUMBER
 
 pol	returns [Pol p] 
 @init {l = new ArrayList<Rule>(); }
-	:  '+' '(' (rule {l.add($rule.r);})* ')' 'default' NUMBER {$p = new Pol(l, Double.valueOf($NUMBER.text));}
-	| 'max' '(' (rule {l.add($rule.r);})* ')' 'default' NUMBER {$p = new Pol(l, Double.valueOf($NUMBER.text));}
-	| 'min' '(' (rule {l.add($rule.r);})* ')' 'default' NUMBER {$p = new Pol(l, Double.valueOf($NUMBER.text));} //need to map string to double
+	:  '+' '(' (rule {l.add($rule.r);})* ')' 'default' NUMBER {$p = new Pol(l, Plus$.MODULE$, Double.valueOf($NUMBER.text));}
+	| 'max' '(' (rule {l.add($rule.r);})* ')' 'default' NUMBER {$p = new Pol(l, Max$.MODULE$, Double.valueOf($NUMBER.text));}
+	| 'min' '(' (rule {l.add($rule.r);})* ')' 'default' NUMBER {$p = new Pol(l, Min$.MODULE$, Double.valueOf($NUMBER.text));} //need to map string to double
 	;
 
 rule 	returns [Rule r]
