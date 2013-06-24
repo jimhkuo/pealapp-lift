@@ -57,7 +57,15 @@ class PealProgramParserTest extends ShouldMatchersForJUnit {
 
     val pealProgrmParser = getParser(input)
     pealProgrmParser.program()
-    val output = pealProgrmParser.pSet.synthesis
-    output should be("(or (and (not q4) (not q5) (not q6)) (not (and q6 q5 q4)))")
+    pealProgrmParser.pSet.synthesis should be("(or (and (not q4) (not q5) (not q6)) (not (and q6 q5 q4)))")
+  }
+
+  @Test
+  def testCanDoExample3InEmail() {
+    val input = "cond = pSet <= 0.2\nb2 = + ((q4 0.2) (q5 0.2) (q6 0.3)) default 0\npSet = b2"
+
+    val pealProgrmParser = getParser(input)
+    pealProgrmParser.program()
+    pealProgrmParser.pSet.synthesis should be("(or (and (not q4) (not q5) (not q6)) (not (or q6 (and q5 q4))))")
   }
 }
