@@ -32,13 +32,6 @@ public void reportError(RecognitionException e) {
 package peal.antlr;
 }
 
-//want to deal with
-//cond = pSet <= 0.5
-//b1 = min ((q1 0.2) (q2 0.4) (q3 0.9)) default 1
-//b2 = + ((q4 0.1) (q5 0.2) (q6 0.2)) default 0
-//pSet = max(b1, b2)
-
-//Need to insert operator
 program	
 	: 'cond' '=' 'pSet' '<=' n=NUMBER 
 	(id1=IDENT '=' pol {pols.put($id1.text, $pol.p);})*
@@ -48,6 +41,16 @@ program
   	'pSet' '=' 'min' '(' id1=IDENT ',' id2=IDENT ')' {pSet = new MinLessThanTh(pols.get($id1.text), pols.get($id2.text), Double.valueOf($n.text));}
 	  |
   	'pSet' '=' id1=IDENT {pSet = new PolLessThanTh(pols.get($id1.text), Double.valueOf($n.text));}
+	)
+	|
+	'cond' '=' n=NUMBER '<' 'pSet'
+	(id1=IDENT '=' pol {pols.put($id1.text, $pol.p);})*
+  	(
+  	'pSet' '=' 'max' '(' id1=IDENT ',' id2=IDENT ')' {pSet = new ThLessThanMax(pols.get($id1.text), pols.get($id2.text), Double.valueOf($n.text));} 
+	  | 
+  	'pSet' '=' 'min' '(' id1=IDENT ',' id2=IDENT ')' {pSet = new ThLessThanMin(pols.get($id1.text), pols.get($id2.text), Double.valueOf($n.text));}
+	  |
+  	'pSet' '=' id1=IDENT {pSet = new ThLessThanPol(pols.get($id1.text), Double.valueOf($n.text));}
 	)
 	;
 
