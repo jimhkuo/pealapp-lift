@@ -4,7 +4,7 @@ trait TopSet {
 
   def synthesis: String
 
-  def header: String
+  def z3SMTHeader: String
 
-  def notPhi = "(assert (not " + synthesis + "))\n(check-sat)"
+  def notPhiZ3SMTString = "(assert (not " + synthesis + "))\n(check-sat)"
 }
