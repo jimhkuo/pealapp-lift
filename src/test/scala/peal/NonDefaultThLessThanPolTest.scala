@@ -4,7 +4,7 @@ import org.scalatest.junit.ShouldMatchersForJUnit
 import org.junit.Test
 import peal.domain.{Rule, Predicate, Pol}
 import scala.collection.JavaConversions._
-import peal.domain.operator.{Max, Plus}
+import peal.domain.operator.{Min, Max, Plus}
 
 
 class NonDefaultThLessThanPolTest extends ShouldMatchersForJUnit {
@@ -130,4 +130,20 @@ class NonDefaultThLessThanPolTest extends ShouldMatchersForJUnit {
     val pSet = new NonDefaultThLessThanPol(p, 0.5)
     pSet.synthesis should be("(or q1 q2)")
   }
+
+  // phi^ndf_min[th < pol] = phi^ndf_antitone[th < pol] = !phi^ndf_min[pol <= th]
+  @Test
+  def testSimpleMin() {
+    val p = new Pol(List(new Rule(new Predicate("q1"), 0.7)), Min, 1)
+    val pSet = new NonDefaultThLessThanPol(p, 0.6)
+    pSet.synthesis should be("(not false)")
+  }
+
+  @Test
+  def testSimpleCaseScoreLessThanThDifferentDefaultMin() {
+    val p = new Pol(List(new Rule(new Predicate("q1"), 0.5)), Min, 0)
+    val pSet = new NonDefaultThLessThanPol(p, 0.6)
+    pSet.synthesis should be("(not q1)")
+  }
+
 }
