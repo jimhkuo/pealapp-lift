@@ -39,7 +39,7 @@ class PealProgramParserTest extends ShouldMatchersForJUnit {
     pols("b1").rules.size should be(3)
     pols("b2").rules.size should be(3)
 
-    println(pealProgrmParser.pSet.synthesis)
+    pealProgrmParser.pSet.synthesis should be("(and (or false (or q1 q2)) (or (and (not q4) (not q5) (not q6)) (not false)))")
   }
 
   @Test

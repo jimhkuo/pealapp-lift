@@ -36,6 +36,7 @@ class NonDefaultThLessThanPol(pol: Pol, th: Double) extends NonDefaultSet {
         case 1 => rules.map(_.q.name).mkString("")
         case _ => rules.map(_.q.name).mkString("(or ", " ", ")")
       }
+    case s => throw new RuntimeException("trying to synthesise with unsupported operator " + s + " in NonDefaultThLessThanPol")
   }
 
   def enumOne(): Set[Set[Rule]] = {
