@@ -11,6 +11,7 @@ import peal.domain.*;
 import peal.*;
 import org.antlr.runtime.BitSet;
 import peal.synthesis.TopSet;
+import peal.domain.operator.*;
 
 }
 
@@ -37,8 +38,8 @@ package peal.antlr;
 //b1 = min ((q1 0.2) (q2 0.4) (q3 0.9)) default 1
 //b2 = + ((q4 0.1) (q5 0.2) (q6 0.2)) default 0
 
-//use a map to store these values
-program	: 'cond' '=' id1=IDENT '<=' NUMBER //invoke MaxLessThanTh
+//Need to insert operator
+program	: 'cond' '=' id1=IDENT '<=' NUMBER 
   (id5=IDENT '=' pol {pols.put($id5.text, $pol.p);})*
   (
   id2=IDENT '=' 'max' '(' id3=IDENT ',' id4=IDENT ')' 
