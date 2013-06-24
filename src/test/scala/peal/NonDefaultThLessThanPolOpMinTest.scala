@@ -6,7 +6,7 @@ import org.junit.{Ignore, Test}
 
 class NonDefaultThLessThanPolOpMinTest extends ShouldMatchersForJUnit {
 
-  //TODO
+  // work in progress
   // phi^ndf_min[th < pol] = phi^ndf_antitone[th < pol] = !phi^ndf_min[pol <= th]
 
   @Ignore("wip")

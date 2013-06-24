@@ -79,7 +79,7 @@ class NonDefaultPolLessThanThTest extends ShouldMatchersForJUnit {
     pSet.synthesis should be("(not (or (and q4 q2 q3) (and q4 q3 q1) (and q5 q2) (and q5 q3) (and q5 q4) (and q5 q1) (and q4 q2 q1)))")
   }
 
-  //TODO M2 computation only works for * operator
+  //M2 computation only works for * operator
   @Ignore("wip")
   @Test
   def testExample3InSynthesisPdfAntitone() {
