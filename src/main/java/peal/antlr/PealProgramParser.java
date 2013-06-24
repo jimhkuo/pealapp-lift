@@ -1,4 +1,4 @@
-// $ANTLR 3.4 /Users/jkuo/PealApp-lift/antlr/PealProgram.g 2013-06-24 14:40:05
+// $ANTLR 3.4 /Users/jkuo/PealApp-lift/antlr/PealProgram.g 2013-06-24 14:43:54
 
 package peal.antlr;
 import java.util.*;
@@ -72,18 +72,17 @@ public class PealProgramParser extends Parser {
 
 
     // $ANTLR start "program"
-    // /Users/jkuo/PealApp-lift/antlr/PealProgram.g:42:1: program : 'cond' '=' 'pSet' '<=' n= NUMBER (id5= IDENT '=' pol )* ( 'pSet' '=' 'max' '(' id3= IDENT ',' id4= IDENT ')' | 'pSet' '=' 'min' '(' id3= IDENT ',' id4= IDENT ')' | 'pSet' '=' id3= IDENT ) ;
+    // /Users/jkuo/PealApp-lift/antlr/PealProgram.g:42:1: program : 'cond' '=' 'pSet' '<=' n= NUMBER (id1= IDENT '=' pol )* ( 'pSet' '=' 'max' '(' id1= IDENT ',' id2= IDENT ')' | 'pSet' '=' 'min' '(' id1= IDENT ',' id2= IDENT ')' | 'pSet' '=' id1= IDENT ) ;
     public final void program() throws RecognitionException {
         Token n=null;
-        Token id5=null;
-        Token id3=null;
-        Token id4=null;
+        Token id1=null;
+        Token id2=null;
         Pol pol1 =null;
 
 
         try {
-            // /Users/jkuo/PealApp-lift/antlr/PealProgram.g:43:2: ( 'cond' '=' 'pSet' '<=' n= NUMBER (id5= IDENT '=' pol )* ( 'pSet' '=' 'max' '(' id3= IDENT ',' id4= IDENT ')' | 'pSet' '=' 'min' '(' id3= IDENT ',' id4= IDENT ')' | 'pSet' '=' id3= IDENT ) )
-            // /Users/jkuo/PealApp-lift/antlr/PealProgram.g:43:4: 'cond' '=' 'pSet' '<=' n= NUMBER (id5= IDENT '=' pol )* ( 'pSet' '=' 'max' '(' id3= IDENT ',' id4= IDENT ')' | 'pSet' '=' 'min' '(' id3= IDENT ',' id4= IDENT ')' | 'pSet' '=' id3= IDENT )
+            // /Users/jkuo/PealApp-lift/antlr/PealProgram.g:43:2: ( 'cond' '=' 'pSet' '<=' n= NUMBER (id1= IDENT '=' pol )* ( 'pSet' '=' 'max' '(' id1= IDENT ',' id2= IDENT ')' | 'pSet' '=' 'min' '(' id1= IDENT ',' id2= IDENT ')' | 'pSet' '=' id1= IDENT ) )
+            // /Users/jkuo/PealApp-lift/antlr/PealProgram.g:43:4: 'cond' '=' 'pSet' '<=' n= NUMBER (id1= IDENT '=' pol )* ( 'pSet' '=' 'max' '(' id1= IDENT ',' id2= IDENT ')' | 'pSet' '=' 'min' '(' id1= IDENT ',' id2= IDENT ')' | 'pSet' '=' id1= IDENT )
             {
             match(input,15,FOLLOW_15_in_program52); 
 
@@ -95,7 +94,7 @@ public class PealProgramParser extends Parser {
 
             n=(Token)match(input,NUMBER,FOLLOW_NUMBER_in_program62); 
 
-            // /Users/jkuo/PealApp-lift/antlr/PealProgram.g:44:2: (id5= IDENT '=' pol )*
+            // /Users/jkuo/PealApp-lift/antlr/PealProgram.g:44:2: (id1= IDENT '=' pol )*
             loop1:
             do {
                 int alt1=2;
@@ -108,9 +107,9 @@ public class PealProgramParser extends Parser {
 
                 switch (alt1) {
             	case 1 :
-            	    // /Users/jkuo/PealApp-lift/antlr/PealProgram.g:44:3: id5= IDENT '=' pol
+            	    // /Users/jkuo/PealApp-lift/antlr/PealProgram.g:44:3: id1= IDENT '=' pol
             	    {
-            	    id5=(Token)match(input,IDENT,FOLLOW_IDENT_in_program69); 
+            	    id1=(Token)match(input,IDENT,FOLLOW_IDENT_in_program69); 
 
             	    match(input,14,FOLLOW_14_in_program71); 
 
@@ -120,7 +119,7 @@ public class PealProgramParser extends Parser {
             	    state._fsp--;
 
 
-            	    pols.put((id5!=null?id5.getText():null), pol1);
+            	    pols.put((id1!=null?id1.getText():null), pol1);
 
             	    }
             	    break;
@@ -131,7 +130,7 @@ public class PealProgramParser extends Parser {
             } while (true);
 
 
-            // /Users/jkuo/PealApp-lift/antlr/PealProgram.g:45:4: ( 'pSet' '=' 'max' '(' id3= IDENT ',' id4= IDENT ')' | 'pSet' '=' 'min' '(' id3= IDENT ',' id4= IDENT ')' | 'pSet' '=' id3= IDENT )
+            // /Users/jkuo/PealApp-lift/antlr/PealProgram.g:45:4: ( 'pSet' '=' 'max' '(' id1= IDENT ',' id2= IDENT ')' | 'pSet' '=' 'min' '(' id1= IDENT ',' id2= IDENT ')' | 'pSet' '=' id1= IDENT )
             int alt2=3;
             int LA2_0 = input.LA(1);
 
@@ -181,7 +180,7 @@ public class PealProgramParser extends Parser {
             }
             switch (alt2) {
                 case 1 :
-                    // /Users/jkuo/PealApp-lift/antlr/PealProgram.g:46:4: 'pSet' '=' 'max' '(' id3= IDENT ',' id4= IDENT ')'
+                    // /Users/jkuo/PealApp-lift/antlr/PealProgram.g:46:4: 'pSet' '=' 'max' '(' id1= IDENT ',' id2= IDENT ')'
                     {
                     match(input,19,FOLLOW_19_in_program87); 
 
@@ -191,20 +190,20 @@ public class PealProgramParser extends Parser {
 
                     match(input,9,FOLLOW_9_in_program93); 
 
-                    id3=(Token)match(input,IDENT,FOLLOW_IDENT_in_program97); 
+                    id1=(Token)match(input,IDENT,FOLLOW_IDENT_in_program97); 
 
                     match(input,12,FOLLOW_12_in_program99); 
 
-                    id4=(Token)match(input,IDENT,FOLLOW_IDENT_in_program103); 
+                    id2=(Token)match(input,IDENT,FOLLOW_IDENT_in_program103); 
 
                     match(input,10,FOLLOW_10_in_program105); 
 
-                    pSet = new MaxLessThanTh(pols.get((id3!=null?id3.getText():null)), pols.get((id4!=null?id4.getText():null)), Double.valueOf((n!=null?n.getText():null)));
+                    pSet = new MaxLessThanTh(pols.get((id1!=null?id1.getText():null)), pols.get((id2!=null?id2.getText():null)), Double.valueOf((n!=null?n.getText():null)));
 
                     }
                     break;
                 case 2 :
-                    // /Users/jkuo/PealApp-lift/antlr/PealProgram.g:48:4: 'pSet' '=' 'min' '(' id3= IDENT ',' id4= IDENT ')'
+                    // /Users/jkuo/PealApp-lift/antlr/PealProgram.g:48:4: 'pSet' '=' 'min' '(' id1= IDENT ',' id2= IDENT ')'
                     {
                     match(input,19,FOLLOW_19_in_program119); 
 
@@ -214,28 +213,28 @@ public class PealProgramParser extends Parser {
 
                     match(input,9,FOLLOW_9_in_program125); 
 
-                    id3=(Token)match(input,IDENT,FOLLOW_IDENT_in_program129); 
+                    id1=(Token)match(input,IDENT,FOLLOW_IDENT_in_program129); 
 
                     match(input,12,FOLLOW_12_in_program131); 
 
-                    id4=(Token)match(input,IDENT,FOLLOW_IDENT_in_program135); 
+                    id2=(Token)match(input,IDENT,FOLLOW_IDENT_in_program135); 
 
                     match(input,10,FOLLOW_10_in_program137); 
 
-                    pSet = new MinLessThanTh(pols.get((id3!=null?id3.getText():null)), pols.get((id4!=null?id4.getText():null)), Double.valueOf((n!=null?n.getText():null)));
+                    pSet = new MinLessThanTh(pols.get((id1!=null?id1.getText():null)), pols.get((id2!=null?id2.getText():null)), Double.valueOf((n!=null?n.getText():null)));
 
                     }
                     break;
                 case 3 :
-                    // /Users/jkuo/PealApp-lift/antlr/PealProgram.g:50:4: 'pSet' '=' id3= IDENT
+                    // /Users/jkuo/PealApp-lift/antlr/PealProgram.g:50:4: 'pSet' '=' id1= IDENT
                     {
                     match(input,19,FOLLOW_19_in_program149); 
 
                     match(input,14,FOLLOW_14_in_program151); 
 
-                    id3=(Token)match(input,IDENT,FOLLOW_IDENT_in_program155); 
+                    id1=(Token)match(input,IDENT,FOLLOW_IDENT_in_program155); 
 
-                    pSet = new PolLessThanTh(pols.get((id3!=null?id3.getText():null)), Double.valueOf((n!=null?n.getText():null)));
+                    pSet = new PolLessThanTh(pols.get((id1!=null?id1.getText():null)), Double.valueOf((n!=null?n.getText():null)));
 
                     }
                     break;

@@ -41,13 +41,13 @@ package peal.antlr;
 //Need to insert operator
 program	
 	: 'cond' '=' 'pSet' '<=' n=NUMBER 
-	(id5=IDENT '=' pol {pols.put($id5.text, $pol.p);})*
+	(id1=IDENT '=' pol {pols.put($id1.text, $pol.p);})*
   	(
-  	'pSet' '=' 'max' '(' id3=IDENT ',' id4=IDENT ')' {pSet = new MaxLessThanTh(pols.get($id3.text), pols.get($id4.text), Double.valueOf($n.text));} 
+  	'pSet' '=' 'max' '(' id1=IDENT ',' id2=IDENT ')' {pSet = new MaxLessThanTh(pols.get($id1.text), pols.get($id2.text), Double.valueOf($n.text));} 
 	  | 
-  	'pSet' '=' 'min' '(' id3=IDENT ',' id4=IDENT ')' {pSet = new MinLessThanTh(pols.get($id3.text), pols.get($id4.text), Double.valueOf($n.text));}
+  	'pSet' '=' 'min' '(' id1=IDENT ',' id2=IDENT ')' {pSet = new MinLessThanTh(pols.get($id1.text), pols.get($id2.text), Double.valueOf($n.text));}
 	  |
-  	'pSet' '=' id3=IDENT {pSet = new PolLessThanTh(pols.get($id3.text), Double.valueOf($n.text));}
+  	'pSet' '=' id1=IDENT {pSet = new PolLessThanTh(pols.get($id1.text), Double.valueOf($n.text));}
 	)
 	;
 
