@@ -11,14 +11,17 @@ class NonDefaultThLessThanPolOpPlus(pol: Pol, th: Double) extends NonDefaultSet 
     val m1 = enumOne()
 
     if (m1.nonEmpty) {
-      val m1Sets = m1.size match {
-        case 1 => m1.map(_.map(_.q.name).mkString(" "))
-        case _ => m1.map(_.map(_.q.name).mkString("(and ", " ", ")"))
+      val m1Sets = m1.map {
+        s =>
+          s.size match {
+            case 1 => s.map(_.q.name).mkString(" ")
+            case _ => s.map(_.q.name).mkString("(and ", " ", ")")
+          }
       }
 
       m1Sets.size match {
-        case 1 => "(" + m1Sets.mkString(" ") + ")"
-        case _ => "(" + m1Sets.mkString("or ", " ", "") + ")"
+        case 1 => m1Sets.mkString(" ")
+        case _ => m1Sets.mkString("(or ", " ", ")")
       }
     }
     else {

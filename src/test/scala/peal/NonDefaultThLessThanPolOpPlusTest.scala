@@ -30,7 +30,7 @@ class NonDefaultThLessThanPolOpPlusTest extends ShouldMatchersForJUnit {
     val p = new Pol(List(new Rule(new Predicate("q1"), 0.6)), Min, 1)
     val pSet = new NonDefaultThLessThanPolOpPlus(p, 0.5)
     //M1 is the whole set
-    pSet.synthesis should be("(q1)")
+    pSet.synthesis should be("q1")
   }
 
   @Test
@@ -38,7 +38,7 @@ class NonDefaultThLessThanPolOpPlusTest extends ShouldMatchersForJUnit {
     val p = new Pol(List(new Rule(new Predicate("q1"), 0.6)), Min, 1)
     val pSet = new NonDefaultThLessThanPolOpPlus(p, 0.5)
     //M1 is the whole set
-    pSet.notPhi should be("(not (q1))")
+    pSet.notPhi should be("(not q1)")
   }
 
   @Test
