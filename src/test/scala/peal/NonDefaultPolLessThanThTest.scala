@@ -15,7 +15,7 @@ class NonDefaultPolLessThanThTest extends ShouldMatchersForJUnit {
     pSet.synthesis should be("false")
   }
 
-  @Ignore("not confirmed")
+  @Ignore("behaviour not confirmed")
   @Test
   def testSimpleCaseScoreEqualToTh() {
     val p = new Pol(List(new Rule(new Predicate("q1"), 0.6)), Min, 1)
@@ -56,7 +56,6 @@ class NonDefaultPolLessThanThTest extends ShouldMatchersForJUnit {
     val p = new Pol(List(new Rule(new Predicate("q1"), 0.6), new Rule(new Predicate("q2"), 0.6)), Max, 1)
     val pSet = new NonDefaultPolLessThanTh(p, 0.5)
     pSet.synthesis should be("(not (or q1 q2))")
-
   }
 
   @Test
@@ -83,7 +82,7 @@ class NonDefaultPolLessThanThTest extends ShouldMatchersForJUnit {
   //TODO M2 computation only works for * operator
   @Ignore("wip")
   @Test
-  def testExample3InSynthesisPdf() {
+  def testExample3InSynthesisPdfAntitone() {
     val rule5 = new Rule(new Predicate("q5"), 0.1)
     val rule3 = new Rule(new Predicate("q3"), 0.2)
     val rule4 = new Rule(new Predicate("q4"), 0.2)

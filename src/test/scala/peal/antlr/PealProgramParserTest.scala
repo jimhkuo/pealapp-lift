@@ -1,6 +1,6 @@
 package peal.antlr
 
-import org.junit.{Ignore, Test}
+import org.junit.Test
 import org.antlr.runtime.{CommonTokenStream, ANTLRStringStream}
 import org.scalatest.junit.ShouldMatchersForJUnit
 import scala.collection.JavaConversions._
@@ -15,7 +15,6 @@ class PealProgramParserTest extends ShouldMatchersForJUnit {
     new PealProgramParser(tokenStream)
   }
 
-
   @Test(expected = classOf[RuntimeException])
   def testInValidInput() {
     val input = "co" +
@@ -27,7 +26,7 @@ class PealProgramParserTest extends ShouldMatchersForJUnit {
   }
 
   @Test
-  def testCanParseSampleInput() {
+  def testCanParseDefaultInputInWebapp() {
     val input = "cond = pSet <= 0.5" +
       "b1 = min ((q1 0.2) (q2 0.4) (q3 0.9)) default 1" +
       "b2 = + ((q4 0.1) (q5 0.2) (q6 0.2)) default 0 " +
@@ -43,19 +42,12 @@ class PealProgramParserTest extends ShouldMatchersForJUnit {
     println(pealProgrmParser.pSet.synthesis)
   }
 
-  @Ignore("wip")
   @Test
   def testCanParseInputExample1InEmail() {
     val input = "cond = pSet <= 0.5\nb2 = + ((q4 0.2) (q5 0.2) (q6 0.1)) default 0.6\npSet = b2"
 
     val pealProgrmParser = getParser(input)
     pealProgrmParser.program()
-
-    //    val pols = pealProgrmParser.pols
-    //    pols("b1").rules.size should be(3)
-    //    pols("b2").rules.size should be(3)
-
-    println(pealProgrmParser.pSet.synthesis)
-    //  expected  (or false (not false))
+    pealProgrmParser.pSet.synthesis should be("(or false (not false))")
   }
 }
