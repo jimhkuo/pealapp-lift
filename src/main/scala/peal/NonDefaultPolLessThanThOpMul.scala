@@ -6,7 +6,7 @@ import scala.collection.JavaConversions._
 
 
 class NonDefaultPolLessThanThOpMul(pol: Pol, th: Double) extends NonDefaultSet {
-  //TODO not done
+  //TODO not done, work in progress
   def synthesis: String = {
     val rules = pol.rules.filter(th > _.score)
     rules.size match {

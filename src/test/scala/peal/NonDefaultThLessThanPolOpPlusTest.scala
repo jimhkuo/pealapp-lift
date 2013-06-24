@@ -4,13 +4,14 @@ import org.scalatest.junit.ShouldMatchersForJUnit
 import org.junit.Test
 import peal.domain.{Rule, Predicate, Pol}
 import scala.collection.JavaConversions._
+import peal.domain.operator.Min
 
 
 class NonDefaultThLessThanPolOpPlusTest extends ShouldMatchersForJUnit {
 
   @Test
   def testSimpleCaseM1IsEmptyBecauseSumLessTh() {
-    val p = new Pol(List(new Rule(new Predicate("q1"), 0.4)), 1)
+    val p = new Pol(List(new Rule(new Predicate("q1"), 0.4)), Min, 1)
     val pSet = new NonDefaultThLessThanPolOpPlus(p, 0.5)
     //M1 is empty
     pSet.synthesis should be("false")
@@ -18,7 +19,7 @@ class NonDefaultThLessThanPolOpPlusTest extends ShouldMatchersForJUnit {
 
   @Test
   def testSimpleCaseM1IsEmptyBecauseSumEqualTh() {
-    val p = new Pol(List(new Rule(new Predicate("q1"), 0.5)), 1)
+    val p = new Pol(List(new Rule(new Predicate("q1"), 0.5)), Min, 1)
     val pSet = new NonDefaultThLessThanPolOpPlus(p, 0.5)
     //M1 is empty
     pSet.synthesis should be("false")
@@ -26,7 +27,7 @@ class NonDefaultThLessThanPolOpPlusTest extends ShouldMatchersForJUnit {
 
   @Test
   def testSimpleCaseM1IsWholeSet() {
-    val p = new Pol(List(new Rule(new Predicate("q1"), 0.6)), 1)
+    val p = new Pol(List(new Rule(new Predicate("q1"), 0.6)), Min, 1)
     val pSet = new NonDefaultThLessThanPolOpPlus(p, 0.5)
     //M1 is the whole set
     pSet.synthesis should be("(q1)")
@@ -34,7 +35,7 @@ class NonDefaultThLessThanPolOpPlusTest extends ShouldMatchersForJUnit {
 
   @Test
   def testSimpleNot() {
-    val p = new Pol(List(new Rule(new Predicate("q1"), 0.6)), 1)
+    val p = new Pol(List(new Rule(new Predicate("q1"), 0.6)), Min, 1)
     val pSet = new NonDefaultThLessThanPolOpPlus(p, 0.5)
     //M1 is the whole set
     pSet.notPhi should be("(not (q1))")
@@ -47,7 +48,7 @@ class NonDefaultThLessThanPolOpPlusTest extends ShouldMatchersForJUnit {
     val rule4 = new Rule(new Predicate("q4"), 0.3)
     val rule2 = new Rule(new Predicate("q2"), 0.2)
     val rule1 = new Rule(new Predicate("q1"), 0.1)
-    val p = new Pol(List(rule5, rule3, rule4, rule2, rule1), 1)
+    val p = new Pol(List(rule5, rule3, rule4, rule2, rule1), Min, 1)
     val pSet = new NonDefaultThLessThanPolOpPlus(p, 0.5)
 
     pSet.synthesis should be("(or (and q4 q2 q3) (and q4 q3 q1) (and q5 q2) (and q5 q3) (and q5 q4) (and q5 q1) (and q4 q2 q1))")
@@ -60,7 +61,7 @@ class NonDefaultThLessThanPolOpPlusTest extends ShouldMatchersForJUnit {
     val rule4 = new Rule(new Predicate("q4"), 0.3)
     val rule2 = new Rule(new Predicate("q2"), 0.2)
     val rule1 = new Rule(new Predicate("q1"), 0.1)
-    val p = new Pol(List(rule5, rule3, rule4, rule2, rule1), 1)
+    val p = new Pol(List(rule5, rule3, rule4, rule2, rule1), Min, 1)
     val pSet = new NonDefaultThLessThanPolOpPlus(p, 0.5)
 
     pSet.notPhi should be("(not (or (and q4 q2 q3) (and q4 q3 q1) (and q5 q2) (and q5 q3) (and q5 q4) (and q5 q1) (and q4 q2 q1)))")
@@ -74,7 +75,7 @@ class NonDefaultThLessThanPolOpPlusTest extends ShouldMatchersForJUnit {
     val rule4 = new Rule(new Predicate("q4"), 0.3)
     val rule2 = new Rule(new Predicate("q2"), 0.2)
     val rule1 = new Rule(new Predicate("q1"), 0.1)
-    val p = new Pol(List(rule5, rule3, rule4, rule2, rule1), 1)
+    val p = new Pol(List(rule5, rule3, rule4, rule2, rule1), Min, 1)
     val pSet = new NonDefaultThLessThanPolOpPlus(p, 0.5)
 
     pSet.enumOne() should have size (7)
@@ -94,7 +95,7 @@ class NonDefaultThLessThanPolOpPlusTest extends ShouldMatchersForJUnit {
       new Rule(new Predicate("q2"), 0.2),
       new Rule(new Predicate("q4"), 0.3),
       new Rule(new Predicate("q3"), 0.2),
-      new Rule(new Predicate("q1"), 0.1)), 1)
+      new Rule(new Predicate("q1"), 0.1)), Min, 1)
 
     val sortedP = p.rules.sortBy(_.score).map(_.q.name).mkString(",")
 
