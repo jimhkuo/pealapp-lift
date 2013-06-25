@@ -18,8 +18,25 @@ class NonDefaultPolLessThanTh(pol: Pol, th: Double) extends NonDefaultSet {
     }
     case Plus | Max => new NonDefaultThLessThanPol(pol, th).notPhi
     case Mul => {
-      //TODO do M2 stuff here
-      throw new RuntimeException("wip")
+      val m2 = enumTwoForMul()
+
+      if (m2.nonEmpty) {
+        val m2Sets = m2.map {
+          s =>
+            s.size match {
+              case 1 => s.map(_.q.name).mkString(" ")
+              case _ => s.map(_.q.name).mkString("(and ", " ", ")")
+            }
+        }
+
+        m2Sets.size match {
+          case 1 => m2Sets.mkString(" ")
+          case _ => m2Sets.mkString("(or ", " ", ")")
+        }
+      }
+      else {
+        "false"
+      }
     }
     case s => throw new RuntimeException("trying to synthesise with unsupported operator " + s + " in NonDefaultPolLessThanTh")
   }

@@ -37,8 +37,7 @@ class PealProgramParserTest extends ShouldMatchersForJUnit {
     val pols = pealProgrmParser.pols
     pols("b1").rules.size should be(3)
 
-    //TODO add clause later
-    pealProgrmParser.pSet.synthesis should be("(and (or false (or q1 q2)) (or (and (not q4) (not q5) (not q6)) (not false)))")
+    pealProgrmParser.pSet.synthesis should be("(or false (or q1 q2))")
   }
 
   @Test
