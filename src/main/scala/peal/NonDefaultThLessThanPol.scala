@@ -9,7 +9,7 @@ import peal.domain.operator.{Min, Max, Plus}
 
 class NonDefaultThLessThanPol(pol: Pol, th: Double) extends NonDefaultSet {
   def synthesis: String = pol.operator match {
-    case Plus =>
+    case Plus => {
       val m1 = enumOne()
 
       if (m1.nonEmpty) {
@@ -29,13 +29,16 @@ class NonDefaultThLessThanPol(pol: Pol, th: Double) extends NonDefaultSet {
       else {
         "false"
       }
-    case Max =>
+    }
+    case Max => {
       val rules = pol.rules.filter(th < _.score)
       rules.size match {
         case 0 => "false"
         case 1 => rules.map(_.q.name).mkString("")
         case _ => rules.map(_.q.name).mkString("(or ", " ", ")")
       }
+    }
+      //TODO add Mul here
     case Min => new NonDefaultPolLessThanTh(pol, th).notPhi
     case s => throw new RuntimeException("trying to synthesise with unsupported operator " + s + " in NonDefaultThLessThanPol")
   }
