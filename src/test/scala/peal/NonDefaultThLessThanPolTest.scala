@@ -78,8 +78,8 @@ class NonDefaultThLessThanPolTest extends ShouldMatchersForJUnit {
     val p = new Pol(List(rule5, rule3, rule4, rule2, rule1), Plus, 1)
     val pSet = new NonDefaultThLessThanPol(p, 0.5)
 
-    pSet.enumOne() should have size (7)
-    pSet.enumOne() should be(Set(
+    pSet.enumOneForPlus() should have size (7)
+    pSet.enumOneForPlus() should be(Set(
       Set(rule1, rule3, rule4),
       Set(rule4, rule5),
       Set(rule3, rule5),
