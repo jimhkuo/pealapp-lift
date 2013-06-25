@@ -4,7 +4,7 @@ import peal.synthesis.NonDefaultSet
 import peal.domain.{Rule, Pol}
 import scala._
 import scala.collection.JavaConversions._
-import peal.domain.operator.{Min, Max, Plus}
+import peal.domain.operator.{Mul, Min, Max, Plus}
 
 
 class NonDefaultThLessThanPol(pol: Pol, th: Double) extends NonDefaultSet {
@@ -38,8 +38,7 @@ class NonDefaultThLessThanPol(pol: Pol, th: Double) extends NonDefaultSet {
         case _ => rules.map(_.q.name).mkString("(or ", " ", ")")
       }
     }
-    //TODO add Mul here
-    case Min => new NonDefaultPolLessThanTh(pol, th).notPhi
+    case Min | Mul => new NonDefaultPolLessThanTh(pol, th).notPhi
     case s => throw new RuntimeException("trying to synthesise with unsupported operator " + s + " in NonDefaultThLessThanPol")
   }
 
