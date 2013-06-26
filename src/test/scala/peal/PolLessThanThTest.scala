@@ -9,18 +9,18 @@ import peal.domain.operator.Min
 class PolLessThanThTest extends ShouldMatchersForJUnit {
 
   @Test
-  def testCanSynthesisSimpleCase() {
-    val p = new Pol(List(new Rule(new Predicate("q1"), 0.5)), Min, 1)
-    val phi = new PolLessThanTh(p, 0.6)
-
-    phi.synthesis should be("(or false q1)")
-  }
-
-  @Test
-  def testSimpleCaseScoreLessThanThDifferentDefault() {
+  def testDefaultLessThanTh() {
     val p = new Pol(List(new Rule(new Predicate("q1"), 0.5)), Min, 0)
     val phi = new PolLessThanTh(p, 0.6)
 
     phi.synthesis should be("(or (not q1) q1)")
+  }
+
+  @Test
+  def testDefaultGreaterThanTh() {
+    val p = new Pol(List(new Rule(new Predicate("q1"), 0.5)), Min, 1)
+    val phi = new PolLessThanTh(p, 0.6)
+
+    phi.synthesis should be("(or false q1)")
   }
 }
