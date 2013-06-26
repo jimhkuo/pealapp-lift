@@ -37,7 +37,7 @@ class PealProgramParserTest extends ShouldMatchersForJUnit {
     val pols = pealProgrmParser.pols
     pols("b1").rules.size should be(3)
 
-    pealProgrmParser.pSet.synthesis should be("(or false (or q1 q2))")
+    pealProgrmParser.pSet.synthesis should be("(and (or q1 q2 q3) (or q1 q2))")
   }
 
   @Test
@@ -54,7 +54,7 @@ class PealProgramParserTest extends ShouldMatchersForJUnit {
     pols("b1").rules.size should be(3)
     pols("b2").rules.size should be(3)
 
-    pealProgrmParser.pSet.synthesis should be("(and (or false (or q1 q2)) (or (and (not q4) (not q5) (not q6)) (not false)))")
+    pealProgrmParser.pSet.synthesis should be("(and (and (or q1 q2 q3) (or q1 q2)) (or (and (not q4) (not q5) (not q6)) (not false)))")
   }
 
   @Test
@@ -63,7 +63,7 @@ class PealProgramParserTest extends ShouldMatchersForJUnit {
 
     val pealProgrmParser = getParser(input)
     pealProgrmParser.program()
-    pealProgrmParser.pSet.synthesis should be("(or false (not false))")
+    pealProgrmParser.pSet.synthesis should be("(and (or q4 q5 q6) (not false))")
   }
 
   @Test
