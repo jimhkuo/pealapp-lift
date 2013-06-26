@@ -19,6 +19,6 @@ class ThLessThanPolTest extends ShouldMatchersForJUnit {
   def testDefaultLessThanTh() {
     val p = new Pol(List(new Rule(new Predicate("q1"), 0.5)), Min, 0)
     val phi = new ThLessThanPol(p, 0.6)
-    phi.synthesis should be("(or false (not q1))")
+    phi.synthesis should be("(and q1 (not q1))")
   }
 }
