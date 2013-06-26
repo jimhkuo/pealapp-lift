@@ -14,6 +14,6 @@ class MinLessThanThTest extends ShouldMatchersForJUnit {
     val p2 = new Pol(List(new Rule(new Predicate("q2"), 0.5)), Min, 0)
     val phi = new MinLessThanTh(p1, p2, 0.6)
 
-    phi.synthesis should be("(or (or false q1) (or (not q2) q2))")
+    phi.synthesis should be("(or (and q1 q1) (or (not q2) q2))")
   }
 }
