@@ -9,8 +9,8 @@ import peal.domain.operator.{Mul, Max, Min, Plus}
 class NonDefaultPolLessThanThTest extends ShouldMatchersForJUnit {
 
   @Test
-  def testPolLessThVerification() {
-    val p = new Pol(List(new Rule(new Predicate("q1"), 0.5), new Rule(new Predicate("q2"), 0.3)), Min, 0)
+  def testPolLessThVerificationDefaultGreaterThanTh() {
+    val p = new Pol(List(new Rule(new Predicate("q1"), 0.5), new Rule(new Predicate("q2"), 0.3)), Min, 1)
     val pSet = new NonDefaultPolLessThanTh(p, 0.6)
     pSet.synthesis should be("(or q1 q2)")
   }
