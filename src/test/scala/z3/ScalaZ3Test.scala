@@ -14,14 +14,14 @@ class ScalaZ3Test extends ShouldMatchersForJUnit {
     val originYear = 1980
 
     val (year, day) = choose((year: Val[Int], day: Val[Int]) => {
-      def leapDaysUntil(y : Tree[IntSort]) = (y - 1) / 4 - (y - 1) / 100 + (y - 1) / 400
+      def leapDaysUntil(y: Tree[IntSort]) = (y - 1) / 4 - (y - 1) / 100 + (y - 1) / 400
 
       totalDays === (year - originYear) * 365 + leapDaysUntil(year) - leapDaysUntil(originYear) + day &&
         day > 0 && day <= 366
     })
 
-    year should equal (2008)
-    day should equal (366)
+    year should equal(2008)
+    day should equal(366)
   }
 
   @Test
@@ -40,7 +40,7 @@ class ScalaZ3Test extends ShouldMatchersForJUnit {
     val cs1 = z3.mkEq(
       z3.mkAdd(
         z3.mkMul(z3.mkInt(3600, i), h),
-        z3.mkMul(sx,                m),
+        z3.mkMul(sx, m),
         s),
       t)
     // more constraints
