@@ -24,14 +24,13 @@ class Boot {
 
     LiftRules.early.append(_.setCharacterEncoding("UTF-8"))
 
-    val headers = ("Content-type" -> "text/plain") :: ("Content-length" -> "2") :: ("Content-disposition" -> "attachment; filname=result.txt") :: Nil
-
     LiftRules.dispatch.append {
-      case req @ Req(List("files", filename), _, _) => {
+      case req @ Req(List("download", result), _, _) => {
+        val headers = ("Content-type" -> "text/plain") :: ("Content-length" -> result.length.toString) :: ("Content-disposition" -> "attachment; filname=result.txt") :: Nil
         () =>  Full(StreamingResponse(
-          new java.io.ByteArrayInputStream("hi".getBytes("utf-8")),
+          new java.io.ByteArrayInputStream(result.getBytes("utf-8")),
           () => {},
-          2,
+          result.length,
           headers, Nil, 200)
         )
       }
