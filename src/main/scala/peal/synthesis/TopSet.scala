@@ -6,5 +6,5 @@ trait TopSet {
 
   def z3SMTHeader: String
 
-  def notPhiZ3SMTString = "(assert " + synthesis + ")\n(check-sat)"
+  def phiZ3SMTString = "(assert " + synthesis + ")\n(check-sat)"
 }
