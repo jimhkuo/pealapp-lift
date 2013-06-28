@@ -56,7 +56,7 @@ class PealCometActor extends CometActor with Loggable {
           })}
         </div>
         <div>
-          {SHtml.ajaxText("20", s => {
+          {SHtml.ajaxText("10", s => {
           majorityVotingCount = s.toInt
           _Noop
         }, "id" -> "n", "size" -> "10")}
