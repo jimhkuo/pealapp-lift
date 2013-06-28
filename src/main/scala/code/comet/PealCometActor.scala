@@ -79,17 +79,23 @@ class PealCometActor extends CometActor with Loggable {
   override def lowPriority = {
     case Init =>
     case Compute => onCompute(inputPolicies)
-    case File(result) => myData.set(result)
+    case File(result) =>
+      myData.set(result)
+      this ! Result(<p>output prepared, please click Download</p>)
     case Result(output) => partialUpdate(JqId("result") ~> JqHtml(output))
     case Error(message) => partialUpdate(JqId("result") ~> JqHtml(Text(message)))
-    case Clear => partialUpdate(JqId("policies") ~> JqVal(""))
+    case Clear =>
+      this ! Result(<p></p>)
+      partialUpdate(JqId("policies") ~> JqVal(""))
     case Download => onDownload(inputPolicies)
     case MajorityVoting =>
+      this ! Result(<p></p>)
       inputPolicies = "cond = 0.5 < pSet\nb1 = + (" +
         (for (i <- 0 until majorityVotingCount) yield "(q" + i + " " + "%.3f".format(1.0 / majorityVotingCount) + ")").mkString("") +
         " ) default 0\npSet = b1"
       partialUpdate(JqId("policies") ~> JqVal(inputPolicies))
     case Reset =>
+      this ! Result(<p></p>)
       inputPolicies = defaultInput
       partialUpdate(JqId("policies") ~> JqVal(inputPolicies))
   }
@@ -123,15 +129,6 @@ class PealCometActor extends CometActor with Loggable {
       val pSet = pealProgrmParser.pSet
       val result = pSet.z3SMTHeader + pSet.phiZ3SMTString + "\n" + "(get-model)"
       this ! File(result)
-
-      //      val headers = ("Content-type" -> "application/txt") :: ("Content-length" -> result.length.toString) :: ("Content-disposition" -> "attachment; filname=result.txt") :: Nil
-      //
-      //      Full(StreamingResponse(
-      //        new java.io.ByteArrayInputStream(result.getBytes("UTF-8")),
-      //        () => {},
-      //        result.length,
-      //        headers, Nil, 200)
-      //      )
     }
     catch {
       case e1: Exception =>
