@@ -22,6 +22,7 @@ class PealCometActor extends CometActor with Loggable {
   def render = {
     this ! Init
 
+    //sample code
     //    {SHtml.textarea("foo", inputPolicies = _)
     //      SHtml.textarea("foo", s => inputPolicies = s)
     //      SHtml.textarea("foo", "prefix " + _)}
@@ -44,6 +45,10 @@ class PealCometActor extends CometActor with Loggable {
             this ! Reset
             _Noop
           }) ++
+          SHtml.ajaxButton("Majority Voting", () => {
+            this ! MajorityVoting
+            _Noop
+          }) ++
           SHtml.ajaxButton("Clear", () => {
             this ! Clear
             _Noop
@@ -63,9 +68,15 @@ class PealCometActor extends CometActor with Loggable {
     case Result(output) => partialUpdate(JqId("result") ~> JqHtml(output))
     case Error(message) => partialUpdate(JqId("result") ~> JqHtml(Text(message)))
     case Clear => partialUpdate(JqId("policies") ~> JqVal(""))
+    case MajorityVoting =>
+      val n = 10
+      inputPolicies = "cond = pSet <= 0.5\nb1 = + (" +
+        (for (i <- 0 until n) yield ("(q" + i + " " + 1.0 / n + ")")).mkString("") +
+        " ) default 0\npSet = b1"
+      partialUpdate(JqId("policies") ~> JqVal(inputPolicies))
     case Reset =>
       inputPolicies = defaultInput
-      partialUpdate(JqId("policies") ~> JqVal(defaultInput))
+      partialUpdate(JqId("policies") ~> JqVal(inputPolicies))
   }
 
   private def getParser(input: String) = {
@@ -84,14 +95,6 @@ class PealCometActor extends CometActor with Loggable {
 (get-model)</p>
       this ! Result(result)
     } catch {
-      //      case e: RecognitionException => {
-      //        dealWithIt(e)
-      //        this ! Error(pealProgrmParser.getErrorMessage(e, PealProgramParser.tokenNames))
-      //        println("pl: " + pealProgrmParser.getErrorMessage(e, PealProgramParser.tokenNames))
-      //        e.printStackTrace()
-      //        logger.error("exception caught", e)
-      //        this ! Error(e.getMessage)
-      //      }
       case e1: Exception =>
         dealWithIt(e1)
     }
@@ -108,6 +111,7 @@ case object Init
 case object Clear
 
 case object Reset
+case object MajorityVoting
 
 case object Compute
 

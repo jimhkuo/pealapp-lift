@@ -88,17 +88,15 @@ class PealProgramParserTest extends ShouldMatchersForJUnit {
   @Test
   def testMajorityVoting() {
     val n = 20
-    val body = for (i <- 0 until n) yield ("(q" + i + " " + 1.0 / n + ")")
-
-    val input = "cond = pSet <= 0.5\nb2 = + (" +
-      body.mkString("") +
-      " ) default 0\npSet = b2"
+    val input = "cond = pSet <= 0.5\nb1 = + (" +
+      (for (i <- 0 until n) yield ("(q" + i + " " + 1.0 / n + ")")).mkString("") +
+      " ) default 0\npSet = b1"
 
     println(input)
-//    val pealProgrmParser = getParser(input)
-//    pealProgrmParser.program()
-//
-//    val synthesis = pealProgrmParser.pSet.synthesis
-//    println(synthesis)
+    //    val pealProgrmParser = getParser(input)
+    //    pealProgrmParser.program()
+    //
+    //    val synthesis = pealProgrmParser.pSet.synthesis
+    //    println(synthesis)
   }
 }
