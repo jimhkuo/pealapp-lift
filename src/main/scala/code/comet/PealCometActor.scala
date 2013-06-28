@@ -80,14 +80,18 @@ class PealCometActor extends CometActor with Loggable {
     case Init =>
     case Compute => onCompute(inputPolicies)
     case File(result) =>
-      val headers = ("Content-type" -> "application/txt") :: ("Content-length" -> result.length.toString) :: ("Content-disposition" -> "attachment; filname=result.txt") :: Nil
+      println(result)
 
-      Full(StreamingResponse(
-        new java.io.ByteArrayInputStream(result.getBytes("UTF-8")),
+      val headers = ("Content-type" -> "text/plain") :: ("Content-length" -> result.length.toString) :: ("Content-disposition" -> "attachment; filname=result.txt") :: Nil
+
+    Full(StreamingResponse(
+        new java.io.ByteArrayInputStream(result.getBytes("utf-8")),
         () => {},
         result.length,
         headers, Nil, 200)
       )
+
+
     case Result(output) => partialUpdate(JqId("result") ~> JqHtml(output))
     case Error(message) => partialUpdate(JqId("result") ~> JqHtml(Text(message)))
     case Clear => partialUpdate(JqId("policies") ~> JqVal(""))
@@ -129,8 +133,7 @@ class PealCometActor extends CometActor with Loggable {
     try {
       pealProgrmParser.program()
       val pSet = pealProgrmParser.pSet
-      val result = pSet.z3SMTHeader + "\n" + pSet.phiZ3SMTString + "\n" + "(get-model)"
-
+      val result = pSet.z3SMTHeader + pSet.phiZ3SMTString + "\n" + "(get-model)"
       this ! File(result)
 
       //      val headers = ("Content-type" -> "application/txt") :: ("Content-length" -> result.length.toString) :: ("Content-disposition" -> "attachment; filname=result.txt") :: Nil
