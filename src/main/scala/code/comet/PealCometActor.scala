@@ -56,7 +56,7 @@ class PealCometActor extends CometActor with Loggable {
             this ! Clear
             _Noop
           }) ++
-          SHtml.ajaxButton("Download", () => {
+          SHtml.ajaxButton("Prepare", () => {
             this ! Download
             _Noop
           })}
@@ -79,19 +79,7 @@ class PealCometActor extends CometActor with Loggable {
   override def lowPriority = {
     case Init =>
     case Compute => onCompute(inputPolicies)
-    case File(result) =>
-      println(result)
-
-      val headers = ("Content-type" -> "text/plain") :: ("Content-length" -> result.length.toString) :: ("Content-disposition" -> "attachment; filname=result.txt") :: Nil
-
-    Full(StreamingResponse(
-        new java.io.ByteArrayInputStream(result.getBytes("utf-8")),
-        () => {},
-        result.length,
-        headers, Nil, 200)
-      )
-
-
+    case File(result) => myData.set(result)
     case Result(output) => partialUpdate(JqId("result") ~> JqHtml(output))
     case Error(message) => partialUpdate(JqId("result") ~> JqHtml(Text(message)))
     case Clear => partialUpdate(JqId("policies") ~> JqVal(""))
@@ -174,6 +162,8 @@ case class Result(output: NodeSeq)
 case class File(result: String)
 
 case class Error(output: String)
+
+object myData extends SessionVar[String]("")
 
 object JqVal {
 
