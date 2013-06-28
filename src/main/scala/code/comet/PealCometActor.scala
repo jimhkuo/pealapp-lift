@@ -9,7 +9,9 @@ import scala.xml.{NodeSeq, Text}
 import net.liftweb.http.js.{JsMember, JsExp}
 import org.antlr.runtime.{CommonTokenStream, ANTLRStringStream}
 import peal.antlr.{PealProgramParser, PealProgramLexer}
-import net.liftweb.common.Loggable
+import net.liftweb.common.{Full, Loggable}
+import scala.collection.immutable.Nil
+import java.io.ByteArrayInputStream
 
 
 class PealCometActor extends CometActor with Loggable {
@@ -53,6 +55,10 @@ class PealCometActor extends CometActor with Loggable {
           SHtml.ajaxButton("Clear", () => {
             this ! Clear
             _Noop
+          }) ++
+          SHtml.ajaxButton("Download", () => {
+            this ! Download
+            _Noop
           })}
         </div>
         <div>
@@ -73,11 +79,21 @@ class PealCometActor extends CometActor with Loggable {
   override def lowPriority = {
     case Init =>
     case Compute => onCompute(inputPolicies)
+    case File(result) =>
+      val headers = ("Content-type" -> "application/txt") :: ("Content-length" -> result.length.toString) :: ("Content-disposition" -> "attachment; filname=result.txt") :: Nil
+
+      Full(StreamingResponse(
+        new java.io.ByteArrayInputStream(result.getBytes("UTF-8")),
+        () => {},
+        result.length,
+        headers, Nil, 200)
+      )
     case Result(output) => partialUpdate(JqId("result") ~> JqHtml(output))
     case Error(message) => partialUpdate(JqId("result") ~> JqHtml(Text(message)))
     case Clear => partialUpdate(JqId("policies") ~> JqVal(""))
+    case Download => onDownload(inputPolicies)
     case MajorityVoting =>
-       inputPolicies = "cond = 0.5 < pSet\nb1 = + (" +
+      inputPolicies = "cond = 0.5 < pSet\nb1 = + (" +
         (for (i <- 0 until majorityVotingCount) yield "(q" + i + " " + "%.3f".format(1.0 / majorityVotingCount) + ")").mkString("") +
         " ) default 0\npSet = b1"
       partialUpdate(JqId("policies") ~> JqVal(inputPolicies))
@@ -108,6 +124,30 @@ class PealCometActor extends CometActor with Loggable {
     }
   }
 
+  private def onDownload(input: String) {
+    val pealProgrmParser = getParser(input)
+    try {
+      pealProgrmParser.program()
+      val pSet = pealProgrmParser.pSet
+      val result = pSet.z3SMTHeader + "\n" + pSet.phiZ3SMTString + "\n" + "(get-model)"
+
+      this ! File(result)
+
+      //      val headers = ("Content-type" -> "application/txt") :: ("Content-length" -> result.length.toString) :: ("Content-disposition" -> "attachment; filname=result.txt") :: Nil
+      //
+      //      Full(StreamingResponse(
+      //        new java.io.ByteArrayInputStream(result.getBytes("UTF-8")),
+      //        () => {},
+      //        result.length,
+      //        headers, Nil, 200)
+      //      )
+    }
+    catch {
+      case e1: Exception =>
+        dealWithIt(e1)
+    }
+  }
+
   private def dealWithIt(e: Exception) {
     println("pl: " + e.getMessage)
     this ! Error(e.getMessage)
@@ -118,6 +158,8 @@ case object Init
 
 case object Clear
 
+case object Download
+
 case object Reset
 
 case object MajorityVoting
@@ -125,6 +167,8 @@ case object MajorityVoting
 case object Compute
 
 case class Result(output: NodeSeq)
+
+case class File(result: String)
 
 case class Error(output: String)
 

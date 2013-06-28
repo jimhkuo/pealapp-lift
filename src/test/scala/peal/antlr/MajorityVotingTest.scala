@@ -15,10 +15,10 @@ class MajorityVotingTest extends ShouldMatchersForJUnit {
     new PealProgramParser(tokenStream)
   }
 
-//  @Ignore("stand alone test")
+  @Ignore("stand alone test")
   @Test
   def testMajorityVoting() {
-    val n = 5
+    val n = 23
     val input = "cond = 0.5 < pSet\nb1 = + (" +
       (for (i <- 0 until n) yield ("(q" + i + " " + 1.0 / n + ")")).mkString("") +
       " ) default 0\npSet = b1"
