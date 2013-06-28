@@ -18,6 +18,7 @@ class PealCometActor extends CometActor with Loggable {
     "b2 = + ((q4 0.1) (q5 0.2) (q6 0.2)) default 0\n" +
     "pSet = max(b1, b2)"
   var inputPolicies = defaultInput
+  var majorityVotingCount = 10
 
   def render = {
     this ! Init
@@ -53,7 +54,14 @@ class PealCometActor extends CometActor with Loggable {
             this ! Clear
             _Noop
           })}
-        </div> <br/>
+        </div>
+        <div>
+          {SHtml.ajaxText("20", s => {
+          majorityVotingCount = s.toInt
+          _Noop
+        }, "id" -> "n", "size" -> "10")}
+        </div>
+        <br/>
         <div>
           <h3>Result:</h3>
           <div id="result"></div>
@@ -69,9 +77,8 @@ class PealCometActor extends CometActor with Loggable {
     case Error(message) => partialUpdate(JqId("result") ~> JqHtml(Text(message)))
     case Clear => partialUpdate(JqId("policies") ~> JqVal(""))
     case MajorityVoting =>
-      val n = 10
-      inputPolicies = "cond = pSet <= 0.5\nb1 = + (" +
-        (for (i <- 0 until n) yield ("(q" + i + " " + 1.0 / n + ")")).mkString("") +
+       inputPolicies = "cond = pSet <= 0.5\nb1 = + (" +
+        (for (i <- 0 until majorityVotingCount) yield ("(q" + i + " " + 1.0 / majorityVotingCount + ")")).mkString("") +
         " ) default 0\npSet = b1"
       partialUpdate(JqId("policies") ~> JqVal(inputPolicies))
     case Reset =>
@@ -91,8 +98,9 @@ class PealCometActor extends CometActor with Loggable {
     try {
       pealProgrmParser.program()
       val pSet = pealProgrmParser.pSet
-      val result = <p>{pSet.z3SMTHeader}<br/>{pSet.phiZ3SMTString}<br/>
-(get-model)</p>
+      val result = <p>
+        {pSet.z3SMTHeader}<br/>{pSet.phiZ3SMTString}<br/>
+        (get-model)</p>
       this ! Result(result)
     } catch {
       case e1: Exception =>
@@ -111,6 +119,7 @@ case object Init
 case object Clear
 
 case object Reset
+
 case object MajorityVoting
 
 case object Compute
