@@ -1,6 +1,6 @@
 package peal.antlr
 
-import org.junit.Test
+import org.junit.{Ignore, Test}
 import org.antlr.runtime.{CommonTokenStream, ANTLRStringStream}
 import org.scalatest.junit.ShouldMatchersForJUnit
 import scala.collection.JavaConversions._
@@ -82,5 +82,22 @@ class PealProgramParserTest extends ShouldMatchersForJUnit {
     val pealProgrmParser = getParser(input)
     pealProgrmParser.program()
     pealProgrmParser.pSet.synthesis should be("(or (and (not q4) (not q5) (not q6)) (not (or q6 (and q5 q4))))")
+  }
+
+  @Ignore("stand alone test")
+  @Test
+  def testMajorityVoting() {
+    val n = 10
+    val body = for (i <- 0 until n) yield ("(q" + i + " " + 1.0 / n + ")")
+
+    val input = "cond = pSet <= 0.5\nb2 = + (" +
+      body.mkString("") +
+      " ) default 0\npSet = b2"
+
+    val pealProgrmParser = getParser(input)
+    pealProgrmParser.program()
+
+    val synthesis = pealProgrmParser.pSet.synthesis
+    println(synthesis)
   }
 }
