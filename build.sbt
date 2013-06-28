@@ -46,6 +46,9 @@ mergeStrategy in assembly <<= (mergeStrategy in assembly) { (old) =>
   }
 }
 
+//Needed to get ScalaZ3 test to run repeatedly in sbt
+fork in Test := true
+
 //AKKA and spray stuff
 //resolvers += "Typesafe Repository" at "http://repo.typesafe.com/typesafe/releases/"
 //resolvers += "spray repo" at "http://repo.spray.io"

@@ -26,7 +26,7 @@ class ScalaZ3Test extends ShouldMatchersForJUnit {
 
   @Test
   def testComfusyLike() {
-    val z3 = new Z3Context(new Z3Config("MODEL" -> true))
+    var z3 = new Z3Context(new Z3Config("MODEL" -> true))
     val i = z3.mkIntSort
     val h = z3.mkConst(z3.mkStringSymbol("h"), i)
     val m = z3.mkConst(z3.mkStringSymbol("m"), i)
@@ -52,7 +52,7 @@ class ScalaZ3Test extends ShouldMatchersForJUnit {
     solver.assertCnstr(z3.mkAnd(cs1, cs2, cs3, cs4))
 
     // attempting to solve the constraints
-    val (sol, model) = solver.checkAndGetModel
+    var (sol, model) = solver.checkAndGetModel
 
     sol should equal(Some(true))
     model.evalAs[Int](h) should equal(Some(0))
@@ -61,5 +61,8 @@ class ScalaZ3Test extends ShouldMatchersForJUnit {
 
     model.delete
     z3.delete
+    model = null
+    z3 = null
+    System.gc()
   }
 }
