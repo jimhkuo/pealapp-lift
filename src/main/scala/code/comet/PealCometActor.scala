@@ -40,7 +40,7 @@ class PealCometActor extends CometActor with Loggable {
         }, "id" -> "policies", "cols" -> "30", "rows" -> "20")}
         </div>
         <div>
-          {SHtml.ajaxButton("Submit", () => {
+          {SHtml.ajaxButton("Synthesise", () => {
           this ! Compute
           _Noop
         }) ++
@@ -56,13 +56,13 @@ class PealCometActor extends CometActor with Loggable {
             this ! Clear
             _Noop
           }) ++
-          SHtml.ajaxButton("Prepare", () => {
+          SHtml.ajaxButton("Download", () => {
             this ! Download
             _Noop
           })}
         </div>
         <div>
-          {SHtml.ajaxText("10", s => {
+          {SHtml.ajaxText(majorityVotingCount.toString, s => {
           majorityVotingCount = s.toInt
           _Noop
         }, "id" -> "n", "size" -> "10")}
