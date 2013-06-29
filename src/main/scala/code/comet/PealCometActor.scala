@@ -48,10 +48,6 @@ class PealCometActor extends CometActor with Loggable {
             this ! Reset
             _Noop
           }) ++
-          SHtml.ajaxButton("Majority Voting", () => {
-            this ! MajorityVoting
-            _Noop
-          }) ++
           SHtml.ajaxButton("Clear", () => {
             this ! Clear
             _Noop
@@ -62,6 +58,10 @@ class PealCometActor extends CometActor with Loggable {
           })}
         </div>
         <div>
+          {SHtml.ajaxButton("Majority Voting", () => {
+          this ! MajorityVoting
+          _Noop
+        })}
           {SHtml.ajaxText(majorityVotingCount.toString, s => {
           majorityVotingCount = s.toInt
           _Noop
@@ -81,7 +81,9 @@ class PealCometActor extends CometActor with Loggable {
     case Compute => onCompute(inputPolicies)
     case File(result) =>
       myData.set(result)
-      this ! Result(<p>Output prepared, please click <a href="download">here</a> to download the file</p>)
+      this ! Result(<p>Output prepared, please click
+        <a href="download">here</a>
+        to download the file</p>)
     case Result(output) => partialUpdate(JqId("result") ~> JqHtml(output))
     case Error(message) => partialUpdate(JqId("result") ~> JqHtml(Text(message)))
     case Clear =>
