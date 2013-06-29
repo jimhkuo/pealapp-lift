@@ -86,21 +86,21 @@ class PealCometActor extends CometActor with Loggable {
         <a href="download">here</a>
         to download the file</p>)
     case Result(output) => partialUpdate(JqId("result") ~> JqHtml(output))
-    case Error(message) => partialUpdate(JqId("result") ~> JqHtml(Text(message)))
+    case Message(message) => partialUpdate(JqId("result") ~> JqHtml(Text(message)))
     case Clear =>
-      this ! Result(<p></p>)
+      this ! Message("")
       partialUpdate(JqId("policies") ~> JqVal(""))
     case Download =>
-      partialUpdate(JqId("result") ~> JqHtml(<p>Synthesising... Please wait...</p>))
+      this ! Message("Synthesising... Please wait...")
       onDownload(inputPolicies)
     case MajorityVoting =>
-      this ! Result(<p></p>)
+      this ! Message("")
       inputPolicies = "cond = 0.5 < pSet\nb1 = + (" +
         (for (i <- 0 until majorityVotingCount) yield "(q" + i + " " + "%.3f".format(1.0 / majorityVotingCount) + ")").mkString("") +
         " ) default 0\npSet = b1"
       partialUpdate(JqId("policies") ~> JqVal(inputPolicies))
     case Reset =>
-      this ! Result(<p></p>)
+      this ! Message("")
       inputPolicies = defaultInput
       partialUpdate(JqId("policies") ~> JqVal(inputPolicies))
   }
@@ -146,7 +146,7 @@ class PealCometActor extends CometActor with Loggable {
 
   private def dealWithIt(e: Exception) {
     println("pl: " + e.getMessage)
-    this ! Error(e.getMessage)
+    this ! Message(e.getMessage)
   }
 }
 
@@ -166,7 +166,7 @@ case class Result(output: NodeSeq)
 
 case class File(result: String, lapseTime: Long)
 
-case class Error(output: String)
+case class Message(output: String)
 
 object myData extends SessionVar[String]("")
 
