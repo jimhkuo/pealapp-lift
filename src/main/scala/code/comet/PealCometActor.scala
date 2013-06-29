@@ -129,6 +129,7 @@ class PealCometActor extends CometActor with Loggable {
     try {
       pealProgrmParser.program()
       val pSet = pealProgrmParser.pSet
+      this ! Result(<p>Synthesising... Please wait...</p>)
       val start = System.nanoTime()
       val body = pSet.phiZ3SMTString
       val lapseTime = System.nanoTime() - start
