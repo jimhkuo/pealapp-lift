@@ -91,7 +91,7 @@ class PealCometActor extends CometActor with Loggable {
       this ! Result(<p></p>)
       partialUpdate(JqId("policies") ~> JqVal(""))
     case Download =>
-      this ! Result(<p>Synthesising... Please wait...</p>)
+      partialUpdate(JqId("result") ~> JqHtml(<p>Synthesising... Please wait...</p>))
       onDownload(inputPolicies)
     case MajorityVoting =>
       this ! Result(<p></p>)
