@@ -79,9 +79,9 @@ class PealCometActor extends CometActor with Loggable {
   override def lowPriority = {
     case Init =>
     case Compute => onCompute(inputPolicies)
-    case File(result) =>
+    case File(result, lapseTime) =>
       myData.set(result)
-      this ! Result(<p>Output prepared, please click
+      this ! Result(<p>Output prepared, lapse time: <span style="color:red;font-weight: bold;">{"%.2f".format(lapseTime.toDouble/1000000)}</span> ms, please click
         <a href="download">here</a>
         to download the file</p>)
     case Result(output) => partialUpdate(JqId("result") ~> JqHtml(output))
@@ -89,7 +89,7 @@ class PealCometActor extends CometActor with Loggable {
     case Clear =>
       this ! Result(<p></p>)
       partialUpdate(JqId("policies") ~> JqVal(""))
-    case Download => onPrepare(inputPolicies)
+    case Download => onDownload(inputPolicies)
     case MajorityVoting =>
       this ! Result(<p></p>)
       inputPolicies = "cond = 0.5 < pSet\nb1 = + (" +
@@ -124,13 +124,16 @@ class PealCometActor extends CometActor with Loggable {
     }
   }
 
-  private def onPrepare(input: String) {
+  private def onDownload(input: String) {
     val pealProgrmParser = getParser(input)
     try {
       pealProgrmParser.program()
       val pSet = pealProgrmParser.pSet
-      val result = pSet.z3SMTHeader + pSet.phiZ3SMTString + "\n" + "(get-model)"
-      this ! File(result)
+      val start = System.nanoTime()
+      val body = pSet.phiZ3SMTString
+      val lapseTime = System.nanoTime() - start
+      val result = pSet.z3SMTHeader + body + "\n" + "(get-model)"
+      this ! File(result, lapseTime)
     }
     catch {
       case e1: Exception =>
@@ -158,7 +161,7 @@ case object Compute
 
 case class Result(output: NodeSeq)
 
-case class File(result: String)
+case class File(result: String, lapseTime: Long)
 
 case class Error(output: String)
 
