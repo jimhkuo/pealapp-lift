@@ -40,34 +40,30 @@ class PealCometActor extends CometActor with Loggable {
         }, "id" -> "policies", "cols" -> "30", "rows" -> "20")}
         </div>
         <div>
-          {SHtml.ajaxButton("Synthesise", () => {
-          this ! Compute
+          {SHtml.ajaxButton("Reset to sample policies", () => {
+          this ! Reset
           _Noop
         }) ++
-          SHtml.ajaxButton("Reset", () => {
-            this ! Reset
-            _Noop
-          }) ++
-          SHtml.ajaxButton("Clear", () => {
+          SHtml.ajaxButton("Clear policies", () => {
             this ! Clear
             _Noop
-          }) ++
-          SHtml.ajaxButton("Download", () => {
-            this ! Download
-            _Noop
-          })}
-        </div>
-        <div>
-          {SHtml.ajaxButton("Majority Voting", () => {
+          })}{SHtml.ajaxButton("Majority Voting", () => {
           this ! MajorityVoting
           _Noop
-        })}
-          {SHtml.ajaxText(majorityVotingCount.toString, s => {
+        })}{SHtml.ajaxText(majorityVotingCount.toString, s => {
           majorityVotingCount = s.toInt
           _Noop
         }, "id" -> "n", "size" -> "10")}
         </div>
-        <br/>
+        <div>
+          {SHtml.ajaxButton("Synthesise (and show results)", () => {
+          this ! Compute
+          _Noop
+        })}{SHtml.ajaxButton("Synthesise (and download)", () => {
+          this ! Download
+          _Noop
+        })}
+        </div>
         <div>
           <h3>Result:</h3>
           <div id="result"></div>
@@ -81,7 +77,11 @@ class PealCometActor extends CometActor with Loggable {
     case Compute => onCompute(inputPolicies)
     case File(result, lapseTime) =>
       myData.set(result)
-      this ! Result(<p>Output prepared, lapse time: <span style="color:red;font-weight: bold;">{"%.2f".format(lapseTime.toDouble/1000000)}</span> ms, please click
+      this ! Result(<p>Output prepared, lapse time:
+        <span style="color:red;font-weight: bold;">
+          {"%.2f".format(lapseTime.toDouble / 1000000)}
+        </span>
+        ms, please click
         <a href="download">here</a>
         to download the file</p>)
     case Result(output) => partialUpdate(JqId("result") ~> JqHtml(output))
@@ -89,7 +89,9 @@ class PealCometActor extends CometActor with Loggable {
     case Clear =>
       this ! Result(<p></p>)
       partialUpdate(JqId("policies") ~> JqVal(""))
-    case Download => onDownload(inputPolicies)
+    case Download =>
+      this ! Result(<p>Synthesising... Please wait...</p>)
+      onDownload(inputPolicies)
     case MajorityVoting =>
       this ! Result(<p></p>)
       inputPolicies = "cond = 0.5 < pSet\nb1 = + (" +
@@ -129,7 +131,6 @@ class PealCometActor extends CometActor with Loggable {
     try {
       pealProgrmParser.program()
       val pSet = pealProgrmParser.pSet
-      this ! Result(<p>Synthesising... Please wait...</p>)
       val start = System.nanoTime()
       val body = pSet.phiZ3SMTString
       val lapseTime = System.nanoTime() - start
