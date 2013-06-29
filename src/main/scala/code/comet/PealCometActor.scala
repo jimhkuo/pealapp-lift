@@ -81,13 +81,13 @@ class PealCometActor extends CometActor with Loggable {
     case Compute => onCompute(inputPolicies)
     case File(result) =>
       myData.set(result)
-      this ! Result(<p>output prepared, please click Download</p>)
+      this ! Result(<p>Output prepared, please click <a href="download">here</a> to download the file</p>)
     case Result(output) => partialUpdate(JqId("result") ~> JqHtml(output))
     case Error(message) => partialUpdate(JqId("result") ~> JqHtml(Text(message)))
     case Clear =>
       this ! Result(<p></p>)
       partialUpdate(JqId("policies") ~> JqVal(""))
-    case Download => onDownload(inputPolicies)
+    case Download => onPrepare(inputPolicies)
     case MajorityVoting =>
       this ! Result(<p></p>)
       inputPolicies = "cond = 0.5 < pSet\nb1 = + (" +
@@ -122,7 +122,7 @@ class PealCometActor extends CometActor with Loggable {
     }
   }
 
-  private def onDownload(input: String) {
+  private def onPrepare(input: String) {
     val pealProgrmParser = getParser(input)
     try {
       pealProgrmParser.program()

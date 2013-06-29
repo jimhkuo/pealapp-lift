@@ -14,8 +14,8 @@ class Boot {
       Menu.i("Peal") / "index",
       //      Menu.i("Home") / "peal",
       //      Menu.i("Peal") / "peal",
-      Menu.i("About us") / "aboutus",
-      Menu.i("Download") / "download"
+      Menu.i("About us") / "aboutus"
+//      Menu.i("Download") / "download"
       //    ,  Menu(Loc("Static", Link(List("static"), true, "/static/index"), "Some static page"))
     )
     LiftRules.setSiteMap(SiteMap(entries: _*))
