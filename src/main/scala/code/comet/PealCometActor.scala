@@ -64,6 +64,7 @@ class PealCometActor extends CometActor with Loggable {
           _Noop
         })}
         </div>
+        <br/>
         <div>
           <h3>Result:</h3>
           <div id="result"></div>
