@@ -60,7 +60,7 @@ class PealCometActor extends CometActor with Loggable {
           this ! Compute
           _Noop
         })}{SHtml.ajaxButton("Synthesise (and download)", () => {
-          this ! Download
+          this ! Prepare
           _Noop
         })}
         </div>
@@ -90,8 +90,10 @@ class PealCometActor extends CometActor with Loggable {
     case Clear =>
       this ! Message("")
       partialUpdate(JqId("policies") ~> JqVal(""))
+    case Prepare =>
+      partialUpdate(JqId("result") ~> JqHtml(Text("Synthesising... Please wait...")))
+      this ! Download
     case Download =>
-      this ! Message("Synthesising... Please wait...")
       onDownload(inputPolicies)
     case MajorityVoting =>
       this ! Message("")
@@ -155,6 +157,8 @@ case object Init
 case object Clear
 
 case object Download
+
+case object Prepare
 
 case object Reset
 
