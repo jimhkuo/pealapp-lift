@@ -22,7 +22,6 @@ class ScalaZ3Test extends ShouldMatchersForJUnit {
     show(s)
   }
 
-  @Ignore("doesn't work in batch mode")
   @Test
   def testFunction2() {
     //    (declare-const x Real)
@@ -51,7 +50,6 @@ class ScalaZ3Test extends ShouldMatchersForJUnit {
     z3 = null
   }
 
-  @Ignore("doesn't work in batch mode")
   @Test
   def testFunction() {
     //  (declare-const q1 Bool)
@@ -82,7 +80,6 @@ class ScalaZ3Test extends ShouldMatchersForJUnit {
     z3 = null
   }
 
-  @Ignore("doesn't work in batch mode")
   @Test
   def testUnsatModel() {
     var z3 = new Z3Context(new Z3Config("MODEL" -> true))
