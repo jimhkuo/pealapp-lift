@@ -10,7 +10,25 @@ class ScalaZ3Test extends ShouldMatchersForJUnit {
 
   @Ignore("doesn't work in batch mode")
   @Test
-  def testPealModel() {
+  def testUnsatModel() {
+    var z3 = new Z3Context(new Z3Config("MODEL" -> true))
+    val q1 = z3.mkBoolConst("q1")
+    val q2 = z3.mkBoolConst("q2")
+    val f = z3.mkFalse()
+    val solver = z3.mkSolver
+    solver.assertCnstr(z3.mkAnd(q1, q2, f))
+
+    var (sol, model) = solver.checkAndGetModel
+
+    sol should equal (Some(false))
+    z3.delete()
+    model = null
+    z3 = null
+  }
+
+  @Ignore("doesn't work in batch mode")
+  @Test
+  def testASimplePealModel() {
     //  (declare-const q1 Bool)
     //  (declare-const q2 Bool)
     //  (assert (and (or q1 q2) q1))
