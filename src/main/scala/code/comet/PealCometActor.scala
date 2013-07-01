@@ -30,6 +30,7 @@ class PealCometActor extends CometActor with Loggable {
     //      SHtml.textarea("foo", s => inputPolicies = s)
     //      SHtml.textarea("foo", "prefix " + _)}
 
+    //TODO set up control to use negated cond function
     <form class="lift:form.ajax">
       <div>
         <h3>Input policies:</h3>
@@ -147,7 +148,6 @@ class PealCometActor extends CometActor with Loggable {
   }
 
   private def dealWithIt(e: Exception) {
-    println("pl: " + e.getMessage)
     this ! Message(e.getMessage)
   }
 }
