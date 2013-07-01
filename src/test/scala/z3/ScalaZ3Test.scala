@@ -9,12 +9,14 @@ class ScalaZ3Test extends ShouldMatchersForJUnit {
 
   @Test
   def scalaTest() {
-      val s = Some(false)
+    val s = Some(false)
 
-    def show (s: Option[Boolean]) = s match {
-      case Some(x) if x == true => println(x)
-      case Some(x) if x == false => println(x)
-      case None => println("none")
+    def show(s: Option[Boolean]) {
+      s match {
+        case Some(x) if x => println(x)
+        case Some(x) if !x => println(x)
+        case None => println("none")
+      }
     }
 
     show(s)
