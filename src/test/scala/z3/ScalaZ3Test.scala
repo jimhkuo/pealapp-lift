@@ -3,10 +3,40 @@ package z3
 import org.junit.{Ignore, Test}
 import org.scalatest.junit.ShouldMatchersForJUnit
 import z3.scala.dsl._
-import z3.scala.dsl.Operands._
 import z3.scala._
 
 class ScalaZ3Test extends ShouldMatchersForJUnit {
+
+  @Ignore("doesn't work in batch mode")
+  @Test
+  def testFunction() {
+    //  (declare-const q1 Bool)
+    //  (declare-const q2 Bool)
+    //  (declare-fun cond () Bool)
+    //  (assert (= cond (and (or q1 q2) q1)))
+    //  (assert (not cond))
+    //  (check-sat)
+    var z3 = new Z3Context(new Z3Config("MODEL" -> true))
+    val q1 = z3.mkBoolConst("q1")
+    val q2 = z3.mkBoolConst("q2")
+    val q1Orq2 = z3.mkOr(q1, q2)
+    val formula = z3.mkAnd(q1Orq2, q1)
+    //function that takes no arguments is a constant
+    val cond = z3.mkBoolConst("cond")
+    val equal = z3.mkEq(cond, formula)
+    val solver = z3.mkSolver
+    solver.assertCnstr(equal)
+    solver.assertCnstr(z3.mkNot(cond))
+
+    var (sol, model) = solver.checkAndGetModel
+
+    sol should  be (Some(true))
+    model.evalAs[Boolean](q1) should be(Some(false))
+
+    z3.delete()
+    z3 = null
+  }
+
 
   @Ignore("doesn't work in batch mode")
   @Test
@@ -19,7 +49,7 @@ class ScalaZ3Test extends ShouldMatchersForJUnit {
 
     var (sol, model) = solver.checkAndGetModel
 
-    sol should equal (Some(false))
+    sol should equal(Some(false))
     z3.delete()
     z3 = null
   }
@@ -42,8 +72,8 @@ class ScalaZ3Test extends ShouldMatchersForJUnit {
 
     var (sol, model) = solver.checkAndGetModel
 
-    sol should equal (Some(true))
-    model.evalAs[Boolean](q1) should be (Some(true))
+    sol should equal(Some(true))
+    model.evalAs[Boolean](q1) should be(Some(true))
     model.delete
     z3.delete()
     model = null
