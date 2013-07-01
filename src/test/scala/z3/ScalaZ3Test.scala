@@ -10,19 +10,28 @@ class ScalaZ3Test extends ShouldMatchersForJUnit {
 
   @Ignore("doesn't work in batch mode")
   @Test
-  def testCalendar() {
-    val totalDays = 10593
-    val originYear = 1980
+  def testPealModel() {
+    //  (declare-const q1 Bool)
+    //  (declare-const q2 Bool)
+    //  (assert (and (or q1 q2) q1))
+    //  (check-sat)
+    //  (get-model)
 
-    val (year, day) = choose((year: Val[Int], day: Val[Int]) => {
-      def leapDaysUntil(y: Tree[IntSort]) = (y - 1) / 4 - (y - 1) / 100 + (y - 1) / 400
+    var z3 = new Z3Context(new Z3Config("MODEL" -> true))
+    val q1 = z3.mkBoolConst("q1")
+    val q2 = z3.mkBoolConst("q2")
+    val q1Orq2 = z3.mkOr(q1, q2)
+    val solver = z3.mkSolver
+    solver.assertCnstr(z3.mkAnd(q1Orq2, q1))
 
-      totalDays === (year - originYear) * 365 + leapDaysUntil(year) - leapDaysUntil(originYear) + day &&
-        day > 0 && day <= 366
-    })
+    var (sol, model) = solver.checkAndGetModel
 
-    year should equal(2008)
-    day should equal(366)
+    sol should equal (Some(true))
+    model.evalAs[Boolean](q1) should be (Some(true))
+    model.delete
+    z3.delete()
+    model = null
+    z3 = null
   }
 
   @Ignore("doesn't work in batch mode")
@@ -66,5 +75,22 @@ class ScalaZ3Test extends ShouldMatchersForJUnit {
     model = null
     z3 = null
     System.gc()
+  }
+
+  @Ignore("doesn't work in batch mode")
+  @Test
+  def testCalendar() {
+    val totalDays = 10593
+    val originYear = 1980
+
+    val (year, day) = choose((year: Val[Int], day: Val[Int]) => {
+      def leapDaysUntil(y: Tree[IntSort]) = (y - 1) / 4 - (y - 1) / 100 + (y - 1) / 400
+
+      totalDays === (year - originYear) * 365 + leapDaysUntil(year) - leapDaysUntil(originYear) + day &&
+        day > 0 && day <= 366
+    })
+
+    year should equal(2008)
+    day should equal(366)
   }
 }
