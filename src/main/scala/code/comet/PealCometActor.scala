@@ -148,7 +148,7 @@ class PealCometActor extends CometActor with Loggable {
         pol <- pealProgrmParser.pols.values();
         r <- pol.rules
       ) yield "(declare-const " + r.q.name + " Bool)"
-      val result = s + body + "\n" + "(get-model)"
+      val result = s.mkString("") + body + "\n" + "(get-model)"
       this ! File(result, lapseTime)
     }
     catch {
