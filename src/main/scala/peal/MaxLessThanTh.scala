@@ -6,6 +6,7 @@ import scala.collection.JavaConversions._
 
 
 class MaxLessThanTh(lhs: Pol, rhs: Pol, th: Double) extends TopSet {
+  //TODO need to handle the situation where rhs is also a TopSet
 
   def synthesis = "(and " + new PolLessThanTh(lhs, th).synthesis + " " + new PolLessThanTh(rhs, th).synthesis + ")"
 
