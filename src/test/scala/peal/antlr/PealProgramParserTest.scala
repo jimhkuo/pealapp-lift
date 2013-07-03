@@ -10,9 +10,9 @@ class PealProgramParserTest extends ShouldMatchersForJUnit {
 
   private def getParser(input: String) = {
     val charStream = new ANTLRStringStream(input)
-    val lexer = new PealProgramSpikeLexer(charStream)
+    val lexer = new PealProgramLexer(charStream)
     val tokenStream = new CommonTokenStream(lexer)
-    new PealProgramSpikeParser(tokenStream)
+    new PealProgramParser(tokenStream)
   }
 
   @Test(expected = classOf[RuntimeException])

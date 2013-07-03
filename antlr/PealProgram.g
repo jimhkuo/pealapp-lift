@@ -10,7 +10,7 @@ import java.util.*;
 import peal.domain.*;
 import peal.*;
 import org.antlr.runtime.BitSet;
-import peal.synthesis.TopSet;
+import peal.synthesis.pSet;
 import peal.domain.operator.*;
 
 }
@@ -18,7 +18,8 @@ import peal.domain.operator.*;
 @members {
 Map<String, Pol> pols = new HashMap<String, Pol>();
 List<Rule> l = new ArrayList<Rule>();
-public TopSet pSet = null;
+String n = null;
+public pSet pSet = null;
 
 //need to override the default error reporting
 @Override
@@ -33,25 +34,17 @@ package peal.antlr;
 }
 
 program	
-	: 'cond' '=' 'pSet' '<=' n=NUMBER 
+	: 'cond' '=' id0=IDENT '<=' num=NUMBER {n = $num.text;}
 	(id1=IDENT '=' pol {pols.put($id1.text, $pol.p);})*
-  	(
-  	'pSet' '=' 'max' '(' id1=IDENT ',' id2=IDENT ')' {pSet = new MaxLessThanTh(pols.get($id1.text), pols.get($id2.text), Double.valueOf($n.text));} 
-	  | 
-  	'pSet' '=' 'min' '(' id1=IDENT ',' id2=IDENT ')' {pSet = new MinLessThanTh(pols.get($id1.text), pols.get($id2.text), Double.valueOf($n.text));}
-	  |
-  	'pSet' '=' id1=IDENT {pSet = new PolLessThanTh(pols.get($id1.text), Double.valueOf($n.text));}
-	)
-	|
-	'cond' '=' n=NUMBER '<' 'pSet'
-	(id1=IDENT '=' pol {pols.put($id1.text, $pol.p);})*
-  	(
-  	'pSet' '=' 'max' '(' id1=IDENT ',' id2=IDENT ')' {pSet = new ThLessThanMax(pols.get($id1.text), pols.get($id2.text), Double.valueOf($n.text));} 
-	  | 
-  	'pSet' '=' 'min' '(' id1=IDENT ',' id2=IDENT ')' {pSet = new ThLessThanMin(pols.get($id1.text), pols.get($id2.text), Double.valueOf($n.text));}
-	  |
-  	'pSet' '=' id1=IDENT {pSet = new ThLessThanPol(pols.get($id1.text), Double.valueOf($n.text));}
-	)
+	id0=IDENT '=' pSet { pSet = $pSet.t;}
+	;
+
+pSet    returns [pSet t] 
+	: id1=IDENT {$t = new PolLessThanTh(pols.get($id1.text), Double.valueOf(n));}
+	| 'max' '(' id1=IDENT ',' id2=IDENT ')' {$t = new MaxLessThanTh(pols.get($id1.text), pols.get($id2.text), Double.valueOf(n));}
+	| 'max' '(' id3=IDENT ',' id4=pSet ')' {$t = new MaxLessThanTh(pols.get($id3.text), $id4.t, Double.valueOf(n));}
+//	| 'min' '(' id1=IDENT ',' id2=IDENT ')'
+//	| 'min' '(' id3=IDENT ',' pSet ')'
 	;
 
 pol	returns [Pol p] 
