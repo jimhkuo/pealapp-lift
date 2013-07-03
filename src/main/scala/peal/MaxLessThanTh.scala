@@ -12,6 +12,13 @@ class MaxLessThanTh(lhs: Pol, rhs: pSet, th: Double) extends pSet {
     case _ => "(and " + new PolLessThanTh(lhs, th).synthesis + " " + rhs.synthesis + ")"
   }
 
-  def z3SMTHeader: String = lhs.rules.map(p => "(declare-const " + p.q.name + " Bool)").mkString("", "\n", "\n") +
-    rhs.getPol.rules.map(p => "(declare-const " + p.q.name + " Bool)").mkString("", "\n", "\n")
+  def z3SMTHeader: String = {
+
+    val s = rhs match {
+      case _: Pol => rhs.getPol.rules.map(p => "(declare-const " + p.q.name + " Bool)").mkString("", "\n", "\n")
+      case _ => rhs.z3SMTHeader
+    }
+
+    lhs.rules.map(p => "(declare-const " + p.q.name + " Bool)").mkString("", "\n", "\n") + s
+  }
 }

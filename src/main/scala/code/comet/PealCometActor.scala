@@ -120,13 +120,14 @@ class PealCometActor extends CometActor with Loggable {
     try {
       pealProgrmParser.program()
       val pSet = pealProgrmParser.pSet
+      val s = pSet.z3SMTHeader
       val result = <p>
-        {pSet.z3SMTHeader}<br/>{pSet.phiZ3SMTString}<br/>
+        {s}<br/>{pSet.phiZ3SMTString}<br/>
         (get-model)</p>
       this ! Result(result)
     } catch {
-      case e1: Exception =>
-        dealWithIt(e1)
+      case e2: NullPointerException => dealWithIt(e2)
+      case e1: Throwable => dealWithIt(e1)
     }
   }
 
@@ -142,12 +143,12 @@ class PealCometActor extends CometActor with Loggable {
       this ! File(result, lapseTime)
     }
     catch {
-      case e1: Exception =>
+      case e1: Throwable =>
         dealWithIt(e1)
     }
   }
 
-  private def dealWithIt(e: Exception) {
+  private def dealWithIt(e: Throwable) {
     this ! Message(e.getMessage)
   }
 }

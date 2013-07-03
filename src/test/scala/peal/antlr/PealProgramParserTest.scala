@@ -26,6 +26,24 @@ class PealProgramParserTest extends ShouldMatchersForJUnit {
   }
 
   @Test
+  def testCanDealWithNestedInput() {
+    val input = "cond = pSet <= 0.5\n" +
+      "b1 = min ((q1 0.2) (q2 0.4) (q3 0.9)) default 1\n" +
+      "b2 = + ((q4 0.1) (q5 0.2) (q6 0.2)) default 0\n" +
+      "pSet = max(b1, max(b1,b2))"
+
+    val pealProgrmParser = getParser(input)
+    pealProgrmParser.program()
+
+    val pols = pealProgrmParser.pols
+    pols("b1").rules.size should be(3)
+
+    val set = pealProgrmParser.pSet
+    println(set.z3SMTHeader)
+    set.synthesis should be("(and (or q1 q2 q3) (or q1 q2))")
+  }
+
+  @Test
   def testCanDealWithMul() {
     val input = "cond = pSet <= 0.5" +
       "b1 = * ((q1 0.2) (q2 0.4) (q3 0.9)) default 1" +
