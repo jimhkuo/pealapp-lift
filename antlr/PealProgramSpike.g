@@ -32,10 +32,11 @@ public void reportError(RecognitionException e) {
 package peal.antlr;
 }
 
-//pSet 
-//	: 'pSet' '=' id0=IDENT 
-//	| 'pSet' '=' 'max' '(' id1=IDENT ',' id2=IDENT ')'
-//	;
+pSet 
+	: id0=IDENT 
+	| 'max' '(' id1=IDENT ',' id2=IDENT ')'
+	| 'max' '(' pSet ',' pSet ')'
+	;
 
 pol	returns [Pol p] 
 @init {l = new ArrayList<Rule>(); }
