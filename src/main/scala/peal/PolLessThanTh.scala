@@ -1,11 +1,11 @@
 package peal
 
 import peal.domain.Pol
-import peal.synthesis.TopSet
+import peal.synthesis.pSet
 import scala.collection.JavaConversions._
 
 
-class PolLessThanTh(pol: Pol, th: Double) extends TopSet {
+class PolLessThanTh(pol: Pol, th: Double) extends pSet {
 
   def synthesis = pol.defaultScore match {
     case s if s <= th => "(or " + new DefaultLessThanTh(pol, th).synthesis + " " + new NonDefaultPolLessThanTh(pol, th).synthesis + ")"

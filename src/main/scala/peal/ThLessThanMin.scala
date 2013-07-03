@@ -1,11 +1,11 @@
 package peal
 
 import peal.domain.Pol
-import peal.synthesis.TopSet
+import peal.synthesis.pSet
 import scala.collection.JavaConversions._
 
 
-class ThLessThanMin(lhs: Pol, rhs: Pol, th: Double) extends TopSet {
+class ThLessThanMin(lhs: Pol, rhs: Pol, th: Double) extends pSet {
 
   def synthesis = "(and " + new ThLessThanPol(lhs, th).synthesis + " " + new ThLessThanPol(rhs, th).synthesis + ")"
 

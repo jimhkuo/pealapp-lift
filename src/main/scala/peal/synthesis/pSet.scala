@@ -1,6 +1,6 @@
 package peal.synthesis
 
-trait TopSet {
+trait pSet {
 
   def synthesis: String
 

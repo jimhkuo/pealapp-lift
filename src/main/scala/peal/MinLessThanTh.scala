@@ -1,11 +1,11 @@
 package peal
 
 import peal.domain.Pol
-import peal.synthesis.TopSet
+import peal.synthesis.pSet
 import scala.collection.JavaConversions._
 
 
-class MinLessThanTh(lhs: Pol, rhs: Pol, th: Double) extends TopSet {
+class MinLessThanTh(lhs: Pol, rhs: Pol, th: Double) extends pSet {
 
   def synthesis = "(or " + new PolLessThanTh(lhs, th).synthesis + " " + new PolLessThanTh(rhs, th).synthesis + ")"
 

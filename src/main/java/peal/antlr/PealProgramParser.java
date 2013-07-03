@@ -5,13 +5,12 @@ import java.util.*;
 import peal.domain.*;
 import peal.*;
 import org.antlr.runtime.BitSet;
-import peal.synthesis.TopSet;
 import peal.domain.operator.*;
 
 
 
 import org.antlr.runtime.*;
-import java.util.Stack;
+
 import java.util.List;
 import java.util.ArrayList;
 
@@ -62,7 +61,7 @@ public class PealProgramParser extends Parser {
 
     Map<String, Pol> pols = new HashMap<String, Pol>();
     List<Rule> l = new ArrayList<Rule>();
-    public TopSet pSet = null;
+    public peal.synthesis.pSet pSet = null;
 
     //need to override the default error reporting
     @Override
