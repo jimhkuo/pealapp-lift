@@ -122,10 +122,12 @@ class PealCometActor extends CometActor with Loggable {
     try {
       pealProgrmParser.program()
       val pSet = pealProgrmParser.pSet
-
-      val s = pealProgrmParser.pols.keys.toSeq.map("(declare-const " + _ + " Bool)")
+      val s = for (
+        pol <- pealProgrmParser.pols.values();
+        r <- pol.rules
+      ) yield "(declare-const " + r.q.name + " Bool)"
       val result = <p>
-        {s}<br/>{pSet.phiZ3SMTString}<br/>
+        {s.mkString("")}<br/>{pSet.phiZ3SMTString}<br/>
         (get-model)</p>
       this ! Result(result)
     } catch {
@@ -142,7 +144,10 @@ class PealCometActor extends CometActor with Loggable {
       val start = System.nanoTime()
       val body = pSet.phiZ3SMTString
       val lapseTime = System.nanoTime() - start
-      val s = pealProgrmParser.pols.keys.toSeq.map("(declare-const " + _ + " Bool)")
+      val s = for (
+        pol <- pealProgrmParser.pols.values();
+        r <- pol.rules
+      ) yield "(declare-const " + r.q.name + " Bool)"
       val result = s + body + "\n" + "(get-model)"
       this ! File(result, lapseTime)
     }
