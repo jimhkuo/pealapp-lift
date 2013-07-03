@@ -12,6 +12,8 @@ import peal.antlr.{PealProgramParser, PealProgramLexer}
 import net.liftweb.common.{Full, Loggable}
 import scala.collection.immutable.Nil
 import java.io.ByteArrayInputStream
+import scala.collection.JavaConversions._
+
 
 
 class PealCometActor extends CometActor with Loggable {
@@ -120,7 +122,8 @@ class PealCometActor extends CometActor with Loggable {
     try {
       pealProgrmParser.program()
       val pSet = pealProgrmParser.pSet
-      val s = pSet.z3SMTHeader
+
+      val s = pealProgrmParser.pols.keys.toSeq.map("(declare-const " + _ + " Bool)")
       val result = <p>
         {s}<br/>{pSet.phiZ3SMTString}<br/>
         (get-model)</p>
@@ -139,7 +142,8 @@ class PealCometActor extends CometActor with Loggable {
       val start = System.nanoTime()
       val body = pSet.phiZ3SMTString
       val lapseTime = System.nanoTime() - start
-      val result = pSet.z3SMTHeader + body + "\n" + "(get-model)"
+      val s = pealProgrmParser.pols.keys.toSeq.map("(declare-const " + _ + " Bool)")
+      val result = s + body + "\n" + "(get-model)"
       this ! File(result, lapseTime)
     }
     catch {

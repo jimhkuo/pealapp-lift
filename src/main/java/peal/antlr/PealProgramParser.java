@@ -1,4 +1,4 @@
-// $ANTLR 3.4 /Users/jkuo/PealApp-lift/antlr/PealProgram.g 2013-07-03 16:01:11
+// $ANTLR 3.4 /Users/jkuo/PealApp-lift/antlr/PealProgram.g 2013-07-03 17:22:53
 
 package peal.antlr;
 import java.util.*;
@@ -59,7 +59,7 @@ public class PealProgramParser extends Parser {
     public String getGrammarFileName() { return "/Users/jkuo/PealApp-lift/antlr/PealProgram.g"; }
 
 
-    Map<String, Pol> pols = new HashMap<String, Pol>();
+    public Map<String, Pol> pols = new HashMap<String, Pol>();
     List<Rule> l = new ArrayList<Rule>();
     String n = null;
     public pSet pSet = null;

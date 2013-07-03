@@ -16,7 +16,7 @@ import peal.domain.operator.*;
 }
 
 @members {
-Map<String, Pol> pols = new HashMap<String, Pol>();
+public Map<String, Pol> pols = new HashMap<String, Pol>();
 List<Rule> l = new ArrayList<Rule>();
 String n = null;
 public pSet pSet = null;

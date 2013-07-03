@@ -11,14 +11,4 @@ class ThLessThanMin(lhs: Pol, rhs: pSet, th: Double) extends pSet {
     case _ : Pol => "(and " + new ThLessThanPol(lhs, th).synthesis + " " + new ThLessThanPol(rhs.getPol, th).synthesis + ")"
     case _ => "(and " + new ThLessThanPol(lhs, th).synthesis + " " + rhs.synthesis + ")"
   }
-
-  def z3SMTHeader: String = {
-
-    val s = rhs match {
-      case _: Pol => rhs.getPol.rules.map(p => "(declare-const " + p.q.name + " Bool)").mkString("", "\n", "\n")
-      case _ => rhs.z3SMTHeader
-    }
-
-    lhs.rules.map(p => "(declare-const " + p.q.name + " Bool)").mkString("", "\n", "\n") + s
-  }
 }
