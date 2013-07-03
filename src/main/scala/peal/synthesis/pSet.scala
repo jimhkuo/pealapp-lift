@@ -1,6 +1,10 @@
 package peal.synthesis
 
+import peal.domain.Pol
+
 trait pSet {
+
+  def getPol : Pol = null
 
   def synthesis: String
 
