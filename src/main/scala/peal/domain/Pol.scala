@@ -10,7 +10,7 @@ case class Pol(val rules: java.util.List[Rule], val operator: Operators, val def
 
   override def getPol = this
 
-  def synthesis: String = ""
+  def synthesis: String = null
 
-  def z3SMTHeader: String = ""
+  def z3SMTHeader: String = null
 }

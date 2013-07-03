@@ -10,7 +10,7 @@ import java.util.*;
 import peal.domain.*;
 import peal.*;
 import org.antlr.runtime.BitSet;
-import peal.synthesis.TopSet;
+import peal.synthesis.pSet;
 import peal.domain.operator.*;
 
 }
@@ -19,7 +19,7 @@ import peal.domain.operator.*;
 Map<String, Pol> pols = new HashMap<String, Pol>();
 List<Rule> l = new ArrayList<Rule>();
 String n = null;
-public TopSet pSet = null;
+public pSet pSet = null;
 
 //need to override the default error reporting
 @Override
@@ -33,20 +33,18 @@ public void reportError(RecognitionException e) {
 package peal.antlr;
 }
 
-
-
 program	
-	: 'cond' '=' id0=IDENT '<=' n=NUMBER {n = $n.text;}
+	: 'cond' '=' id0=IDENT '<=' num=NUMBER {n = $num.text;}
 	(id1=IDENT '=' pol {pols.put($id1.text, $pol.p);})*
-	id0=IDENT '=' pSet
+	id0=IDENT '=' pSet { pSet = $pSet.t;}
 	;
 
-pSet    returns [TopSet pSet] 
-	: id0=IDENT {$pSet = new PolLessThanTh(pols.get($id1.text), Double.valueOf(n.text));}
-	| 'max' '(' id1=IDENT ',' id2=IDENT ')' {$pSet = new MaxLessThanTh(pols.get($id1.text), pols.get($id2.text), Double.valueOf(n.text));}
-	| 'max' '(' id3=IDENT ',' pSet ')'
-	| 'min' '(' id1=IDENT ',' id2=IDENT ')'
-	| 'min' '(' id3=IDENT ',' pSet ')'
+pSet    returns [pSet t] 
+	: id1=IDENT {$t = new PolLessThanTh(pols.get($id1.text), Double.valueOf(n));}
+	| 'max' '(' id1=IDENT ',' id2=IDENT ')' {$t = new MaxLessThanTh(pols.get($id1.text), pols.get($id2.text), Double.valueOf(n));}
+	| 'max' '(' id3=IDENT ',' id4=pSet ')' {$t = new MaxLessThanTh(pols.get($id3.text), $id4.t, Double.valueOf(n));}
+//	| 'min' '(' id1=IDENT ',' id2=IDENT ')'
+//	| 'min' '(' id3=IDENT ',' pSet ')'
 	;
 
 pol	returns [Pol p] 

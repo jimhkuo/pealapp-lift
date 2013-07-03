@@ -10,9 +10,9 @@ class PealProgramParserTest extends ShouldMatchersForJUnit {
 
   private def getParser(input: String) = {
     val charStream = new ANTLRStringStream(input)
-    val lexer = new PealProgramLexer(charStream)
+    val lexer = new PealProgramSpikeLexer(charStream)
     val tokenStream = new CommonTokenStream(lexer)
-    new PealProgramParser(tokenStream)
+    new PealProgramSpikeParser(tokenStream)
   }
 
   @Test(expected = classOf[RuntimeException])
@@ -37,7 +37,8 @@ class PealProgramParserTest extends ShouldMatchersForJUnit {
     val pols = pealProgrmParser.pols
     pols("b1").rules.size should be(3)
 
-    pealProgrmParser.pSet.synthesis should be("(and (or q1 q2 q3) (or q1 q2))")
+    val set = pealProgrmParser.pSet
+    set.synthesis should be("(and (or q1 q2 q3) (or q1 q2))")
   }
 
   @Test
