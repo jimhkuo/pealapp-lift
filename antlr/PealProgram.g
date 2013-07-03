@@ -37,6 +37,10 @@ program
 	: 'cond' '=' id0=IDENT '<=' num=NUMBER {n = $num.text;}
 	(id1=IDENT '=' pol {pols.put($id1.text, $pol.p);})*
 	id0=IDENT '=' pSet { pSet = $pSet.t;}
+	|
+	'cond' '=' num=NUMBER '<' id0=IDENT {n = $num.text;}
+	(id1=IDENT '=' pol {pols.put($id1.text, $pol.p);})*
+	id0=IDENT '=' pSet1 { pSet = $pSet1.t;}
 	;
 
 pSet    returns [pSet t] 
@@ -44,7 +48,15 @@ pSet    returns [pSet t]
 	| 'max' '(' id1=IDENT ',' id2=IDENT ')' {$t = new MaxLessThanTh(pols.get($id1.text), pols.get($id2.text), Double.valueOf(n));}
 	| 'max' '(' id3=IDENT ',' id4=pSet ')' {$t = new MaxLessThanTh(pols.get($id3.text), $id4.t, Double.valueOf(n));}
 	| 'min' '(' id1=IDENT ',' id2=IDENT ')' {$t = new MinLessThanTh(pols.get($id1.text), pols.get($id2.text), Double.valueOf(n));}
-	| 'min' '(' id3=IDENT ',' pSet ')' {$t = new MinLessThanTh(pols.get($id3.text), $id4.t, Double.valueOf(n));}
+	| 'min' '(' id3=IDENT ',' id4=pSet ')' {$t = new MinLessThanTh(pols.get($id3.text), $id4.t, Double.valueOf(n));}
+	;
+
+pSet1    returns [pSet t] 
+	: id1=IDENT {$t = new ThLessThanPol(pols.get($id1.text), Double.valueOf(n));}
+	| 'max' '(' id1=IDENT ',' id2=IDENT ')' {$t = new ThLessThanMax(pols.get($id1.text), pols.get($id2.text), Double.valueOf(n));}
+	| 'max' '(' id3=IDENT ',' id4=pSet1 ')' {$t = new ThLessThanMax(pols.get($id3.text), $id4.t, Double.valueOf(n));}
+	| 'min' '(' id1=IDENT ',' id2=IDENT ')' {$t = new ThLessThanMin(pols.get($id1.text), pols.get($id2.text), Double.valueOf(n));}
+	| 'min' '(' id3=IDENT ',' id4=pSet1 ')' {$t = new ThLessThanMin(pols.get($id3.text), $id4.t, Double.valueOf(n));}
 	;
 
 pol	returns [Pol p] 

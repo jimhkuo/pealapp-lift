@@ -77,7 +77,7 @@ class PealProgramParserTest extends ShouldMatchersForJUnit {
 
   @Test
   def testDealWithMinAndGreaterThanTh() {
-    val input = "cond = 0.5 < pSet" +
+    val input = "cond = 0.5 < pSet " +
       "b1 = min ((q1 0.2) (q2 0.4) (q3 0.9)) default 1" +
       "b2 = + ((q4 0.1) (q5 0.2) (q6 0.2)) default 0 " +
       "pSet = min(b1, b2)"
@@ -89,7 +89,7 @@ class PealProgramParserTest extends ShouldMatchersForJUnit {
     pols("b1").rules.size should be(3)
     pols("b2").rules.size should be(3)
 
-    pealProgrmParser.pSet.synthesis should be("(or (and (or q1 q2 q3) (or q1 q2)) (or (and (not q4) (not q5) (not q6)) (not false)))")
+    pealProgrmParser.pSet.synthesis should be("(and (or (and (not q1) (not q2) (not q3)) (not (or q1 q2))) (and (or q4 q5 q6) false))")
   }
 
   @Test
