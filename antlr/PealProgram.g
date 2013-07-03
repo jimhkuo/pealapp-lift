@@ -43,8 +43,8 @@ pSet    returns [pSet t]
 	: id1=IDENT {$t = new PolLessThanTh(pols.get($id1.text), Double.valueOf(n));}
 	| 'max' '(' id1=IDENT ',' id2=IDENT ')' {$t = new MaxLessThanTh(pols.get($id1.text), pols.get($id2.text), Double.valueOf(n));}
 	| 'max' '(' id3=IDENT ',' id4=pSet ')' {$t = new MaxLessThanTh(pols.get($id3.text), $id4.t, Double.valueOf(n));}
-//	| 'min' '(' id1=IDENT ',' id2=IDENT ')'
-//	| 'min' '(' id3=IDENT ',' pSet ')'
+	| 'min' '(' id1=IDENT ',' id2=IDENT ')' {$t = new MinLessThanTh(pols.get($id1.text), pols.get($id2.text), Double.valueOf(n));}
+	| 'min' '(' id3=IDENT ',' pSet ')' {$t = new MinLessThanTh(pols.get($id3.text), $id4.t, Double.valueOf(n));}
 	;
 
 pol	returns [Pol p] 
