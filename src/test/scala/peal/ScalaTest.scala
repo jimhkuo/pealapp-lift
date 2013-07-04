@@ -14,20 +14,18 @@ class ScalaTest extends ShouldMatchersForJUnit {
 
     val p1 = new Pol(List(new Rule(new Predicate("q1"), 0.5), new Rule(new Predicate("q2"), 0.5), new Rule(new Predicate("q3"), 0.5)), Min, 1)
     val p2 = new Pol(List(new Rule(new Predicate("q4"), 0.5), new Rule(new Predicate("q5"), 0.5), new Rule(new Predicate("q6"), 0.5)), Min, 0)
-
     val pols = Map("1" -> p1, "2" -> p2)
 
     val q = pols.values.flatMap(pol => pol.rules.toList).map(r => r.q.name).toSeq.distinct
-    val s = for (name <- q) yield name
-    println(s)
+    println(q)
 
     val r = for (
       pol <- pols.values;
       rule <- pol.rules
     ) yield rule
 
-    val t = for (name <- q) yield name
-    println(t)
+    val n = for (rule <- r) yield rule.q.name
+    println(n)
 
     val r1 = for (
       pol <- pols.values;
