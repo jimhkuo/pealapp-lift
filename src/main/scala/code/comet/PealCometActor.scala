@@ -122,8 +122,15 @@ class PealCometActor extends CometActor with Loggable {
     try {
       pealProgrmParser.program()
       val pSet = pealProgrmParser.pSet
-      val names = pealProgrmParser.pols.values().flatMap(pol => pol.rules).map(r => r.q.name).toSeq.distinct
-      val declarations = for (name <- names) yield <p>{"(declare-const " + name + " Bool)"}</p>
+//      val names = pealProgrmParser.pols.values().flatMap(pol => pol.rules).map(r => r.q.name).toSeq.distinct
+//      val declarations = for (name <- names) yield <p>{"(declare-const " + name + " Bool)"}</p>
+
+      val n = for (
+        pol <- pealProgrmParser.pols.values();
+        rule <- pol.rules
+      ) yield rule.q.name
+
+      val declarations = for (name <- n.toSeq.distinct) yield <p>{"(declare-const " + name + " Bool)"}</p>
       val result = <p>{declarations}{pSet.phiZ3SMTString}<br/>(check-sat)<br/>(get-model)</p>
       this ! Result(result)
     } catch {
