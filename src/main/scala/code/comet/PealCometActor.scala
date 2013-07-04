@@ -126,9 +126,7 @@ class PealCometActor extends CometActor with Loggable {
         pol <- pealProgrmParser.pols.values();
         r <- pol.rules
       ) yield "(declare-const " + r.q.name + " Bool)"
-      val result = <p>
-        {s.mkString("")}<br/>{pSet.phiZ3SMTString}<br/>
-        (get-model)</p>
+      val result = <p>{s.mkString("")}<br/>{pSet.phiZ3SMTString}<br/>(get-model)</p>
       this ! Result(result)
     } catch {
       case e2: NullPointerException => dealWithIt(e2)
