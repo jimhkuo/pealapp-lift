@@ -13,7 +13,7 @@ import net.liftweb.common.{Full, Loggable}
 import scala.collection.immutable.Nil
 import java.io.ByteArrayInputStream
 import scala.collection.JavaConversions._
-
+import peal.domain.Predicate
 
 
 class PealCometActor extends CometActor with Loggable {
@@ -122,10 +122,8 @@ class PealCometActor extends CometActor with Loggable {
     try {
       pealProgrmParser.program()
       val pSet = pealProgrmParser.pSet
-      val s = for (
-        pol <- pealProgrmParser.pols.values();
-        r <- pol.rules
-      ) yield <p>{"(declare-const " + r.q.name + " Bool)"}</p>
+      val q = pealProgrmParser.pols.values().flatMap(pol => pol.rules.toList).map(r => r.q.name).toSeq.distinct
+      val s = for (name <- q) yield <p>{"(declare-const " + name + " Bool)"}</p>
       val result = <p>{s}{pSet.phiZ3SMTString}<br/>(check-sat)<br/>(get-model)</p>
       this ! Result(result)
     } catch {
@@ -142,11 +140,9 @@ class PealCometActor extends CometActor with Loggable {
       val start = System.nanoTime()
       val body = pSet.phiZ3SMTString
       val lapseTime = System.nanoTime() - start
-      val s = for (
-        pol <- pealProgrmParser.pols.values();
-        r <- pol.rules
-      ) yield "(declare-const " + r.q.name + " Bool)"
-      val result = s.mkString("\n") + body + "\n" + "(check-sat)\n(get-model)"
+      val q = pealProgrmParser.pols.values().flatMap(pol => pol.rules.toList).map(r => r.q.name).toSeq.distinct
+      val s = for (name <- q) yield "(declare-const " + name + " Bool)\n"
+      val result = s.mkString("") + body + "\n" + "(check-sat)\n(get-model)"
       this ! File(result, lapseTime)
     }
     catch {
