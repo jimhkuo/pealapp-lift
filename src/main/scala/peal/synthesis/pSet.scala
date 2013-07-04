@@ -8,5 +8,5 @@ trait pSet {
 
   def synthesis: String
 
-  def phiZ3SMTString = "(assert " + synthesis + ")\n(check-sat)"
+  def phiZ3SMTString = "(assert " + synthesis + ")"
 }
