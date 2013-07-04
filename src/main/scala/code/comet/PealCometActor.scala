@@ -122,9 +122,9 @@ class PealCometActor extends CometActor with Loggable {
     try {
       pealProgrmParser.program()
       val pSet = pealProgrmParser.pSet
-      val q = pealProgrmParser.pols.values().flatMap(pol => pol.rules).map(r => r.q.name).toSeq.distinct
-      val s = for (name <- q) yield <p>{"(declare-const " + name + " Bool)"}</p>
-      val result = <p>{s}{pSet.phiZ3SMTString}<br/>(check-sat)<br/>(get-model)</p>
+      val names = pealProgrmParser.pols.values().flatMap(pol => pol.rules).map(r => r.q.name).toSeq.distinct
+      val declarations = for (name <- names) yield <p>{"(declare-const " + name + " Bool)"}</p>
+      val result = <p>{declarations}{pSet.phiZ3SMTString}<br/>(check-sat)<br/>(get-model)</p>
       this ! Result(result)
     } catch {
       case e2: NullPointerException => dealWithIt(e2)
@@ -140,9 +140,9 @@ class PealCometActor extends CometActor with Loggable {
       val start = System.nanoTime()
       val body = pSet.phiZ3SMTString
       val lapseTime = System.nanoTime() - start
-      val q = pealProgrmParser.pols.values().flatMap(pol => pol.rules).map(r => r.q.name).toSeq.distinct
-      val s = for (name <- q) yield "(declare-const " + name + " Bool)\n"
-      val result = s.mkString("") + body + "\n" + "(check-sat)\n(get-model)"
+      val names = pealProgrmParser.pols.values().flatMap(pol => pol.rules).map(r => r.q.name).toSeq.distinct
+      val declarations = for (name <- names) yield "(declare-const " + name + " Bool)\n"
+      val result = declarations.mkString("") + body + "\n" + "(check-sat)\n(get-model)"
       this ! File(result, lapseTime)
     }
     catch {
