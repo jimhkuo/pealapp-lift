@@ -26,14 +26,13 @@ class ScalaTest extends ShouldMatchersForJUnit {
       rule <- pol.rules
     ) yield rule
 
-    println(r)
     val t = for (name <- q) yield name
     println(t)
 
     val r1 = for (
       pol <- pols.values;
       rules <- pol.rules;
-      name <- rules.q.name
+      name <- rules.q.name // of course! it breaks name apart
     ) yield name
 
     println(r1)
