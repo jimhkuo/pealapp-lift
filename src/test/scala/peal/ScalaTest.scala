@@ -22,6 +22,7 @@ class ScalaTest extends ShouldMatchersForJUnit {
     println(flatRules)
     val q = flatRules.map(r => r.q.name).toSeq.distinct
     println(q)
+    q should be(List("q1", "q2", "q3", "q4", "q5", "q6"))
   }
 
   @Test
@@ -38,6 +39,8 @@ class ScalaTest extends ShouldMatchersForJUnit {
 
     val n = for (rule <- r) yield rule.q.name
     println(n)
+
+    n should be(List("q1", "q2", "q3", "q4", "q5", "q6"))
 
     val r1 = for (
       pol <- pols.values;
