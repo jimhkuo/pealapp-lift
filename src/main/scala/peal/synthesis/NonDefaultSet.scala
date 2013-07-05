@@ -1,8 +1,10 @@
 package peal.synthesis
 
+import z3.scala.Z3Context
+
 trait NonDefaultSet {
 
-  def synthesis: String
+  def synthesis(z3:Z3Context): String
 
-  def notPhi = "(not " + synthesis + ")"
+  def notPhi(z3:Z3Context) = "(not " + synthesis(z3) + ")"
 }

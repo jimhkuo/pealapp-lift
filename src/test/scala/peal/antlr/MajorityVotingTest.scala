@@ -1,12 +1,20 @@
 package peal.antlr
 
-import org.junit.{Ignore, Test}
+import org.junit.{After, Before, Ignore, Test}
 import org.antlr.runtime.{CommonTokenStream, ANTLRStringStream}
 import org.scalatest.junit.ShouldMatchersForJUnit
 import scala.collection.JavaConversions._
+import z3.scala.{Z3Config, Z3Context}
 
 
 class MajorityVotingTest extends ShouldMatchersForJUnit {
+  var z3 : Z3Context = null
+  @Before def setup() {
+    z3 = new Z3Context(new Z3Config("MODEL" -> true))
+  }
+  @After def tearDown() {
+    z3.delete()
+  }
 
   private def getParser(input: String) = {
     val charStream = new ANTLRStringStream(input)
@@ -27,7 +35,7 @@ class MajorityVotingTest extends ShouldMatchersForJUnit {
         val pealProgrmParser = getParser(input)
         pealProgrmParser.program()
 
-        val synthesis = pealProgrmParser.pSet.synthesis
+        val synthesis = pealProgrmParser.pSet.synthesis(z3)
         println(synthesis)
   }
 }

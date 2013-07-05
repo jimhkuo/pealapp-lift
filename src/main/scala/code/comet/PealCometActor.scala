@@ -14,6 +14,7 @@ import scala.collection.immutable.Nil
 import java.io.ByteArrayInputStream
 import scala.collection.JavaConversions._
 import peal.domain.Predicate
+import z3.scala.{Z3Config, Z3Context}
 
 
 class PealCometActor extends CometActor with Loggable {
@@ -119,33 +120,46 @@ class PealCometActor extends CometActor with Loggable {
 
   private def onCompute(input: String) {
     val pealProgrmParser = getParser(input)
+    val z3 = new Z3Context(new Z3Config("MODEL" -> true))
+
     try {
       pealProgrmParser.program()
       val pSet = pealProgrmParser.pSet
-//      val names = pealProgrmParser.pols.values().flatMap(pol => pol.rules).map(r => r.q.name).toSeq.distinct
-//      val declarations = for (name <- names) yield <p>{"(declare-const " + name + " Bool)"}</p>
+      //      val names = pealProgrmParser.pols.values().flatMap(pol => pol.rules).map(r => r.q.name).toSeq.distinct
+      //      val declarations = for (name <- names) yield <p>{"(declare-const " + name + " Bool)"}</p>
 
       val n = for (
         pol <- pealProgrmParser.pols.values();
         rule <- pol.rules
       ) yield rule.q.name
 
-      val declarations = for (name <- n.toSeq.distinct) yield <p>{"(declare-const " + name + " Bool)"}</p>
-      val result = <p>{declarations}{pSet.phiZ3SMTString}<br/>(check-sat)<br/>(get-model)</p>
+      val declarations = for (name <- n.toSeq.distinct) yield <p>
+        {"(declare-const " + name + " Bool)"}
+      </p>
+      val result = <p>
+        {declarations}{pSet.phiZ3SMTString(z3)}<br/>
+        (check-sat)
+        <br/>
+        (get-model)</p>
       this ! Result(result)
     } catch {
       case e2: NullPointerException => dealWithIt(e2)
       case e1: Throwable => dealWithIt(e1)
     }
+    finally {
+        z3.delete()
+    }
   }
 
   private def onDownload(input: String) {
     val pealProgrmParser = getParser(input)
+    val z3 = new Z3Context(new Z3Config("MODEL" -> true))
+
     try {
       pealProgrmParser.program()
       val pSet = pealProgrmParser.pSet
       val start = System.nanoTime()
-      val body = pSet.phiZ3SMTString
+      val body = pSet.phiZ3SMTString(z3)
       val lapseTime = System.nanoTime() - start
       val names = pealProgrmParser.pols.values().flatMap(pol => pol.rules).map(r => r.q.name).toSeq.distinct
       val declarations = for (name <- names) yield "(declare-const " + name + " Bool)\n"
@@ -155,6 +169,9 @@ class PealCometActor extends CometActor with Loggable {
     catch {
       case e1: Throwable =>
         dealWithIt(e1)
+    }
+    finally {
+      z3.delete()
     }
   }
 

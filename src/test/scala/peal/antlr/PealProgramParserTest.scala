@@ -1,12 +1,20 @@
 package peal.antlr
 
-import org.junit.{Ignore, Test}
+import org.junit.{After, Before, Ignore, Test}
 import org.antlr.runtime.{CommonTokenStream, ANTLRStringStream}
 import org.scalatest.junit.ShouldMatchersForJUnit
 import scala.collection.JavaConversions._
+import z3.scala.{Z3Config, Z3Context}
 
 
 class PealProgramParserTest extends ShouldMatchersForJUnit {
+  var z3 : Z3Context = null
+  @Before def setup() {
+    z3 = new Z3Context(new Z3Config("MODEL" -> true))
+  }
+  @After def tearDown() {
+    z3.delete()
+  }
 
   private def getParser(input: String) = {
     val charStream = new ANTLRStringStream(input)
@@ -39,7 +47,7 @@ class PealProgramParserTest extends ShouldMatchersForJUnit {
     pols("b1").rules.size should be(3)
 
     val set = pealProgrmParser.pSet
-    set.synthesis should be("(and (and (or q1 q2 q3) (or q1 q2)) (and (and (or q1 q2 q3) (or q1 q2)) (or (and (not q4) (not q5) (not q6)) (not false))))")
+    set.synthesis(z3) should be("(and (and (or q1 q2 q3) (or q1 q2)) (and (and (or q1 q2 q3) (or q1 q2)) (or (and (not q4) (not q5) (not q6)) (not false))))")
   }
 
   @Test
@@ -55,7 +63,7 @@ class PealProgramParserTest extends ShouldMatchersForJUnit {
     pols("b1").rules.size should be(3)
 
     val set = pealProgrmParser.pSet
-    set.synthesis should be("(and (or q1 q2 q3) (or q1 q2))")
+    set.synthesis(z3) should be("(and (or q1 q2 q3) (or q1 q2))")
   }
 
   @Test
@@ -72,7 +80,7 @@ class PealProgramParserTest extends ShouldMatchersForJUnit {
     pols("b1").rules.size should be(3)
     pols("b2").rules.size should be(3)
 
-    pealProgrmParser.pSet.synthesis should be("(and (and (or q1 q2 q3) (or q1 q2)) (or (and (not q4) (not q5) (not q6)) (not false)))")
+    pealProgrmParser.pSet.synthesis(z3) should be("(and (and (or q1 q2 q3) (or q1 q2)) (or (and (not q4) (not q5) (not q6)) (not false)))")
   }
 
   @Test
@@ -89,7 +97,7 @@ class PealProgramParserTest extends ShouldMatchersForJUnit {
     pols("b1").rules.size should be(3)
     pols("b2").rules.size should be(3)
 
-    pealProgrmParser.pSet.synthesis should be("(or (and (or q1 q2 q3) (or q1 q2)) (or (and (not q4) (not q5) (not q6)) (not false)))")
+    pealProgrmParser.pSet.synthesis(z3) should be("(or (and (or q1 q2 q3) (or q1 q2)) (or (and (not q4) (not q5) (not q6)) (not false)))")
   }
 
   @Test
@@ -106,7 +114,7 @@ class PealProgramParserTest extends ShouldMatchersForJUnit {
     pols("b1").rules.size should be(3)
     pols("b2").rules.size should be(3)
 
-    pealProgrmParser.pSet.synthesis should be("(and (or (and (not q1) (not q2) (not q3)) (not (or q1 q2))) (and (or q4 q5 q6) false))")
+    pealProgrmParser.pSet.synthesis(z3) should be("(and (or (and (not q1) (not q2) (not q3)) (not (or q1 q2))) (and (or q4 q5 q6) false))")
   }
 
   @Test
@@ -115,7 +123,7 @@ class PealProgramParserTest extends ShouldMatchersForJUnit {
 
     val pealProgrmParser = getParser(input)
     pealProgrmParser.program()
-    pealProgrmParser.pSet.synthesis should be("(and (or q4 q5 q6) (not false))")
+    pealProgrmParser.pSet.synthesis(z3) should be("(and (or q4 q5 q6) (not false))")
   }
 
   @Test
@@ -124,7 +132,7 @@ class PealProgramParserTest extends ShouldMatchersForJUnit {
 
     val pealProgrmParser = getParser(input)
     pealProgrmParser.program()
-    pealProgrmParser.pSet.synthesis should be("(or (and (not q4) (not q5) (not q6)) (not (and q6 q5 q4)))")
+    pealProgrmParser.pSet.synthesis(z3) should be("(or (and (not q4) (not q5) (not q6)) (not (and q6 q5 q4)))")
   }
 
   @Test
@@ -133,6 +141,6 @@ class PealProgramParserTest extends ShouldMatchersForJUnit {
 
     val pealProgrmParser = getParser(input)
     pealProgrmParser.program()
-    pealProgrmParser.pSet.synthesis should be("(or (and (not q4) (not q5) (not q6)) (not (or q6 (and q5 q4))))")
+    pealProgrmParser.pSet.synthesis(z3) should be("(or (and (not q4) (not q5) (not q6)) (not (or q6 (and q5 q4))))")
   }
 }

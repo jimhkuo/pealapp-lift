@@ -11,7 +11,7 @@ case class Pol(val rules: java.util.List[Rule], val operator: Operators, val def
 
   override def getPol = this
 
-  def synthesis: String = null
+  def synthesis(z3:Z3Context): String = null
 
   def z3SMTHeader: String = null
 

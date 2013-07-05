@@ -7,7 +7,7 @@ trait pSet {
 
   def getPol : Pol = null
 
-  def synthesis: String
+  def synthesis(z3: Z3Context): String
 
-  def phiZ3SMTString = "(assert " + synthesis + ")"
+  def phiZ3SMTString(z3: Z3Context) = "(assert " + synthesis(z3) + ")"
 }
