@@ -20,9 +20,13 @@ class Z3AnalyserTest extends ShouldMatchersForJUnit {
 
   @Test
   def testFirstAnalysisAlwaysFalse() {
-
     val input = "cond = pSet <= 0.5\nb1 = + ((q1 0.9)) default 1\npSet = b1"
-
     new Z3Analyser().isAlwaysTrue(input) should be (false)
+  }
+
+  @Test
+  def testFirstAnalysisAlwaysTrue() {
+    val input = "cond = pSet <= 0.5\nb1 = + ((q1 0.4)) default 0\npSet = b1"
+    new Z3Analyser().isAlwaysTrue(input) should be (true)
   }
 }
