@@ -11,11 +11,13 @@ class NonDefaultPolLessThanTh(pol: Pol, th: Double) extends NonDefaultSet {
   def synthesis(z3:Z3Context): String = pol.operator match {
     case Min => {
       val rules = pol.rules.filter(th > _.score)
-      rules.size match {
-        case 0 => "false"
-        case 1 => rules.map(_.q.name).mkString("")
-        case _ => rules.map(_.q.name).mkString("(or ", " ", ")")
+      val z3Model = rules.size match {
+        case 0 => z3.mkFalse()
+        case 1 => z3.mkBoolConst(rules(0).q.name)//rules.map(_.q.name).mkString("")
+        case _ => z3.mkOr(rules.map(r => z3.mkBoolConst(r.q.name)):_*) //rules.map(_.q.name).mkString("(or ", " ", ")")
       }
+
+      z3Model.toString()
     }
     case Plus | Max => new NonDefaultThLessThanPol(pol, th).notPhi(z3)
     case Mul => {
