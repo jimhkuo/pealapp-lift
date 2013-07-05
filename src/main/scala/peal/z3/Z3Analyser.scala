@@ -29,12 +29,13 @@ class Z3Analyser {
 
     for (name <- n.toSeq.distinct) yield (const += name -> z3.mkBoolConst(name))
 
-    val phi = pealProgrmParser.pSet.synthesisByZ3(const, z3)
-    val solver = z3.mkSolver
-    solver.assertCnstr(z3.mkNot(phi))
-    var (sol, model) = ModelGetter.get(solver)
-
-    sol.get
+//    val phi = pealProgrmParser.pSet.synthesisByZ3(const, z3)
+//    val solver = z3.mkSolver
+//    solver.assertCnstr(z3.mkNot(phi))
+//    var (sol, model) = ModelGetter.get(solver)
+//
+//    sol.get
+    false
   }
 
 

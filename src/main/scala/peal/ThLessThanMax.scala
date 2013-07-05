@@ -13,5 +13,4 @@ class ThLessThanMax(lhs: Pol, rhs: pSet, th: Double) extends pSet {
     case _ => "(or " + new ThLessThanPol(lhs, th).synthesis + " " + rhs.synthesis + ")"
   }
 
-  def synthesisByZ3(const: Map[String, Z3AST], z3: Z3Context): Z3AST = null
 }

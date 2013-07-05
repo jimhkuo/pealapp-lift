@@ -28,5 +28,4 @@ class PolLessThanTh(pol: Pol, th: Double) extends pSet {
       case _ => pol.rules.map(_.q.name).mkString(" ")
     }
   }
-  def synthesisByZ3(const: Map[String, Z3AST], z3: Z3Context): Z3AST = z3.mkBoolConst("a")
 }
