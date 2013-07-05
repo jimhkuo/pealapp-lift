@@ -91,9 +91,9 @@ class ScalaZ3Test extends ShouldMatchersForJUnit {
     var z3 = new Z3Context(new Z3Config("MODEL" -> true))
     val q1 = z3.mkBoolConst("q1")
     val q2 = z3.mkBoolConst("q2")
-    val q1Orq2 = z3.mkOr(q1, q2)
+    val and = z3.mkAnd(z3.mkOr(q1, q2), q1)
     val solver = z3.mkSolver
-    solver.assertCnstr(z3.mkAnd(q1Orq2, q1))
+    solver.assertCnstr(and)
 
     var (sol, model) = solver.checkAndGetModel
 

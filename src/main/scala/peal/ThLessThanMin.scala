@@ -1,5 +1,6 @@
 package peal
 
+import _root_.z3.scala.{Z3Context, Z3AST}
 import peal.domain.Pol
 import peal.synthesis.pSet
 import scala.collection.JavaConversions._
@@ -11,4 +12,6 @@ class ThLessThanMin(lhs: Pol, rhs: pSet, th: Double) extends pSet {
     case _ : Pol => "(and " + new ThLessThanPol(lhs, th).synthesis + " " + new ThLessThanPol(rhs.getPol, th).synthesis + ")"
     case _ => "(and " + new ThLessThanPol(lhs, th).synthesis + " " + rhs.synthesis + ")"
   }
+
+  def synthesisByZ3(const: Map[String, Z3AST], z3: Z3Context): Z3AST = null
 }
