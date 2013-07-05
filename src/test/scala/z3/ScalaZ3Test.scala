@@ -48,9 +48,11 @@ class ScalaZ3Test extends ShouldMatchersForJUnit {
     val q2 = z3.mkBoolConst("q2")
     val q1Orq2 = z3.mkOr(q1, q2)
     val formula = z3.mkAnd(q1Orq2, q1)
+    println(formula)
     //function that takes no arguments is a constant
     val cond = z3.mkBoolConst("cond")
     val equal = z3.mkEq(cond, formula)
+    println (equal)
     val solver = z3.mkSolver
     solver.assertCnstr(equal)
     solver.assertCnstr(z3.mkNot(cond))
