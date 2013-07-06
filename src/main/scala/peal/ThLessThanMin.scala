@@ -9,8 +9,8 @@ import scala.collection.JavaConversions._
 class ThLessThanMin(lhs: Pol, rhs: pSet, th: Double) extends pSet {
 
   def synthesis(z3:Z3Context, consts: Map[String, Z3AST]) = rhs match {
-    case _ : Pol => "(and " + new ThLessThanPol(lhs, th).synthesis(z3,consts) + " " + new ThLessThanPol(rhs.getPol, th).synthesis(z3,consts) + ")"
-    case _ => "(and " + new ThLessThanPol(lhs, th).synthesis(z3,consts) + " " + rhs.synthesis(z3,consts) + ")"
+    case _ : Pol => z3.mkAnd(new ThLessThanPol(lhs, th).synthesis(z3,consts), new ThLessThanPol(rhs.getPol, th).synthesis(z3,consts))
+    case _ => z3.mkAnd(new ThLessThanPol(lhs, th).synthesis(z3,consts),rhs.synthesis(z3,consts))
   }
 
 }

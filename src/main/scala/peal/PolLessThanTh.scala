@@ -9,8 +9,8 @@ import scala.collection.JavaConversions._
 class PolLessThanTh(pol: Pol, th: Double) extends pSet {
 
   def synthesis(z3 : Z3Context, consts: Map[String, Z3AST]) = pol.defaultScore match {
-    case s if s <= th => "(or " + new DefaultLessThanTh(pol, th).synthesis(z3,consts) + " " + new NonDefaultPolLessThanTh(pol, th).synthesis(z3,consts) + ")"
-    case _ => "(and " + new ThLessThanDefault(pol, th).synthesis(z3,consts) + " " + new NonDefaultPolLessThanTh(pol, th).synthesis(z3,consts) + ")"
+    case s if s <= th => z3.mkOr(new DefaultLessThanTh(pol, th).synthesis(z3,consts), new NonDefaultPolLessThanTh(pol, th).synthesis(z3,consts))
+    case _ => z3.mkAnd(new ThLessThanDefault(pol, th).synthesis(z3,consts),new NonDefaultPolLessThanTh(pol, th).synthesis(z3,consts))
   }
 
   def z3SMTHeader: String = pol.rules.map(p => "(declare-const " + p.q.name + " Bool)").mkString("", "\n", "\n")

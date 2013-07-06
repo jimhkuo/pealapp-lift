@@ -6,20 +6,23 @@ import org.scalatest.junit.ShouldMatchersForJUnit
 import peal.domain.{Rule, Predicate, Pol}
 import scala.collection.JavaConversions._
 import peal.domain.operator.Min
+import peal.util.Z3ModelMatcher
 
-class ThLessThanMaxTest extends ShouldMatchersForJUnit {
-  val z3 : Z3Context = new Z3Context(new Z3Config("MODEL" -> true))
+class ThLessThanMaxTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
+  val z3: Z3Context = new Z3Context(new Z3Config("MODEL" -> true))
   val consts = Map[String, Z3AST]("q1" -> z3.mkBoolConst("q1"), "q2" -> z3.mkBoolConst("q2"), "q3" -> z3.mkBoolConst("q3"), "q4" -> z3.mkBoolConst("q4"), "q5" -> z3.mkBoolConst("q5"), "q6" -> z3.mkBoolConst("q6"))
+
   @After def tearDown() {
     z3.delete()
   }
+
   @Test
   def testCanSynthesisSimpleNestedCase() {
     val p1 = new Pol(List(new Rule(new Predicate("q1"), 0.5)), Min, 1)
     val p2 = new Pol(List(new Rule(new Predicate("q2"), 0.5)), Min, 0)
     val phi1 = new ThLessThanPol(p2, 0.6)
     val phi2 = new ThLessThanMax(p1, phi1, 0.6)
-    phi2.synthesis(z3,consts) should be("(or (or (not q1) (not q1)) (and q2 (not q2)))")
+    phi2.synthesis(z3, consts) should beZ3Model("(or (or (not q1) (not q1)) (and q2 (not q2)))")
   }
 
   @Test
@@ -27,6 +30,6 @@ class ThLessThanMaxTest extends ShouldMatchersForJUnit {
     val p1 = new Pol(List(new Rule(new Predicate("q1"), 0.5)), Min, 1)
     val p2 = new Pol(List(new Rule(new Predicate("q2"), 0.5)), Min, 0)
     val phi = new ThLessThanMax(p1, p2, 0.6)
-    phi.synthesis(z3,consts) should be("(or (or (not q1) (not q1)) (and q2 (not q2)))")
+    phi.synthesis(z3, consts) should beZ3Model("(or (or (not q1) (not q1)) (and q2 (not q2)))")
   }
 }

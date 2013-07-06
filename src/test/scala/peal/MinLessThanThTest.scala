@@ -6,8 +6,9 @@ import org.scalatest.junit.ShouldMatchersForJUnit
 import peal.domain.{Rule, Predicate, Pol}
 import scala.collection.JavaConversions._
 import peal.domain.operator.Min
+import peal.util.Z3ModelMatcher
 
-class MinLessThanThTest extends ShouldMatchersForJUnit {
+class MinLessThanThTest extends ShouldMatchersForJUnit  with Z3ModelMatcher {
   val z3 : Z3Context = new Z3Context(new Z3Config("MODEL" -> true))
   val consts = Map[String, Z3AST]("q1" -> z3.mkBoolConst("q1"), "q2" -> z3.mkBoolConst("q2"), "q3" -> z3.mkBoolConst("q3"), "q4" -> z3.mkBoolConst("q4"), "q5" -> z3.mkBoolConst("q5"), "q6" -> z3.mkBoolConst("q6"))
   @After def tearDown() {
@@ -20,7 +21,7 @@ class MinLessThanThTest extends ShouldMatchersForJUnit {
     val phi1 = new MinLessThanTh(p1, p2, 0.6)
     val phi2 = new MinLessThanTh(p1, phi1, 0.6)
 
-    phi2.synthesis(z3,consts) should be("(or (and q1 q1) (or (and q1 q1) (or (not q2) q2)))")
+    phi2.synthesis(z3,consts) should beZ3Model("(or (and q1 q1) (or (and q1 q1) (or (not q2) q2)))")
     z3.delete()
   }
 
@@ -31,7 +32,7 @@ class MinLessThanThTest extends ShouldMatchersForJUnit {
     val phi1 = new PolLessThanTh(p2, 0.6)
     val phi2 = new MinLessThanTh(p1, phi1, 0.6)
 
-    phi2.synthesis(z3,consts) should be("(or (and q1 q1) (or (not q2) q2))")
+    phi2.synthesis(z3,consts) should beZ3Model("(or (and q1 q1) (or (not q2) q2))")
     z3.delete()
   }
 
@@ -41,7 +42,7 @@ class MinLessThanThTest extends ShouldMatchersForJUnit {
     val p2 = new Pol(List(new Rule(new Predicate("q2"), 0.5)), Min, 0)
     val phi = new MinLessThanTh(p1, p2, 0.6)
 
-    phi.synthesis(z3,consts) should be("(or (and q1 q1) (or (not q2) q2))")
+    phi.synthesis(z3,consts) should beZ3Model("(or (and q1 q1) (or (not q2) q2))")
     z3.delete()
   }
 }
