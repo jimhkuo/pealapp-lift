@@ -164,9 +164,9 @@ class PealCometActor extends CometActor with Loggable {
     val (sol, model) = ModelGetter.get(solver)
 
     val result = sol match {
-      case Some(x) if x == true && model.toString().trim == "cond -> false" => <p>phi is always false<br/>{model}</p>
-      case Some(x) if x == true => <p>phi is NOT always true<br/>{model}</p>
-      case Some(x) if x == false => <p>phi is always true<br/>{model}</p>
+      case Some(x) if x && model.toString().trim == "cond -> false" => <p>phi is always false<br/>{model}</p>
+      case Some(x) if x => <p>phi is NOT always true<br/>{model}</p>
+      case Some(x) if !x => <p>phi is always true<br/>{model}</p>
     }
     this ! Result(result)
     model.delete
