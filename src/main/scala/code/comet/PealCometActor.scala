@@ -69,7 +69,14 @@ class PealCometActor extends CometActor with Loggable {
 
   override def lowPriority = {
     case Init =>
-    case Compute => onCompute(inputPolicies)
+    case Compute =>
+      val (predicateNames, body, lapseTime) = onCompute(inputPolicies)
+      onDisplay(predicateNames, body)
+    case Prepare =>
+      partialUpdate(JqId("result") ~> JqHtml(Text("Synthesising... Please wait...")))
+      this ! Download
+    case Download =>
+      onDownload(inputPolicies)
     case File(result, lapseTime) =>
       myData.set(result)
       this ! Result(<p>Output prepared, lapse time:
@@ -84,11 +91,6 @@ class PealCometActor extends CometActor with Loggable {
     case Clear =>
       this ! Message("")
       partialUpdate(JqId("policies") ~> JqVal(""))
-    case Prepare =>
-      partialUpdate(JqId("result") ~> JqHtml(Text("Synthesising... Please wait...")))
-      this ! Download
-    case Download =>
-      onDownload(inputPolicies)
     case MajorityVoting =>
       this ! Message("")
       inputPolicies = "cond = 0.5 < pSet\nb1 = + (" +
@@ -108,23 +110,18 @@ class PealCometActor extends CometActor with Loggable {
     new PealProgramParser(tokenStream)
   }
 
-  private def onCompute(input: String) {
+  private def onCompute(input: String) : (Seq[String], String, Long) ={
     val pealProgrmParser = getParser(input)
     val z3 = new Z3Context(new Z3Config("MODEL" -> true))
 
     try {
       pealProgrmParser.program()
-      val predicateNames = pealProgrmParser.pols.values().flatMap(pol => pol.rules).map(r => r.q.name).toSeq.distinct
+      val predicateNames : Seq[String] = pealProgrmParser.pols.values().flatMap(pol => pol.rules).map(r => r.q.name).toSeq.distinct
       val constsMap = predicateNames.toSeq.distinct.map(t => (t, z3.mkBoolConst(t))).toMap
-      val declarations = for (name <- predicateNames) yield <p>
-        {"(declare-const " + name + " Bool)"}
-      </p>
-      val result = <p>
-        {declarations}{pealProgrmParser.pSet.phiZ3SMTString(z3, constsMap)}<br/>
-        (check-sat)
-        <br/>
-        (get-model)</p>
-      this ! Result(result)
+      val start = System.nanoTime()
+      val body = pealProgrmParser.pSet.phiZ3SMTString(z3, constsMap)
+      val lapseTime = System.nanoTime() - start
+      (predicateNames, body, lapseTime)
     } catch {
       case e2: NullPointerException => dealWithIt(e2)
       case e1: Throwable => dealWithIt(e1)
@@ -132,6 +129,19 @@ class PealCometActor extends CometActor with Loggable {
     finally {
       z3.delete()
     }
+  }
+
+
+  private def onDisplay(predicateNames: Seq[String], body: String) {
+      val declarations = for (name <- predicateNames) yield <p>
+        {"(declare-const " + name + " Bool)"}
+      </p>
+      val result = <p>
+        {declarations}{body}<br/>
+        (check-sat)
+        <br/>
+        (get-model)</p>
+      this ! Result(result)
   }
 
   private def onDownload(input: String) {
@@ -158,8 +168,9 @@ class PealCometActor extends CometActor with Loggable {
     }
   }
 
-  private def dealWithIt(e: Throwable) {
+  private def dealWithIt(e: Throwable) = {
     this ! Message(e.getMessage)
+    throw e
   }
 }
 
