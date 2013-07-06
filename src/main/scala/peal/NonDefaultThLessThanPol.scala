@@ -28,7 +28,7 @@ class NonDefaultThLessThanPol(pol: Pol, th: Double) extends NonDefaultSet {
         }
       }
       else {
-        "false"
+        z3.mkFalse().toString()
       }
     }
     case Max => {
