@@ -8,13 +8,12 @@ import scala.collection.JavaConversions._
 import peal.domain.operator.{Mul, Min, Max, Plus}
 import scala.collection.mutable.ListBuffer
 import org.scalatest.matchers.{MatchResult, Matcher}
-import peal.util.EqualsIgnoreWhiteSpaceWord
+import peal.util.{WhitespaceMatcher, EqualsIgnoreWhiteSpaceWord}
 
 
-class NonDefaultThLessThanPolTest extends ShouldMatchersForJUnit {
+class NonDefaultThLessThanPolTest extends ShouldMatchersForJUnit with WhitespaceMatcher{
 
   var z3: Z3Context = null
-  val beEqualIgnoreWhiteSpace = (expected: String) => new EqualsIgnoreWhiteSpaceWord(expected)
 
   @Before def setup() {
     z3 = new Z3Context(new Z3Config("MODEL" -> true))
