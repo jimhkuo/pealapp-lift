@@ -114,23 +114,13 @@ class PealCometActor extends CometActor with Loggable {
 
     try {
       pealProgrmParser.program()
-      val pSet = pealProgrmParser.pSet
-      //      val names = pealProgrmParser.pols.values().flatMap(pol => pol.rules).map(r => r.q.name).toSeq.distinct
-      //      val declarations = for (name <- names) yield <p>{"(declare-const " + name + " Bool)"}</p>
-
-      val n = for (
-        pol <- pealProgrmParser.pols.values();
-        rule <- pol.rules
-      ) yield rule.q.name
-
-      val declarations = for (name <- n.toSeq.distinct) yield <p>
+      val predicateNames = pealProgrmParser.pols.values().flatMap(pol => pol.rules).map(r => r.q.name).toSeq.distinct
+      val constsMap = predicateNames.toSeq.distinct.map(t => (t, z3.mkBoolConst(t))).toMap
+      val declarations = for (name <- predicateNames) yield <p>
         {"(declare-const " + name + " Bool)"}
       </p>
-
-      val consts = n.toSeq.distinct.map(t => (t, z3.mkBoolConst(t))).toMap
-
       val result = <p>
-        {declarations}{pSet.phiZ3SMTString(z3, consts)}<br/>
+        {declarations}{pealProgrmParser.pSet.phiZ3SMTString(z3, constsMap)}<br/>
         (check-sat)
         <br/>
         (get-model)</p>
@@ -140,7 +130,7 @@ class PealCometActor extends CometActor with Loggable {
       case e1: Throwable => dealWithIt(e1)
     }
     finally {
-        z3.delete()
+      z3.delete()
     }
   }
 
@@ -150,13 +140,12 @@ class PealCometActor extends CometActor with Loggable {
 
     try {
       pealProgrmParser.program()
-      val pSet = pealProgrmParser.pSet
-      val names = pealProgrmParser.pols.values().flatMap(pol => pol.rules).map(r => r.q.name).toSeq.distinct
-      val consts = names.toSeq.distinct.map(t => (t, z3.mkBoolConst(t))).toMap
+      val predicateNames = pealProgrmParser.pols.values().flatMap(pol => pol.rules).map(r => r.q.name).toSeq.distinct
+      val constsMap = predicateNames.toSeq.distinct.map(t => (t, z3.mkBoolConst(t))).toMap
       val start = System.nanoTime()
-      val body = pSet.phiZ3SMTString(z3, consts)
+      val body = pealProgrmParser.pSet.phiZ3SMTString(z3, constsMap)
       val lapseTime = System.nanoTime() - start
-      val declarations = for (name <- names) yield "(declare-const " + name + " Bool)\n"
+      val declarations = for (name <- predicateNames) yield "(declare-const " + name + " Bool)\n"
       val result = declarations.mkString("") + body + "\n" + "(check-sat)\n(get-model)"
       this ! File(result, lapseTime)
     }
