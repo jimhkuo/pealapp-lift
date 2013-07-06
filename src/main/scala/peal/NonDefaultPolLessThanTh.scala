@@ -7,16 +7,14 @@ import scala.collection.JavaConversions._
 import peal.domain.operator.{Mul, Max, Plus, Min}
 
 class NonDefaultPolLessThanTh(pol: Pol, th: Double) extends NonDefaultSet {
-  def synthesis(z3: Z3Context, consts: Map[String, Z3AST]): String = pol.operator match {
+  def synthesis(z3: Z3Context, consts: Map[String, Z3AST]): Z3AST = pol.operator match {
     case Min => {
       val rules = pol.rules.filter(th > _.score)
-      val z3Model = rules.size match {
+      rules.size match {
         case 0 => z3.mkFalse()
         case 1 => consts(rules(0).q.name)//z3.mkBoolConst(rules(0).q.name) //rules.map(_.q.name).mkString("")
         case _ => z3.mkOr(rules.map(r => consts(r.q.name)): _*)//z3.mkOr(rules.map(r => z3.mkBoolConst(r.q.name)): _*) //rules.map(_.q.name).mkString("(or ", " ", ")")
       }
-
-      z3Model.toString()
     }
     case Plus | Max => new NonDefaultThLessThanPol(pol, th).notPhi(z3, consts)
     case Mul => {
@@ -31,14 +29,13 @@ class NonDefaultPolLessThanTh(pol: Pol, th: Double) extends NonDefaultSet {
             }
         }
 
-        val z3Model = m2Sets.size match {
+        m2Sets.size match {
           case 1 => m2Sets.toSeq(0)
           case _ => z3.mkOr(m2Sets.toSeq: _*) //m2Sets.mkString("(or ", " ", ")")
         }
-        z3Model.toString
       }
       else {
-        z3.mkFalse().toString()
+        z3.mkFalse()
       }
     }
     case s => throw new RuntimeException("trying to synthesise with unsupported operator " + s + " in NonDefaultPolLessThanTh")

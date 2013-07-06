@@ -10,7 +10,7 @@ import scala.collection.mutable.ListBuffer
 
 
 class NonDefaultThLessThanPol(pol: Pol, th: Double) extends NonDefaultSet {
-  def synthesis(z3:Z3Context, consts: Map[String, Z3AST]): String = pol.operator match {
+  def synthesis(z3:Z3Context, consts: Map[String, Z3AST]): Z3AST = pol.operator match {
     case Plus => {
       val m1 = enumOneForPlus()
 
@@ -23,24 +23,22 @@ class NonDefaultThLessThanPol(pol: Pol, th: Double) extends NonDefaultSet {
             }
         }
 
-        val z3Model = m1Sets.size match {
+        m1Sets.size match {
           case 1 => m1Sets(0)//m1Sets.mkString(" ")
           case _ => z3.mkOr(m1Sets.toSeq:_*)//m1Sets.mkString("(or ", " ", ")")
         }
-        z3Model.toString()
       }
       else {
-        z3.mkFalse().toString()
+        z3.mkFalse()
       }
     }
     case Max => {
       val rules = pol.rules.filter(th < _.score)
-      val z3Model = rules.size match {
+      rules.size match {
         case 0 => z3.mkFalse()        // "false"
         case 1 => consts(rules(0).q.name) //rules.map(_.q.name).mkString("")
         case _ => z3.mkOr(rules.map(r => consts(r.q.name)): _*)//rules.map(_.q.name).mkString("(or ", " ", ")")
       }
-      z3Model.toString()
     }
     case Min | Mul => new NonDefaultPolLessThanTh(pol, th).notPhi(z3, consts)
     case s => throw new RuntimeException("trying to synthesise with unsupported operator " + s + " in NonDefaultThLessThanPol")
