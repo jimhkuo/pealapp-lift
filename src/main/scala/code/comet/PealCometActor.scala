@@ -5,16 +5,14 @@ import http._
 import util._
 import net.liftweb.http.js.jquery.JqJE._
 import net.liftweb.http.js.JsCmds._
-import scala.xml.{NodeSeq, Text}
+import scala.xml.Text
 import net.liftweb.http.js.{JsMember, JsExp}
 import org.antlr.runtime.{CommonTokenStream, ANTLRStringStream}
 import peal.antlr.{PealProgramParser, PealProgramLexer}
-import net.liftweb.common.{Full, Loggable}
-import scala.collection.immutable.Nil
-import java.io.ByteArrayInputStream
+import net.liftweb.common.Loggable
 import scala.collection.JavaConversions._
-import peal.domain.Predicate
 import z3.scala.{Z3Config, Z3Context}
+import code.comet.message._
 
 
 class PealCometActor extends CometActor with Loggable {
@@ -178,25 +176,8 @@ class PealCometActor extends CometActor with Loggable {
   }
 }
 
-case object Init
 
-case object Clear
 
-case object Download
-
-case object Prepare
-
-case object Reset
-
-case object MajorityVoting
-
-case object Compute
-
-case class Result(output: NodeSeq)
-
-case class File(result: String, lapseTime: Long)
-
-case class Message(output: String)
 
 object myData extends SessionVar[String]("")
 
