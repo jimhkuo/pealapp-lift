@@ -130,8 +130,11 @@ class PealCometActor extends CometActor with Loggable {
       val declarations = for (name <- n.toSeq.distinct) yield <p>
         {"(declare-const " + name + " Bool)"}
       </p>
+
+      val consts = n.toSeq.distinct.map(t => (t, z3.mkBoolConst(t))).toMap
+
       val result = <p>
-        {declarations}{pSet.phiZ3SMTString(z3, null)}<br/>
+        {declarations}{pSet.phiZ3SMTString(z3, consts)}<br/>
         (check-sat)
         <br/>
         (get-model)</p>
@@ -152,10 +155,11 @@ class PealCometActor extends CometActor with Loggable {
     try {
       pealProgrmParser.program()
       val pSet = pealProgrmParser.pSet
-      val start = System.nanoTime()
-      val body = pSet.phiZ3SMTString(z3, null)
-      val lapseTime = System.nanoTime() - start
       val names = pealProgrmParser.pols.values().flatMap(pol => pol.rules).map(r => r.q.name).toSeq.distinct
+      val consts = names.toSeq.distinct.map(t => (t, z3.mkBoolConst(t))).toMap
+      val start = System.nanoTime()
+      val body = pSet.phiZ3SMTString(z3, consts)
+      val lapseTime = System.nanoTime() - start
       val declarations = for (name <- names) yield "(declare-const " + name + " Bool)\n"
       val result = declarations.mkString("") + body + "\n" + "(check-sat)\n(get-model)"
       this ! File(result, lapseTime)

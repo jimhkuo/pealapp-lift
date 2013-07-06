@@ -6,7 +6,7 @@ mainClass in assembly := Some("bootstrap.liftweb.Start")
 
 name := "PealApp-lift"
 
-version := "0.2"
+version := "0.3"
 
 scalaVersion := "2.10.1"
 
