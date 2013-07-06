@@ -20,5 +20,5 @@ case object Reset
 
 case object MajorityVoting
 
-case object Compute
+case object Display
 

@@ -51,7 +51,7 @@ class PealCometActor extends CometActor with Loggable {
         </div>
         <div>
           {SHtml.ajaxButton("Synthesise (and show results)", () => {
-          this ! Compute
+          this ! Display
           _Noop
         })}{SHtml.ajaxButton("Synthesise (and download)", () => {
           this ! Prepare
@@ -69,7 +69,7 @@ class PealCometActor extends CometActor with Loggable {
 
   override def lowPriority = {
     case Init =>
-    case Compute =>
+    case Display =>
       val (predicateNames, body, lapseTime) = onCompute(inputPolicies)
       onDisplay(predicateNames, body)
     case Prepare =>
