@@ -11,7 +11,6 @@ import net.liftweb.common.Loggable
 import scala.collection.JavaConversions._
 import z3.scala.{Z3Config, Z3Context}
 import code.comet.util._
-import JqVal
 
 
 class PealCometActor extends CometActor with Loggable {
