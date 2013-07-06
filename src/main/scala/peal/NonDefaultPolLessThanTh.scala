@@ -6,15 +6,14 @@ import peal.domain.{Rule, Pol}
 import scala.collection.JavaConversions._
 import peal.domain.operator.{Mul, Max, Plus, Min}
 
-//TODO Consts should have been passed in
 class NonDefaultPolLessThanTh(pol: Pol, th: Double) extends NonDefaultSet {
   def synthesis(z3: Z3Context, consts: Map[String, Z3AST]): String = pol.operator match {
     case Min => {
       val rules = pol.rules.filter(th > _.score)
       val z3Model = rules.size match {
         case 0 => z3.mkFalse()
-        case 1 => z3.mkBoolConst(rules(0).q.name) //rules.map(_.q.name).mkString("")
-        case _ => z3.mkOr(rules.map(r => z3.mkBoolConst(r.q.name)): _*) //rules.map(_.q.name).mkString("(or ", " ", ")")
+        case 1 => consts(rules(0).q.name)//z3.mkBoolConst(rules(0).q.name) //rules.map(_.q.name).mkString("")
+        case _ => z3.mkOr(rules.map(r => consts(r.q.name)): _*)//z3.mkOr(rules.map(r => z3.mkBoolConst(r.q.name)): _*) //rules.map(_.q.name).mkString("(or ", " ", ")")
       }
 
       z3Model.toString()
