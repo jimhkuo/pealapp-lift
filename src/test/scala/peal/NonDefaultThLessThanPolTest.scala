@@ -63,7 +63,7 @@ class NonDefaultThLessThanPolTest extends ShouldMatchersForJUnit {
     val p = new Pol(List(rule5, rule3, rule4, rule2, rule1), Plus, 1)
     val pSet = new NonDefaultThLessThanPol(p, 0.5)
 
-    pSet.synthesis(z3) should be("(or (and q5 q4)\n    (and q5 q2)\n    (and q5 q3)\n    (and q5 q1)\n    (and q4 q2 q3)\n    (and q4 q2 q1)\n    (and q4 q3 q1))")
+    pSet.synthesis(z3).replaceAll("\n", "").replaceAll("\\s+", " ") should be ("(or (and q5 q4) (and q5 q2) (and q5 q3) (and q5 q1) (and q4 q2 q3) (and q4 q2 q1) (and q4 q3 q1))")
   }
 
   @Test
