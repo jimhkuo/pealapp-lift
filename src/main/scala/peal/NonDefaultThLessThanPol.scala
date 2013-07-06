@@ -37,8 +37,8 @@ class NonDefaultThLessThanPol(pol: Pol, th: Double) extends NonDefaultSet {
       val rules = pol.rules.filter(th < _.score)
       val z3Model = rules.size match {
         case 0 => z3.mkFalse()        // "false"
-        case 1 => z3.mkBoolConst(rules(0).q.name) //rules.map(_.q.name).mkString("")
-        case _ => z3.mkOr(rules.map(r => z3.mkBoolConst(r.q.name)): _*)//rules.map(_.q.name).mkString("(or ", " ", ")")
+        case 1 => consts(rules(0).q.name) //rules.map(_.q.name).mkString("")
+        case _ => z3.mkOr(rules.map(r => consts(r.q.name)): _*)//rules.map(_.q.name).mkString("(or ", " ", ")")
       }
       z3Model.toString()
     }
