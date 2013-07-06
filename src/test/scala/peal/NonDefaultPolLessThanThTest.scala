@@ -6,8 +6,9 @@ import org.junit.{Before, After, Ignore, Test}
 import peal.domain.{Rule, Predicate, Pol}
 import scala.collection.JavaConversions._
 import peal.domain.operator.{Mul, Max, Min, Plus}
+import peal.util.WhitespaceMatcher
 
-class NonDefaultPolLessThanThTest extends ShouldMatchersForJUnit {
+class NonDefaultPolLessThanThTest extends ShouldMatchersForJUnit with WhitespaceMatcher {
 
   var z3 : Z3Context = null
   @Before def setup() {
@@ -91,7 +92,7 @@ class NonDefaultPolLessThanThTest extends ShouldMatchersForJUnit {
     val rule1 = new Rule(new Predicate("q1"), 0.1)
     val p = new Pol(List(rule5, rule3, rule4, rule2, rule1), Plus, 1)
     val pSet = new NonDefaultPolLessThanTh(p, 0.5)
-    pSet.synthesis(z3) should be ("(not (or (and q5 q4)\n    (and q5 q2)\n    (and q5 q3)\n    (and q5 q1)\n    (and q4 q2 q3)\n    (and q4 q2 q1)\n    (and q4 q3 q1)))")
+    pSet.synthesis(z3) should beEqualIgnoreWhiteSpace ("(not (or (and q5 q4) (and q5 q2) (and q5 q3) (and q5 q1) (and q4 q2 q3) (and q4 q2 q1) (and q4 q3 q1)))")
   }
 
   @Test
