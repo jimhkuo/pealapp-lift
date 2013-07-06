@@ -1,4 +1,4 @@
-package code.comet.message
+package code.comet.util
 
 import scala.xml.NodeSeq
 

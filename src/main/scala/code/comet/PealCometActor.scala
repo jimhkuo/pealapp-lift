@@ -2,17 +2,16 @@ package code.comet
 
 import net.liftweb._
 import http._
-import util._
 import net.liftweb.http.js.jquery.JqJE._
 import net.liftweb.http.js.JsCmds._
 import scala.xml.Text
-import net.liftweb.http.js.{JsMember, JsExp}
 import org.antlr.runtime.{CommonTokenStream, ANTLRStringStream}
 import peal.antlr.{PealProgramParser, PealProgramLexer}
 import net.liftweb.common.Loggable
 import scala.collection.JavaConversions._
 import z3.scala.{Z3Config, Z3Context}
-import code.comet.message._
+import code.comet.util._
+import JqVal
 
 
 class PealCometActor extends CometActor with Loggable {
@@ -179,17 +178,6 @@ class PealCometActor extends CometActor with Loggable {
 
 
 
-object myData extends SessionVar[String]("")
 
-object JqVal {
 
-  import StringHelpers._
 
-  def apply(): JsExp with JsMember = new JsExp with JsMember {
-    def toJsCmd = "val()"
-  }
-
-  def apply(content: String): JsExp with JsMember = new JsExp with JsMember {
-    def toJsCmd = "val(" + content.encJs + ")"
-  }
-}
