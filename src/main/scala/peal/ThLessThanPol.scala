@@ -8,24 +8,24 @@ import scala.collection.JavaConversions._
 
 class ThLessThanPol(pol: Pol, th: Double) extends pSet {
 
-  def synthesis(z3:Z3Context) = pol.defaultScore match {
+  def synthesis(z3:Z3Context, consts: Map[String, Z3AST]) = pol.defaultScore match {
     case s if th < s =>
-      "(or " + new ThLessThanDefault(pol, th).synthesis(z3) + " " + new NonDefaultThLessThanPol(pol, th).synthesis(z3) + ")"
+      "(or " + new ThLessThanDefault(pol, th).synthesis(z3,consts) + " " + new NonDefaultThLessThanPol(pol, th).synthesis(z3,consts) + ")"
     case _ =>
-      "(and " + new DefaultLessThanTh(pol, th).synthesis(z3) + " " + new NonDefaultThLessThanPol(pol, th).synthesis(z3) + ")"
+      "(and " + new DefaultLessThanTh(pol, th).synthesis(z3,consts) + " " + new NonDefaultThLessThanPol(pol, th).synthesis(z3,consts) + ")"
   }
 
   def z3SMTHeader: String = pol.rules.map(p => "(declare-const " + p.q.name + " Bool)").mkString("", "\n", "\n")
 
   class ThLessThanDefault(pol: Pol, th: Double)  {
-    def synthesis(z3:Z3Context): String = pol.defaultScore match {
+    def synthesis(z3:Z3Context, consts: Map[String, Z3AST]): String = pol.defaultScore match {
       case _ if pol.rules.size > 1 => pol.rules.map("(not " + _.q.name + ")").mkString("(and ", " ", ")")
       case _ => pol.rules.map("(not " + _.q.name + ")").mkString(" ")
     }
   }
 
   class DefaultLessThanTh(pol: Pol, th: Double)  {
-    def synthesis(z3:Z3Context): String = pol.defaultScore match {
+    def synthesis(z3:Z3Context, consts: Map[String, Z3AST]): String = pol.defaultScore match {
       case _ if pol.rules.size > 1 => pol.rules.map(_.q.name).mkString("(or ", " ", ")")
       case _ => pol.rules.map(_.q.name).mkString(" ")
     }

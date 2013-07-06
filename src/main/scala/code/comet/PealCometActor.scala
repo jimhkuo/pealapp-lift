@@ -131,7 +131,7 @@ class PealCometActor extends CometActor with Loggable {
         {"(declare-const " + name + " Bool)"}
       </p>
       val result = <p>
-        {declarations}{pSet.phiZ3SMTString(z3)}<br/>
+        {declarations}{pSet.phiZ3SMTString(z3, null)}<br/>
         (check-sat)
         <br/>
         (get-model)</p>
@@ -153,7 +153,7 @@ class PealCometActor extends CometActor with Loggable {
       pealProgrmParser.program()
       val pSet = pealProgrmParser.pSet
       val start = System.nanoTime()
-      val body = pSet.phiZ3SMTString(z3)
+      val body = pSet.phiZ3SMTString(z3, null)
       val lapseTime = System.nanoTime() - start
       val names = pealProgrmParser.pols.values().flatMap(pol => pol.rules).map(r => r.q.name).toSeq.distinct
       val declarations = for (name <- names) yield "(declare-const " + name + " Bool)\n"

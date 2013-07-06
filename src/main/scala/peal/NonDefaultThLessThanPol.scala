@@ -1,6 +1,6 @@
 package peal
 
-import _root_.z3.scala.Z3Context
+import _root_.z3.scala.{Z3AST, Z3Context}
 import peal.synthesis.NonDefaultSet
 import peal.domain.{Rule, Pol}
 import scala._
@@ -10,7 +10,7 @@ import scala.collection.mutable.ListBuffer
 
 
 class NonDefaultThLessThanPol(pol: Pol, th: Double) extends NonDefaultSet {
-  def synthesis(z3:Z3Context): String = pol.operator match {
+  def synthesis(z3:Z3Context, consts: Map[String, Z3AST]): String = pol.operator match {
     case Plus => {
       val m1 = enumOneForPlus()
 
@@ -42,7 +42,7 @@ class NonDefaultThLessThanPol(pol: Pol, th: Double) extends NonDefaultSet {
       }
       z3Model.toString()
     }
-    case Min | Mul => new NonDefaultPolLessThanTh(pol, th).notPhi(z3)
+    case Min | Mul => new NonDefaultPolLessThanTh(pol, th).notPhi(z3, consts)
     case s => throw new RuntimeException("trying to synthesise with unsupported operator " + s + " in NonDefaultThLessThanPol")
   }
 

@@ -1,6 +1,6 @@
 package peal
 
-import _root_.z3.scala.Z3Context
+import _root_.z3.scala.{Z3AST, Z3Context}
 import peal.synthesis.NonDefaultSet
 import peal.domain.{Rule, Pol}
 import scala.collection.JavaConversions._
@@ -8,7 +8,7 @@ import peal.domain.operator.{Mul, Max, Plus, Min}
 
 //TODO Consts should have been passed in
 class NonDefaultPolLessThanTh(pol: Pol, th: Double) extends NonDefaultSet {
-  def synthesis(z3: Z3Context): String = pol.operator match {
+  def synthesis(z3: Z3Context, consts: Map[String, Z3AST]): String = pol.operator match {
     case Min => {
       val rules = pol.rules.filter(th > _.score)
       val z3Model = rules.size match {
@@ -19,7 +19,7 @@ class NonDefaultPolLessThanTh(pol: Pol, th: Double) extends NonDefaultSet {
 
       z3Model.toString()
     }
-    case Plus | Max => new NonDefaultThLessThanPol(pol, th).notPhi(z3)
+    case Plus | Max => new NonDefaultThLessThanPol(pol, th).notPhi(z3, consts)
     case Mul => {
       val m2 = enumTwoForMul()
 
