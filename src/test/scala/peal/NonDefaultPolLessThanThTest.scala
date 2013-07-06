@@ -1,6 +1,6 @@
 package peal
 
-import _root_.z3.scala.{Z3Config, Z3Context}
+import _root_.z3.scala.{Z3AST, Z3Config, Z3Context}
 import org.scalatest.junit.ShouldMatchersForJUnit
 import org.junit.{Before, After, Ignore, Test}
 import peal.domain.{Rule, Predicate, Pol}
@@ -10,10 +10,8 @@ import peal.util.WhitespaceMatcher
 
 class NonDefaultPolLessThanThTest extends ShouldMatchersForJUnit with WhitespaceMatcher {
 
-  var z3 : Z3Context = null
-  @Before def setup() {
-    z3 = new Z3Context(new Z3Config("MODEL" -> true))
-  }
+  val z3 : Z3Context = new Z3Context(new Z3Config("MODEL" -> true))
+  val consts = Map[String, Z3AST]("q1" -> z3.mkBoolConst("q1"), "q2" -> z3.mkBoolConst("q2"), "q3" -> z3.mkBoolConst("q3"), "q4" -> z3.mkBoolConst("q4"), "q5" -> z3.mkBoolConst("q5"), "q6" -> z3.mkBoolConst("q6"))
   @After def tearDown() {
     z3.delete()
   }
