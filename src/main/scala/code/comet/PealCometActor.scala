@@ -9,8 +9,14 @@ import org.antlr.runtime.{CommonTokenStream, ANTLRStringStream}
 import peal.antlr.{PealProgramParser, PealProgramLexer}
 import net.liftweb.common.Loggable
 import scala.collection.JavaConversions._
-import z3.scala.{Z3Config, Z3Context}
+import z3.scala.{Z3AST, Z3Config, Z3Context}
 import code.comet.util._
+import peal.synthesis.pSet
+import scala.Predef._
+import net.liftweb.http.js.jquery.JqJE.JqId
+import code.comet.util.Message
+import code.comet.util.File
+import code.comet.util.Result
 
 
 class PealCometActor extends CometActor with Loggable {
@@ -70,14 +76,14 @@ class PealCometActor extends CometActor with Loggable {
   override def lowPriority = {
     case Init =>
     case Display =>
-      val (predicateNames, body, lapseTime) = onCompute(inputPolicies)
-      onDisplay(predicateNames, body)
+      val (constsMap, pol) = onCompute(inputPolicies)
+      onDisplay(constsMap, pol)
     case Prepare =>
       partialUpdate(JqId("result") ~> JqHtml(Text("Synthesising... Please wait...")))
       this ! Download
     case Download =>
-      val (predicateNames, body, lapseTime) = onCompute(inputPolicies)
-      onDownload(predicateNames, body, lapseTime)
+      val (constsMap, pol) = onCompute(inputPolicies)
+      onDownload(constsMap, pol)
     case File(result, lapseTime) =>
       Z3SMTData.set(result)
       this ! Result(<p>Output prepared, lapse time:
@@ -111,44 +117,44 @@ class PealCometActor extends CometActor with Loggable {
     new PealProgramParser(tokenStream)
   }
 
-  private def onCompute(input: String) : (Seq[String], String, Long) ={
+  private def onCompute(input: String): (Map[String, Z3AST], pSet) = {
     val pealProgrmParser = getParser(input)
-//    val z3 = new Z3Context(new Z3Config("MODEL" -> true))
     val z3 = MyZ3Context.is
 
     try {
       pealProgrmParser.program()
-      val predicateNames : Seq[String] = pealProgrmParser.pols.values().flatMap(pol => pol.rules).map(r => r.q.name).toSeq.distinct
+      val predicateNames: Seq[String] = pealProgrmParser.pols.values().flatMap(pol => pol.rules).map(r => r.q.name).toSeq.distinct
       val constsMap = predicateNames.toSeq.distinct.map(t => (t, z3.mkBoolConst(t))).toMap
-      val start = System.nanoTime()
-      val body = pealProgrmParser.pSet.phiZ3SMTString(z3, constsMap)
-      val lapseTime = System.nanoTime() - start
-      (predicateNames, body, lapseTime)
+      (constsMap, pealProgrmParser.pSet)
     } catch {
       case e2: NullPointerException => dealWithIt(e2)
       case e1: Throwable => dealWithIt(e1)
     }
-//    finally {
-//      z3.delete()
-//    }
+    //    finally {
+    //      z3.delete()
+    //    }
   }
 
-  private def onDisplay(predicateNames: Seq[String], body: String) {
-      val declarations = for (name <- predicateNames) yield <p>
-        {"(declare-const " + name + " Bool)"}
-      </p>
-      val result = <p>
-        {declarations}{body}<br/>
-        (check-sat)
-        <br/>
-        (get-model)</p>
-      this ! Result(result)
+  private def onDisplay(constsMap: Map[String, Z3AST], pol: pSet) {
+    val declarations = for (name <- constsMap.keys) yield <p>
+      {"(declare-const " + name + " Bool)"}
+    </p>
+    val result = <p>
+      {declarations}{pol.phiZ3SMTString(MyZ3Context.is, constsMap)}<br/>
+      (check-sat)
+      <br/>
+      (get-model)</p>
+    this ! Result(result)
   }
 
-  private def onDownload(predicateNames: Seq[String], body: String, lapseTime: Long) {
-      val declarations = for (name <- predicateNames) yield "(declare-const " + name + " Bool)\n"
-      val result = declarations.mkString("") + body + "\n" + "(check-sat)\n(get-model)"
-      this ! File(result, lapseTime)
+  private def onDownload(constsMap: Map[String, Z3AST], pol: pSet) {
+    val declarations = for (name <- constsMap.keys) yield "(declare-const " + name + " Bool)\n"
+    val start = System.nanoTime()
+    val body = pol.phiZ3SMTString(MyZ3Context.is, constsMap)
+    val lapseTime = System.nanoTime() - start
+
+    val result = declarations.mkString("") + body + "\n" + "(check-sat)\n(get-model)"
+    this ! File(result, lapseTime)
   }
 
   private def dealWithIt(e: Throwable) = {
