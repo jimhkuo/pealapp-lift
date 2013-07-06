@@ -6,7 +6,7 @@ import peal.domain.{Rule, Pol}
 import scala.collection.JavaConversions._
 import peal.domain.operator.{Mul, Max, Plus, Min}
 
-
+//TODO Consts should have been passed in
 class NonDefaultPolLessThanTh(pol: Pol, th: Double) extends NonDefaultSet {
   def synthesis(z3: Z3Context): String = pol.operator match {
     case Min => {

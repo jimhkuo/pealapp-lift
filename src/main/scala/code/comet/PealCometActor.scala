@@ -28,12 +28,6 @@ class PealCometActor extends CometActor with Loggable {
   def render = {
     this ! Init
 
-    //sample code
-    //    {SHtml.textarea("foo", inputPolicies = _)
-    //      SHtml.textarea("foo", s => inputPolicies = s)
-    //      SHtml.textarea("foo", "prefix " + _)}
-
-    //TODO set up control to use negated cond function
     <form class="lift:form.ajax">
       <div>
         <h3>Input policies:</h3>
