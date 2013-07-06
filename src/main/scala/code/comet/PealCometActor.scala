@@ -53,7 +53,7 @@ class PealCometActor extends CometActor with Loggable {
           {SHtml.ajaxButton("Synthesise (and show results)", () => {
           this ! Display
           _Noop
-        })}{SHtml.ajaxButton("Synthesise (and download)", () => {
+        }) ++ SHtml.ajaxButton("Synthesise (and download)", () => {
           this ! Prepare
           _Noop
         })}
