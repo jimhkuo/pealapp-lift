@@ -12,12 +12,7 @@ import peal.util.WhitespaceMatcher
 
 class NonDefaultThLessThanPolTest extends ShouldMatchersForJUnit with WhitespaceMatcher{
 
-  var z3: Z3Context = null
-
-  @Before def setup() {
-    z3 = new Z3Context(new Z3Config("MODEL" -> true))
-  }
-
+  val z3 : Z3Context = new Z3Context(new Z3Config("MODEL" -> true))
   @After def tearDown() {
     z3.delete()
   }
