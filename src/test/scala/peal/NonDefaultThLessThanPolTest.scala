@@ -6,14 +6,17 @@ import org.junit.{After, Before, Test}
 import peal.domain.{Rule, Predicate, Pol}
 import scala.collection.JavaConversions._
 import peal.domain.operator.{Mul, Min, Max, Plus}
+import scala.collection.mutable.ListBuffer
 
 
 class NonDefaultThLessThanPolTest extends ShouldMatchersForJUnit {
 
-  var z3 : Z3Context = null
+  var z3: Z3Context = null
+
   @Before def setup() {
     z3 = new Z3Context(new Z3Config("MODEL" -> true))
   }
+
   @After def tearDown() {
     z3.delete()
   }
@@ -60,7 +63,7 @@ class NonDefaultThLessThanPolTest extends ShouldMatchersForJUnit {
     val p = new Pol(List(rule5, rule3, rule4, rule2, rule1), Plus, 1)
     val pSet = new NonDefaultThLessThanPol(p, 0.5)
 
-    pSet.synthesis(z3) should be("(or (and q4 q2 q3) (and q4 q3 q1) (and q5 q2) (and q5 q3) (and q5 q4) (and q5 q1) (and q4 q2 q1))")
+    pSet.synthesis(z3) should be("(or (and q5 q4)\n    (and q5 q2)\n    (and q5 q3)\n    (and q5 q1)\n    (and q4 q2 q3)\n    (and q4 q2 q1)\n    (and q4 q3 q1))")
   }
 
   @Test
@@ -73,8 +76,7 @@ class NonDefaultThLessThanPolTest extends ShouldMatchersForJUnit {
     val p = new Pol(List(rule5, rule3, rule4, rule2, rule1), Plus, 1)
     val pSet = new NonDefaultThLessThanPol(p, 0.5)
 
-    pSet.notPhi(z3) should be("(not (or (and q4 q2 q3) (and q4 q3 q1) (and q5 q2) (and q5 q3) (and q5 q4) (and q5 q1) (and q4 q2 q1)))")
-    //    pSet.not should be("(and (or (not q4) (not q2) (not q1)) (or (not q5) (not q2)) (or (not q5) (not q1)) (or (not q5) (not q4)) (or (not q4) (not q2) (not q3)) (or (not q4) (not q3) (not q1)) (or (not q5) (not q3)))")
+    pSet.notPhi(z3) should be("(not (or (and q5 q4)\n    (and q5 q2)\n    (and q5 q3)\n    (and q5 q1)\n    (and q4 q2 q3)\n    (and q4 q2 q1)\n    (and q4 q3 q1)))")
   }
 
   @Test
@@ -88,14 +90,14 @@ class NonDefaultThLessThanPolTest extends ShouldMatchersForJUnit {
     val pSet = new NonDefaultThLessThanPol(p, 0.5)
 
     pSet.enumOneForPlus() should have size (7)
-    pSet.enumOneForPlus() should be(Set(
-      Set(rule1, rule3, rule4),
-      Set(rule4, rule5),
-      Set(rule3, rule5),
-      Set(rule2, rule5),
-      Set(rule1, rule5),
-      Set(rule2, rule3, rule4),
-      Set(rule1, rule2, rule4)))
+    pSet.enumOneForPlus() should be(ListBuffer(
+      List(rule5, rule4),
+      List(rule5, rule2),
+      List(rule5, rule3),
+      List(rule5, rule1),
+      List(rule4, rule2, rule3),
+      List(rule4, rule2, rule1),
+      List(rule4, rule3, rule1)))
   }
 
   @Test
@@ -172,7 +174,7 @@ class NonDefaultThLessThanPolTest extends ShouldMatchersForJUnit {
     val p = new Pol(List(rule5, rule3, rule4, rule2, rule1), Mul, 1)
     val pSet = new NonDefaultThLessThanPol(p, 0.25)
 
-    pSet.synthesis(z3) should be ("(not (or q5 q4 q3 (and q2 q1)))")
+    pSet.synthesis(z3) should be("(not (or q5 q4 q3 (and q2 q1)))")
 
   }
 }

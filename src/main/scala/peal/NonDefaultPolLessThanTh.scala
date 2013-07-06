@@ -8,13 +8,13 @@ import peal.domain.operator.{Mul, Max, Plus, Min}
 
 
 class NonDefaultPolLessThanTh(pol: Pol, th: Double) extends NonDefaultSet {
-  def synthesis(z3:Z3Context): String = pol.operator match {
+  def synthesis(z3: Z3Context): String = pol.operator match {
     case Min => {
       val rules = pol.rules.filter(th > _.score)
       val z3Model = rules.size match {
         case 0 => z3.mkFalse()
-        case 1 => z3.mkBoolConst(rules(0).q.name)//rules.map(_.q.name).mkString("")
-        case _ => z3.mkOr(rules.map(r => z3.mkBoolConst(r.q.name)):_*) //rules.map(_.q.name).mkString("(or ", " ", ")")
+        case 1 => z3.mkBoolConst(rules(0).q.name) //rules.map(_.q.name).mkString("")
+        case _ => z3.mkOr(rules.map(r => z3.mkBoolConst(r.q.name)): _*) //rules.map(_.q.name).mkString("(or ", " ", ")")
       }
 
       z3Model.toString()
@@ -28,13 +28,13 @@ class NonDefaultPolLessThanTh(pol: Pol, th: Double) extends NonDefaultSet {
           s =>
             s.size match {
               case 1 => z3.mkBoolConst(s.toSeq(0).q.name) //s.map(_.q.name).mkString(" ")
-              case _ => z3.mkAnd(s.map(r => z3.mkBoolConst(r.q.name)).toSeq:_*)//s.map(_.q.name).mkString("(and ", " ", ")")
+              case _ => z3.mkAnd(s.map(r => z3.mkBoolConst(r.q.name)).toSeq: _*) //s.map(_.q.name).mkString("(and ", " ", ")")
             }
         }
 
         val z3Model = m2Sets.size match {
           case 1 => m2Sets.toSeq(0)
-          case _ => z3.mkOr(m2Sets.toSeq:_*)//m2Sets.mkString("(or ", " ", ")")
+          case _ => z3.mkOr(m2Sets.toSeq: _*) //m2Sets.mkString("(or ", " ", ")")
         }
         z3Model.toString
       }
