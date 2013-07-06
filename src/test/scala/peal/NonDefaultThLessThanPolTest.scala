@@ -7,8 +7,7 @@ import peal.domain.{Rule, Predicate, Pol}
 import scala.collection.JavaConversions._
 import peal.domain.operator.{Mul, Min, Max, Plus}
 import scala.collection.mutable.ListBuffer
-import org.scalatest.matchers.{MatchResult, Matcher}
-import peal.util.{WhitespaceMatcher, EqualsIgnoreWhiteSpaceWord}
+import peal.util.WhitespaceMatcher
 
 
 class NonDefaultThLessThanPolTest extends ShouldMatchersForJUnit with WhitespaceMatcher{
