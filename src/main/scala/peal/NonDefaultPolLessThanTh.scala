@@ -26,8 +26,8 @@ class NonDefaultPolLessThanTh(pol: Pol, th: Double) extends NonDefaultSet {
         val m2Sets = m2.map {
           s =>
             s.size match {
-              case 1 => z3.mkBoolConst(s.toSeq(0).q.name) //s.map(_.q.name).mkString(" ")
-              case _ => z3.mkAnd(s.map(r => z3.mkBoolConst(r.q.name)).toSeq: _*) //s.map(_.q.name).mkString("(and ", " ", ")")
+              case 1 => consts(s.toSeq(0).q.name) //z3.mkBoolConst(s.toSeq(0).q.name) //s.map(_.q.name).mkString(" ")
+              case _ => z3.mkAnd(s.map(r => consts(r.q.name)).toSeq: _*) //s.map(_.q.name).mkString("(and ", " ", ")")
             }
         }
 
