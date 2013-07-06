@@ -76,7 +76,8 @@ class PealCometActor extends CometActor with Loggable {
       partialUpdate(JqId("result") ~> JqHtml(Text("Synthesising... Please wait...")))
       this ! Download
     case Download =>
-      onDownload(inputPolicies)
+      val (predicateNames, body, lapseTime) = onCompute(inputPolicies)
+      onDownload(predicateNames, body, lapseTime)
     case File(result, lapseTime) =>
       myData.set(result)
       this ! Result(<p>Output prepared, lapse time:
@@ -131,7 +132,6 @@ class PealCometActor extends CometActor with Loggable {
     }
   }
 
-
   private def onDisplay(predicateNames: Seq[String], body: String) {
       val declarations = for (name <- predicateNames) yield <p>
         {"(declare-const " + name + " Bool)"}
@@ -144,28 +144,10 @@ class PealCometActor extends CometActor with Loggable {
       this ! Result(result)
   }
 
-  private def onDownload(input: String) {
-    val pealProgrmParser = getParser(input)
-    val z3 = new Z3Context(new Z3Config("MODEL" -> true))
-
-    try {
-      pealProgrmParser.program()
-      val predicateNames = pealProgrmParser.pols.values().flatMap(pol => pol.rules).map(r => r.q.name).toSeq.distinct
-      val constsMap = predicateNames.toSeq.distinct.map(t => (t, z3.mkBoolConst(t))).toMap
-      val start = System.nanoTime()
-      val body = pealProgrmParser.pSet.phiZ3SMTString(z3, constsMap)
-      val lapseTime = System.nanoTime() - start
+  private def onDownload(predicateNames: Seq[String], body: String, lapseTime: Long) {
       val declarations = for (name <- predicateNames) yield "(declare-const " + name + " Bool)\n"
       val result = declarations.mkString("") + body + "\n" + "(check-sat)\n(get-model)"
       this ! File(result, lapseTime)
-    }
-    catch {
-      case e1: Throwable =>
-        dealWithIt(e1)
-    }
-    finally {
-      z3.delete()
-    }
   }
 
   private def dealWithIt(e: Throwable) = {
