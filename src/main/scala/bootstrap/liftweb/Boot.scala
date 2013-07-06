@@ -4,7 +4,7 @@ import net.liftweb.http.{Req, StreamingResponse, LiftRules}
 import net.liftweb.sitemap.{SiteMap, Menu}
 import net.liftweb.common.Full
 import scala.Nil
-import code.comet.util.myData
+import code.comet.util.Z3SMTData
 
 class Boot {
   def boot {
@@ -28,8 +28,8 @@ class Boot {
 
     LiftRules.dispatch.append {
       case req @ Req(List("download"), _, _) => {
-        val result = myData.is
-        val headers = ("Content-type" -> "text/plain") :: ("Content-length" -> result.length.toString) :: ("Content-disposition" -> "attachment; filname=result.txt") :: Nil
+        val result = Z3SMTData.is
+        val headers = "Content-type" -> "text/plain" :: "Content-length" -> result.length.toString :: "Content-disposition" -> "attachment; filname=result.txt" :: Nil
         () =>  Full(StreamingResponse(
           new java.io.ByteArrayInputStream(result.getBytes("utf-8")),
           () => {},

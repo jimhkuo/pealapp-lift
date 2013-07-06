@@ -79,7 +79,7 @@ class PealCometActor extends CometActor with Loggable {
       val (predicateNames, body, lapseTime) = onCompute(inputPolicies)
       onDownload(predicateNames, body, lapseTime)
     case File(result, lapseTime) =>
-      myData.set(result)
+      Z3SMTData.set(result)
       this ! Result(<p>Output prepared, lapse time:
         <span style="color:red;font-weight: bold;">
           {"%.2f".format(lapseTime.toDouble / 1000000)}
@@ -113,7 +113,8 @@ class PealCometActor extends CometActor with Loggable {
 
   private def onCompute(input: String) : (Seq[String], String, Long) ={
     val pealProgrmParser = getParser(input)
-    val z3 = new Z3Context(new Z3Config("MODEL" -> true))
+//    val z3 = new Z3Context(new Z3Config("MODEL" -> true))
+    val z3 = MyZ3Context.is
 
     try {
       pealProgrmParser.program()
@@ -127,9 +128,9 @@ class PealCometActor extends CometActor with Loggable {
       case e2: NullPointerException => dealWithIt(e2)
       case e1: Throwable => dealWithIt(e1)
     }
-    finally {
-      z3.delete()
-    }
+//    finally {
+//      z3.delete()
+//    }
   }
 
   private def onDisplay(predicateNames: Seq[String], body: String) {
