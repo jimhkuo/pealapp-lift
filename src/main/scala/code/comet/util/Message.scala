@@ -4,6 +4,10 @@ import scala.xml.NodeSeq
 
 case class Message(output: String)
 
+case class Result(output: NodeSeq)
+
+case class File(result: String, lapseTime: Long)
+
 case object Init
 
 case object Clear
@@ -18,6 +22,3 @@ case object MajorityVoting
 
 case object Compute
 
-case class Result(output: NodeSeq)
-
-case class File(result: String, lapseTime: Long)
