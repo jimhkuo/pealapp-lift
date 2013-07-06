@@ -8,6 +8,7 @@ import scala.collection.JavaConversions._
 import peal.domain.operator.{Mul, Min, Max, Plus}
 import scala.collection.mutable.ListBuffer
 import org.scalatest.matchers.{MatchResult, Matcher}
+import peal.util.EqualsIgnoreWhiteSpaceWord
 
 
 class NonDefaultThLessThanPolTest extends ShouldMatchersForJUnit {
@@ -65,7 +66,7 @@ class NonDefaultThLessThanPolTest extends ShouldMatchersForJUnit {
     val p = new Pol(List(rule5, rule3, rule4, rule2, rule1), Plus, 1)
     val pSet = new NonDefaultThLessThanPol(p, 0.5)
 
-    pSet.synthesis(z3) should be(beEqualIgnoreWhiteSpace("(or (and q5 q4) (and q5 q2) (and q5 q3) (and q5 q1) (and q4 q2 q3) (and q4 q2 q1) (and q4 q3 q1))"))
+    pSet.synthesis(z3) should beEqualIgnoreWhiteSpace("(or (and q5 q4) (and q5 q2) (and q5 q3) (and q5 q1) (and q4 q2 q3) (and q4 q2 q1) (and q4 q3 q1))")
   }
 
   @Test
@@ -181,8 +182,4 @@ class NonDefaultThLessThanPolTest extends ShouldMatchersForJUnit {
   }
 }
 
-class EqualsIgnoreWhiteSpaceWord(expected: String) extends Matcher[String] {
-  def apply(actual: String): MatchResult = MatchResult(actual.replaceAll("\n", " ").replaceAll("\\s+", " ").equals(expected),
-    actual + " was not equal to "+ expected,
-    actual + " was equal to "+ expected)
-}
+
