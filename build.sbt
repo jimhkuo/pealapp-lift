@@ -8,7 +8,7 @@ mainClass in assembly := Some("bootstrap.liftweb.Start")
 
 //use linux jar in assembly
 unmanagedJars in Compile <++= baseDirectory map { base =>
-	val baseDirectories = (base / "lib-linux")
+	val baseDirectories = (base / "lib_linux")
 	val customJars = (baseDirectories ** "*.jar")
 	customJars.classpath
 }
