@@ -25,9 +25,9 @@ class ThLessThanPol(pol: Pol, th: Double) extends pSet {
   }
 
   class DefaultLessThanTh(pol: Pol, th: Double)  {
-    def synthesis(z3:Z3Context, consts: Map[String, Z3AST]): String = pol.defaultScore match {
-      case _ if pol.rules.size > 1 => pol.rules.map(_.q.name).mkString("(or ", " ", ")")
-      case _ => pol.rules.map(_.q.name).mkString(" ")
+    def synthesis(z3:Z3Context, consts: Map[String, Z3AST]): Z3AST = pol.rules.size match {
+      case 1 => consts(pol.rules(0).q.name)//pol.rules.map(_.q.name).mkString(" ")
+      case s if s > 1 => z3.mkOr(pol.rules.map(p => consts(p.q.name)):_*) //pol.rules.map(_.q.name).mkString("(or ", " ", ")")
     }
   }
 }
