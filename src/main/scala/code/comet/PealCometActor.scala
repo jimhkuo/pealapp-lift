@@ -17,6 +17,7 @@ import net.liftweb.http.js.jquery.JqJE.JqId
 import code.comet.util.Message
 import code.comet.util.File
 import code.comet.util.Result
+import z3.ModelGetter
 
 
 class PealCometActor extends CometActor with Loggable {
@@ -62,6 +63,9 @@ class PealCometActor extends CometActor with Loggable {
         }) ++ SHtml.ajaxButton("Synthesise (and download)", () => {
           this ! Prepare
           _Noop
+        })++ SHtml.ajaxButton("Analysis1", () => {
+          this ! Analysis1
+          _Noop
         })}
         </div>
         <br/>
@@ -75,6 +79,9 @@ class PealCometActor extends CometActor with Loggable {
 
   override def lowPriority = {
     case Init =>
+    case Analysis1 =>
+      val (constsMap, pol) = onCompute(inputPolicies)
+      onAnalysis1(constsMap, pol)
     case Display =>
       val (constsMap, pol) = onCompute(inputPolicies)
       onDisplay(constsMap, pol)
@@ -145,6 +152,24 @@ class PealCometActor extends CometActor with Loggable {
       <br/>
       (get-model)</p>
     this ! Result(result)
+  }
+
+  private def onAnalysis1(constsMap: Map[String, Z3AST], pol: pSet) {
+
+    val solver = MyZ3Context.is.mkSolver()
+    val cond = MyZ3Context.is.mkBoolConst("cond")
+    solver.assertCnstr(MyZ3Context.is.mkEq(cond, pol.synthesis(MyZ3Context, constsMap)))
+    solver.assertCnstr(MyZ3Context.is.mkNot(cond))
+
+    val (sol, model) = ModelGetter.get(solver)
+
+    val result = sol match {
+      case Some(x) if x == true && model.toString().trim == "cond -> false" => <p>phi is always false<br/>{model}</p>
+      case Some(x) if x == true => <p>phi is NOT always true<br/>{model}</p>
+      case Some(x) if x == false => <p>phi is always true<br/>{model}</p>
+    }
+    this ! Result(result)
+    model.delete
   }
 
   private def onDownload(constsMap: Map[String, Z3AST], pol: pSet) {
