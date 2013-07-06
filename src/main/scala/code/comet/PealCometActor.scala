@@ -66,6 +66,9 @@ class PealCometActor extends CometActor with Loggable {
         })++ SHtml.ajaxButton("Analysis1 (!cond)", () => {
           this ! Analysis1
           _Noop
+        })++ SHtml.ajaxButton("Analysis2 (cond)", () => {
+          this ! Analysis2
+          _Noop
         })}
         </div>
         <br/>
@@ -82,6 +85,9 @@ class PealCometActor extends CometActor with Loggable {
     case Analysis1 =>
       val (constsMap, pol) = onCompute(inputPolicies)
       onAnalysis1(constsMap, pol)
+    case Analysis2 =>
+      val (constsMap, pol) = onCompute(inputPolicies)
+      onAnalysis2(constsMap, pol)
     case Display =>
       val (constsMap, pol) = onCompute(inputPolicies)
       onDisplay(constsMap, pol)
@@ -164,9 +170,24 @@ class PealCometActor extends CometActor with Loggable {
     val (sol, model) = ModelGetter.get(solver)
 
     val result = sol match {
-      case Some(x) if x && model.toString().trim == "cond -> false" => <p>phi is always false<br/>{model}</p>
-      case Some(x) if x => <p>phi is NOT always true<br/>{model}</p>
-      case Some(x) if !x => <p>phi is always true<br/>{model}</p>
+      case Some(x) if x && model.toString().trim == "cond -> false" => <p>!cond is {sol.get} and model is empty<br/>So phi is always false<br/>{model}</p>
+      case Some(x) if x => <p>!cond is {sol.get}<br/>So phi is NOT always true<br/>{model}</p>
+      case Some(x) if !x => <p>!cond is {sol.get}<br/>So phi is always true<br/>{model}</p>
+    }
+    this ! Result(result)
+    model.delete
+  }
+
+  private def onAnalysis2(constsMap: Map[String, Z3AST], pol: pSet) {
+
+    val solver = MyZ3Context.is.mkSolver()
+    val cond = MyZ3Context.is.mkBoolConst("cond")
+    solver.assertCnstr(MyZ3Context.is.mkEq(cond, pol.synthesis(MyZ3Context, constsMap)))
+
+    val (sol, model) = ModelGetter.get(solver)
+
+    val result = sol match {
+      case Some(x) => <p>cond is {sol.get}<br/>{model}</p>
     }
     this ! Result(result)
     model.delete

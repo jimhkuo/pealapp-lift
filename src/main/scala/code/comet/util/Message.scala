@@ -21,5 +21,8 @@ case object Reset
 case object MajorityVoting
 
 case object Display
+
 case object Analysis1
+
+case object Analysis2
 
