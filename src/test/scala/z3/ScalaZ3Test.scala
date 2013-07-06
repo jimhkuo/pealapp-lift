@@ -18,11 +18,21 @@ class ScalaZ3Test extends ShouldMatchersForJUnit {
 
     var (sol, model) = solver.checkAndGetModel
 
-    sol should be (Some(false))
+    println(sol)
+
 
     if (sol.get == true) {
       model.delete
     }
+
+    solver.reset() //This resets the solver!!
+
+    val q2a = z3.mkBoolConst("q2a")
+
+    solver.assertCnstr(z3.mkAnd(z3.mkOr(q1a, f), q2a))
+
+    println(solver.checkAndGetModel()._1)
+
 
     val q1 = z3.mkBoolConst("q1")
     val q2 = z3.mkBoolConst("q2")
