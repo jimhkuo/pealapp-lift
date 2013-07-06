@@ -39,7 +39,7 @@ class NonDefaultPolLessThanTh(pol: Pol, th: Double) extends NonDefaultSet {
         z3Model.toString
       }
       else {
-        "false"
+        z3.mkFalse().toString()
       }
     }
     case s => throw new RuntimeException("trying to synthesise with unsupported operator " + s + " in NonDefaultPolLessThanTh")
