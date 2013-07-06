@@ -18,9 +18,9 @@ class ThLessThanPol(pol: Pol, th: Double) extends pSet {
   def z3SMTHeader: String = pol.rules.map(p => "(declare-const " + p.q.name + " Bool)").mkString("", "\n", "\n")
 
   class ThLessThanDefault(pol: Pol, th: Double)  {
-    def synthesis(z3:Z3Context, consts: Map[String, Z3AST]): String = pol.defaultScore match {
-      case _ if pol.rules.size > 1 => pol.rules.map("(not " + _.q.name + ")").mkString("(and ", " ", ")")
-      case _ => pol.rules.map("(not " + _.q.name + ")").mkString(" ")
+    def synthesis(z3:Z3Context, consts: Map[String, Z3AST]): Z3AST = pol.rules.size match {
+      case 1 => z3.mkNot(consts(pol.rules(0).q.name)) //pol.rules.map("(not " + _.q.name + ")").mkString(" ")
+      case s if s > 1 => z3.mkAnd(pol.rules.map(p => z3.mkNot(consts(p.q.name))):_*) //pol.rules.map("(not " + _.q.name + ")").mkString("(and ", " ", ")")
     }
   }
 
