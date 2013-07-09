@@ -197,7 +197,8 @@ class PealCometActor extends CometActor with Loggable {
     val input = declarations.mkString("") + body + "\n" + "(check-sat)\n(get-model)"
     val f = File.createTempFile("z3file", "")
     (Seq("echo", input) #> f).!!
-    val result = "\n" + Process(Seq("z3", "-smt2", f.getAbsolutePath ), None, "PATH" -> Props.get("z3.location").get).!!
+    println("tmpfile: " + f.getAbsolutePath)
+    val result = "\n" + Process(Seq("bash", "-c", "z3 -smt2 " + f.getAbsolutePath ), None, "PATH" -> Props.get("z3.location").get).!!
     f.delete()
     this ! Result(<pre>{input}</pre><pre>Z3 Output:{result}</pre>)
   }
