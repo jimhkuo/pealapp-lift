@@ -5,9 +5,16 @@ import peal.domain.{Predicate, Rule, Pol}
 import peal.domain.operator.Min
 import org.scalatest.junit.ShouldMatchersForJUnit
 import scala.collection.JavaConversions._
-
+import scala.sys.process._
 
 class ScalaTest extends ShouldMatchersForJUnit {
+
+  @Test
+  def testProcess() {
+//    println("ls".!!)
+//    println(Process(Seq("bash", "-c", "z3", "-h"), None, "PATH" -> "/Users/jkuo/tools/z3/bin").!!)
+    println("z3".!!)
+  }
 
   @Test
   def testForMap() {
