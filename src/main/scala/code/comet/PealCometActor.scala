@@ -22,7 +22,6 @@ import scala.sys.process._
 import net.liftweb.util.Props
 import java.io.File
 
-
 class PealCometActor extends CometActor with Loggable {
   val defaultInput = "cond = pSet <= 0.5\n" +
     "b1 = min ((q1 0.2) (q2 0.4) (q3 0.9)) default 1\n" +
@@ -172,7 +171,6 @@ class PealCometActor extends CometActor with Loggable {
   }
 
   private def onAnalysis1(constsMap: Map[String, Z3AST], pol: pSet) {
-
     val solver = MyZ3Context.is.mkSolver()
     val cond = MyZ3Context.is.mkBoolConst("cond")
     solver.assertCnstr(MyZ3Context.is.mkEq(cond, pol.synthesis(MyZ3Context, constsMap)))
@@ -190,7 +188,6 @@ class PealCometActor extends CometActor with Loggable {
     model.delete
   }
 
-
   private def onAnalysis1_5(constsMap: Map[String, Z3AST], pol: pSet) {
     val declarations = for (name <- constsMap.keys) yield "(declare-const " + name + " Bool)\n"
     val body = pol.phiZ3SMTString(MyZ3Context.is, constsMap)
@@ -204,7 +201,6 @@ class PealCometActor extends CometActor with Loggable {
   }
 
   private def onAnalysis2(constsMap: Map[String, Z3AST], pol: pSet) {
-
     val solver = MyZ3Context.is.mkSolver()
     val cond = MyZ3Context.is.mkBoolConst("cond")
     solver.assertCnstr(MyZ3Context.is.mkEq(cond, pol.synthesis(MyZ3Context, constsMap)))
