@@ -192,16 +192,14 @@ class PealCometActor extends CometActor with Loggable {
 
 
   private def onAnalysis1_5(constsMap: Map[String, Z3AST], pol: pSet) {
-
     val declarations = for (name <- constsMap.keys) yield "(declare-const " + name + " Bool)\n"
     val body = pol.phiZ3SMTString(MyZ3Context.is, constsMap)
     val input = declarations.mkString("") + body + "\n" + "(check-sat)\n(get-model)"
     val f = File.createTempFile("z3file", "")
     (Seq("echo", input) #> f).!!
-    val result = Process(Seq("z3", "-smt2", f.getAbsolutePath ), None, "PATH" -> Props.get("z3.location").get).!!
-    println("result: " + result)
-//    f.delete()
-    this ! Result(<pre>{result}</pre>)
+    val result = "\n" + Process(Seq("z3", "-smt2", f.getAbsolutePath ), None, "PATH" -> Props.get("z3.location").get).!!
+    f.delete()
+    this ! Result(<pre>{input}</pre><pre>Z3 Output:{result}</pre>)
   }
 
   private def onAnalysis2(constsMap: Map[String, Z3AST], pol: pSet) {
