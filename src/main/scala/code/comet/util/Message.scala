@@ -24,7 +24,7 @@ case object Display
 
 case object Analysis1
 
-case object Analysis1_5
+case object SynthesisAndCallZ3
 
 case object Analysis2
 

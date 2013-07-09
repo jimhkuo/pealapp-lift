@@ -20,7 +20,7 @@ import code.comet.util.Result
 import z3.ModelGetter
 import scala.sys.process._
 import net.liftweb.util.Props
-import scala.reflect.io.File
+import java.io.File
 
 
 class PealCometActor extends CometActor with Loggable {
@@ -66,11 +66,13 @@ class PealCometActor extends CometActor with Loggable {
         }) ++ SHtml.ajaxButton("Synthesise (and download)", () => {
           this ! Prepare
           _Noop
-        })++ SHtml.ajaxButton("Analysis1 (!cond)", () => {
-          this ! Analysis1
+        })++ SHtml.ajaxButton("Synthesis and call z3", () => {
+          this ! SynthesisAndCallZ3
           _Noop
-        })++ SHtml.ajaxButton("Analysis1 (no ScalaZ3)", () => {
-          this ! Analysis1_5
+        })}</div>
+        <div>
+          {SHtml.ajaxButton("Analysis1 (!cond)", () => {
+          this ! Analysis1
           _Noop
         })++ SHtml.ajaxButton("Analysis2 (cond)", () => {
           this ! Analysis2
@@ -91,7 +93,7 @@ class PealCometActor extends CometActor with Loggable {
     case Analysis1 =>
       val (constsMap, pol) = onCompute(inputPolicies)
       onAnalysis1(constsMap, pol)
-    case Analysis1_5 =>
+    case SynthesisAndCallZ3 =>
       val (constsMap, pol) = onCompute(inputPolicies)
       onAnalysis1_5(constsMap, pol)
     case Analysis2 =>
@@ -194,10 +196,12 @@ class PealCometActor extends CometActor with Loggable {
     val declarations = for (name <- constsMap.keys) yield "(declare-const " + name + " Bool)\n"
     val body = pol.phiZ3SMTString(MyZ3Context.is, constsMap)
     val input = declarations.mkString("") + body + "\n" + "(check-sat)\n(get-model)"
-//    var f = File.makeTemp()
-//    ("hi" #> f).!!
-//    Process(Seq("bash", "-c", "z3", "-smt2" ), None, "PATH" -> Props.get("z3.location").get).!!
-//    this ! Result(result)
+    val f = File.createTempFile("z3file", "")
+    (Seq("echo", input) #> f).!!
+    val result = Process(Seq("z3", "-smt2", f.getAbsolutePath ), None, "PATH" -> Props.get("z3.location").get).!!
+    println("result: " + result)
+//    f.delete()
+    this ! Result(<pre>{result}</pre>)
   }
 
   private def onAnalysis2(constsMap: Map[String, Z3AST], pol: pSet) {
