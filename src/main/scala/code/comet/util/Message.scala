@@ -6,7 +6,7 @@ case class Message(output: String)
 
 case class Result(output: NodeSeq)
 
-case class File(result: String, lapseTime: Long)
+case class SaveFile(result: String, lapseTime: Long)
 
 case object Init
 
@@ -23,6 +23,8 @@ case object MajorityVoting
 case object Display
 
 case object Analysis1
+
+case object Analysis1_5
 
 case object Analysis2
 

@@ -6,6 +6,7 @@ import peal.domain.operator.Min
 import org.scalatest.junit.ShouldMatchersForJUnit
 import scala.collection.JavaConversions._
 import scala.sys.process._
+import java.io.File
 
 class ScalaTest extends ShouldMatchersForJUnit {
 
@@ -15,6 +16,15 @@ class ScalaTest extends ShouldMatchersForJUnit {
 //    println(Process(Seq("bash", "-c", "z3", "-h"), None, "PATH" -> "/Users/jkuo/tools/z3/bin").!!)
     println("z3".!!)
   }
+
+  @Test
+  def testFile() {
+    var f = File.createTempFile("z3file", "")
+    ("echo hi" #> f).!!
+    println(f.getAbsolutePath)
+  }
+
+
 
   @Test
   def testForMap() {

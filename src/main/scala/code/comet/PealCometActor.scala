@@ -15,9 +15,12 @@ import peal.synthesis.pSet
 import scala.Predef._
 import net.liftweb.http.js.jquery.JqJE.JqId
 import code.comet.util.Message
-import code.comet.util.File
+import code.comet.util.SaveFile
 import code.comet.util.Result
 import z3.ModelGetter
+import scala.sys.process._
+import net.liftweb.util.Props
+import scala.reflect.io.File
 
 
 class PealCometActor extends CometActor with Loggable {
@@ -66,6 +69,9 @@ class PealCometActor extends CometActor with Loggable {
         })++ SHtml.ajaxButton("Analysis1 (!cond)", () => {
           this ! Analysis1
           _Noop
+        })++ SHtml.ajaxButton("Analysis1 (no ScalaZ3)", () => {
+          this ! Analysis1_5
+          _Noop
         })++ SHtml.ajaxButton("Analysis2 (cond)", () => {
           this ! Analysis2
           _Noop
@@ -85,6 +91,9 @@ class PealCometActor extends CometActor with Loggable {
     case Analysis1 =>
       val (constsMap, pol) = onCompute(inputPolicies)
       onAnalysis1(constsMap, pol)
+    case Analysis1_5 =>
+      val (constsMap, pol) = onCompute(inputPolicies)
+      onAnalysis1_5(constsMap, pol)
     case Analysis2 =>
       val (constsMap, pol) = onCompute(inputPolicies)
       onAnalysis2(constsMap, pol)
@@ -97,7 +106,7 @@ class PealCometActor extends CometActor with Loggable {
     case Download =>
       val (constsMap, pol) = onCompute(inputPolicies)
       onDownload(constsMap, pol)
-    case File(result, lapseTime) =>
+    case SaveFile(result, lapseTime) =>
       Z3SMTData.set(result)
       this ! Result(<p>Output prepared, lapse time:
         <span style="color:red;font-weight: bold;">
@@ -179,6 +188,18 @@ class PealCometActor extends CometActor with Loggable {
     model.delete
   }
 
+
+  private def onAnalysis1_5(constsMap: Map[String, Z3AST], pol: pSet) {
+
+    val declarations = for (name <- constsMap.keys) yield "(declare-const " + name + " Bool)\n"
+    val body = pol.phiZ3SMTString(MyZ3Context.is, constsMap)
+    val input = declarations.mkString("") + body + "\n" + "(check-sat)\n(get-model)"
+//    var f = File.makeTemp()
+//    ("hi" #> f).!!
+//    Process(Seq("bash", "-c", "z3", "-smt2" ), None, "PATH" -> Props.get("z3.location").get).!!
+//    this ! Result(result)
+  }
+
   private def onAnalysis2(constsMap: Map[String, Z3AST], pol: pSet) {
 
     val solver = MyZ3Context.is.mkSolver()
@@ -202,7 +223,7 @@ class PealCometActor extends CometActor with Loggable {
     val lapseTime = System.nanoTime() - start
 
     val result = declarations.mkString("") + body + "\n" + "(check-sat)\n(get-model)"
-    this ! File(result, lapseTime)
+    this ! SaveFile(result, lapseTime)
   }
 
   private def dealWithIt(e: Throwable) = {

@@ -6,7 +6,7 @@ import util.Helpers._
 import code.lib.DependencyFactory
 import net.liftweb.util.Props
 
-class Info {
+class Z3Info {
   lazy val z3Location = Props.get("z3.location").get
 
   def render = "* *" #> ("z3 is installed at " + z3Location)
