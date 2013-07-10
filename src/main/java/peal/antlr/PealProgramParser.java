@@ -1,4 +1,4 @@
-// $ANTLR 3.4 /Users/jkuo/PealApp-lift/antlr/PealProgram.g 2013-07-10 17:33:50
+// $ANTLR 3.4 /Users/jkuo/PealApp-lift/antlr/PealProgram.g 2013-07-10 18:07:28
 
 package peal.antlr;
 import java.util.*;
@@ -529,7 +529,7 @@ public class PealProgramParser extends Parser {
 
                     match(input,10,FOLLOW_10_in_pSet188); 
 
-                    t = new MaxPolicySet(new PolPolicySet(pols.get((id1!=null?id1.getText():null))), id4);
+                    t = new MaxPolicySet(new PolPolicySet(pols.get((id3!=null?id3.getText():null))), id4);
 
                     }
                     break;
@@ -571,7 +571,7 @@ public class PealProgramParser extends Parser {
 
                     match(input,10,FOLLOW_10_in_pSet230); 
 
-                    t = new MinPolicySet(new PolPolicySet(pols.get((id1!=null?id1.getText():null))), id4);
+                    t = new MinPolicySet(new PolPolicySet(pols.get((id3!=null?id3.getText():null))), id4);
 
                     }
                     break;
