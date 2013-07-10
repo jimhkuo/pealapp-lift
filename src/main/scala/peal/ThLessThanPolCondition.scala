@@ -13,8 +13,6 @@ class ThLessThanPolCondition(pol: Pol, th: Double) extends Condition {
     case _ => z3.mkAnd(new DefaultLessThanTh(pol, th).synthesis(z3,consts), new NonDefaultThLessThanPol(pol, th).synthesis(z3,consts))
   }
 
-  def z3SMTHeader: String = pol.rules.map(p => "(declare-const " + p.q.name + " Bool)").mkString("", "\n", "\n")
-
   class ThLessThanDefault(pol: Pol, th: Double)  {
     def synthesis(z3:Z3Context, consts: Map[String, Z3AST]): Z3AST = pol.rules.size match {
       case 1 => z3.mkNot(consts(pol.rules(0).q.name)) //pol.rules.map("(not " + _.q.name + ")").mkString(" ")
