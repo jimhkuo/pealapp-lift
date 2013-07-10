@@ -21,6 +21,11 @@ import z3.ModelGetter
 import scala.sys.process._
 import net.liftweb.util.Props
 import java.io.File
+import net.liftweb.http.js.jquery.JqJE.JqId
+import code.comet.util.Message
+import scala.Some
+import code.comet.util.Result
+import code.comet.util.SaveFile
 
 class PealCometActor extends CometActor with Loggable {
   val result = new StringBuilder
@@ -107,7 +112,7 @@ class PealCometActor extends CometActor with Loggable {
       onAnalysis2(constsMap,   pSets.values.head)
     case Display =>
       val (constsMap, conds,  pSets) = onCompute(inputPolicies)
-      onDisplay(constsMap, pSets.values.head)
+      onDisplay(constsMap, conds,  pSets)
     case Download =>
       val (constsMap, conds,  pSets) = onCompute(inputPolicies)
       onDownload(constsMap, pSets.values.head)
@@ -165,12 +170,22 @@ class PealCometActor extends CometActor with Loggable {
     //    }
   }
 
-  private def onDisplay(constsMap: Map[String, Z3AST], pol: pSet) {
+  private def onDisplay(constsMap: Map[String, Z3AST], conds: Map[String, String], pSets: Map[String, pSet]) {
     val declarations = for (name <- constsMap.keys) yield <p>
       {"(declare-const " + name + " Bool)"}
     </p>
+    val declarations1 = for (name <- conds.keys) yield <p>
+      {"(declare-const " + name + " Bool)"}
+    </p>
+
+    val asserts = for (cond <- conds.keys) yield {<p>
+      {"(assert (= " + cond + " " + pSets(conds(cond)).phiZ3SMTString(MyZ3Context.is, constsMap) + " )"}
+    </p><p>{"(assert " + cond + ")"}</p>}
+
     val result = <p>
-      {declarations}{pol.phiZ3SMTString(MyZ3Context.is, constsMap)}<br/>
+      {declarations}
+      {declarations1}
+      {asserts}
       (check-sat)
       <br/>
       (get-model)</p>
