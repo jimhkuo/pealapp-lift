@@ -1,6 +1,5 @@
 package peal.synthesis
 
-import peal.domain.Pol
 import z3.scala.{Z3AST, Z3Context}
 
 trait Condition {

@@ -1,6 +1,5 @@
 package peal.synthesis
 
 trait PolicySet {
-  //TODO these can be max, min or just pol
-
+  //These can be max, min or just pol
 }
