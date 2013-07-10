@@ -185,22 +185,9 @@ class PealCometActor extends CometActor with Loggable {
     val (sol, model) = ModelGetter.get(solver)
 
     val result = sol match {
-      case Some(x) if x && model.toString().trim == "cond -> false" => <p>!cond is {sol.get}
-        and model is empty
-        <br/>
-        So phi is always false
-        <pre>{model}</pre>
-      </p>
-      case Some(x) if x => <p>!cond is
-        {sol.get}<br/>
-        So phi is NOT always true
-        <pre>{model}</pre>
-      </p>
-      case Some(x) if !x => <p>!cond is
-        {sol.get}<br/>
-        So phi is always true
-        <pre>{model}</pre>
-      </p>
+      case Some(x) if x && model.toString().trim == "cond -> false" => <p>!cond is {sol.get}and model is empty<br/>So phi is always false<pre>{model}</pre></p>
+      case Some(x) if x => <p>!cond is{sol.get}<br/>So phi is NOT always true<pre>{model}</pre></p>
+      case Some(x) if !x => <p>!cond is{sol.get}<br/>So phi is always true<pre>{model}</pre></p>
       case None => <p>Nothing is returned by Z3</p>
     }
     this ! Result(result)
@@ -210,14 +197,14 @@ class PealCometActor extends CometActor with Loggable {
   private def onCallZ3ViaCommandLine(constsMap: Map[String, Z3AST], pol: pSet) {
     val declarations = for (name <- constsMap.keys) yield "(declare-const " + name + " Bool)\n"
     val body = pol.phiZ3SMTString(MyZ3Context.is, constsMap)
-    val input = declarations.mkString("") + body + "\n" + "(check-sat)\n(get-model)"
-    val f = File.createTempFile("z3file", "")
-    (Seq("echo", input) #> f).!!
-    println("tmpfile: " + f.getAbsolutePath)
-    val returnCode = Process(Seq("bash", "-c", "z3 -smt2 " + f.getAbsolutePath), None, "PATH" -> Props.get("z3.location").get) ! processLogger
+    val z3SMTInput = declarations.mkString("") + body + "\n" + "(check-sat)\n(get-model)"
+    val tmp = File.createTempFile("z3file", "")
+    (Seq("echo", z3SMTInput) #> tmp).!!
+    println("tmpfile: " + tmp.getAbsolutePath)
+    val returnCode = Process(Seq("bash", "-c", "z3 -smt2 " + tmp.getAbsolutePath), None, "PATH" -> Props.get("z3.location").get) ! processLogger
     println(result.toString())
-    f.delete()
-    this ! Result(<pre>{input}</pre> <pre>Z3 Output:{result.toString()}</pre>)
+    tmp.delete()
+    this ! Result(<pre>{z3SMTInput}</pre> <pre>Z3 Output:{result.toString()}</pre>)
   }
 
   private def onAnalysis2(constsMap: Map[String, Z3AST], pol: pSet) {

@@ -34,13 +34,13 @@ package peal.antlr;
 }
 
 program	
-	: 'cond' '=' id0=IDENT '<=' num=NUMBER {n = $num.text;}
+	: 'cond' '=' id2=IDENT '<=' num=NUMBER {n = $num.text;}
 	(id1=IDENT '=' pol {pols.put($id1.text, $pol.p);})*
-	id0=IDENT '=' pSet { pSet = $pSet.t;}
+	id2=IDENT '=' pSet { pSet = $pSet.t;}
 	|
-	'cond' '=' num=NUMBER '<' id0=IDENT {n = $num.text;}
+	'cond' '=' num=NUMBER '<' id2=IDENT {n = $num.text;}
 	(id1=IDENT '=' pol {pols.put($id1.text, $pol.p);})*
-	id0=IDENT '=' pSet1 { pSet = $pSet1.t;}
+	id2=IDENT '=' pSet1 { pSet = $pSet1.t;}
 	;
 
 pSet    returns [pSet t] 

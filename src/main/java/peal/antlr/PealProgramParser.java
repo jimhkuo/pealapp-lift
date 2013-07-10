@@ -1,4 +1,4 @@
-// $ANTLR 3.4 /Users/jkuo/PealApp-lift/antlr/PealProgram.g 2013-07-03 17:22:53
+// $ANTLR 3.4 /Users/jkuo/PealApp-lift/antlr/PealProgram.g 2013-07-10 10:17:17
 
 package peal.antlr;
 import java.util.*;
@@ -74,9 +74,9 @@ public class PealProgramParser extends Parser {
 
 
     // $ANTLR start "program"
-    // /Users/jkuo/PealApp-lift/antlr/PealProgram.g:36:1: program : ( 'cond' '=' id0= IDENT '<=' num= NUMBER (id1= IDENT '=' pol )* id0= IDENT '=' pSet | 'cond' '=' num= NUMBER '<' id0= IDENT (id1= IDENT '=' pol )* id0= IDENT '=' pSet1 );
+    // /Users/jkuo/PealApp-lift/antlr/PealProgram.g:36:1: program : ( 'cond' '=' id2= IDENT '<=' num= NUMBER (id1= IDENT '=' pol )* id2= IDENT '=' pSet | 'cond' '=' num= NUMBER '<' id2= IDENT (id1= IDENT '=' pol )* id2= IDENT '=' pSet1 );
     public final void program() throws RecognitionException {
-        Token id0=null;
+        Token id2=null;
         Token num=null;
         Token id1=null;
         Pol pol1 =null;
@@ -89,7 +89,7 @@ public class PealProgramParser extends Parser {
 
 
         try {
-            // /Users/jkuo/PealApp-lift/antlr/PealProgram.g:37:2: ( 'cond' '=' id0= IDENT '<=' num= NUMBER (id1= IDENT '=' pol )* id0= IDENT '=' pSet | 'cond' '=' num= NUMBER '<' id0= IDENT (id1= IDENT '=' pol )* id0= IDENT '=' pSet1 )
+            // /Users/jkuo/PealApp-lift/antlr/PealProgram.g:37:2: ( 'cond' '=' id2= IDENT '<=' num= NUMBER (id1= IDENT '=' pol )* id2= IDENT '=' pSet | 'cond' '=' num= NUMBER '<' id2= IDENT (id1= IDENT '=' pol )* id2= IDENT '=' pSet1 )
             int alt3=2;
             int LA3_0 = input.LA(1);
 
@@ -130,13 +130,13 @@ public class PealProgramParser extends Parser {
             }
             switch (alt3) {
                 case 1 :
-                    // /Users/jkuo/PealApp-lift/antlr/PealProgram.g:37:4: 'cond' '=' id0= IDENT '<=' num= NUMBER (id1= IDENT '=' pol )* id0= IDENT '=' pSet
+                    // /Users/jkuo/PealApp-lift/antlr/PealProgram.g:37:4: 'cond' '=' id2= IDENT '<=' num= NUMBER (id1= IDENT '=' pol )* id2= IDENT '=' pSet
                     {
                     match(input,17,FOLLOW_17_in_program45); 
 
                     match(input,16,FOLLOW_16_in_program47); 
 
-                    id0=(Token)match(input,IDENT,FOLLOW_IDENT_in_program51); 
+                    id2=(Token)match(input,IDENT,FOLLOW_IDENT_in_program51); 
 
                     match(input,15,FOLLOW_15_in_program53); 
 
@@ -229,7 +229,7 @@ public class PealProgramParser extends Parser {
                     } while (true);
 
 
-                    id0=(Token)match(input,IDENT,FOLLOW_IDENT_in_program78); 
+                    id2=(Token)match(input,IDENT,FOLLOW_IDENT_in_program78); 
 
                     match(input,16,FOLLOW_16_in_program80); 
 
@@ -244,7 +244,7 @@ public class PealProgramParser extends Parser {
                     }
                     break;
                 case 2 :
-                    // /Users/jkuo/PealApp-lift/antlr/PealProgram.g:41:2: 'cond' '=' num= NUMBER '<' id0= IDENT (id1= IDENT '=' pol )* id0= IDENT '=' pSet1
+                    // /Users/jkuo/PealApp-lift/antlr/PealProgram.g:41:2: 'cond' '=' num= NUMBER '<' id2= IDENT (id1= IDENT '=' pol )* id2= IDENT '=' pSet1
                     {
                     match(input,17,FOLLOW_17_in_program90); 
 
@@ -254,7 +254,7 @@ public class PealProgramParser extends Parser {
 
                     match(input,14,FOLLOW_14_in_program98); 
 
-                    id0=(Token)match(input,IDENT,FOLLOW_IDENT_in_program102); 
+                    id2=(Token)match(input,IDENT,FOLLOW_IDENT_in_program102); 
 
                     n = (num!=null?num.getText():null);
 
@@ -343,7 +343,7 @@ public class PealProgramParser extends Parser {
                     } while (true);
 
 
-                    id0=(Token)match(input,IDENT,FOLLOW_IDENT_in_program123); 
+                    id2=(Token)match(input,IDENT,FOLLOW_IDENT_in_program123); 
 
                     match(input,16,FOLLOW_16_in_program125); 
 
