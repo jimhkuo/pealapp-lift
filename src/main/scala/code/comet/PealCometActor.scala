@@ -11,7 +11,7 @@ import net.liftweb.common.Loggable
 import scala.collection.JavaConversions._
 import z3.scala.{Z3AST, Z3Config, Z3Context}
 import code.comet.util._
-import peal.synthesis.Condition
+import peal.synthesis.{PolicySet, Condition}
 import scala.Predef._
 import net.liftweb.http.js.jquery.JqJE.JqId
 import code.comet.util.Message
@@ -33,7 +33,7 @@ class PealCometActor extends CometActor with Loggable {
     (o: String) => resultBuilder.append(o + "\n"),
     (e: String) => resultBuilder.append(e + "\n")
   )
-  val defaultInput = "b1 = min ((q1 0.2) (q2 0.4) (q3 0.9)) default 1\nb2 = + ((q4 0.1) (q5 0.2) (q6 0.2)) default 0\ncond1 = pSet1 <= 0.5\npSet1 = max(b1, b2)\ncond2 = 0.6 < pSet2\npSet2 = min(b1, b2)"
+  val defaultInput = "b1 = min ((q1 0.2) (q2 0.4) (q3 0.9)) default 1\nb2 = + ((q4 0.1) (q5 0.2) (q6 0.2)) default 0\npSet1 = max(b1, b2)\npSet2 = min(b1, b2)\ncond1 = pSet1 <= 0.5\ncond2 = 0.6 < pSet2\n"
   var inputPolicies = defaultInput
   var majorityVotingCount = 10
 
@@ -99,19 +99,19 @@ class PealCometActor extends CometActor with Loggable {
     case Init =>
     case Analysis1 =>
       val (constsMap, conds, pSets) = onCompute(inputPolicies)
-      onAnalysis1(constsMap, conds, pSets)
+//      onAnalysis1(constsMap, conds, pSets)
     case SynthesisAndCallZ3 =>
       val (constsMap,  conds, pSets) = onCompute(inputPolicies)
-      onCallZ3ViaCommandLine(constsMap, conds,  pSets)
+//      onCallZ3ViaCommandLine(constsMap, conds,  pSets)
     case Analysis2 =>
       val (constsMap,  conds, pSets) = onCompute(inputPolicies)
-      onAnalysis2(constsMap, conds, pSets)
+//      onAnalysis2(constsMap, conds, pSets)
     case Display =>
       val (constsMap, conds,  pSets) = onCompute(inputPolicies)
       onDisplay(constsMap, conds,  pSets)
     case Download =>
       val (constsMap, conds,  pSets) = onCompute(inputPolicies)
-      onDownload(constsMap, conds,  pSets)
+//      onDownload(constsMap, conds,  pSets)
     case Prepare =>
       partialUpdate(JqId("result") ~> JqHtml(Text("Synthesising... Please wait...")))
       this ! Download
@@ -148,7 +148,7 @@ class PealCometActor extends CometActor with Loggable {
     new PealProgramParser(tokenStream)
   }
 
-  private def onCompute(input: String): (Map[String, Z3AST], Map[String, String], Map[String, Condition]) = {
+  private def onCompute(input: String): (Map[String, Z3AST], Map[String, Condition], Map[String, PolicySet]) = {
     val pealProgrmParser = getParser(input)
     val z3 = MyZ3Context.is
 
@@ -166,7 +166,7 @@ class PealCometActor extends CometActor with Loggable {
     //    }
   }
 
-  private def onDisplay(constsMap: Map[String, Z3AST], conds: Map[String, String], pSets: Map[String, Condition]) {
+  private def onDisplay(constsMap: Map[String, Z3AST], conds: Map[String, Condition], pSets: Map[String, PolicySet]) {
     val declarations = for (name <- constsMap.keys) yield <p>
       {"(declare-const " + name + " Bool)"}
     </p>
@@ -176,7 +176,7 @@ class PealCometActor extends CometActor with Loggable {
 
     val sortedKeys = conds.keys.toSeq.sortWith(_ < _)
     val asserts = for (cond <- sortedKeys) yield {<p>(push)</p><p>
-      {"(assert (= " + cond + " " + pSets(conds(cond)).synthesis(MyZ3Context.is, constsMap) + "))"}
+      {"(assert (= " + cond + " " + conds(cond).synthesis(MyZ3Context.is, constsMap) + "))"}
     </p><p>{"(assert " + cond + ")"}<p>(check-sat)</p><p>(get-model)</p><p>(pop)</p></p>}
 
     val result = <p>

@@ -10,15 +10,15 @@ import java.util.*;
 import peal.domain.*;
 import peal.*;
 import org.antlr.runtime.BitSet;
-import peal.synthesis.Condition;
+import peal.synthesis.*;
 import peal.domain.operator.*;
 
 }
 
 @members {
 public Map<String, Pol> pols = new HashMap<String, Pol>();
-public Map<String, String> conds = new HashMap<String, String>();
-public Map<String, pSet> pSets = new HashMap<String, pSet>();
+public Map<String, Condition> conds = new HashMap<String, Condition>();
+public Map<String, PolicySet> pSets = new HashMap<String, PolicySet>();
 private Map<String, String> pSetScores = new HashMap<String, String>();
 List<Rule> l = new ArrayList<Rule>();
 
@@ -38,30 +38,21 @@ program
 	: 
 	
 	(id1=IDENT '=' pol {pols.put($id1.text, $pol.p);})*
-		
+	(id2=IDENT '=' pSet { pSets.put($id2.text, $pSet.t);})+
 	(
-	id0=IDENT '=' id2=IDENT '<=' num=NUMBER {pSetScores.put($id2.text, $num.text); conds.put($id0.text, $id2.text);}
-	id2=IDENT '=' pSet[$id2.text] { pSets.put($id2.text, $pSet.t);}
-	|
-	id0=IDENT '=' num=NUMBER '<' id2=IDENT {pSetScores.put($id2.text, $num.text); conds.put($id0.text, $id2.text);}
-	id2=IDENT '=' pSet1[$id2.text] { pSets.put($id2.text, $pSet1.t);}
+	id0=IDENT '=' id2=IDENT '<=' num=NUMBER {Condition cond = new LessThanThCondition(pSets.get($id2.text), Double.valueOf($num.text)); conds.put($id0.text, cond);}
+    	|
+	id0=IDENT '=' num=NUMBER '<' id2=IDENT {Condition cond = new GreaterThanThCondition(pSets.get($id2.text), Double.valueOf($num.text)); conds.put($id0.text, cond);}
 	)+
 	;
 
-pSet [String s] returns [pSet t] 
-	: id1=IDENT {$t = new PolLessThanTh(pols.get($id1.text), Double.valueOf(pSetScores.get(s)));}
-	| 'max' '(' id1=IDENT ',' id2=IDENT ')' {$t = new MaxLessThanTh(pols.get($id1.text), pols.get($id2.text), Double.valueOf(pSetScores.get(s)));}
-	| 'max' '(' id3=IDENT ',' id4=pSet[s] ')' {$t = new MaxLessThanTh(pols.get($id3.text), $id4.t, Double.valueOf(pSetScores.get(s)));}
-	| 'min' '(' id1=IDENT ',' id2=IDENT ')' {$t = new MinLessThanTh(pols.get($id1.text), pols.get($id2.text), Double.valueOf(pSetScores.get(s)));}
-	| 'min' '(' id3=IDENT ',' id4=pSet[s] ')' {$t = new MinLessThanTh(pols.get($id3.text), $id4.t, Double.valueOf(pSetScores.get(s)));}
-	;
-
-pSet1 [String s] returns [pSet t] 
-	: id1=IDENT {$t = new ThLessThanPol(pols.get($id1.text), Double.valueOf(pSetScores.get(s)));}
-	| 'max' '(' id1=IDENT ',' id2=IDENT ')' {$t = new ThLessThanMax(pols.get($id1.text), pols.get($id2.text), Double.valueOf(pSetScores.get(s)));}
-	| 'max' '(' id3=IDENT ',' id4=pSet1[s] ')' {$t = new ThLessThanMax(pols.get($id3.text), $id4.t, Double.valueOf(pSetScores.get(s)));}
-	| 'min' '(' id1=IDENT ',' id2=IDENT ')' {$t = new ThLessThanMin(pols.get($id1.text), pols.get($id2.text), Double.valueOf(pSetScores.get(s)));}
-	| 'min' '(' id3=IDENT ',' id4=pSet1[s] ')' {$t = new ThLessThanMin(pols.get($id3.text), $id4.t, Double.valueOf(pSetScores.get(s)));}
+//pSet [String s] returns [PolicySet t] 
+pSet  returns [PolicySet t] 
+	: id1=IDENT {$t = new PolPolicySet(pols.get($id1.text));}
+	| 'max' '(' id1=IDENT ',' id2=IDENT ')' {$t = new MaxPolicySet(new PolPolicySet(pols.get($id1.text)), new PolPolicySet(pols.get($id2.text)));}
+	| 'max' '(' id3=IDENT ',' id4=pSet ')' {$t = new MaxPolicySet(new PolPolicySet(pols.get($id1.text)), $id4.t);}
+	| 'min' '(' id1=IDENT ',' id2=IDENT ')' {$t = new MinPolicySet(new PolPolicySet(pols.get($id1.text)), new PolPolicySet(pols.get($id2.text)));}
+	| 'min' '(' id3=IDENT ',' id4=pSet ')' {$t = new MinPolicySet(new PolPolicySet(pols.get($id1.text)), $id4.t);}
 	;
 
 pol	returns [Pol p] 
