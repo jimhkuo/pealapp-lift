@@ -99,7 +99,7 @@ class PealCometActor extends CometActor with Loggable {
     case Init =>
     case Analysis1 =>
       val (constsMap, conds, pSets) = onCompute(inputPolicies)
-      onAnalysis1(constsMap,  pSets.values.head)
+      onAnalysis1(constsMap, conds, pSets)
     case SynthesisAndCallZ3 =>
       val (constsMap,  conds, pSets) = onCompute(inputPolicies)
       onCallZ3ViaCommandLine(constsMap, conds,  pSets)
@@ -187,22 +187,29 @@ class PealCometActor extends CometActor with Loggable {
     this ! Result(result)
   }
 
-  private def onAnalysis1(constsMap: Map[String, Z3AST], pol: pSet) {
+  private def onAnalysis1(constsMap: Map[String, Z3AST], conds: Map[String, String], pSets: Map[String, pSet]) {
+    val sortedKeys = conds.keys.toSeq.sortWith(_ < _)
     val solver = MyZ3Context.is.mkSolver()
-    val cond = MyZ3Context.is.mkBoolConst("cond")
-    solver.assertCnstr(MyZ3Context.is.mkEq(cond, pol.synthesis(MyZ3Context, constsMap)))
-    solver.assertCnstr(MyZ3Context.is.mkNot(cond))
+    val results = for (name <- sortedKeys) yield {
+      solver.reset()
+      val cond = MyZ3Context.is.mkBoolConst(name)
+      solver.assertCnstr(MyZ3Context.is.mkEq(cond, pSets(conds(name)).synthesis(MyZ3Context, constsMap)))
+      solver.assertCnstr(MyZ3Context.is.mkNot(cond))
+      val (sol, model) = ModelGetter.get(solver)
 
-    val (sol, model) = ModelGetter.get(solver)
+      val result = sol match {
+        case Some(x) if x && model.toString().trim == name + " -> false" => <p>!{name} is {sol.get} and model is empty<br/>So {name} is always false<pre>{model}</pre></p>
+        case Some(x) if x => <p>!{name} is {sol.get}<br/>So {name} is NOT always true<pre>{model}</pre></p>
+        case Some(x) if !x => <p>!{name} is {sol.get}<br/>So {name} is always true<pre>{model}</pre></p>
+        case None => <p>Nothing is returned by Z3</p>
+      }
+      model.delete
 
-    val result = sol match {
-      case Some(x) if x && model.toString().trim == "cond -> false" => <p>!cond is {sol.get}and model is empty<br/>So phi is always false<pre>{model}</pre></p>
-      case Some(x) if x => <p>!cond is{sol.get}<br/>So phi is NOT always true<pre>{model}</pre></p>
-      case Some(x) if !x => <p>!cond is{sol.get}<br/>So phi is always true<pre>{model}</pre></p>
-      case None => <p>Nothing is returned by Z3</p>
+      result
     }
-    this ! Result(result)
-    model.delete
+
+    this ! Result(results)
+
   }
 
   private def onCallZ3ViaCommandLine(constsMap: Map[String, Z3AST], conds: Map[String, String], pSets: Map[String, pSet]) {
