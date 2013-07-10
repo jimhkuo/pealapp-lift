@@ -22,7 +22,6 @@ class MinLessThanThTest extends ShouldMatchersForJUnit  with Z3ModelMatcher {
     val phi2 = new MinLessThanTh(p1, phi1, 0.6)
 
     phi2.synthesis(z3,consts) should beZ3Model("(or (and q1 q1) (or (and q1 q1) (or (not q2) q2)))")
-    z3.delete()
   }
 
   @Test
@@ -33,7 +32,6 @@ class MinLessThanThTest extends ShouldMatchersForJUnit  with Z3ModelMatcher {
     val phi2 = new MinLessThanTh(p1, phi1, 0.6)
 
     phi2.synthesis(z3,consts) should beZ3Model("(or (and q1 q1) (or (not q2) q2))")
-    z3.delete()
   }
 
   @Test
@@ -43,6 +41,5 @@ class MinLessThanThTest extends ShouldMatchersForJUnit  with Z3ModelMatcher {
     val phi = new MinLessThanTh(p1, p2, 0.6)
 
     phi.synthesis(z3,consts) should beZ3Model("(or (and q1 q1) (or (not q2) q2))")
-    z3.delete()
   }
 }
