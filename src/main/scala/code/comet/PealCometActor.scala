@@ -99,13 +99,13 @@ class PealCometActor extends CometActor with Loggable {
     case Init =>
     case Analysis1 =>
       val (constsMap, conds, pSets) = onCompute(inputPolicies)
-//      onAnalysis1(constsMap, conds, pSets)
+      onAnalysis1(constsMap, conds, pSets)
     case SynthesisAndCallZ3 =>
       val (constsMap,  conds, pSets) = onCompute(inputPolicies)
-//      onCallZ3ViaCommandLine(constsMap, conds,  pSets)
+      onCallZ3ViaCommandLine(constsMap, conds,  pSets)
     case Analysis2 =>
       val (constsMap,  conds, pSets) = onCompute(inputPolicies)
-//      onAnalysis2(constsMap, conds, pSets)
+      onAnalysis2(constsMap, conds, pSets)
     case Display =>
       val (constsMap, conds,  pSets) = onCompute(inputPolicies)
       onDisplay(constsMap, conds,  pSets)
@@ -187,13 +187,13 @@ class PealCometActor extends CometActor with Loggable {
     this ! Result(result)
   }
 
-  private def onAnalysis1(constsMap: Map[String, Z3AST], conds: Map[String, String], pSets: Map[String, Condition]) {
+  private def onAnalysis1(constsMap: Map[String, Z3AST], conds: Map[String, Condition], pSets: Map[String, PolicySet]) {
     val sortedKeys = conds.keys.toSeq.sortWith(_ < _)
     val solver = MyZ3Context.is.mkSolver()
     val results = for (name <- sortedKeys) yield {
       solver.reset()
       val cond = MyZ3Context.is.mkBoolConst(name)
-      solver.assertCnstr(MyZ3Context.is.mkEq(cond, pSets(conds(name)).synthesis(MyZ3Context, constsMap)))
+      solver.assertCnstr(MyZ3Context.is.mkEq(cond, conds(name).synthesis(MyZ3Context, constsMap)))
       solver.assertCnstr(MyZ3Context.is.mkNot(cond))
       val (sol, model) = ModelGetter.get(solver)
 
@@ -210,12 +210,12 @@ class PealCometActor extends CometActor with Loggable {
     this ! Result(results)
   }
 
-  private def onCallZ3ViaCommandLine(constsMap: Map[String, Z3AST], conds: Map[String, String], pSets: Map[String, Condition]) {
+  private def onCallZ3ViaCommandLine(constsMap: Map[String, Z3AST], conds: Map[String, Condition], pSets: Map[String, PolicySet]) {
     val declarations = for (name <- constsMap.keys) yield "(declare-const " + name + " Bool)\n"
     val declarations1 = for (name <- conds.keys) yield "(declare-const " + name + " Bool)\n"
     val sortedKeys = conds.keys.toSeq.sortWith(_ < _)
     val body = for (cond <- sortedKeys) yield {
-      "(push)\n(assert (= " + cond + " " + pSets(conds(cond)).synthesis(MyZ3Context.is, constsMap) + "))\n" +
+      "(push)\n(assert (= " + cond + " " + conds(cond).synthesis(MyZ3Context.is, constsMap) + "))\n" +
       "(assert " + cond + ")\n(check-sat)\n(get-model)\n(pop)\n"
     }
 
@@ -230,13 +230,13 @@ class PealCometActor extends CometActor with Loggable {
     this ! Result(<pre>{z3SMTInput}</pre> <pre>Z3 Output:<br/>{resultBuilder.toString()}</pre>)
   }
 
-  private def onAnalysis2(constsMap: Map[String, Z3AST], conds: Map[String, String], pSets: Map[String, Condition]) {
+  private def onAnalysis2(constsMap: Map[String, Z3AST], conds: Map[String, Condition], pSets: Map[String, PolicySet]) {
     val sortedKeys = conds.keys.toSeq.sortWith(_ < _)
     val solver = MyZ3Context.is.mkSolver()
     val results = for (name <- sortedKeys) yield {
       solver.reset()
       val cond = MyZ3Context.is.mkBoolConst(name)
-      solver.assertCnstr(MyZ3Context.is.mkEq(cond, pSets(conds(name)).synthesis(MyZ3Context, constsMap)))
+      solver.assertCnstr(MyZ3Context.is.mkEq(cond, conds(name).synthesis(MyZ3Context, constsMap)))
       val (sol, model) = ModelGetter.get(solver)
 
       val result = sol match {
