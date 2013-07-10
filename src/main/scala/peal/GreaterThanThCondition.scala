@@ -9,6 +9,6 @@ class GreaterThanThCondition(phi: PolicySet, th: Double) extends Condition {
      case s: MinPolicySet => z3.mkAnd(new GreaterThanThCondition(s.lhs, th).synthesis(z3, consts), new GreaterThanThCondition(s.rhs, th).synthesis(z3, consts))
      case s: MaxPolicySet => z3.mkOr(new GreaterThanThCondition(s.lhs, th).synthesis(z3, consts), new GreaterThanThCondition(s.rhs, th).synthesis(z3, consts))
      case s: PolPolicySet => new GreaterThanThCondition(s.pol, th).synthesis(z3, consts)
-     case s: Pol => new ThLessThanPol(s, th).synthesis(z3, consts)
+     case s: Pol => new ThLessThanPolCondition(s, th).synthesis(z3, consts)
    }
  }

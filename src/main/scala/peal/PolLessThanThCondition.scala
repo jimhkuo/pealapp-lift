@@ -6,7 +6,7 @@ import peal.synthesis.Condition
 import scala.collection.JavaConversions._
 
 
-class PolLessThanTh(pol: Pol, th: Double) extends Condition {
+class PolLessThanThCondition(pol: Pol, th: Double) extends Condition {
 
   def synthesis(z3 : Z3Context, consts: Map[String, Z3AST]) = pol.defaultScore match {
     case s if s <= th => z3.mkOr(new DefaultLessThanTh(pol, th).synthesis(z3,consts), new NonDefaultPolLessThanTh(pol, th).synthesis(z3,consts))

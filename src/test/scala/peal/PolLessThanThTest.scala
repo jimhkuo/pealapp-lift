@@ -19,7 +19,7 @@ class PolLessThanThTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
   @Test
   def testDefaultLessThanTh() {
     val p = new Pol(List(new Rule(new Predicate("q1"), 0.5)), Min, 0)
-    val phi = new PolLessThanTh(p, 0.6)
+    val phi = new PolLessThanThCondition(p, 0.6)
 
     phi.synthesis(z3, consts) should beZ3Model("(or (not q1) q1)")
   }
@@ -27,7 +27,7 @@ class PolLessThanThTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
   @Test
   def testDefaultLessThanThMultipleRules() {
     val p = new Pol(List(new Rule(new Predicate("q1"), 0.5), new Rule(new Predicate("q2"), 0.3)), Min, 0)
-    val phi = new PolLessThanTh(p, 0.6)
+    val phi = new PolLessThanThCondition(p, 0.6)
 
     phi.synthesis(z3, consts) should beZ3Model("(or (and (not q1) (not q2)) (or q1 q2))")
   }
@@ -35,7 +35,7 @@ class PolLessThanThTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
   @Test
   def testDefaultGreaterThanTh() {
     val p = new Pol(List(new Rule(new Predicate("q1"), 0.5)), Min, 1)
-    val phi = new PolLessThanTh(p, 0.6)
+    val phi = new PolLessThanThCondition(p, 0.6)
 
     phi.synthesis(z3, consts) should beZ3Model("(and q1 q1)")
   }
@@ -43,7 +43,7 @@ class PolLessThanThTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
   @Test
   def testDefaultGreaterThanThMultipleRules() {
     val p = new Pol(List(new Rule(new Predicate("q1"), 0.5), new Rule(new Predicate("q2"), 0.3)), Min, 1)
-    val phi = new PolLessThanTh(p, 0.6)
+    val phi = new PolLessThanThCondition(p, 0.6)
 
     phi.synthesis(z3, consts) should beZ3Model("(and (or q1 q2) (or q1 q2))")
   }

@@ -19,14 +19,14 @@ class ThLessThanPolTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
   @Test
   def testThLessThanDefault() {
     val p = new Pol(List(new Rule(new Predicate("q1"), 0.5)), Min, 0.7)
-    val phi = new ThLessThanPol(p, 0.6)
+    val phi = new ThLessThanPolCondition(p, 0.6)
     phi.synthesis(z3, consts) should beZ3Model("(or (not q1) (not q1))")
   }
 
   @Test
   def testDefaultLessThanTh() {
     val p = new Pol(List(new Rule(new Predicate("q1"), 0.5)), Min, 0)
-    val phi = new ThLessThanPol(p, 0.6)
+    val phi = new ThLessThanPolCondition(p, 0.6)
     phi.synthesis(z3, consts) should beZ3Model("(and q1 (not q1))")
   }
 }
