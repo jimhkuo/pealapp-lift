@@ -240,7 +240,7 @@ class PealCometActor extends CometActor with Loggable {
       val (sol, model) = ModelGetter.get(solver)
 
       val result = sol match {
-        case Some(x) => <p>!{name} is {sol.get}<pre>{model}</pre><br/></p>
+        case Some(x) => <p>{name} is {sol.get}<pre>{model}</pre><br/></p>
         case None => <p>Nothing is returned by Z3</p>
       }
       model.delete
