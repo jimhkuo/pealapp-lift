@@ -10,7 +10,7 @@ import java.util.*;
 import peal.domain.*;
 import peal.*;
 import org.antlr.runtime.BitSet;
-import peal.synthesis.pSet;
+import peal.synthesis.Condition;
 import peal.domain.operator.*;
 
 }

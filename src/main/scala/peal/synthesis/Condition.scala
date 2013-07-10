@@ -4,7 +4,7 @@ import peal.domain.Pol
 import z3.scala.{Z3AST, Z3Context}
 
 //TODO this should probably be renamed to Condition
-trait pSet {
+trait Condition {
   //TODO synthesis should go with cond and only triggered in analysis
 
   def getPol : Pol = null

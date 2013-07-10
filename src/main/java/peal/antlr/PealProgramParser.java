@@ -5,13 +5,13 @@ import java.util.*;
 import peal.domain.*;
 import peal.*;
 import org.antlr.runtime.BitSet;
-import peal.synthesis.pSet;
+import peal.synthesis.Condition;
 import peal.domain.operator.*;
 
 
 
 import org.antlr.runtime.*;
-import java.util.Stack;
+
 import java.util.List;
 import java.util.ArrayList;
 
@@ -60,7 +60,7 @@ public class PealProgramParser extends Parser {
 
     public Map<String, Pol> pols = new HashMap<String, Pol>();
     public Map<String, String> conds = new HashMap<String, String>();
-    public Map<String, pSet> pSets = new HashMap<String, pSet>();
+    public Map<String, Condition> pSets = new HashMap<String, Condition>();
     private Map<String, String> pSetScores = new HashMap<String, String>();
     List<Rule> l = new ArrayList<Rule>();
 
@@ -82,9 +82,9 @@ public class PealProgramParser extends Parser {
         Token num=null;
         Pol pol1 =null;
 
-        pSet pSet2 =null;
+        Condition pSet2 =null;
 
-        pSet pSet13 =null;
+        Condition pSet13 =null;
 
 
         try {
@@ -255,14 +255,14 @@ public class PealProgramParser extends Parser {
 
     // $ANTLR start "pSet"
     // /Users/jkuo/PealApp-lift/antlr/PealProgram.g:51:1: pSet[String s] returns [pSet t] : (id1= IDENT | 'max' '(' id1= IDENT ',' id2= IDENT ')' | 'max' '(' id3= IDENT ',' id4= pSet[s] ')' | 'min' '(' id1= IDENT ',' id2= IDENT ')' | 'min' '(' id3= IDENT ',' id4= pSet[s] ')' );
-    public final pSet pSet(String s) throws RecognitionException {
-        pSet t = null;
+    public final Condition pSet(String s) throws RecognitionException {
+        Condition t = null;
 
 
         Token id1=null;
         Token id2=null;
         Token id3=null;
-        pSet id4 =null;
+        Condition id4 =null;
 
 
         try {
@@ -521,14 +521,14 @@ public class PealProgramParser extends Parser {
 
     // $ANTLR start "pSet1"
     // /Users/jkuo/PealApp-lift/antlr/PealProgram.g:59:1: pSet1[String s] returns [pSet t] : (id1= IDENT | 'max' '(' id1= IDENT ',' id2= IDENT ')' | 'max' '(' id3= IDENT ',' id4= pSet1[s] ')' | 'min' '(' id1= IDENT ',' id2= IDENT ')' | 'min' '(' id3= IDENT ',' id4= pSet1[s] ')' );
-    public final pSet pSet1(String s) throws RecognitionException {
-        pSet t = null;
+    public final Condition pSet1(String s) throws RecognitionException {
+        Condition t = null;
 
 
         Token id1=null;
         Token id2=null;
         Token id3=null;
-        pSet id4 =null;
+        Condition id4 =null;
 
 
         try {

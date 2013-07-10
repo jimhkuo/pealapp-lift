@@ -11,7 +11,7 @@ import net.liftweb.common.Loggable
 import scala.collection.JavaConversions._
 import z3.scala.{Z3AST, Z3Config, Z3Context}
 import code.comet.util._
-import peal.synthesis.pSet
+import peal.synthesis.Condition
 import scala.Predef._
 import net.liftweb.http.js.jquery.JqJE.JqId
 import code.comet.util.Message
@@ -148,7 +148,7 @@ class PealCometActor extends CometActor with Loggable {
     new PealProgramParser(tokenStream)
   }
 
-  private def onCompute(input: String): (Map[String, Z3AST], Map[String, String], Map[String, pSet]) = {
+  private def onCompute(input: String): (Map[String, Z3AST], Map[String, String], Map[String, Condition]) = {
     val pealProgrmParser = getParser(input)
     val z3 = MyZ3Context.is
 
@@ -166,7 +166,7 @@ class PealCometActor extends CometActor with Loggable {
     //    }
   }
 
-  private def onDisplay(constsMap: Map[String, Z3AST], conds: Map[String, String], pSets: Map[String, pSet]) {
+  private def onDisplay(constsMap: Map[String, Z3AST], conds: Map[String, String], pSets: Map[String, Condition]) {
     val declarations = for (name <- constsMap.keys) yield <p>
       {"(declare-const " + name + " Bool)"}
     </p>
@@ -187,7 +187,7 @@ class PealCometActor extends CometActor with Loggable {
     this ! Result(result)
   }
 
-  private def onAnalysis1(constsMap: Map[String, Z3AST], conds: Map[String, String], pSets: Map[String, pSet]) {
+  private def onAnalysis1(constsMap: Map[String, Z3AST], conds: Map[String, String], pSets: Map[String, Condition]) {
     val sortedKeys = conds.keys.toSeq.sortWith(_ < _)
     val solver = MyZ3Context.is.mkSolver()
     val results = for (name <- sortedKeys) yield {
@@ -210,7 +210,7 @@ class PealCometActor extends CometActor with Loggable {
     this ! Result(results)
   }
 
-  private def onCallZ3ViaCommandLine(constsMap: Map[String, Z3AST], conds: Map[String, String], pSets: Map[String, pSet]) {
+  private def onCallZ3ViaCommandLine(constsMap: Map[String, Z3AST], conds: Map[String, String], pSets: Map[String, Condition]) {
     val declarations = for (name <- constsMap.keys) yield "(declare-const " + name + " Bool)\n"
     val declarations1 = for (name <- conds.keys) yield "(declare-const " + name + " Bool)\n"
     val sortedKeys = conds.keys.toSeq.sortWith(_ < _)
@@ -230,7 +230,7 @@ class PealCometActor extends CometActor with Loggable {
     this ! Result(<pre>{z3SMTInput}</pre> <pre>Z3 Output:<br/>{resultBuilder.toString()}</pre>)
   }
 
-  private def onAnalysis2(constsMap: Map[String, Z3AST], conds: Map[String, String], pSets: Map[String, pSet]) {
+  private def onAnalysis2(constsMap: Map[String, Z3AST], conds: Map[String, String], pSets: Map[String, Condition]) {
     val sortedKeys = conds.keys.toSeq.sortWith(_ < _)
     val solver = MyZ3Context.is.mkSolver()
     val results = for (name <- sortedKeys) yield {
@@ -250,7 +250,7 @@ class PealCometActor extends CometActor with Loggable {
     this ! Result(results)
   }
 
-  private def onDownload(constsMap: Map[String, Z3AST], conds: Map[String, String], pSets: Map[String, pSet]) {
+  private def onDownload(constsMap: Map[String, Z3AST], conds: Map[String, String], pSets: Map[String, Condition]) {
     val declarations = for (name <- constsMap.keys) yield "(declare-const " + name + " Bool)\n"
     val declarations1 = for (name <- conds.keys) yield "(declare-const " + name + " Bool)\n"
     val sortedKeys = conds.keys.toSeq.sortWith(_ < _)

@@ -2,11 +2,11 @@ package peal
 
 import _root_.z3.scala.{Z3Context, Z3AST}
 import peal.domain.Pol
-import peal.synthesis.{pSet}
+import peal.synthesis.{Condition}
 import scala.collection.JavaConversions._
 
 
-class ThLessThanPol(pol: Pol, th: Double) extends pSet {
+class ThLessThanPol(pol: Pol, th: Double) extends Condition {
 
   def synthesis(z3:Z3Context, consts: Map[String, Z3AST]) = pol.defaultScore match {
     case s if th < s => z3.mkOr(new ThLessThanDefault(pol, th).synthesis(z3,consts), new NonDefaultThLessThanPol(pol, th).synthesis(z3,consts))
