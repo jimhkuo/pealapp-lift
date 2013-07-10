@@ -63,7 +63,7 @@ class PealProgramParserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
     val pols = pealProgrmParser.pols
     pols("b1").rules.size should be(3)
 
-    val set = pealProgrmParser.pSet
+    val set = pealProgrmParser.pSets.values().head
     set.synthesis(z3, consts) should beZ3Model("(and (and (or q1 q2 q3) (or q1 q2)) (and (and (or q1 q2 q3) (or q1 q2)) (or (and (not q4) (not q5) (not q6)) (not false))))")
   }
 
@@ -79,7 +79,7 @@ class PealProgramParserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
     val pols = pealProgrmParser.pols
     pols("b1").rules.size should be(3)
 
-    val set = pealProgrmParser.pSet
+    val set = pealProgrmParser.pSets.values().head
     set.synthesis(z3, consts) should beZ3Model("(and (or q1 q2 q3) (or q1 q2))")
   }
 
@@ -97,7 +97,7 @@ class PealProgramParserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
     pols("b1").rules.size should be(3)
     pols("b2").rules.size should be(3)
 
-    pealProgrmParser.pSet.synthesis(z3, consts) should beZ3Model("(and (and (or q1 q2 q3) (or q1 q2)) (or (and (not q4) (not q5) (not q6)) (not false)))")
+    pealProgrmParser.pSets.values().head.synthesis(z3, consts) should beZ3Model("(and (and (or q1 q2 q3) (or q1 q2)) (or (and (not q4) (not q5) (not q6)) (not false)))")
   }
 
   @Test
@@ -114,7 +114,7 @@ class PealProgramParserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
     pols("b1").rules.size should be(3)
     pols("b2").rules.size should be(3)
 
-    pealProgrmParser.pSet.synthesis(z3, consts) should beZ3Model("(or (and (or q1 q2 q3) (or q1 q2)) (or (and (not q4) (not q5) (not q6)) (not false)))")
+    pealProgrmParser.pSets.values().head.synthesis(z3, consts) should beZ3Model("(or (and (or q1 q2 q3) (or q1 q2)) (or (and (not q4) (not q5) (not q6)) (not false)))")
   }
 
   @Test
@@ -131,7 +131,7 @@ class PealProgramParserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
     pols("b1").rules.size should be(3)
     pols("b2").rules.size should be(3)
 
-    pealProgrmParser.pSet.synthesis(z3, consts) should beZ3Model("(and (or (and (not q1) (not q2) (not q3)) (not (or q1 q2))) (and (or q4 q5 q6) false))")
+    pealProgrmParser.pSets.values().head.synthesis(z3, consts) should beZ3Model("(and (or (and (not q1) (not q2) (not q3)) (not (or q1 q2))) (and (or q4 q5 q6) false))")
   }
 
   @Test
@@ -140,7 +140,7 @@ class PealProgramParserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
 
     val pealProgrmParser = getParser(input)
     pealProgrmParser.program()
-    pealProgrmParser.pSet.synthesis(z3, consts) should beZ3Model("(and (or q4 q5 q6) (not false))")
+    pealProgrmParser.pSets.values().head.synthesis(z3, consts) should beZ3Model("(and (or q4 q5 q6) (not false))")
   }
 
   @Test
@@ -149,7 +149,7 @@ class PealProgramParserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
 
     val pealProgrmParser = getParser(input)
     pealProgrmParser.program()
-    pealProgrmParser.pSet.synthesis(z3, consts) should beZ3Model("(or (and (not q4) (not q5) (not q6)) (not (and q6 q5 q4)))")
+    pealProgrmParser.pSets.values().head.synthesis(z3, consts) should beZ3Model("(or (and (not q4) (not q5) (not q6)) (not (and q6 q5 q4)))")
   }
 
   @Test
@@ -158,6 +158,6 @@ class PealProgramParserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
 
     val pealProgrmParser = getParser(input)
     pealProgrmParser.program()
-    pealProgrmParser.pSet.synthesis(z3, consts) should beZ3Model("(or (and (not q4) (not q5) (not q6)) (not (or q6 (and q5 q4))))")
+    pealProgrmParser.pSets.values().head.synthesis(z3, consts) should beZ3Model("(or (and (not q4) (not q5) (not q6)) (not (or q6 (and q5 q4))))")
   }
 }

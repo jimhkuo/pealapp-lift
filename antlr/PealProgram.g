@@ -21,7 +21,6 @@ public Map<String, String> conds = new HashMap<String, String>();
 public Map<String, pSet> pSets = new HashMap<String, pSet>();
 List<Rule> l = new ArrayList<Rule>();
 String n = null;
-public pSet pSet = null;
 
 //need to override the default error reporting
 @Override
@@ -38,11 +37,11 @@ package peal.antlr;
 program	
 	: id0=IDENT '=' id2=IDENT '<=' num=NUMBER {n = $num.text; conds.put($id0.text, $id2.text);}
 	(id1=IDENT '=' pol {pols.put($id1.text, $pol.p);})*
-	id2=IDENT '=' pSet { pSets.put($id2.text, $pSet.t); pSet = $pSet.t;}
+	id2=IDENT '=' pSet { pSets.put($id2.text, $pSet.t); }
 	|
 	 id0=IDENT '=' num=NUMBER '<' id2=IDENT {n = $num.text; conds.put($id0.text, $id2.text);}
 	(id1=IDENT '=' pol {pols.put($id1.text, $pol.p);})*
-	id2=IDENT '=' pSet1 { pSets.put($id2.text, $pSet1.t); pSet = $pSet1.t;}
+	id2=IDENT '=' pSet1 { pSets.put($id2.text, $pSet1.t); }
 	;
 
 pSet    returns [pSet t] 
