@@ -174,7 +174,8 @@ class PealCometActor extends CometActor with Loggable {
       {"(declare-const " + name + " Bool)"}
     </p>
 
-    val asserts = for (cond <- conds.keys) yield {<p>(push)</p><p>
+    val sortedKeys = conds.keys.toSeq.sortWith(_ < _)
+    val asserts = for (cond <- sortedKeys) yield {<p>(push)</p><p>
       {"(assert (= " + cond + " " + pSets(conds(cond)).synthesis(MyZ3Context.is, constsMap) + "))"}
     </p><p>{"(assert " + cond + ")"}<p>(check-sat)</p><p>(get-model)</p><p>(pop)</p></p>}
 
@@ -207,7 +208,8 @@ class PealCometActor extends CometActor with Loggable {
   private def onCallZ3ViaCommandLine(constsMap: Map[String, Z3AST], conds: Map[String, String], pSets: Map[String, pSet]) {
     val declarations = for (name <- constsMap.keys) yield "(declare-const " + name + " Bool)\n"
     val declarations1 = for (name <- conds.keys) yield "(declare-const " + name + " Bool)\n"
-    val body = for (cond <- conds.keys) yield {
+    val sortedKeys = conds.keys.toSeq.sortWith(_ < _)
+    val body = for (cond <- sortedKeys) yield {
       "(push)\n(assert (= " + cond + " " + pSets(conds(cond)).synthesis(MyZ3Context.is, constsMap) + "))\n" +
       "(assert " + cond + ")\n(check-sat)\n(get-model)\n(pop)\n"
     }
@@ -220,7 +222,7 @@ class PealCometActor extends CometActor with Loggable {
     val returnCode = Process(Seq("bash", "-c", "z3 -nw -smt2 " + tmp.getAbsolutePath), None, "PATH" -> Props.get("z3.location").get) ! processLogger
     println(result.toString())
     tmp.delete()
-    this ! Result(<pre>{z3SMTInput}</pre> <pre>Z3 Output:{result.toString()}</pre>)
+    this ! Result(<pre>{z3SMTInput}</pre> <pre>Z3 Output:<br/>{result.toString()}</pre>)
   }
 
   private def onAnalysis2(constsMap: Map[String, Z3AST], pol: pSet) {
