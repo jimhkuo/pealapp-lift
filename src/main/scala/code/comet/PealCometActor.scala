@@ -65,15 +65,16 @@ class PealCometActor extends CometActor with Loggable {
         }) ++ SHtml.ajaxButton("Synthesise (and download)", () => {
           this ! Prepare
           _Noop
-        })++ SHtml.ajaxButton("Synthesis and call z3", () => {
+        }) ++ SHtml.ajaxButton("Synthesis and call z3", () => {
           this ! SynthesisAndCallZ3
           _Noop
-        })}</div>
+        })}
+        </div>
         <div>
           {SHtml.ajaxButton("Analysis1 (!cond)", () => {
           this ! Analysis1
           _Noop
-        })++ SHtml.ajaxButton("Analysis2 (cond)", () => {
+        }) ++ SHtml.ajaxButton("Analysis2 (cond)", () => {
           this ! Analysis2
           _Noop
         })}
@@ -94,7 +95,7 @@ class PealCometActor extends CometActor with Loggable {
       onAnalysis1(constsMap, pol)
     case SynthesisAndCallZ3 =>
       val (constsMap, pol) = onCompute(inputPolicies)
-      onAnalysis1_5(constsMap, pol)
+      onCallZ3ViaCommandLine(constsMap, pol)
     case Analysis2 =>
       val (constsMap, pol) = onCompute(inputPolicies)
       onAnalysis2(constsMap, pol)
@@ -179,25 +180,45 @@ class PealCometActor extends CometActor with Loggable {
     val (sol, model) = ModelGetter.get(solver)
 
     val result = sol match {
-      case Some(x) if x && model.toString().trim == "cond -> false" => <p>!cond is {sol.get} and model is empty<br/>So phi is always false<pre>{model}</pre></p>
-      case Some(x) if x => <p>!cond is {sol.get}<br/>So phi is NOT always true<pre>{model}</pre></p>
-      case Some(x) if !x => <p>!cond is {sol.get}<br/>So phi is always true<pre>{model}</pre></p>
+      case Some(x) if x && model.toString().trim == "cond -> false" => <p>!cond is {sol.get}
+        and model is empty
+        <br/>
+        So phi is always false
+        <pre>{model}</pre>
+      </p>
+      case Some(x) if x => <p>!cond is
+        {sol.get}<br/>
+        So phi is NOT always true
+        <pre>{model}</pre>
+      </p>
+      case Some(x) if !x => <p>!cond is
+        {sol.get}<br/>
+        So phi is always true
+        <pre>{model}</pre>
+      </p>
       case None => <p>Nothing is returned by Z3</p>
     }
     this ! Result(result)
     model.delete
   }
 
-  private def onAnalysis1_5(constsMap: Map[String, Z3AST], pol: pSet) {
+  private def onCallZ3ViaCommandLine(constsMap: Map[String, Z3AST], pol: pSet) {
+    val result = new StringBuilder
+    val logger = ProcessLogger(
+      (o: String) => result.append(o + "\n"),
+      (e: String) => result.append(e + "\n")
+    )
+
     val declarations = for (name <- constsMap.keys) yield "(declare-const " + name + " Bool)\n"
     val body = pol.phiZ3SMTString(MyZ3Context.is, constsMap)
     val input = declarations.mkString("") + body + "\n" + "(check-sat)\n(get-model)"
     val f = File.createTempFile("z3file", "")
     (Seq("echo", input) #> f).!!
     println("tmpfile: " + f.getAbsolutePath)
-    val result = "\n" + Process(Seq("bash", "-c", "z3 -smt2 " + f.getAbsolutePath ), None, "PATH" -> Props.get("z3.location").get).!!
+    val returnCode = Process(Seq("bash", "-c", "z3 -smt2 " + f.getAbsolutePath), None, "PATH" -> Props.get("z3.location").get) ! logger
+    println(result.toString())
     f.delete()
-    this ! Result(<pre>{input}</pre><pre>Z3 Output:{result}</pre>)
+    this ! Result(<pre>{input}</pre> <pre>Z3 Output:{result.toString()}</pre>)
   }
 
   private def onAnalysis2(constsMap: Map[String, Z3AST], pol: pSet) {
