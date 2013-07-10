@@ -178,9 +178,9 @@ class PealCometActor extends CometActor with Loggable {
       {"(declare-const " + name + " Bool)"}
     </p>
 
-    val asserts = for (cond <- conds.keys) yield {<p>
+    val asserts = for (cond <- conds.keys) yield {<p>(push)</p><p>
       {"(assert (= " + cond + " " + pSets(conds(cond)).phiZ3SMTString(MyZ3Context.is, constsMap) + " )"}
-    </p><p>{"(assert " + cond + ")"}</p>}
+    </p><p>{"(assert " + cond + ")"}<p>(pop)</p></p>}
 
     val result = <p>
       {declarations}
