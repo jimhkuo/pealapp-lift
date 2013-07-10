@@ -34,11 +34,11 @@ package peal.antlr;
 }
 
 program	
-	: 'cond' '=' id2=IDENT '<=' num=NUMBER {n = $num.text;}
+	: id0=IDENT '=' id2=IDENT '<=' num=NUMBER {n = $num.text; pols.put($id0.text, new Pol(new ArrayList<Rule>(),Plus$.MODULE$,-1));}
 	(id1=IDENT '=' pol {pols.put($id1.text, $pol.p);})*
 	id2=IDENT '=' pSet { pSet = $pSet.t;}
 	|
-	'cond' '=' num=NUMBER '<' id2=IDENT {n = $num.text;}
+	 id0=IDENT '=' num=NUMBER '<' id2=IDENT {n = $num.text; pols.put($id0.text, new Pol(new ArrayList<Rule>(),Plus$.MODULE$,-1));}
 	(id1=IDENT '=' pol {pols.put($id1.text, $pol.p);})*
 	id2=IDENT '=' pSet1 { pSet = $pSet1.t;}
 	;
