@@ -33,11 +33,7 @@ class PealCometActor extends CometActor with Loggable {
     (o: String) => result.append(o + "\n"),
     (e: String) => result.append(e + "\n")
   )
-  val defaultInput =
-    "b1 = min ((q1 0.2) (q2 0.4) (q3 0.9)) default 1\n" +
-    "b2 = + ((q4 0.1) (q5 0.2) (q6 0.2)) default 0\n" +
-    "cond = pSet <= 0.5\n" +
-    "pSet = max(b1, b2)"
+  val defaultInput = "b1 = min ((q1 0.2) (q2 0.4) (q3 0.9)) default 1\nb2 = + ((q4 0.1) (q5 0.2) (q6 0.2)) default 0\ncond1 = pSet1 <= 0.5\npSet1 = max(b1, b2)\ncond2 = 0.6 < pSet2\npSet2 = min(b1, b2)"
   var inputPolicies = defaultInput
   var majorityVotingCount = 10
 
@@ -221,7 +217,7 @@ class PealCometActor extends CometActor with Loggable {
     (Seq("echo", z3SMTInput) #> tmp).!!
     println("tmpfile: " + tmp.getAbsolutePath)
     result.clear()
-    val returnCode = Process(Seq("bash", "-c", "z3 -smt2 " + tmp.getAbsolutePath), None, "PATH" -> Props.get("z3.location").get) ! processLogger
+    val returnCode = Process(Seq("bash", "-c", "z3 -nw -smt2 " + tmp.getAbsolutePath), None, "PATH" -> Props.get("z3.location").get) ! processLogger
     println(result.toString())
     tmp.delete()
     this ! Result(<pre>{z3SMTInput}</pre> <pre>Z3 Output:{result.toString()}</pre>)
