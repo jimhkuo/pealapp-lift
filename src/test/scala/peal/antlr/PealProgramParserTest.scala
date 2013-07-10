@@ -34,6 +34,22 @@ class PealProgramParserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
   }
 
   @Test
+  def testCanCreateConstsMap() {
+    val input = "cond = pSet <= 0.5\n" +
+      "b1 = min ((q1 0.2) (q2 0.4) (q3 0.9)) default 1\n" +
+      "b2 = + ((q4 0.1) (q5 0.2) (q6 0.2)) default 0\n" +
+      "pSet = max(b1, max(b1,b2))"
+
+    val pealProgrmParser = getParser(input)
+    pealProgrmParser.program()
+
+    val pols = pealProgrmParser.pols
+    pols should have size (2)
+    pols should contain key ("b1")
+    pols should contain key ("b2")
+  }
+
+  @Test
   def testCanDealWithNestedInput() {
     val input = "cond = pSet <= 0.5\n" +
       "b1 = min ((q1 0.2) (q2 0.4) (q3 0.9)) default 1\n" +
