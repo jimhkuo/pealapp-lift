@@ -23,6 +23,11 @@ import net.liftweb.util.Props
 import java.io.File
 
 class PealCometActor extends CometActor with Loggable {
+  val result = new StringBuilder
+  val processLogger = ProcessLogger(
+    (o: String) => result.append(o + "\n"),
+    (e: String) => result.append(e + "\n")
+  )
   val defaultInput = "cond = pSet <= 0.5\n" +
     "b1 = min ((q1 0.2) (q2 0.4) (q3 0.9)) default 1\n" +
     "b2 = + ((q4 0.1) (q5 0.2) (q6 0.2)) default 0\n" +
@@ -203,19 +208,13 @@ class PealCometActor extends CometActor with Loggable {
   }
 
   private def onCallZ3ViaCommandLine(constsMap: Map[String, Z3AST], pol: pSet) {
-    val result = new StringBuilder
-    val logger = ProcessLogger(
-      (o: String) => result.append(o + "\n"),
-      (e: String) => result.append(e + "\n")
-    )
-
     val declarations = for (name <- constsMap.keys) yield "(declare-const " + name + " Bool)\n"
     val body = pol.phiZ3SMTString(MyZ3Context.is, constsMap)
     val input = declarations.mkString("") + body + "\n" + "(check-sat)\n(get-model)"
     val f = File.createTempFile("z3file", "")
     (Seq("echo", input) #> f).!!
     println("tmpfile: " + f.getAbsolutePath)
-    val returnCode = Process(Seq("bash", "-c", "z3 -smt2 " + f.getAbsolutePath), None, "PATH" -> Props.get("z3.location").get) ! logger
+    val returnCode = Process(Seq("bash", "-c", "z3 -smt2 " + f.getAbsolutePath), None, "PATH" -> Props.get("z3.location").get) ! processLogger
     println(result.toString())
     f.delete()
     this ! Result(<pre>{input}</pre> <pre>Z3 Output:{result.toString()}</pre>)
