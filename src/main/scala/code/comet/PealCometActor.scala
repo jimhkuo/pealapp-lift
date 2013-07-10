@@ -106,7 +106,7 @@ class PealCometActor extends CometActor with Loggable {
       onAnalysis1(constsMap,  pSets.values.head)
     case SynthesisAndCallZ3 =>
       val (constsMap,  conds, pSets) = onCompute(inputPolicies)
-      onCallZ3ViaCommandLine(constsMap, pSets.values.head)
+      onCallZ3ViaCommandLine(constsMap, conds,  pSets)
     case Analysis2 =>
       val (constsMap,  conds, pSets) = onCompute(inputPolicies)
       onAnalysis2(constsMap,   pSets.values.head)
@@ -179,16 +179,14 @@ class PealCometActor extends CometActor with Loggable {
     </p>
 
     val asserts = for (cond <- conds.keys) yield {<p>(push)</p><p>
-      {"(assert (= " + cond + " " + pSets(conds(cond)).phiZ3SMTString(MyZ3Context.is, constsMap) + " )"}
-    </p><p>{"(assert " + cond + ")"}<p>(pop)</p></p>}
+      {"(assert (= " + cond + " " + pSets(conds(cond)).synthesis(MyZ3Context.is, constsMap) + "))"}
+    </p><p>{"(assert " + cond + ")"}<p>(check-sat)</p><p>(get-model)</p><p>(pop)</p></p>}
 
     val result = <p>
       {declarations}
       {declarations1}
       {asserts}
-      (check-sat)
-      <br/>
-      (get-model)</p>
+  </p>
     this ! Result(result)
   }
 
@@ -210,10 +208,15 @@ class PealCometActor extends CometActor with Loggable {
     model.delete
   }
 
-  private def onCallZ3ViaCommandLine(constsMap: Map[String, Z3AST], pol: pSet) {
+  private def onCallZ3ViaCommandLine(constsMap: Map[String, Z3AST], conds: Map[String, String], pSets: Map[String, pSet]) {
     val declarations = for (name <- constsMap.keys) yield "(declare-const " + name + " Bool)\n"
-    val body = pol.phiZ3SMTString(MyZ3Context.is, constsMap)
-    val z3SMTInput = declarations.mkString("") + body + "\n" + "(check-sat)\n(get-model)"
+    val declarations1 = for (name <- conds.keys) yield "(declare-const " + name + " Bool)\n"
+    val body = for (cond <- conds.keys) yield {
+      "(push)\n(assert (= " + cond + " " + pSets(conds(cond)).synthesis(MyZ3Context.is, constsMap) + "))\n" +
+      "(assert " + cond + ")\n(check-sat)\n(get-model)\n(pop)\n"
+    }
+
+    val z3SMTInput = declarations.mkString("") +declarations1.mkString("") + body.mkString("")
     val tmp = File.createTempFile("z3file", "")
     (Seq("echo", z3SMTInput) #> tmp).!!
     println("tmpfile: " + tmp.getAbsolutePath)
