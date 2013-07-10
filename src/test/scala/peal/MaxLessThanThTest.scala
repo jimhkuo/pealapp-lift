@@ -23,7 +23,6 @@ class MaxLessThanThTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
     val phi1 = new MaxLessThanTh(p1, p2, 0.6)
     val phi2 = new MaxLessThanTh(p1, phi1, 0.6)
     phi2.synthesis(z3, consts) should beZ3Model("(and (and q1 q1) (and (and q1 q1) (or (not q2) q2)))")
-    z3.delete()
   }
 
   @Test
@@ -35,7 +34,6 @@ class MaxLessThanThTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
 
     //    println(phi2.synthesis)
     phi2.synthesis(z3, consts) should beZ3Model("(and (and q1 q1) (or (not q2) q2))")
-    z3.delete()
   }
 
   @Test
@@ -45,6 +43,5 @@ class MaxLessThanThTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
     val phi = new MaxLessThanTh(p1, p2, 0.6)
 
     phi.synthesis(z3, consts) should beZ3Model("(and (and q1 q1) (or (not q2) q2))")
-    z3.delete()
   }
 }
