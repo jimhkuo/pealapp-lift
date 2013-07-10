@@ -17,6 +17,8 @@ import peal.domain.operator.*;
 
 @members {
 public Map<String, Pol> pols = new HashMap<String, Pol>();
+public Map<String, String> conds = new HashMap<String, String>();
+public Map<String, pSet> pSets = new HashMap<String, pSet>();
 List<Rule> l = new ArrayList<Rule>();
 String n = null;
 public pSet pSet = null;
@@ -34,11 +36,11 @@ package peal.antlr;
 }
 
 program	
-	: id0=IDENT '=' id2=IDENT '<=' num=NUMBER {n = $num.text; pols.put($id0.text, new Pol(new ArrayList<Rule>(),Plus$.MODULE$,-1));}
+	: id0=IDENT '=' id2=IDENT '<=' num=NUMBER {n = $num.text; conds.put($id0.text, $id2.text);}
 	(id1=IDENT '=' pol {pols.put($id1.text, $pol.p);})*
 	id2=IDENT '=' pSet { pSet = $pSet.t;}
 	|
-	 id0=IDENT '=' num=NUMBER '<' id2=IDENT {n = $num.text; pols.put($id0.text, new Pol(new ArrayList<Rule>(),Plus$.MODULE$,-1));}
+	 id0=IDENT '=' num=NUMBER '<' id2=IDENT {n = $num.text; conds.put($id0.text, $id2.text);}
 	(id1=IDENT '=' pol {pols.put($id1.text, $pol.p);})*
 	id2=IDENT '=' pSet1 { pSet = $pSet1.t;}
 	;

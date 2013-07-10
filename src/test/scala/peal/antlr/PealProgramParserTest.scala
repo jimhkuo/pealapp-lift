@@ -43,11 +43,10 @@ class PealProgramParserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
     val pealProgrmParser = getParser(input)
     pealProgrmParser.program()
 
-    val pols = pealProgrmParser.pols
-    pols should have size (3)
-    pols should contain key ("b1")
-    pols should contain key ("b2")
-    pols should contain key ("cond1")
+    pealProgrmParser.pols should have size (2)
+    pealProgrmParser.pols should contain key ("b1")
+    pealProgrmParser.pols should contain key ("b2")
+//    pols should contain key ("cond1")
   }
 
   @Test
