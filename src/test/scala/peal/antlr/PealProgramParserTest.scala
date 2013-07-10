@@ -35,9 +35,10 @@ class PealProgramParserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
 
   @Test
   def testCanCreateConstsMap() {
-    val input = "cond1 = pSet <= 0.5\n" +
+    val input =
       "b1 = min ((q1 0.2) (q2 0.4) (q3 0.9)) default 1\n" +
       "b2 = + ((q4 0.1) (q5 0.2) (q6 0.2)) default 0\n" +
+        "cond1 = pSet <= 0.5\n" +
       "pSet = max(b1, max(b1,b2))"
 
     val pealProgrmParser = getParser(input)
@@ -52,10 +53,11 @@ class PealProgramParserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
 
   @Test
   def testCanDealWithNestedInput() {
-    val input = "cond = pSet <= 0.5\n" +
+    val input =
       "b1 = min ((q1 0.2) (q2 0.4) (q3 0.9)) default 1\n" +
       "b2 = + ((q4 0.1) (q5 0.2) (q6 0.2)) default 0\n" +
-      "pSet = max(b1, max(b1,b2))"
+        "cond = pSet <= 0.5\n" +
+        "pSet = max(b1, max(b1,b2))"
 
     val pealProgrmParser = getParser(input)
     pealProgrmParser.program()
@@ -69,8 +71,9 @@ class PealProgramParserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
 
   @Test
   def testCanDealWithMul() {
-    val input = "cond = pSet <= 0.5" +
+    val input =
       "b1 = * ((q1 0.2) (q2 0.4) (q3 0.9)) default 1" +
+        "cond = pSet <= 0.5" +
       "pSet = b1"
 
     val pealProgrmParser = getParser(input)
@@ -85,9 +88,10 @@ class PealProgramParserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
 
   @Test
   def testCanParseDefaultInputInWebapp() {
-    val input = "cond = pSet <= 0.5" +
+    val input =
       "b1 = min ((q1 0.2) (q2 0.4) (q3 0.9)) default 1" +
       "b2 = + ((q4 0.1) (q5 0.2) (q6 0.2)) default 0 " +
+        "cond = pSet <= 0.5" +
       "pSet = max(b1, b2)"
 
     val pealProgrmParser = getParser(input)
@@ -102,9 +106,10 @@ class PealProgramParserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
 
   @Test
   def testDealWithMin() {
-    val input = "cond = pSet <= 0.5" +
+    val input =
       "b1 = min ((q1 0.2) (q2 0.4) (q3 0.9)) default 1" +
       "b2 = + ((q4 0.1) (q5 0.2) (q6 0.2)) default 0 " +
+        "cond = pSet <= 0.5" +
       "pSet = min(b1, b2)"
 
     val pealProgrmParser = getParser(input)
@@ -119,9 +124,10 @@ class PealProgramParserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
 
   @Test
   def testDealWithMinAndGreaterThanTh() {
-    val input = "cond = 0.5 < pSet " +
+    val input =
       "b1 = min ((q1 0.2) (q2 0.4) (q3 0.9)) default 1" +
       "b2 = + ((q4 0.1) (q5 0.2) (q6 0.2)) default 0 " +
+        "cond = 0.5 < pSet " +
       "pSet = min(b1, b2)"
 
     val pealProgrmParser = getParser(input)
@@ -152,7 +158,10 @@ class PealProgramParserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
 
   @Test
   def testCanDoExample1InEmail() {
-    val input = "cond = pSet <= 0.5\nb2 = + ((q4 0.2) (q5 0.2) (q6 0.1)) default 0.6\npSet = b2"
+    val input =
+      "b2 = + ((q4 0.2) (q5 0.2) (q6 0.1)) default 0.6\n" +
+        "cond = pSet <= 0.5\n" +
+        "pSet = b2"
 
     val pealProgrmParser = getParser(input)
     pealProgrmParser.program()
@@ -161,7 +170,7 @@ class PealProgramParserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
 
   @Test
   def testCanDoExample2InEmail() {
-    val input = "cond = pSet <= 0.5\nb2 = + ((q4 0.2) (q5 0.2) (q6 0.3)) default 0\npSet = b2"
+    val input = "b2 = + ((q4 0.2) (q5 0.2) (q6 0.3)) default 0\ncond = pSet <= 0.5\npSet = b2"
 
     val pealProgrmParser = getParser(input)
     pealProgrmParser.program()
@@ -170,7 +179,7 @@ class PealProgramParserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
 
   @Test
   def testCanDoExample3InEmail() {
-    val input = "cond = pSet <= 0.2\nb2 = + ((q4 0.2) (q5 0.2) (q6 0.3)) default 0\npSet = b2"
+    val input = "b2 = + ((q4 0.2) (q5 0.2) (q6 0.3)) default 0\ncond = pSet <= 0.2\npSet = b2"
 
     val pealProgrmParser = getParser(input)
     pealProgrmParser.program()
