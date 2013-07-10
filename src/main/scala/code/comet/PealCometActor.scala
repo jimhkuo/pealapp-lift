@@ -28,10 +28,10 @@ import code.comet.util.Result
 import code.comet.util.SaveFile
 
 class PealCometActor extends CometActor with Loggable {
-  val result = new StringBuilder
+  val resultBuilder = new StringBuilder
   val processLogger = ProcessLogger(
-    (o: String) => result.append(o + "\n"),
-    (e: String) => result.append(e + "\n")
+    (o: String) => resultBuilder.append(o + "\n"),
+    (e: String) => resultBuilder.append(e + "\n")
   )
   val defaultInput = "b1 = min ((q1 0.2) (q2 0.4) (q3 0.9)) default 1\nb2 = + ((q4 0.1) (q5 0.2) (q6 0.2)) default 0\ncond1 = pSet1 <= 0.5\npSet1 = max(b1, b2)\ncond2 = 0.6 < pSet2\npSet2 = min(b1, b2)"
   var inputPolicies = defaultInput
@@ -105,7 +105,7 @@ class PealCometActor extends CometActor with Loggable {
       onCallZ3ViaCommandLine(constsMap, conds,  pSets)
     case Analysis2 =>
       val (constsMap,  conds, pSets) = onCompute(inputPolicies)
-      onAnalysis2(constsMap,   pSets.values.head)
+      onAnalysis2(constsMap, conds, pSets)
     case Display =>
       val (constsMap, conds,  pSets) = onCompute(inputPolicies)
       onDisplay(constsMap, conds,  pSets)
@@ -198,18 +198,16 @@ class PealCometActor extends CometActor with Loggable {
       val (sol, model) = ModelGetter.get(solver)
 
       val result = sol match {
-        case Some(x) if x && model.toString().trim == name + " -> false" => <p>!{name} is {sol.get} and model is empty<br/>So {name} is always false<pre>{model}</pre></p>
-        case Some(x) if x => <p>!{name} is {sol.get}<br/>So {name} is NOT always true<pre>{model}</pre></p>
-        case Some(x) if !x => <p>!{name} is {sol.get}<br/>So {name} is always true<pre>{model}</pre></p>
+        case Some(x) if x && model.toString().trim == name + " -> false" => <p>!{name} is {sol.get} and model is empty<br/>So {name} is always false<pre>{model}</pre><br/></p>
+        case Some(x) if x => <p>!{name} is {sol.get}<br/>So {name} is NOT always true<pre>{model}</pre><br/></p>
+        case Some(x) if !x => <p>!{name} is {sol.get}<br/>So {name} is always true<pre>{model}</pre><br/></p>
         case None => <p>Nothing is returned by Z3</p>
       }
       model.delete
 
       result
     }
-
     this ! Result(results)
-
   }
 
   private def onCallZ3ViaCommandLine(constsMap: Map[String, Z3AST], conds: Map[String, String], pSets: Map[String, pSet]) {
@@ -225,26 +223,33 @@ class PealCometActor extends CometActor with Loggable {
     val tmp = File.createTempFile("z3file", "")
     (Seq("echo", z3SMTInput) #> tmp).!!
     println("tmpfile: " + tmp.getAbsolutePath)
-    result.clear()
+    resultBuilder.clear()
     val returnCode = Process(Seq("bash", "-c", "z3 -nw -smt2 " + tmp.getAbsolutePath), None, "PATH" -> Props.get("z3.location").get) ! processLogger
-    println(result.toString())
+    println(resultBuilder.toString())
     tmp.delete()
-    this ! Result(<pre>{z3SMTInput}</pre> <pre>Z3 Output:<br/>{result.toString()}</pre>)
+    this ! Result(<pre>{z3SMTInput}</pre> <pre>Z3 Output:<br/>{resultBuilder.toString()}</pre>)
   }
 
-  private def onAnalysis2(constsMap: Map[String, Z3AST], pol: pSet) {
+  private def onAnalysis2(constsMap: Map[String, Z3AST], conds: Map[String, String], pSets: Map[String, pSet]) {
+    val sortedKeys = conds.keys.toSeq.sortWith(_ < _)
     val solver = MyZ3Context.is.mkSolver()
-    val cond = MyZ3Context.is.mkBoolConst("cond")
-    solver.assertCnstr(MyZ3Context.is.mkEq(cond, pol.synthesis(MyZ3Context, constsMap)))
+    val results = for (name <- sortedKeys) yield {
+      solver.reset()
+      val cond = MyZ3Context.is.mkBoolConst(name)
+      solver.assertCnstr(MyZ3Context.is.mkEq(cond, pSets(conds(name)).synthesis(MyZ3Context, constsMap)))
+      val (sol, model) = ModelGetter.get(solver)
 
-    val (sol, model) = ModelGetter.get(solver)
+      val result = sol match {
+        case Some(x) if x && model.toString().trim == name + " -> false" => <p>!{name} is {sol.get} and model is empty<br/>So {name} is always false<pre>{model}</pre><br/></p>
+        case Some(x) if x => <p>!{name} is {sol.get}<br/>So {name} is NOT always true<pre>{model}</pre><br/></p>
+        case Some(x) if !x => <p>!{name} is {sol.get}<br/>So {name} is always true<pre>{model}</pre><br/></p>
+        case None => <p>Nothing is returned by Z3</p>
+      }
+      model.delete
 
-    val result = sol match {
-      case Some(x) => <p>cond is {sol.get}<pre>{model}</pre></p>
-      case None => <p>Nothing is returned by Z3</p>
+      result
     }
-    this ! Result(result)
-    model.delete
+    this ! Result(results)
   }
 
   private def onDownload(constsMap: Map[String, Z3AST], conds: Map[String, String], pSets: Map[String, pSet]) {
