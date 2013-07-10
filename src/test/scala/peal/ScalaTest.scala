@@ -24,8 +24,6 @@ class ScalaTest extends ShouldMatchersForJUnit {
     println(f.getAbsolutePath)
   }
 
-
-
   @Test
   def testForMap() {
 

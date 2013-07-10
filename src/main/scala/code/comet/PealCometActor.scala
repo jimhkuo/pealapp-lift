@@ -96,23 +96,23 @@ class PealCometActor extends CometActor with Loggable {
   override def lowPriority = {
     case Init =>
     case Analysis1 =>
-      val (constsMap, pol) = onCompute(inputPolicies)
-      onAnalysis1(constsMap, pol)
+      val (constsMap, conds, pSets) = onCompute(inputPolicies)
+      onAnalysis1(constsMap,  pSets.values.head)
     case SynthesisAndCallZ3 =>
-      val (constsMap, pol) = onCompute(inputPolicies)
-      onCallZ3ViaCommandLine(constsMap, pol)
+      val (constsMap,  conds, pSets) = onCompute(inputPolicies)
+      onCallZ3ViaCommandLine(constsMap, pSets.values.head)
     case Analysis2 =>
-      val (constsMap, pol) = onCompute(inputPolicies)
-      onAnalysis2(constsMap, pol)
+      val (constsMap,  conds, pSets) = onCompute(inputPolicies)
+      onAnalysis2(constsMap,   pSets.values.head)
     case Display =>
-      val (constsMap, pol) = onCompute(inputPolicies)
-      onDisplay(constsMap, pol)
+      val (constsMap, conds,  pSets) = onCompute(inputPolicies)
+      onDisplay(constsMap, pSets.values.head)
+    case Download =>
+      val (constsMap, conds,  pSets) = onCompute(inputPolicies)
+      onDownload(constsMap, pSets.values.head)
     case Prepare =>
       partialUpdate(JqId("result") ~> JqHtml(Text("Synthesising... Please wait...")))
       this ! Download
-    case Download =>
-      val (constsMap, pol) = onCompute(inputPolicies)
-      onDownload(constsMap, pol)
     case SaveFile(result, lapseTime) =>
       Z3SMTData.set(result)
       this ! Result(<p>Output prepared, lapse time:
@@ -146,7 +146,7 @@ class PealCometActor extends CometActor with Loggable {
     new PealProgramParser(tokenStream)
   }
 
-  private def onCompute(input: String): (Map[String, Z3AST], pSet) = {
+  private def onCompute(input: String): (Map[String, Z3AST], Map[String, String], Map[String, pSet]) = {
     val pealProgrmParser = getParser(input)
     val z3 = MyZ3Context.is
 
@@ -154,7 +154,7 @@ class PealCometActor extends CometActor with Loggable {
       pealProgrmParser.program()
       val predicateNames: Seq[String] = pealProgrmParser.pols.values().flatMap(pol => pol.rules).map(r => r.q.name).toSeq.distinct
       val constsMap = predicateNames.toSeq.distinct.map(t => (t, z3.mkBoolConst(t))).toMap
-      (constsMap, pealProgrmParser.pSet)
+      (constsMap, pealProgrmParser.conds.toMap, pealProgrmParser.pSets.toMap)
     } catch {
       case e2: NullPointerException => dealWithIt(e2)
       case e1: Throwable => dealWithIt(e1)
