@@ -111,7 +111,7 @@ class PealCometActor extends CometActor with Loggable {
       onDisplay(constsMap, conds,  pSets)
     case Download =>
       val (constsMap, conds,  pSets) = onCompute(inputPolicies)
-//      onDownload(constsMap, conds,  pSets)
+      onDownload(constsMap, conds,  pSets)
     case Prepare =>
       partialUpdate(JqId("result") ~> JqHtml(Text("Synthesising... Please wait...")))
       this ! Download
@@ -250,13 +250,13 @@ class PealCometActor extends CometActor with Loggable {
     this ! Result(results)
   }
 
-  private def onDownload(constsMap: Map[String, Z3AST], conds: Map[String, String], pSets: Map[String, Condition]) {
+  private def onDownload(constsMap: Map[String, Z3AST], conds: Map[String, Condition], pSets: Map[String, PolicySet]) {
     val declarations = for (name <- constsMap.keys) yield "(declare-const " + name + " Bool)\n"
     val declarations1 = for (name <- conds.keys) yield "(declare-const " + name + " Bool)\n"
     val sortedKeys = conds.keys.toSeq.sortWith(_ < _)
     val start = System.nanoTime()
     val body = for (cond <- sortedKeys) yield {
-      "(push)\n(assert (= " + cond + " " + pSets(conds(cond)).synthesis(MyZ3Context.is, constsMap) + "))\n" +
+      "(push)\n(assert (= " + cond + " " + conds(cond).synthesis(MyZ3Context.is, constsMap) + "))\n" +
         "(assert " + cond + ")\n(check-sat)\n(get-model)\n(pop)\n"
     }
     val lapseTime = System.nanoTime() - start
