@@ -10,7 +10,5 @@ class LessThanThCondition(phi: PolicySet, th: Double) extends Condition {
     case s: MaxPolicySet => z3.mkAnd(new LessThanThCondition(s.lhs, th).synthesis(z3, consts), new LessThanThCondition(s.rhs, th).synthesis(z3, consts))
     case s: BasicPolicySet => new LessThanThCondition(s.pol, th).synthesis(z3, consts)
     case s: Pol => new PolLessThanThCondition(s, th).synthesis(z3, consts)
-    case s => println(s)
-       null
   }
 }
