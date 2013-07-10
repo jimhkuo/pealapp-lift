@@ -12,9 +12,9 @@ class ScalaTest extends ShouldMatchersForJUnit {
 
   @Test
   def testProcess() {
-//    println("ls".!!)
-//    println(Process(Seq("bash", "-c", "z3", "-h"), None, "PATH" -> "/Users/jkuo/tools/z3/bin").!!)
-    println("z3".!!)
+    println("ls".!!)
+    println(Process(Seq("bash", "-c", "z3 -h"), None, "PATH" -> "/Users/jkuo/tools/z3/bin").!!)
+//    println("z3".!!)
   }
 
   @Test

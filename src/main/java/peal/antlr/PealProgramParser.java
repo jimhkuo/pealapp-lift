@@ -1,4 +1,4 @@
-// $ANTLR 3.4 /Users/jkuo/PealApp-lift/antlr/PealProgram.g 2013-07-10 10:52:13
+// $ANTLR 3.4 /Users/jkuo/PealApp-lift/antlr/PealProgram.g 2013-07-10 10:56:35
 
 package peal.antlr;
 import java.util.*;
@@ -241,7 +241,7 @@ public class PealProgramParser extends Parser {
                     state._fsp--;
 
 
-                     pSet = pSet2;
+                     pSets.put((id2!=null?id2.getText():null), pSet2); pSet = pSet2;
 
                     }
                     break;
@@ -355,7 +355,7 @@ public class PealProgramParser extends Parser {
                     state._fsp--;
 
 
-                     pSet = pSet14;
+                     pSets.put((id2!=null?id2.getText():null), pSet14); pSet = pSet14;
 
                     }
                     break;
