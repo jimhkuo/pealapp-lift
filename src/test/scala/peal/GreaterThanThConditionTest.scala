@@ -22,7 +22,7 @@ class GreaterThanThConditionTest extends ShouldMatchersForJUnit with Z3ModelMatc
   def testSimpleMinCase() {
     val p1 = new Pol(List(new Rule(new Predicate("q1"), 0.5)), Min, 1)
     val p2 = new Pol(List(new Rule(new Predicate("q2"), 0.5)), Min, 0)
-    val pSet = new MinPolicySet(new PolPolicySet(p1), new PolPolicySet(p2))
+    val pSet = new MinPolicySet(new BasicPolicySet(p1), new BasicPolicySet(p2))
     val phi = new GreaterThanThCondition(pSet, 0.6)
 
     phi.synthesis(z3, consts) should beZ3Model("(and (or (not q1) (not q1)) (and q2 (not q2)))")
@@ -32,8 +32,8 @@ class GreaterThanThConditionTest extends ShouldMatchersForJUnit with Z3ModelMatc
   def testCanSynthesisNestedCaseForMin() {
     val p1 = new Pol(List(new Rule(new Predicate("q1"), 0.5)), Min, 1)
     val p2 = new Pol(List(new Rule(new Predicate("q2"), 0.5)), Min, 0)
-    val pSet1 = new PolPolicySet(p2)
-    val pSet2 = new MinPolicySet(new PolPolicySet(p1), pSet1)
+    val pSet1 = new BasicPolicySet(p2)
+    val pSet2 = new MinPolicySet(new BasicPolicySet(p1), pSet1)
     val phi = new GreaterThanThCondition(pSet2, 0.6)
 
     phi.synthesis(z3, consts) should beZ3Model("(and (or (not q1) (not q1)) (and q2 (not q2)))")
@@ -43,8 +43,8 @@ class GreaterThanThConditionTest extends ShouldMatchersForJUnit with Z3ModelMatc
   def testCanSynthesisNestedMoreCaseForMax() {
     val p1 = new Pol(List(new Rule(new Predicate("q1"), 0.5)), Min, 1)
     val p2 = new Pol(List(new Rule(new Predicate("q2"), 0.5)), Min, 0)
-    val pSet1 = new PolPolicySet(p2)
-    val pSet2 = new MaxPolicySet(new PolPolicySet(p1), pSet1)
+    val pSet1 = new BasicPolicySet(p2)
+    val pSet2 = new MaxPolicySet(new BasicPolicySet(p1), pSet1)
     val phi = new GreaterThanThCondition(pSet2, 0.6)
     phi.synthesis(z3, consts) should beZ3Model("(or (or (not q1) (not q1)) (and q2 (not q2)))")
   }

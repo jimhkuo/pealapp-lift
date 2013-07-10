@@ -1,4 +1,4 @@
-// $ANTLR 3.4 /Users/jkuo/PealApp-lift/antlr/PealProgram.g 2013-07-10 18:07:28
+// $ANTLR 3.4 /Users/jkuo/PealApp-lift/antlr/PealProgram.g 2013-07-10 18:44:52
 
 package peal.antlr;
 import java.util.*;
@@ -487,7 +487,7 @@ public class PealProgramParser extends Parser {
                     {
                     id1=(Token)match(input,IDENT,FOLLOW_IDENT_in_pSet146); 
 
-                    t = new PolPolicySet(pols.get((id1!=null?id1.getText():null)));
+                    t = new BasicPolicySet(pols.get((id1!=null?id1.getText():null)));
 
                     }
                     break;
@@ -506,7 +506,7 @@ public class PealProgramParser extends Parser {
 
                     match(input,10,FOLLOW_10_in_pSet167); 
 
-                    t = new MaxPolicySet(new PolPolicySet(pols.get((id1!=null?id1.getText():null))), new PolPolicySet(pols.get((id2!=null?id2.getText():null))));
+                    t = new MaxPolicySet(new BasicPolicySet(pols.get((id1!=null?id1.getText():null))), new BasicPolicySet(pols.get((id2!=null?id2.getText():null))));
 
                     }
                     break;
@@ -529,7 +529,7 @@ public class PealProgramParser extends Parser {
 
                     match(input,10,FOLLOW_10_in_pSet188); 
 
-                    t = new MaxPolicySet(new PolPolicySet(pols.get((id3!=null?id3.getText():null))), id4);
+                    t = new MaxPolicySet(new BasicPolicySet(pols.get((id3!=null?id3.getText():null))), id4);
 
                     }
                     break;
@@ -548,7 +548,7 @@ public class PealProgramParser extends Parser {
 
                     match(input,10,FOLLOW_10_in_pSet209); 
 
-                    t = new MinPolicySet(new PolPolicySet(pols.get((id1!=null?id1.getText():null))), new PolPolicySet(pols.get((id2!=null?id2.getText():null))));
+                    t = new MinPolicySet(new BasicPolicySet(pols.get((id1!=null?id1.getText():null))), new BasicPolicySet(pols.get((id2!=null?id2.getText():null))));
 
                     }
                     break;
@@ -571,7 +571,7 @@ public class PealProgramParser extends Parser {
 
                     match(input,10,FOLLOW_10_in_pSet230); 
 
-                    t = new MinPolicySet(new PolPolicySet(pols.get((id3!=null?id3.getText():null))), id4);
+                    t = new MinPolicySet(new BasicPolicySet(pols.get((id3!=null?id3.getText():null))), id4);
 
                     }
                     break;

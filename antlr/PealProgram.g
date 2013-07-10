@@ -48,11 +48,11 @@ program
 
 //pSet [String s] returns [PolicySet t] 
 pSet  returns [PolicySet t] 
-	: id1=IDENT {$t = new PolPolicySet(pols.get($id1.text));}
-	| 'max' '(' id1=IDENT ',' id2=IDENT ')' {$t = new MaxPolicySet(new PolPolicySet(pols.get($id1.text)), new PolPolicySet(pols.get($id2.text)));}
-	| 'max' '(' id3=IDENT ',' id4=pSet ')' {$t = new MaxPolicySet(new PolPolicySet(pols.get($id3.text)), $id4.t);}
-	| 'min' '(' id1=IDENT ',' id2=IDENT ')' {$t = new MinPolicySet(new PolPolicySet(pols.get($id1.text)), new PolPolicySet(pols.get($id2.text)));}
-	| 'min' '(' id3=IDENT ',' id4=pSet ')' {$t = new MinPolicySet(new PolPolicySet(pols.get($id3.text)), $id4.t);}
+	: id1=IDENT {$t = new BasicPolicySet(pols.get($id1.text));}
+	| 'max' '(' id1=IDENT ',' id2=IDENT ')' {$t = new MaxPolicySet(new BasicPolicySet(pols.get($id1.text)), new BasicPolicySet(pols.get($id2.text)));}
+	| 'max' '(' id3=IDENT ',' id4=pSet ')' {$t = new MaxPolicySet(new BasicPolicySet(pols.get($id3.text)), $id4.t);}
+	| 'min' '(' id1=IDENT ',' id2=IDENT ')' {$t = new MinPolicySet(new BasicPolicySet(pols.get($id1.text)), new BasicPolicySet(pols.get($id2.text)));}
+	| 'min' '(' id3=IDENT ',' id4=pSet ')' {$t = new MinPolicySet(new BasicPolicySet(pols.get($id3.text)), $id4.t);}
 	;
 
 pol	returns [Pol p] 
