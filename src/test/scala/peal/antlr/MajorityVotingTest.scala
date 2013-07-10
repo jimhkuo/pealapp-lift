@@ -32,7 +32,7 @@ class MajorityVotingTest extends ShouldMatchersForJUnit {
         val pealProgrmParser = getParser(input)
         pealProgrmParser.program()
 
-        val synthesis = pealProgrmParser.pSet.synthesis(z3,consts)
+        val synthesis = pealProgrmParser.pSets.values.head.synthesis(z3,consts)
         println(synthesis)
   }
 }
