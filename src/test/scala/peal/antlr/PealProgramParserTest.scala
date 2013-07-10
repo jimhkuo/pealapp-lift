@@ -46,7 +46,8 @@ class PealProgramParserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
     pealProgrmParser.pols should have size (2)
     pealProgrmParser.pols should contain key ("b1")
     pealProgrmParser.pols should contain key ("b2")
-//    pols should contain key ("cond1")
+    pealProgrmParser.conds should have size (1)
+    pealProgrmParser.conds should contain key ("cond1")
   }
 
   @Test
