@@ -202,6 +202,7 @@ class PealCometActor extends CometActor with Loggable {
     val tmp = File.createTempFile("z3file", "")
     (Seq("echo", z3SMTInput) #> tmp).!!
     println("tmpfile: " + tmp.getAbsolutePath)
+    result.clear()
     val returnCode = Process(Seq("bash", "-c", "z3 -smt2 " + tmp.getAbsolutePath), None, "PATH" -> Props.get("z3.location").get) ! processLogger
     println(result.toString())
     tmp.delete()
