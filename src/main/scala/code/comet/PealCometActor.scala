@@ -28,9 +28,10 @@ class PealCometActor extends CometActor with Loggable {
     (o: String) => result.append(o + "\n"),
     (e: String) => result.append(e + "\n")
   )
-  val defaultInput = "cond = pSet <= 0.5\n" +
+  val defaultInput =
     "b1 = min ((q1 0.2) (q2 0.4) (q3 0.9)) default 1\n" +
     "b2 = + ((q4 0.1) (q5 0.2) (q6 0.2)) default 0\n" +
+    "cond = pSet <= 0.5\n" +
     "pSet = max(b1, b2)"
   var inputPolicies = defaultInput
   var majorityVotingCount = 10
@@ -129,9 +130,9 @@ class PealCometActor extends CometActor with Loggable {
       partialUpdate(JqId("policies") ~> JqVal(""))
     case MajorityVoting =>
       this ! Message("")
-      inputPolicies = "cond = 0.5 < pSet\nb1 = + (" +
+      inputPolicies = "b1 = + (" +
         (for (i <- 0 until majorityVotingCount) yield "(q" + i + " " + "%.3f".format(1.0 / majorityVotingCount) + ")").mkString("") +
-        " ) default 0\npSet = b1"
+        " ) default 0\ncond = 0.5 < pSet\npSet = b1"
       partialUpdate(JqId("policies") ~> JqVal(inputPolicies))
     case Reset =>
       this ! Message("")
