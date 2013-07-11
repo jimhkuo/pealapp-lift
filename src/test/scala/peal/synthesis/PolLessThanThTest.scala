@@ -1,13 +1,12 @@
-package peal
+package peal.synthesis
 
 import _root_.z3.scala.{Z3AST, Z3Config, Z3Context}
-import org.junit.{After, Before, Ignore, Test}
+import org.junit.{After, Test}
 import org.scalatest.junit.ShouldMatchersForJUnit
 import peal.domain.{Rule, Predicate, Pol}
 import scala.collection.JavaConversions._
 import peal.domain.operator.Min
 import peal.util.Z3ModelMatcher
-import peal.synthesis.PolLessThanThCondition
 
 class PolLessThanThTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
   val z3: Z3Context = new Z3Context(new Z3Config("MODEL" -> true))

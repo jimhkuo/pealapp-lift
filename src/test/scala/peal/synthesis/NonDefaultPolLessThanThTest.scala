@@ -1,13 +1,12 @@
-package peal
+package peal.synthesis
 
 import _root_.z3.scala.{Z3AST, Z3Config, Z3Context}
 import org.scalatest.junit.ShouldMatchersForJUnit
-import org.junit.{Before, After, Ignore, Test}
+import org.junit.{After, Ignore, Test}
 import peal.domain.{Rule, Predicate, Pol}
 import scala.collection.JavaConversions._
 import peal.domain.operator.{Mul, Max, Min, Plus}
 import peal.util.Z3ModelMatcher
-import peal.synthesis.NonDefaultPolLessThanTh
 
 class NonDefaultPolLessThanThTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
 
@@ -31,7 +30,6 @@ class NonDefaultPolLessThanThTest extends ShouldMatchersForJUnit with Z3ModelMat
     pSet.synthesis(z3,consts) should beZ3Model("false")
   }
 
-  @Ignore("behaviour not confirmed")
   @Test
   def testSimpleCaseScoreEqualToThForMin() {
     val p = new Pol(List(new Rule(new Predicate("q1"), 0.6)), Min, 1)

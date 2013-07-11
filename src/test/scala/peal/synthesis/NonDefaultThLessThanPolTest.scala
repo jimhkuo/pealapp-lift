@@ -1,14 +1,13 @@
-package peal
+package peal.synthesis
 
 import _root_.z3.scala.{Z3AST, Z3Config, Z3Context}
 import org.scalatest.junit.ShouldMatchersForJUnit
-import org.junit.{After, Before, Test}
+import org.junit.{After, Test}
 import peal.domain.{Rule, Predicate, Pol}
 import scala.collection.JavaConversions._
 import peal.domain.operator.{Mul, Min, Max, Plus}
 import scala.collection.mutable.ListBuffer
 import peal.util.Z3ModelMatcher
-import peal.synthesis.NonDefaultThLessThanPol
 
 
 class NonDefaultThLessThanPolTest extends ShouldMatchersForJUnit with Z3ModelMatcher {

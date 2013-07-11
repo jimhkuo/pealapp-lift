@@ -1,4 +1,4 @@
-package peal
+package peal.synthesis
 
 import _root_.z3.scala.{Z3AST, Z3Config, Z3Context}
 import org.junit.{After, Test}
@@ -9,7 +9,6 @@ import peal.domain.operator.Min
 import peal.util.Z3ModelMatcher
 import peal.domain.MinPolicySet
 import peal.domain.Pol
-import peal.synthesis.LessThanThCondition
 
 class LessThanThConditionTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
   val z3: Z3Context = new Z3Context(new Z3Config("MODEL" -> true))
