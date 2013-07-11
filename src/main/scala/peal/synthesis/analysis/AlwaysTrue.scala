@@ -9,5 +9,5 @@ class AlwaysTrue(name: String, cond: String) extends AnalysisGenerator {
     "(assert (not always_true_" + name + "))\n" +
     "(check-sat)\n" +
     "(get-model)\n" +
-    "(pop)"
+    "(pop)\n"
 }

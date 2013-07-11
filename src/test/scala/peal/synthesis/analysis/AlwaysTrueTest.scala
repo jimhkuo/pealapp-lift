@@ -15,7 +15,7 @@ class AlwaysTrueTest extends ShouldMatchersForJUnit {
       "(assert (not always_true_name1))\n" +
       "(check-sat)\n" +
       "(get-model)\n" +
-      "(pop)"
+      "(pop)\n"
     new AlwaysTrue("name1", "cond1").z3SMTInput should be(expected)
   }
 }

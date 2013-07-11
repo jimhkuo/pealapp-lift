@@ -12,10 +12,10 @@ class SatisfiableTest extends ShouldMatchersForJUnit {
      val expected = "(push)\n" +
        "(declare-const always_true_name1 Bool)\n" +
        "(assert (= always_true_name1 cond1))\n" +
-       "(assert (always_true_name1))\n" +
+       "(assert always_true_name1)\n" +
        "(check-sat)\n" +
        "(get-model)\n" +
-       "(pop)"
+       "(pop)\n"
      new Satisfiable("name1", "cond1").z3SMTInput should be(expected)
    }
  }
