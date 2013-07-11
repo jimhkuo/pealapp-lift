@@ -174,6 +174,7 @@ class PealCometActor extends CometActor with Loggable {
       {"(declare-const " + name + " Bool)"}
     </p>
 
+    //TODO remove push/pop and assert cond here
     val sortedKeys = conds.keys.toSeq.sortWith(_ < _)
     val asserts = for (cond <- sortedKeys) yield {<p>(push)</p><p>
       {"(assert (= " + cond + " " + conds(cond).synthesis(MyZ3Context.is, constsMap) + "))"}
