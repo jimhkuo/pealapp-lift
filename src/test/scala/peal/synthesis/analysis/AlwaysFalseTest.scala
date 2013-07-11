@@ -10,9 +10,9 @@ class AlwaysFalseTest extends ShouldMatchersForJUnit {
    def testCreateZ3SMTInput() {
 
      val expected = "(push)\n" +
-       "(declare-const always_true_name1 Bool)\n" +
-       "(assert (= always_true_name1 cond1))\n" +
-       "(assert always_true_name1)\n" +
+       "(declare-const always_false_name1 Bool)\n" +
+       "(assert (= always_false_name1 cond1))\n" +
+       "(assert always_false_name1)\n" +
        "(check-sat)\n" +
        "(get-model)\n" +
        "(pop)\n"
