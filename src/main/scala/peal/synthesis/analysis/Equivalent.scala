@@ -8,4 +8,6 @@ class Equivalent(name: String, lhs: String, rhs: String) extends AnalysisGenerat
      "(check-sat)\n" +
      "(get-model)\n" +
      "(pop)\n"
- }
+  def analysisType: String = "equivalent?"
+
+}

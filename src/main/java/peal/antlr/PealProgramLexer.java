@@ -1,4 +1,4 @@
-// $ANTLR 3.4 /Users/jkuo/PealApp-lift/antlr/PealProgram.g 2013-07-11 13:52:50
+// $ANTLR 3.4 /Users/jkuo/PealApp-lift/antlr/PealProgram.g 2013-07-11 13:57:26
 
 package peal.antlr;
 
@@ -339,10 +339,10 @@ public class PealProgramLexer extends Lexer {
         try {
             int _type = T__22;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/jkuo/PealApp-lift/antlr/PealProgram.g:24:7: ( 'equiuvalent?' )
-            // /Users/jkuo/PealApp-lift/antlr/PealProgram.g:24:9: 'equiuvalent?'
+            // /Users/jkuo/PealApp-lift/antlr/PealProgram.g:24:7: ( 'equivalent?' )
+            // /Users/jkuo/PealApp-lift/antlr/PealProgram.g:24:9: 'equivalent?'
             {
-            match("equiuvalent?"); 
+            match("equivalent?"); 
 
 
 
@@ -927,31 +927,33 @@ public class PealProgramLexer extends Lexer {
     static final String DFA6_eotS =
         "\6\uffff\1\26\1\uffff\6\23\1\22\1\uffff\1\24\1\40\5\uffff\10\23"+
         "\1\22\2\uffff\5\23\1\57\1\60\6\23\2\uffff\16\23\1\uffff\1\107\3"+
-        "\23\1\113\3\uffff\3\23\1\uffff\3\23\1\uffff\4\23\2\uffff";
+        "\23\1\113\3\uffff\3\23\1\uffff\3\23\1\uffff\2\23\1\uffff\1\23\1"+
+        "\uffff";
     static final String DFA6_eofS =
-        "\126\uffff";
+        "\125\uffff";
     static final String DFA6_minS =
         "\1\11\5\uffff\1\75\1\uffff\1\116\1\154\1\145\1\161\2\141\1\60\1"+
         "\uffff\1\12\1\11\5\uffff\1\101\1\167\2\146\1\165\1\170\1\156\1\164"+
         "\1\60\2\uffff\1\114\2\141\1\146\1\151\2\60\1\151\1\131\1\171\1\165"+
-        "\1\145\1\165\2\uffff\1\163\1\123\1\163\1\154\1\162\1\166\1\146\1"+
-        "\105\1\137\1\164\1\145\1\141\1\151\1\123\1\146\1\60\1\156\1\154"+
-        "\1\141\1\60\3\uffff\1\164\1\145\1\142\1\uffff\1\77\1\156\1\154\1"+
-        "\uffff\1\164\1\145\2\77\2\uffff";
+        "\1\145\1\166\2\uffff\1\163\1\123\1\163\1\154\1\162\1\141\1\146\1"+
+        "\105\1\137\1\164\1\145\1\154\1\151\1\123\1\146\1\60\1\156\1\145"+
+        "\1\141\1\60\3\uffff\1\164\1\156\1\142\1\uffff\1\77\1\164\1\154\1"+
+        "\uffff\1\77\1\145\1\uffff\1\77\1\uffff";
     static final String DFA6_maxS =
         "\1\172\5\uffff\1\75\1\uffff\1\116\1\154\1\151\1\161\1\151\1\141"+
         "\1\172\1\uffff\1\12\1\40\5\uffff\1\101\1\167\2\146\1\165\1\170\1"+
         "\156\1\164\1\172\2\uffff\1\114\2\141\1\146\1\151\2\172\1\151\1\131"+
-        "\1\171\1\165\1\145\1\165\2\uffff\1\163\1\123\1\163\1\154\1\162\1"+
-        "\166\1\146\1\105\1\137\1\164\1\145\1\141\1\151\1\123\1\164\1\172"+
-        "\1\156\1\154\1\141\1\172\3\uffff\1\164\1\145\1\142\1\uffff\1\77"+
-        "\1\156\1\154\1\uffff\1\164\1\145\2\77\2\uffff";
+        "\1\171\1\165\1\145\1\166\2\uffff\1\163\1\123\1\163\1\154\1\162\1"+
+        "\141\1\146\1\105\1\137\1\164\1\145\1\154\1\151\1\123\1\164\1\172"+
+        "\1\156\1\145\1\141\1\172\3\uffff\1\164\1\156\1\142\1\uffff\1\77"+
+        "\1\164\1\154\1\uffff\1\77\1\145\1\uffff\1\77\1\uffff";
     static final String DFA6_acceptS =
         "\1\uffff\1\1\1\2\1\3\1\4\1\5\1\uffff\1\10\7\uffff\1\23\2\uffff\1"+
         "\22\1\25\1\26\1\7\1\6\11\uffff\1\24\1\7\15\uffff\1\17\1\20\24\uffff"+
-        "\1\12\1\13\1\14\3\uffff\1\11\3\uffff\1\15\4\uffff\1\16\1\21";
+        "\1\12\1\13\1\14\3\uffff\1\11\3\uffff\1\15\2\uffff\1\16\1\uffff\1"+
+        "\21";
     static final String DFA6_specialS =
-        "\126\uffff}>";
+        "\125\uffff}>";
     static final String[] DFA6_transitionS = {
             "\1\24\1\21\1\uffff\1\24\1\20\22\uffff\1\24\7\uffff\1\1\1\2\1"+
             "\3\1\4\1\5\2\22\1\uffff\12\22\2\uffff\1\6\1\7\1\17\2\uffff\1"+
@@ -1038,9 +1040,8 @@ public class PealProgramLexer extends Lexer {
             "",
             "\1\122",
             "\1\123",
-            "\1\124",
-            "\1\125",
             "",
+            "\1\124",
             ""
     };
 

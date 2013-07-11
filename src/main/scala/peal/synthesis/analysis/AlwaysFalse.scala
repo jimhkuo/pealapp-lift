@@ -9,4 +9,6 @@ class AlwaysFalse(name: String, cond: String) extends AnalysisGenerator {
      "(check-sat)\n" +
      "(get-model)\n" +
      "(pop)\n"
- }
+
+  def analysisType: String = "always_false?"
+}

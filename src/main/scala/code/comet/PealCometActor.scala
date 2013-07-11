@@ -258,7 +258,7 @@ class PealCometActor extends CometActor with Loggable {
     val sortedKeys = conds.keys.toSeq.sortWith(_ < _)
     val body = for (cond <- sortedKeys) yield {"(assert (= " + cond + " " + conds(cond).synthesis(MyZ3Context.is, constsMap) + "))\n"}
     val sortedAnalyses = analyses.keys.toSeq.sortWith(_ < _)
-    val generatedAnalyses = for (analysis <- sortedAnalyses) yield {"(echo \"Result of analysis [" + analysis + "]:\")\n" + analyses(analysis).z3SMTInput}
+    val generatedAnalyses = for (analysis <- sortedAnalyses) yield {"(echo \"Result of analysis [" + analyses(analysis).analysisType + analysis + "]:\")\n" + analyses(analysis).z3SMTInput}
 
     val z3SMTInput = declarations.mkString("") +declarations1.mkString("") + body.mkString("") + generatedAnalyses.mkString("")
     val tmp = File.createTempFile("z3file", "")

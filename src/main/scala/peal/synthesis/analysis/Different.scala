@@ -8,4 +8,6 @@ class Different(name: String, lhs: String, rhs: String) extends AnalysisGenerato
      "(check-sat)\n" +
      "(get-model)\n" +
      "(pop)\n"
- }
+  def analysisType: String = "different?"
+
+}

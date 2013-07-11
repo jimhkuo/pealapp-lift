@@ -9,4 +9,5 @@ class Satisfiable(name: String, cond: String) extends AnalysisGenerator {
      "(check-sat)\n" +
      "(get-model)\n" +
      "(pop)\n"
- }
+  def analysisType: String = "satisfiable?"
+}
