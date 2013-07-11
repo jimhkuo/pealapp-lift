@@ -265,7 +265,8 @@ class PealCometActor extends CometActor with Loggable {
   }
 
   private def dealWithIt(e: Throwable) = {
-    this ! Message(e.getMessage)
+    println("error: " + e.getMessage)
+    this ! Message("error: " + e.getMessage)
     throw e
   }
 }
