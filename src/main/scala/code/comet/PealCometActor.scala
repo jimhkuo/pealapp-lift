@@ -210,26 +210,6 @@ class PealCometActor extends CometActor with Loggable {
     this ! Result(results)
   }
 
-  private def onCallZ3ViaCommandLine(constsMap: Map[String, Z3AST], conds: Map[String, Condition], pSets: Map[String, PolicySet]) {
-    val declarations = for (name <- constsMap.keys) yield "(declare-const " + name + " Bool)\n"
-    val declarations1 = for (name <- conds.keys) yield "(declare-const " + name + " Bool)\n"
-    val sortedKeys = conds.keys.toSeq.sortWith(_ < _)
-    val body = for (cond <- sortedKeys) yield {
-      "(push)\n(assert (= " + cond + " " + conds(cond).synthesis(MyZ3Context.is, constsMap) + "))\n" +
-      "(assert " + cond + ")\n(check-sat)\n(get-model)\n(pop)\n"
-    }
-
-    val z3SMTInput = declarations.mkString("") +declarations1.mkString("") + body.mkString("")
-    val tmp = File.createTempFile("z3file", "")
-    (Seq("echo", z3SMTInput) #> tmp).!!
-    println("tmpfile: " + tmp.getAbsolutePath)
-    resultBuilder.clear()
-    val returnCode = Process(Seq("bash", "-c", "z3 -nw -smt2 " + tmp.getAbsolutePath), None, "PATH" -> Props.get("z3.location").get) ! processLogger
-    println(resultBuilder.toString())
-    tmp.delete()
-    this ! Result(<pre>{z3SMTInput}</pre> <pre>Z3 Output:<br/>{resultBuilder.toString()}</pre>)
-  }
-
   private def onAnalysis2(constsMap: Map[String, Z3AST], conds: Map[String, Condition], pSets: Map[String, PolicySet]) {
     val sortedKeys = conds.keys.toSeq.sortWith(_ < _)
     val solver = MyZ3Context.is.mkSolver()
@@ -262,6 +242,28 @@ class PealCometActor extends CometActor with Loggable {
     val lapseTime = System.nanoTime() - start
     val z3SMTInput = declarations.mkString("") +declarations1.mkString("") + body.mkString("")
     this ! SaveFile(z3SMTInput, lapseTime)
+  }
+
+  private def onCallZ3ViaCommandLine(constsMap: Map[String, Z3AST], conds: Map[String, Condition], pSets: Map[String, PolicySet]) {
+    val declarations = for (name <- constsMap.keys) yield "(declare-const " + name + " Bool)\n"
+    val declarations1 = for (name <- conds.keys) yield "(declare-const " + name + " Bool)\n"
+    val sortedKeys = conds.keys.toSeq.sortWith(_ < _)
+
+    //TODO replace with analyses
+    val body = for (cond <- sortedKeys) yield {
+      "(push)\n(assert (= " + cond + " " + conds(cond).synthesis(MyZ3Context.is, constsMap) + "))\n" +
+        "(assert " + cond + ")\n(check-sat)\n(get-model)\n(pop)\n"
+    }
+
+    val z3SMTInput = declarations.mkString("") +declarations1.mkString("") + body.mkString("")
+    val tmp = File.createTempFile("z3file", "")
+    (Seq("echo", z3SMTInput) #> tmp).!!
+    println("tmpfile: " + tmp.getAbsolutePath)
+    resultBuilder.clear()
+    val returnCode = Process(Seq("bash", "-c", "z3 -nw -smt2 " + tmp.getAbsolutePath), None, "PATH" -> Props.get("z3.location").get) ! processLogger
+    println(resultBuilder.toString())
+    tmp.delete()
+    this ! Result(<pre>{z3SMTInput}</pre> <pre>Z3 Output:<br/>{resultBuilder.toString()}</pre>)
   }
 
   private def dealWithIt(e: Throwable) = {
