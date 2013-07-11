@@ -48,8 +48,8 @@ program
 	(id0=IDENT '=' 'always_true?' id1=IDENT {AnalysisGenerator analysis = new AlwaysTrue($id0.text, $id1.text); analyses.put($id0.text, analysis);}
 	|id0=IDENT '=' 'always_false?' id1=IDENT {AnalysisGenerator analysis = new AlwaysFalse($id0.text, $id1.text); analyses.put($id0.text, analysis);}
 	|id0=IDENT '=' 'satisfiable?' id1=IDENT {AnalysisGenerator analysis = new Satisfiable($id0.text, $id1.text); analyses.put($id0.text, analysis);}	
-	|id0=IDENT '=' 'equivalent?' id1=IDENT id2=IDENT {AnalysisGenerator analysis = new Equivalence($id0.text, $id1.text, $id2.text); analyses.put($id0.text, analysis);}	
-	|id0=IDENT '=' 'different?' id1=IDENT id2=IDENT {AnalysisGenerator analysis = new Difference($id0.text, $id1.text, $id2.text); analyses.put($id0.text, analysis);}		
+	|id0=IDENT '=' 'equivalence?' id1=IDENT id2=IDENT {AnalysisGenerator analysis = new Equivalence($id0.text, $id1.text, $id2.text); analyses.put($id0.text, analysis);}	
+	|id0=IDENT '=' 'difference?' id1=IDENT id2=IDENT {AnalysisGenerator analysis = new Difference($id0.text, $id1.text, $id2.text); analyses.put($id0.text, analysis);}		
 	)+
 	)?
 	;
