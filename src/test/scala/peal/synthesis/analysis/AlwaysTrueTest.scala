@@ -1,7 +1,8 @@
-package peal.synthesis
+package peal.synthesis.analysis
 
 import org.junit.Test
 import org.scalatest.junit.ShouldMatchersForJUnit
+import peal.synthesis.analysis.AlwaysTrue
 
 
 class AlwaysTrueTest extends ShouldMatchersForJUnit {

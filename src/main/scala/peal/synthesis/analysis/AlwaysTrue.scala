@@ -1,4 +1,5 @@
-package peal.synthesis
+package peal.synthesis.analysis
+
 
 class AlwaysTrue(name: String, cond: String) extends AnalysisGenerator {
 

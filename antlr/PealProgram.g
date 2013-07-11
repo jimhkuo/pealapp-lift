@@ -11,6 +11,7 @@ import peal.domain.*;
 import peal.*;
 import org.antlr.runtime.BitSet;
 import peal.synthesis.*;
+import peal.synthesis.analysis.*;
 import peal.domain.operator.*;
 }
 
@@ -43,6 +44,7 @@ program
 	id0=IDENT '=' num=NUMBER '<' id2=IDENT {Condition cond = new GreaterThanThCondition(pSets.get($id2.text), Double.valueOf($num.text)); conds.put($id0.text, cond);}
 	)+
 	('ANALYSES'
+	(id0=IDENT '=' 'always_true?' id1=IDENT {AnalysisGenerator analysis = new AlwaysTrue})+
 	)?
 	;
 
