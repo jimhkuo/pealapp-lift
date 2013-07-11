@@ -4,7 +4,7 @@ import org.junit.Test
 import org.scalatest.junit.ShouldMatchersForJUnit
 
 
-class DifferenceTest extends ShouldMatchersForJUnit {
+class DifferentTest extends ShouldMatchersForJUnit {
 
    @Test
    def testCreateZ3SMTInput() {
@@ -15,6 +15,6 @@ class DifferenceTest extends ShouldMatchersForJUnit {
        "(check-sat)\n" +
        "(get-model)\n" +
        "(pop)\n"
-     new Difference("name1", "cond1", "cond2").z3SMTInput should be(expected)
+     new Different("name1", "cond1", "cond2").z3SMTInput should be(expected)
    }
  }

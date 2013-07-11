@@ -12,6 +12,9 @@ T__19=19
 T__20=20
 T__21=21
 T__22=22
+T__23=23
+T__24=24
+T__25=25
 COMPARE=4
 IDENT=5
 NEWLINE=6
@@ -26,8 +29,11 @@ WS=8
 '<='=15
 '='=16
 'ANALYSES'=17
-'always_true?'=18
-'default'=19
-'max'=20
-'min'=21
-'satisfiable?'=22
+'always_false?'=18
+'always_true?'=19
+'default'=20
+'different?'=21
+'equiuvalent?'=22
+'max'=23
+'min'=24
+'satisfiable?'=25
