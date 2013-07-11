@@ -7,6 +7,7 @@ import peal.domain.{Rule, Predicate, Pol}
 import scala.collection.JavaConversions._
 import peal.domain.operator.Min
 import peal.util.Z3ModelMatcher
+import peal.synthesis.PolLessThanThCondition
 
 class PolLessThanThTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
   val z3: Z3Context = new Z3Context(new Z3Config("MODEL" -> true))

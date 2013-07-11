@@ -247,8 +247,8 @@ class PealCometActor extends CometActor with Loggable {
   private def onCallZ3ViaCommandLine(constsMap: Map[String, Z3AST], conds: Map[String, Condition], pSets: Map[String, PolicySet]) {
     val declarations = for (name <- constsMap.keys) yield "(declare-const " + name + " Bool)\n"
     val declarations1 = for (name <- conds.keys) yield "(declare-const " + name + " Bool)\n"
-    val sortedKeys = conds.keys.toSeq.sortWith(_ < _)
 
+    val sortedKeys = conds.keys.toSeq.sortWith(_ < _)
     //TODO replace with analyses
     val body = for (cond <- sortedKeys) yield {
       "(push)\n(assert (= " + cond + " " + conds(cond).synthesis(MyZ3Context.is, constsMap) + "))\n" +

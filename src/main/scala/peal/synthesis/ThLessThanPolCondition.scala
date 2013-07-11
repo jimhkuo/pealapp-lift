@@ -1,8 +1,7 @@
-package peal
+package peal.synthesis
 
 import _root_.z3.scala.{Z3Context, Z3AST}
 import peal.domain.Pol
-import peal.synthesis.{Condition}
 import scala.collection.JavaConversions._
 
 

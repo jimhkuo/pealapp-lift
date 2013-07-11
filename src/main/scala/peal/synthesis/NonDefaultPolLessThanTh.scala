@@ -1,7 +1,6 @@
-package peal
+package peal.synthesis
 
 import _root_.z3.scala.{Z3AST, Z3Context}
-import peal.synthesis.NonDefaultSet
 import peal.domain.{Rule, Pol}
 import scala.collection.JavaConversions._
 import peal.domain.operator.{Mul, Max, Plus, Min}

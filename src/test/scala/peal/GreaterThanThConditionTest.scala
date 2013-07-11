@@ -9,6 +9,7 @@ import peal.domain.operator.Min
 import peal.util.Z3ModelMatcher
 import peal.domain.MinPolicySet
 import peal.domain.Pol
+import peal.synthesis.GreaterThanThCondition
 
 class GreaterThanThConditionTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
   val z3: Z3Context = new Z3Context(new Z3Config("MODEL" -> true))

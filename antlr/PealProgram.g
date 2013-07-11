@@ -12,7 +12,6 @@ import peal.*;
 import org.antlr.runtime.BitSet;
 import peal.synthesis.*;
 import peal.domain.operator.*;
-
 }
 
 @members {
@@ -22,7 +21,6 @@ public Map<String, PolicySet> pSets = new HashMap<String, PolicySet>();
 private Map<String, String> pSetScores = new HashMap<String, String>();
 List<Rule> l = new ArrayList<Rule>();
 
-//need to override the default error reporting
 @Override
 public void reportError(RecognitionException e) {
 	throw new RuntimeException(getErrorMessage(e, PealProgramParser.tokenNames)); 
