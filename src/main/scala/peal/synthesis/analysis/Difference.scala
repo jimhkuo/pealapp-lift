@@ -10,6 +10,6 @@ class Difference(name: String, lhs: String, rhs: String) extends AnalysisGenerat
     "(get-model)\n" +
     "(pop)\n"
 
-  def analysisType: String = "different?"
+  def analysisType: String = "difference?"
 
 }
