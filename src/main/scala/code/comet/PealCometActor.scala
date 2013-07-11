@@ -9,14 +9,10 @@ import org.antlr.runtime.{CommonTokenStream, ANTLRStringStream}
 import peal.antlr.{PealProgramParser, PealProgramLexer}
 import net.liftweb.common.Loggable
 import scala.collection.JavaConversions._
-import z3.scala.{Z3AST, Z3Config, Z3Context}
+import z3.scala.Z3AST
 import code.comet.util._
 import peal.synthesis.{PolicySet, Condition}
 import scala.Predef._
-import net.liftweb.http.js.jquery.JqJE.JqId
-import code.comet.util.Message
-import code.comet.util.SaveFile
-import code.comet.util.Result
 import z3.ModelGetter
 import scala.sys.process._
 import net.liftweb.util.Props
@@ -106,7 +102,7 @@ class PealCometActor extends CometActor with Loggable {
       onAnalysis1(constsMap, conds, pSets)
     case SynthesisAndCallZ3 =>
       val (constsMap,  conds, pSets, analyses) = onCompute(inputPolicies)
-      onCallZ3ViaCommandLine(constsMap, conds,  pSets)
+      onCallZ3ViaCommandLine(constsMap, conds,  pSets, analyses)
     case Analysis2 =>
       val (constsMap,  conds, pSets, analyses) = onCompute(inputPolicies)
       onAnalysis2(constsMap, conds, pSets)
@@ -254,18 +250,15 @@ class PealCometActor extends CometActor with Loggable {
     this ! SaveFile(z3SMTInput, lapseTime)
   }
 
-  private def onCallZ3ViaCommandLine(constsMap: Map[String, Z3AST], conds: Map[String, Condition], pSets: Map[String, PolicySet]) {
+  private def onCallZ3ViaCommandLine(constsMap: Map[String, Z3AST], conds: Map[String, Condition], pSets: Map[String, PolicySet], analyses: Map[String, AnalysisGenerator]) {
     val declarations = for (name <- constsMap.keys) yield "(declare-const " + name + " Bool)\n"
     val declarations1 = for (name <- conds.keys) yield "(declare-const " + name + " Bool)\n"
-
     val sortedKeys = conds.keys.toSeq.sortWith(_ < _)
-    //TODO replace with analyses
-    val body = for (cond <- sortedKeys) yield {
-      "(push)\n(assert (= " + cond + " " + conds(cond).synthesis(MyZ3Context.is, constsMap) + "))\n" +
-        "(assert " + cond + ")\n(check-sat)\n(get-model)\n(pop)\n"
-    }
+    val body = for (cond <- sortedKeys) yield {"(assert (= " + cond + " " + conds(cond).synthesis(MyZ3Context.is, constsMap) + "))\n"}
+    val sortedAnalyses = analyses.keys.toSeq.sortWith(_ < _)
+    val generatedAnalyses = for (analysis <- sortedAnalyses) yield {analyses(analysis).z3SMTInput}
 
-    val z3SMTInput = declarations.mkString("") +declarations1.mkString("") + body.mkString("")
+    val z3SMTInput = declarations.mkString("") +declarations1.mkString("") + body.mkString("") + generatedAnalyses.mkString("")
     val tmp = File.createTempFile("z3file", "")
     (Seq("echo", z3SMTInput) #> tmp).!!
     println("tmpfile: " + tmp.getAbsolutePath)
