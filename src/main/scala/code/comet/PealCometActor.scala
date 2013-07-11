@@ -33,7 +33,10 @@ class PealCometActor extends CometActor with Loggable {
   val defaultInput = "b1 = min ((q1 0.2) (q2 0.4) (q3 0.9)) default 1\nb2 = + ((q4 0.1) (q5 0.2) (q6 0.2)) default 0\npSet1 = max(b1, b2)\npSet2 = min(b1, b2)\ncond1 = pSet1 <= 0.5\ncond2 = 0.6 < pSet2\n" +
     "ANALYSES\n" +
     "name1 = always_true? cond1\n" +
-    "name2 = satisfiable? cond2\n"
+    "name2 = always_false? cond1\n" +
+    "name3 = satisfiable? cond2\n" +
+    "name4 = different? cond1 cond2\n" +
+    "name5 = equivalent? cond1 cond2\n"
   var inputPolicies = defaultInput
   var majorityVotingCount = 10
 
