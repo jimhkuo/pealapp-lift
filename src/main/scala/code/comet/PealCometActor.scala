@@ -26,6 +26,7 @@ import code.comet.util.Message
 import scala.Some
 import code.comet.util.Result
 import code.comet.util.SaveFile
+import peal.synthesis.analysis.AnalysisGenerator
 
 class PealCometActor extends CometActor with Loggable {
   val resultBuilder = new StringBuilder
@@ -33,7 +34,10 @@ class PealCometActor extends CometActor with Loggable {
     (o: String) => resultBuilder.append(o + "\n"),
     (e: String) => resultBuilder.append(e + "\n")
   )
-  val defaultInput = "b1 = min ((q1 0.2) (q2 0.4) (q3 0.9)) default 1\nb2 = + ((q4 0.1) (q5 0.2) (q6 0.2)) default 0\npSet1 = max(b1, b2)\npSet2 = min(b1, b2)\ncond1 = pSet1 <= 0.5\ncond2 = 0.6 < pSet2\n"
+  val defaultInput = "b1 = min ((q1 0.2) (q2 0.4) (q3 0.9)) default 1\nb2 = + ((q4 0.1) (q5 0.2) (q6 0.2)) default 0\npSet1 = max(b1, b2)\npSet2 = min(b1, b2)\ncond1 = pSet1 <= 0.5\ncond2 = 0.6 < pSet2\n" +
+    "ANALYSES\n" +
+    "name1 = always_true? cond1\n" +
+    "name2 = always_true? cond2\n"
   var inputPolicies = defaultInput
   var majorityVotingCount = 10
 
@@ -98,19 +102,19 @@ class PealCometActor extends CometActor with Loggable {
   override def lowPriority = {
     case Init =>
     case Analysis1 =>
-      val (constsMap, conds, pSets) = onCompute(inputPolicies)
+      val (constsMap, conds, pSets, analyses) = onCompute(inputPolicies)
       onAnalysis1(constsMap, conds, pSets)
     case SynthesisAndCallZ3 =>
-      val (constsMap,  conds, pSets) = onCompute(inputPolicies)
+      val (constsMap,  conds, pSets, analyses) = onCompute(inputPolicies)
       onCallZ3ViaCommandLine(constsMap, conds,  pSets)
     case Analysis2 =>
-      val (constsMap,  conds, pSets) = onCompute(inputPolicies)
+      val (constsMap,  conds, pSets, analyses) = onCompute(inputPolicies)
       onAnalysis2(constsMap, conds, pSets)
     case Display =>
-      val (constsMap, conds,  pSets) = onCompute(inputPolicies)
-      onDisplay(constsMap, conds,  pSets)
+      val (constsMap, conds,  pSets, analyses) = onCompute(inputPolicies)
+      onDisplay(constsMap, conds,  pSets, analyses)
     case Download =>
-      val (constsMap, conds,  pSets) = onCompute(inputPolicies)
+      val (constsMap, conds,  pSets, analyses) = onCompute(inputPolicies)
       onDownload(constsMap, conds,  pSets)
     case Prepare =>
       partialUpdate(JqId("result") ~> JqHtml(Text("Synthesising... Please wait...")))
@@ -148,7 +152,7 @@ class PealCometActor extends CometActor with Loggable {
     new PealProgramParser(tokenStream)
   }
 
-  private def onCompute(input: String): (Map[String, Z3AST], Map[String, Condition], Map[String, PolicySet]) = {
+  private def onCompute(input: String): (Map[String, Z3AST], Map[String, Condition], Map[String, PolicySet], Map[String, AnalysisGenerator]) = {
     val pealProgrmParser = getParser(input)
     val z3 = MyZ3Context.is
 
@@ -156,7 +160,7 @@ class PealCometActor extends CometActor with Loggable {
       pealProgrmParser.program()
       val predicateNames: Seq[String] = pealProgrmParser.pols.values().flatMap(pol => pol.rules).map(r => r.q.name).toSeq.distinct
       val constsMap = predicateNames.toSeq.distinct.map(t => (t, z3.mkBoolConst(t))).toMap
-      (constsMap, pealProgrmParser.conds.toMap, pealProgrmParser.pSets.toMap)
+      (constsMap, pealProgrmParser.conds.toMap, pealProgrmParser.pSets.toMap, pealProgrmParser.analyses.toMap)
     } catch {
       case e2: NullPointerException => dealWithIt(e2)
       case e1: Throwable => dealWithIt(e1)
@@ -166,7 +170,7 @@ class PealCometActor extends CometActor with Loggable {
     //    }
   }
 
-  private def onDisplay(constsMap: Map[String, Z3AST], conds: Map[String, Condition], pSets: Map[String, PolicySet]) {
+  private def onDisplay(constsMap: Map[String, Z3AST], conds: Map[String, Condition], pSets: Map[String, PolicySet], analyses: Map[String, AnalysisGenerator]) {
     val declarations = for (name <- constsMap.keys) yield <p>
       {"(declare-const " + name + " Bool)"}
     </p>
@@ -174,18 +178,22 @@ class PealCometActor extends CometActor with Loggable {
       {"(declare-const " + name + " Bool)"}
     </p>
 
-    val sortedKeys = conds.keys.toSeq.sortWith(_ < _)
-    val asserts = for (cond <- sortedKeys) yield {<p>
+    val sortedConds = conds.keys.toSeq.sortWith(_ < _)
+    val conditions = for (cond <- sortedConds) yield {<p>
       {"(assert (= " + cond + " " + conds(cond).synthesis(MyZ3Context.is, constsMap) + "))"}
     </p>}
 
-    //TODO add analyses here
+    val sortedAnalyses = analyses.keys.toSeq.sortWith(_ < _)
+    val generatedAnalyses = for (analysis <- sortedAnalyses) yield {
+      <pre>{analyses(analysis).z3SMTInput}</pre>
+    }
 
-    val result = <p>
+    val result = <span>
       {declarations}
       {declarations1}
-      {asserts}
-  </p>
+      {conditions}
+      {generatedAnalyses}
+  </span>
     this ! Result(result)
   }
 
