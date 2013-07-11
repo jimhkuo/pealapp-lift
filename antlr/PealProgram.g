@@ -44,6 +44,8 @@ program
     	|
 	id0=IDENT '=' num=NUMBER '<' id2=IDENT {Condition cond = new GreaterThanThCondition(pSets.get($id2.text), Double.valueOf($num.text)); conds.put($id0.text, cond);}
 	)+
+	('ANALYSES'
+	)?
 	;
 
 //pSet [String s] returns [PolicySet t] 
