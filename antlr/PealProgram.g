@@ -18,6 +18,7 @@ import peal.domain.operator.*;
 @members {
 public Map<String, Pol> pols = new HashMap<String, Pol>();
 public Map<String, Condition> conds = new HashMap<String, Condition>();
+public Map<String, AnalysisGenerator> analyses = new HashMap<String, AnalysisGenerator>();
 public Map<String, PolicySet> pSets = new HashMap<String, PolicySet>();
 private Map<String, String> pSetScores = new HashMap<String, String>();
 List<Rule> l = new ArrayList<Rule>();
@@ -44,7 +45,7 @@ program
 	id0=IDENT '=' num=NUMBER '<' id2=IDENT {Condition cond = new GreaterThanThCondition(pSets.get($id2.text), Double.valueOf($num.text)); conds.put($id0.text, cond);}
 	)+
 	('ANALYSES'
-	(id0=IDENT '=' 'always_true?' id1=IDENT {AnalysisGenerator analysis = new AlwaysTrue})+
+	(id0=IDENT '=' 'always_true?' id1=IDENT {AnalysisGenerator analysis = new AlwaysTrue($id0.text, $id1.text); analyses.put($id0.text, analysis);})+
 	)?
 	;
 
