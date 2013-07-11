@@ -77,7 +77,7 @@ class PealCometActor extends CometActor with Loggable {
           _Noop
         })}
         </div>
-        <div>
+        <div style="display: none;">
           {SHtml.ajaxButton("Analysis1 (!cond)", () => {
           this ! Analysis1
           _Noop
@@ -100,18 +100,18 @@ class PealCometActor extends CometActor with Loggable {
     case Analysis1 =>
       val (constsMap, conds, pSets, analyses) = onCompute(inputPolicies)
       onAnalysis1(constsMap, conds, pSets)
-    case SynthesisAndCallZ3 =>
-      val (constsMap,  conds, pSets, analyses) = onCompute(inputPolicies)
-      onCallZ3ViaCommandLine(constsMap, conds,  pSets, analyses)
     case Analysis2 =>
       val (constsMap,  conds, pSets, analyses) = onCompute(inputPolicies)
       onAnalysis2(constsMap, conds, pSets)
+    case SynthesisAndCallZ3 =>
+      val (constsMap,  conds, pSets, analyses) = onCompute(inputPolicies)
+      onCallZ3ViaCommandLine(constsMap, conds,  pSets, analyses)
     case Display =>
       val (constsMap, conds,  pSets, analyses) = onCompute(inputPolicies)
       onDisplay(constsMap, conds,  pSets, analyses)
     case Download =>
       val (constsMap, conds,  pSets, analyses) = onCompute(inputPolicies)
-      onDownload(constsMap, conds,  pSets)
+      onDownload(constsMap, conds,  pSets, analyses)
     case Prepare =>
       partialUpdate(JqId("result") ~> JqHtml(Text("Synthesising... Please wait...")))
       this ! Download
@@ -236,17 +236,16 @@ class PealCometActor extends CometActor with Loggable {
     this ! Result(results)
   }
 
-  private def onDownload(constsMap: Map[String, Z3AST], conds: Map[String, Condition], pSets: Map[String, PolicySet]) {
+  private def onDownload(constsMap: Map[String, Z3AST], conds: Map[String, Condition], pSets: Map[String, PolicySet], analyses: Map[String, AnalysisGenerator]) {
     val declarations = for (name <- constsMap.keys) yield "(declare-const " + name + " Bool)\n"
     val declarations1 = for (name <- conds.keys) yield "(declare-const " + name + " Bool)\n"
     val sortedKeys = conds.keys.toSeq.sortWith(_ < _)
     val start = System.nanoTime()
-    val body = for (cond <- sortedKeys) yield {
-      "(push)\n(assert (= " + cond + " " + conds(cond).synthesis(MyZ3Context.is, constsMap) + "))\n" +
-        "(assert " + cond + ")\n(check-sat)\n(get-model)\n(pop)\n"
-    }
+    val body = for (cond <- sortedKeys) yield {"(assert (= " + cond + " " + conds(cond).synthesis(MyZ3Context.is, constsMap) + "))\n"}
     val lapseTime = System.nanoTime() - start
-    val z3SMTInput = declarations.mkString("") +declarations1.mkString("") + body.mkString("")
+    val sortedAnalyses = analyses.keys.toSeq.sortWith(_ < _)
+    val generatedAnalyses = for (analysis <- sortedAnalyses) yield {analyses(analysis).z3SMTInput}
+    val z3SMTInput = declarations.mkString("") +declarations1.mkString("") + body.mkString("") + generatedAnalyses.mkString("")
     this ! SaveFile(z3SMTInput, lapseTime)
   }
 
