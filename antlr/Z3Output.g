@@ -29,13 +29,18 @@ package peal.antlr;
 }
 
 models 	: 
-	'Result of analysis ' ANALYSIS ':'
+	(
+	'Result of analysis [' IDENT '=' IDENT '?' IDENT (IDENT)? ']:'
+	('unsat' ERROR)?
+	)+
 	;
 	
+answer 	:	IDENT
+	;
 
 NUMBER : ('.'|'0'..'9'|'-'|'E')+;
-STRING 	: IDENT WS (IDENT | WS | '=' | '"')+;
-ANALYSIS : '['STRING']';
-IDENT : ('a'..'z' | 'A'..'Z')('a'..'z' | 'A'..'Z' | '0'..'9' | '?')*;
+NEWLINE:'\r'? '\n' { $channel = HIDDEN;};
+IDENT : ('a'..'z' | 'A'..'Z')('a'..'z' | 'A'..'Z' | '0'..'9')*;
 WS : (' ' | '\t' | '\n' | '\r' | '\f')+ { $channel = HIDDEN;};
-
+ERROR 	:	'(error "line ' NUMBER ' column ' NUMBER': model is not available")';
+//STRING 	: IDENT WS (IDENT | WS | '=' | '"' | '?')+;
