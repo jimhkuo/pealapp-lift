@@ -29,17 +29,13 @@ public void reportError(RecognitionException e) {
 package peal.antlr;
 }
 
-results	: 
-	(
+results	: (
 	'Result of analysis [' IDENT '=' IDENT '?' IDENT (IDENT)? ']:'
-	('unsat' ERROR
-	|
-	'sat' model
-	)
+	('unsat' ERROR |'sat' model)
 	)+
 	;
 	
-model 	:	'(model' (define)+	')'
+model 	: '(model' (define)+ ')'
 	;
 
 define 	: '(define-fun' IDENT '()' IDENT IDENT')'	
