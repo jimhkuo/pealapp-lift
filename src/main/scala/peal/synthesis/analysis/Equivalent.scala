@@ -4,7 +4,7 @@ class Equivalent(name: String, lhs: String, rhs: String) extends AnalysisGenerat
 
    def z3SMTInput: String = "(push)\n" +
      "(declare-const equivalent_" + name + " Bool)\n" +
-     "(assert (= equivalent_" + name + " (and (implies " + lhs + " " + rhs + ") (implies " + rhs + " " + lhs + "))))\n" +
+     "(assert (= equivalent_" + name + " (or (and " + lhs + " (not " + rhs + ")) (and (not " + lhs + ") " + rhs + "))))\n" +
      "(assert equivalent_" + name + ")\n" +
      "(check-sat)\n" +
      "(get-model)\n" +

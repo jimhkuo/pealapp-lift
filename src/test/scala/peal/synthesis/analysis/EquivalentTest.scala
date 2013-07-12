@@ -11,7 +11,7 @@ class EquivalentTest extends ShouldMatchersForJUnit {
 
      val expected = "(push)\n" +
        "(declare-const equivalent_name1 Bool)\n" +
-       "(assert (= equivalent_name1 (and (implies cond1 cond2) (implies cond2 cond1))))\n" +
+       "(assert (= equivalent_name1 (or (and cond1 (not cond2)) (and (not cond1) cond2))))\n" +
        "(assert equivalent_name1)\n" +
        "(check-sat)\n" +
        "(get-model)\n" +

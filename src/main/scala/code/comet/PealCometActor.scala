@@ -40,10 +40,7 @@ class PealCometActor extends CometActor with Loggable {
     "name2 = always_false? cond1\n" +
     "name3 = satisfiable? cond2\n" +
     "name4 = equivalent? cond1 cond2\n" +
-    "name5 = different? cond1 cond2\n" +
-    "name6 = different? cond2 cond2\n" +
-    "name7 = different? cond2 cond3\n" +
-    "name8 = different? cond2 cond4\n"
+    "name5 = different? cond1 cond2\n"
   var inputPolicies = defaultInput
   var majorityVotingCount = 10
 
