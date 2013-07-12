@@ -29,7 +29,7 @@ public void reportError(RecognitionException e) {
 package peal.antlr;
 }
 
-results	: (
+result	: (
 	'Result of analysis [' IDENT '=' IDENT '?' IDENT (IDENT)? ']:'
 	('unsat' Z3ERROR |'sat' model)
 	)+
