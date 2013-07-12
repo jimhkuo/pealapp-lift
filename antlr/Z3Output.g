@@ -2,6 +2,7 @@ grammar Z3Output;
 
 options {
 language = Java;
+output=AST;
 }
 
 @header {
@@ -28,19 +29,26 @@ public void reportError(RecognitionException e) {
 package peal.antlr;
 }
 
-models 	: 
+results	: 
 	(
 	'Result of analysis [' IDENT '=' IDENT '?' IDENT (IDENT)? ']:'
-	('unsat' ERROR)?
+	('unsat' ERROR
+	|
+	'sat' model
+	)
 	)+
 	;
 	
-answer 	:	IDENT
+model 	:	'(model' (define)+	')'
 	;
+
+define 	: '(define-fun' IDENT '()' IDENT IDENT')'	
+	;	
+	
 
 NUMBER : ('.'|'0'..'9'|'-'|'E')+;
 NEWLINE:'\r'? '\n' { $channel = HIDDEN;};
-IDENT : ('a'..'z' | 'A'..'Z')('a'..'z' | 'A'..'Z' | '0'..'9')*;
+IDENT : ('a'..'z' | 'A'..'Z')( '_' | 'a'..'z' | 'A'..'Z' | '0'..'9')*;
 WS : (' ' | '\t' | '\n' | '\r' | '\f')+ { $channel = HIDDEN;};
 ERROR 	:	'(error "line ' NUMBER ' column ' NUMBER': model is not available")';
 //STRING 	: IDENT WS (IDENT | WS | '=' | '"' | '?')+;
