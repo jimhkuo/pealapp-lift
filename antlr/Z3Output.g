@@ -31,7 +31,7 @@ package peal.antlr;
 
 results	: (
 	'Result of analysis [' IDENT '=' IDENT '?' IDENT (IDENT)? ']:'
-	('unsat' ERROR |'sat' model)
+	('unsat' Z3ERROR |'sat' model)
 	)+
 	;
 	
@@ -43,8 +43,7 @@ define 	: '(define-fun' IDENT '()' IDENT IDENT')'
 	
 
 NUMBER : ('.'|'0'..'9'|'-'|'E')+;
-NEWLINE:'\r'? '\n' { $channel = HIDDEN;};
 IDENT : ('a'..'z' | 'A'..'Z')( '_' | 'a'..'z' | 'A'..'Z' | '0'..'9')*;
 WS : (' ' | '\t' | '\n' | '\r' | '\f')+ { $channel = HIDDEN;};
-ERROR 	:	'(error "line ' NUMBER ' column ' NUMBER': model is not available")';
+Z3ERROR	: '(error "line ' NUMBER ' column ' NUMBER': model is not available")';
 //STRING 	: IDENT WS (IDENT | WS | '=' | '"' | '?')+;

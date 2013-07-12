@@ -1,4 +1,4 @@
-// $ANTLR 3.4 /Users/jkuo/PealApp-lift/antlr/Z3Output.g 2013-07-12 16:41:19
+// $ANTLR 3.4 /Users/jkuo/PealApp-lift/antlr/Z3Output.g 2013-07-12 16:42:39
 
 package peal.antlr;
 import java.util.*;
@@ -21,10 +21,11 @@ import org.antlr.runtime.tree.*;
 @SuppressWarnings({"all", "warnings", "unchecked"})
 public class Z3OutputParser extends Parser {
     public static final String[] tokenNames = new String[] {
-        "<invalid>", "<EOR>", "<DOWN>", "<UP>", "ERROR", "IDENT", "NEWLINE", "NUMBER", "WS", "'()'", "'(define-fun'", "'(model'", "')'", "'='", "'?'", "'Result of analysis ['", "']:'", "'sat'", "'unsat'"
+        "<invalid>", "<EOR>", "<DOWN>", "<UP>", "IDENT", "NUMBER", "WS", "Z3ERROR", "'()'", "'(define-fun'", "'(model'", "')'", "'='", "'?'", "'Result of analysis ['", "']:'", "'sat'", "'unsat'"
     };
 
     public static final int EOF=-1;
+    public static final int T__8=8;
     public static final int T__9=9;
     public static final int T__10=10;
     public static final int T__11=11;
@@ -34,12 +35,10 @@ public class Z3OutputParser extends Parser {
     public static final int T__15=15;
     public static final int T__16=16;
     public static final int T__17=17;
-    public static final int T__18=18;
-    public static final int ERROR=4;
-    public static final int IDENT=5;
-    public static final int NEWLINE=6;
-    public static final int NUMBER=7;
-    public static final int WS=8;
+    public static final int IDENT=4;
+    public static final int NUMBER=5;
+    public static final int WS=6;
+    public static final int Z3ERROR=7;
 
     // delegates
     public Parser[] getDelegates() {
@@ -83,7 +82,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "results"
-    // /Users/jkuo/PealApp-lift/antlr/Z3Output.g:32:1: results : ( 'Result of analysis [' IDENT '=' IDENT '?' IDENT ( IDENT )? ']:' ( 'unsat' ERROR | 'sat' model ) )+ ;
+    // /Users/jkuo/PealApp-lift/antlr/Z3Output.g:32:1: results : ( 'Result of analysis [' IDENT '=' IDENT '?' IDENT ( IDENT )? ']:' ( 'unsat' Z3ERROR | 'sat' model ) )+ ;
     public final Z3OutputParser.results_return results() throws RecognitionException {
         Z3OutputParser.results_return retval = new Z3OutputParser.results_return();
         retval.start = input.LT(1);
@@ -100,7 +99,7 @@ public TreeAdaptor getTreeAdaptor() {
         Token IDENT7=null;
         Token string_literal8=null;
         Token string_literal9=null;
-        Token ERROR10=null;
+        Token Z3ERROR10=null;
         Token string_literal11=null;
         Z3OutputParser.model_return model12 =null;
 
@@ -114,33 +113,33 @@ public TreeAdaptor getTreeAdaptor() {
         Object IDENT7_tree=null;
         Object string_literal8_tree=null;
         Object string_literal9_tree=null;
-        Object ERROR10_tree=null;
+        Object Z3ERROR10_tree=null;
         Object string_literal11_tree=null;
 
         try {
-            // /Users/jkuo/PealApp-lift/antlr/Z3Output.g:32:9: ( ( 'Result of analysis [' IDENT '=' IDENT '?' IDENT ( IDENT )? ']:' ( 'unsat' ERROR | 'sat' model ) )+ )
-            // /Users/jkuo/PealApp-lift/antlr/Z3Output.g:32:11: ( 'Result of analysis [' IDENT '=' IDENT '?' IDENT ( IDENT )? ']:' ( 'unsat' ERROR | 'sat' model ) )+
+            // /Users/jkuo/PealApp-lift/antlr/Z3Output.g:32:9: ( ( 'Result of analysis [' IDENT '=' IDENT '?' IDENT ( IDENT )? ']:' ( 'unsat' Z3ERROR | 'sat' model ) )+ )
+            // /Users/jkuo/PealApp-lift/antlr/Z3Output.g:32:11: ( 'Result of analysis [' IDENT '=' IDENT '?' IDENT ( IDENT )? ']:' ( 'unsat' Z3ERROR | 'sat' model ) )+
             {
             root_0 = (Object)adaptor.nil();
 
 
-            // /Users/jkuo/PealApp-lift/antlr/Z3Output.g:32:11: ( 'Result of analysis [' IDENT '=' IDENT '?' IDENT ( IDENT )? ']:' ( 'unsat' ERROR | 'sat' model ) )+
+            // /Users/jkuo/PealApp-lift/antlr/Z3Output.g:32:11: ( 'Result of analysis [' IDENT '=' IDENT '?' IDENT ( IDENT )? ']:' ( 'unsat' Z3ERROR | 'sat' model ) )+
             int cnt3=0;
             loop3:
             do {
                 int alt3=2;
                 int LA3_0 = input.LA(1);
 
-                if ( (LA3_0==15) ) {
+                if ( (LA3_0==14) ) {
                     alt3=1;
                 }
 
 
                 switch (alt3) {
             	case 1 :
-            	    // /Users/jkuo/PealApp-lift/antlr/Z3Output.g:33:2: 'Result of analysis [' IDENT '=' IDENT '?' IDENT ( IDENT )? ']:' ( 'unsat' ERROR | 'sat' model )
+            	    // /Users/jkuo/PealApp-lift/antlr/Z3Output.g:33:2: 'Result of analysis [' IDENT '=' IDENT '?' IDENT ( IDENT )? ']:' ( 'unsat' Z3ERROR | 'sat' model )
             	    {
-            	    string_literal1=(Token)match(input,15,FOLLOW_15_in_results51); 
+            	    string_literal1=(Token)match(input,14,FOLLOW_14_in_results51); 
             	    string_literal1_tree = 
             	    (Object)adaptor.create(string_literal1)
             	    ;
@@ -154,7 +153,7 @@ public TreeAdaptor getTreeAdaptor() {
             	    adaptor.addChild(root_0, IDENT2_tree);
 
 
-            	    char_literal3=(Token)match(input,13,FOLLOW_13_in_results55); 
+            	    char_literal3=(Token)match(input,12,FOLLOW_12_in_results55); 
             	    char_literal3_tree = 
             	    (Object)adaptor.create(char_literal3)
             	    ;
@@ -168,7 +167,7 @@ public TreeAdaptor getTreeAdaptor() {
             	    adaptor.addChild(root_0, IDENT4_tree);
 
 
-            	    char_literal5=(Token)match(input,14,FOLLOW_14_in_results59); 
+            	    char_literal5=(Token)match(input,13,FOLLOW_13_in_results59); 
             	    char_literal5_tree = 
             	    (Object)adaptor.create(char_literal5)
             	    ;
@@ -206,21 +205,21 @@ public TreeAdaptor getTreeAdaptor() {
             	    }
 
 
-            	    string_literal8=(Token)match(input,16,FOLLOW_16_in_results68); 
+            	    string_literal8=(Token)match(input,15,FOLLOW_15_in_results68); 
             	    string_literal8_tree = 
             	    (Object)adaptor.create(string_literal8)
             	    ;
             	    adaptor.addChild(root_0, string_literal8_tree);
 
 
-            	    // /Users/jkuo/PealApp-lift/antlr/Z3Output.g:34:2: ( 'unsat' ERROR | 'sat' model )
+            	    // /Users/jkuo/PealApp-lift/antlr/Z3Output.g:34:2: ( 'unsat' Z3ERROR | 'sat' model )
             	    int alt2=2;
             	    int LA2_0 = input.LA(1);
 
-            	    if ( (LA2_0==18) ) {
+            	    if ( (LA2_0==17) ) {
             	        alt2=1;
             	    }
-            	    else if ( (LA2_0==17) ) {
+            	    else if ( (LA2_0==16) ) {
             	        alt2=2;
             	    }
             	    else {
@@ -232,28 +231,28 @@ public TreeAdaptor getTreeAdaptor() {
             	    }
             	    switch (alt2) {
             	        case 1 :
-            	            // /Users/jkuo/PealApp-lift/antlr/Z3Output.g:34:3: 'unsat' ERROR
+            	            // /Users/jkuo/PealApp-lift/antlr/Z3Output.g:34:3: 'unsat' Z3ERROR
             	            {
-            	            string_literal9=(Token)match(input,18,FOLLOW_18_in_results72); 
+            	            string_literal9=(Token)match(input,17,FOLLOW_17_in_results72); 
             	            string_literal9_tree = 
             	            (Object)adaptor.create(string_literal9)
             	            ;
             	            adaptor.addChild(root_0, string_literal9_tree);
 
 
-            	            ERROR10=(Token)match(input,ERROR,FOLLOW_ERROR_in_results74); 
-            	            ERROR10_tree = 
-            	            (Object)adaptor.create(ERROR10)
+            	            Z3ERROR10=(Token)match(input,Z3ERROR,FOLLOW_Z3ERROR_in_results74); 
+            	            Z3ERROR10_tree = 
+            	            (Object)adaptor.create(Z3ERROR10)
             	            ;
-            	            adaptor.addChild(root_0, ERROR10_tree);
+            	            adaptor.addChild(root_0, Z3ERROR10_tree);
 
 
             	            }
             	            break;
             	        case 2 :
-            	            // /Users/jkuo/PealApp-lift/antlr/Z3Output.g:34:18: 'sat' model
+            	            // /Users/jkuo/PealApp-lift/antlr/Z3Output.g:34:20: 'sat' model
             	            {
-            	            string_literal11=(Token)match(input,17,FOLLOW_17_in_results77); 
+            	            string_literal11=(Token)match(input,16,FOLLOW_16_in_results77); 
             	            string_literal11_tree = 
             	            (Object)adaptor.create(string_literal11)
             	            ;
@@ -340,7 +339,7 @@ public TreeAdaptor getTreeAdaptor() {
             root_0 = (Object)adaptor.nil();
 
 
-            string_literal13=(Token)match(input,11,FOLLOW_11_in_model96); 
+            string_literal13=(Token)match(input,10,FOLLOW_10_in_model96); 
             string_literal13_tree = 
             (Object)adaptor.create(string_literal13)
             ;
@@ -354,7 +353,7 @@ public TreeAdaptor getTreeAdaptor() {
                 int alt4=2;
                 int LA4_0 = input.LA(1);
 
-                if ( (LA4_0==10) ) {
+                if ( (LA4_0==9) ) {
                     alt4=1;
                 }
 
@@ -383,7 +382,7 @@ public TreeAdaptor getTreeAdaptor() {
             } while (true);
 
 
-            char_literal15=(Token)match(input,12,FOLLOW_12_in_model103); 
+            char_literal15=(Token)match(input,11,FOLLOW_11_in_model103); 
             char_literal15_tree = 
             (Object)adaptor.create(char_literal15)
             ;
@@ -450,7 +449,7 @@ public TreeAdaptor getTreeAdaptor() {
             root_0 = (Object)adaptor.nil();
 
 
-            string_literal16=(Token)match(input,10,FOLLOW_10_in_define114); 
+            string_literal16=(Token)match(input,9,FOLLOW_9_in_define114); 
             string_literal16_tree = 
             (Object)adaptor.create(string_literal16)
             ;
@@ -464,7 +463,7 @@ public TreeAdaptor getTreeAdaptor() {
             adaptor.addChild(root_0, IDENT17_tree);
 
 
-            string_literal18=(Token)match(input,9,FOLLOW_9_in_define118); 
+            string_literal18=(Token)match(input,8,FOLLOW_8_in_define118); 
             string_literal18_tree = 
             (Object)adaptor.create(string_literal18)
             ;
@@ -485,7 +484,7 @@ public TreeAdaptor getTreeAdaptor() {
             adaptor.addChild(root_0, IDENT20_tree);
 
 
-            char_literal21=(Token)match(input,12,FOLLOW_12_in_define123); 
+            char_literal21=(Token)match(input,11,FOLLOW_11_in_define123); 
             char_literal21_tree = 
             (Object)adaptor.create(char_literal21)
             ;
@@ -520,26 +519,26 @@ public TreeAdaptor getTreeAdaptor() {
 
  
 
-    public static final BitSet FOLLOW_15_in_results51 = new BitSet(new long[]{0x0000000000000020L});
-    public static final BitSet FOLLOW_IDENT_in_results53 = new BitSet(new long[]{0x0000000000002000L});
-    public static final BitSet FOLLOW_13_in_results55 = new BitSet(new long[]{0x0000000000000020L});
-    public static final BitSet FOLLOW_IDENT_in_results57 = new BitSet(new long[]{0x0000000000004000L});
-    public static final BitSet FOLLOW_14_in_results59 = new BitSet(new long[]{0x0000000000000020L});
-    public static final BitSet FOLLOW_IDENT_in_results61 = new BitSet(new long[]{0x0000000000010020L});
-    public static final BitSet FOLLOW_IDENT_in_results64 = new BitSet(new long[]{0x0000000000010000L});
-    public static final BitSet FOLLOW_16_in_results68 = new BitSet(new long[]{0x0000000000060000L});
-    public static final BitSet FOLLOW_18_in_results72 = new BitSet(new long[]{0x0000000000000010L});
-    public static final BitSet FOLLOW_ERROR_in_results74 = new BitSet(new long[]{0x0000000000008002L});
-    public static final BitSet FOLLOW_17_in_results77 = new BitSet(new long[]{0x0000000000000800L});
-    public static final BitSet FOLLOW_model_in_results79 = new BitSet(new long[]{0x0000000000008002L});
-    public static final BitSet FOLLOW_11_in_model96 = new BitSet(new long[]{0x0000000000000400L});
-    public static final BitSet FOLLOW_define_in_model99 = new BitSet(new long[]{0x0000000000001400L});
-    public static final BitSet FOLLOW_12_in_model103 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_10_in_define114 = new BitSet(new long[]{0x0000000000000020L});
-    public static final BitSet FOLLOW_IDENT_in_define116 = new BitSet(new long[]{0x0000000000000200L});
-    public static final BitSet FOLLOW_9_in_define118 = new BitSet(new long[]{0x0000000000000020L});
-    public static final BitSet FOLLOW_IDENT_in_define120 = new BitSet(new long[]{0x0000000000000020L});
-    public static final BitSet FOLLOW_IDENT_in_define122 = new BitSet(new long[]{0x0000000000001000L});
-    public static final BitSet FOLLOW_12_in_define123 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_14_in_results51 = new BitSet(new long[]{0x0000000000000010L});
+    public static final BitSet FOLLOW_IDENT_in_results53 = new BitSet(new long[]{0x0000000000001000L});
+    public static final BitSet FOLLOW_12_in_results55 = new BitSet(new long[]{0x0000000000000010L});
+    public static final BitSet FOLLOW_IDENT_in_results57 = new BitSet(new long[]{0x0000000000002000L});
+    public static final BitSet FOLLOW_13_in_results59 = new BitSet(new long[]{0x0000000000000010L});
+    public static final BitSet FOLLOW_IDENT_in_results61 = new BitSet(new long[]{0x0000000000008010L});
+    public static final BitSet FOLLOW_IDENT_in_results64 = new BitSet(new long[]{0x0000000000008000L});
+    public static final BitSet FOLLOW_15_in_results68 = new BitSet(new long[]{0x0000000000030000L});
+    public static final BitSet FOLLOW_17_in_results72 = new BitSet(new long[]{0x0000000000000080L});
+    public static final BitSet FOLLOW_Z3ERROR_in_results74 = new BitSet(new long[]{0x0000000000004002L});
+    public static final BitSet FOLLOW_16_in_results77 = new BitSet(new long[]{0x0000000000000400L});
+    public static final BitSet FOLLOW_model_in_results79 = new BitSet(new long[]{0x0000000000004002L});
+    public static final BitSet FOLLOW_10_in_model96 = new BitSet(new long[]{0x0000000000000200L});
+    public static final BitSet FOLLOW_define_in_model99 = new BitSet(new long[]{0x0000000000000A00L});
+    public static final BitSet FOLLOW_11_in_model103 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_9_in_define114 = new BitSet(new long[]{0x0000000000000010L});
+    public static final BitSet FOLLOW_IDENT_in_define116 = new BitSet(new long[]{0x0000000000000100L});
+    public static final BitSet FOLLOW_8_in_define118 = new BitSet(new long[]{0x0000000000000010L});
+    public static final BitSet FOLLOW_IDENT_in_define120 = new BitSet(new long[]{0x0000000000000010L});
+    public static final BitSet FOLLOW_IDENT_in_define122 = new BitSet(new long[]{0x0000000000000800L});
+    public static final BitSet FOLLOW_11_in_define123 = new BitSet(new long[]{0x0000000000000002L});
 
 }
