@@ -4,6 +4,6 @@ trait AnalysisGenerator {
 
   def z3SMTInput : String
 
-  def analysisType: String
+  def analysisName: String
 
 }

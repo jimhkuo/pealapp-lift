@@ -10,5 +10,5 @@ class AlwaysFalse(name: String, cond: String) extends AnalysisGenerator {
      "(get-model)\n" +
      "(pop)\n"
 
-  def analysisType: String = "always_false?"
+  def analysisName: String = name + " = always_false? " + cond
 }

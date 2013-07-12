@@ -10,6 +10,6 @@ class Different(name: String, lhs: String, rhs: String) extends AnalysisGenerato
     "(get-model)\n" +
     "(pop)\n"
 
-  def analysisType: String = "different?"
+  def analysisName: String = name + " = different? " + lhs + " " + rhs
 
 }
