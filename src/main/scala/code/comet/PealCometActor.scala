@@ -23,12 +23,13 @@ import scala.Some
 import code.comet.util.Result
 import code.comet.util.SaveFile
 import peal.synthesis.analysis.AnalysisGenerator
+import scala.collection.mutable.ListBuffer
 
 class PealCometActor extends CometActor with Loggable {
-  val resultBuilder = new StringBuilder
+  val resultList = ListBuffer[String]()
   val processLogger = ProcessLogger(
-    (o: String) => resultBuilder.append(o + "\n"),
-    (e: String) => resultBuilder.append(e + "\n")
+    (o: String) => resultList.append(o + "\n"),
+    (e: String) => resultList.append(e + "\n")
   )
   val defaultInput = "b1 = min ((q1 0.2) (q2 0.4) (q3 0.9)) default 1\nb2 = + ((q4 0.1) (q5 0.2) (q6 0.2)) default 0\npSet1 = max(b1, b2)\npSet2 = min(b1, b2)\n" +
     "cond1 = pSet1 <= 0.5\n" +
@@ -268,11 +269,10 @@ class PealCometActor extends CometActor with Loggable {
     val tmp = File.createTempFile("z3file", "")
     (Seq("echo", z3SMTInput) #> tmp).!!
     println("tmpfile: " + tmp.getAbsolutePath)
-    resultBuilder.clear()
-    val returnCode = Process(Seq("bash", "-c", "z3 -nw -smt2 " + tmp.getAbsolutePath), None, "PATH" -> Props.get("z3.location").get) ! processLogger
-    println(resultBuilder.toString())
+    resultList.clear()
+    Process(Seq("bash", "-c", "z3 -nw -smt2 " + tmp.getAbsolutePath), None, "PATH" -> Props.get("z3.location").get) ! processLogger
     tmp.delete()
-    this ! Result(<pre>{z3SMTInput}</pre> <pre>Z3 Output:<br/>{resultBuilder.toString()}</pre>)
+    this ! Result(<pre>{z3SMTInput}</pre> <pre>Z3 Output:<br/>{resultList.mkString("")}</pre>)
   }
 
   private def dealWithIt(e: Throwable) = {
