@@ -273,6 +273,7 @@ class PealCometActor extends CometActor with Loggable {
     Process(Seq("bash", "-c", "z3 -nw -smt2 " + tmp.getAbsolutePath), None, "PATH" -> Props.get("z3.location").get) ! processLogger
     //TODO extract results from resultList using Z3Output.g
     tmp.delete()
+    //TODO need to interleave the results and models display here
     this ! Result(<pre>{z3SMTInput}</pre> <pre>Z3 Output:<br/>{resultList.mkString("")}</pre>)
   }
 
