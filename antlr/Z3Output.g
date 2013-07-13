@@ -29,7 +29,8 @@ public void reportError(RecognitionException e) {
 package peal.antlr;
 }
 
-result	: (
+//it builds a map of results
+results	: (
 	'Result of analysis [' IDENT '=' IDENT '?' IDENT (IDENT)? ']:'
 	('unsat' Z3ERROR 
 	|'sat' model)
