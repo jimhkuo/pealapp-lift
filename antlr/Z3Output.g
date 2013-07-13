@@ -36,10 +36,15 @@ result	: (
 	)+
 	;
 	
-model 	: '(model' (define)+ ')'
+model 
+//@init {m = new Model();}
+	: '(model' (define)+ ')'
+//	: '(model' (define[$m])+ ')'
 	;
 
-define 	: '(define-fun' IDENT '()' IDENT IDENT')'	
+define 	
+	: '(define-fun' IDENT '()' IDENT IDENT')'	
+	//: '(define-fun' IDENT '()' IDENT IDENT')' {//add defs to model}	
 	;	
 	
 
