@@ -39,6 +39,7 @@ program
 	
 	(id1=IDENT '=' pol {pols.put($id1.text, $pol.p);})*
 	(id2=IDENT '=' pSet { pSets.put($id2.text, $pSet.t);})+
+//	(id2=IDENT '=' pSet[$id2.text] { pSets.put($id2.text, $pSet.t);})+
 	(
 	id0=IDENT '=' id2=IDENT '<=' num=NUMBER {Condition cond = new LessThanThCondition(pSets.get($id2.text), Double.valueOf($num.text)); conds.put($id0.text, cond);}
     	|

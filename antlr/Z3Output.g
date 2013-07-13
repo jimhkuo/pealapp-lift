@@ -31,7 +31,8 @@ package peal.antlr;
 
 result	: (
 	'Result of analysis [' IDENT '=' IDENT '?' IDENT (IDENT)? ']:'
-	('unsat' Z3ERROR |'sat' model)
+	('unsat' Z3ERROR 
+	|'sat' model)
 	)+
 	;
 	
