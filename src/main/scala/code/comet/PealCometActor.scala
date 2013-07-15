@@ -306,10 +306,10 @@ class PealCometActor extends CometActor with Loggable {
         analyses(a) match {
           case s : AlwaysTrue =>
             if (results(a).satResult == Unsat) {
-              out.append(s.cond + "is always true")
+              out.append(s.cond + " is always true")
             }
             else {
-              out.append(s.cond + "is NOT always true")
+              out.append(s.cond + " is NOT always true")
             }
           case s: AlwaysFalse =>
             if (results(a).satResult == Unsat) {
@@ -327,17 +327,17 @@ class PealCometActor extends CometActor with Loggable {
             }
           case s: Different =>
             if (results(a).satResult == Unsat) {
-              out.append(s.lhs + " and " + s.rhs + "are NOT different")
+              out.append(s.lhs + " and " + s.rhs + " are NOT different")
             }
             else {
-              out.append(s.lhs + " and " + s.rhs + "are different")
+              out.append(s.lhs + " and " + s.rhs + " are different")
             }
           case s: Equivalent =>
             if (results(a).satResult == Unsat) {
-              out.append(s.lhs + " and " + s.rhs + "are equivalent")
+              out.append(s.lhs + " and " + s.rhs + " are equivalent")
             }
             else {
-              out.append(s.lhs + " and " + s.rhs + "are NOT equivalent")
+              out.append(s.lhs + " and " + s.rhs + " are NOT equivalent")
             }
         }
     }
