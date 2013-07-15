@@ -310,6 +310,7 @@ class PealCometActor extends CometActor with Loggable {
             }
             else {
               out.append(s.cond + " is NOT always true")
+              out.append("For example, when\n" + getReasons(results(a)))
             }
           case s: AlwaysFalse =>
             if (results(a).satResult == Unsat) {
@@ -317,6 +318,7 @@ class PealCometActor extends CometActor with Loggable {
             }
             else {
               out.append(s.cond + " is NOT always false")
+              out.append("For example, when\n" + getReasons(results(a)))
             }
           case s: Satisfiable =>
             if (results(a).satResult == Unsat) {
@@ -324,6 +326,7 @@ class PealCometActor extends CometActor with Loggable {
             }
             else {
               out.append(s.cond + " is satisfiable")
+              out.append("For example, when\n" + getReasons(results(a)))
             }
           case s: Different =>
             if (results(a).satResult == Unsat) {
@@ -331,6 +334,7 @@ class PealCometActor extends CometActor with Loggable {
             }
             else {
               out.append(s.lhs + " and " + s.rhs + " are different")
+              out.append("For example, when\n" + getReasons(results(a)))
             }
           case s: Equivalent =>
             if (results(a).satResult == Unsat) {
@@ -338,8 +342,17 @@ class PealCometActor extends CometActor with Loggable {
             }
             else {
               out.append(s.lhs + " and " + s.rhs + " are NOT equivalent")
+              out.append("For example, when\n" + getReasons(results(a)))
             }
         }
+    }
+
+    out.mkString("\n")
+  }
+
+  private def getReasons(model: Model) ={
+    val out = for (define <- model.defines) yield {
+      define.name + " is " + define.value
     }
 
     out.mkString("\n")
