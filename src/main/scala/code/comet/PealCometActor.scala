@@ -292,62 +292,61 @@ class PealCometActor extends CometActor with Loggable {
 
     val analysedResults = performAnalysis(analyses, results.toMap, constsMap)
 
-    this ! Result(<pre>{z3SMTInput}</pre> <pre>Z3 Output:<br/>{resultList.mkString("")}<br/>{analysedResults}</pre>)
+    this ! Result(<pre>{z3SMTInput}</pre> <pre>Analysed results:<br/>{analysedResults}<br/>Z3 Raw Output:<br/>{resultList.mkString("")}</pre>)
   }
 
 
-  private def performAnalysis(analyses: Map[String, AnalysisGenerator], results: Map[String, Model], constsMap: Map[String, Z3AST]) : Map[String, String] = {
-    var out = Map[String, String]()
+  private def performAnalysis(analyses: Map[String, AnalysisGenerator], results: Map[String, Model], constsMap: Map[String, Z3AST]) : String = {
+    val out = ListBuffer[String]()
 
     analyses.keys.toSeq.sortWith(_ < _).foreach{
       a =>
-        val key = "Result of analysis [" + analyses(a).analysisName + "]"
-        val value = analyses(a) match {
+        out.append("\nResult of analysis: " + analyses(a).analysisName)
+        analyses(a) match {
           case s : AlwaysTrue =>
             if (results(a).satResult == Unsat) {
-              s.cond + " is always true"
+              out.append(s.cond + " is always true")
             }
             else {
-              s.cond + " is NOT always true\n" +
-              "For example, when\n" + getReasons(results(a), constsMap)
+              out.append(s.cond + " is NOT always true")
+              out.append("For example, when\n" + getReasons(results(a), constsMap))
             }
           case s: AlwaysFalse =>
             if (results(a).satResult == Unsat) {
-              s.cond + " is always false"
+              out.append(s.cond + " is always false")
             }
             else {
-              s.cond + " is NOT always false\n" +
-              "For example, when\n" + getReasons(results(a), constsMap)
+              out.append(s.cond + " is NOT always false")
+              out.append("For example, when\n" + getReasons(results(a), constsMap))
             }
           case s: Satisfiable =>
             if (results(a).satResult == Unsat) {
-              s.cond + " is NOT satisfiable"
+              out.append(s.cond + " is NOT satisfiable")
             }
             else {
-              s.cond + " is satisfiable\n" +
-              "For example, when\n" + getReasons(results(a), constsMap)
+              out.append(s.cond + " is satisfiable")
+              out.append("For example, when\n" + getReasons(results(a), constsMap))
             }
           case s: Different =>
             if (results(a).satResult == Unsat) {
-              s.lhs + " and " + s.rhs + " are NOT different"
+              out.append(s.lhs + " and " + s.rhs + " are NOT different")
             }
             else {
-              s.lhs + " and " + s.rhs + " are different\n" +
-              "For example, when\n" + getReasons(results(a), constsMap)
+              out.append(s.lhs + " and " + s.rhs + " are different")
+              out.append("For example, when\n" + getReasons(results(a), constsMap))
             }
           case s: Equivalent =>
             if (results(a).satResult == Unsat) {
-              s.lhs + " and " + s.rhs + " are equivalent"
+              out.append(s.lhs + " and " + s.rhs + " are equivalent")
             }
             else {
-              s.lhs + " and " + s.rhs + " are NOT equivalent\n" +
-              "For example, when\n" + getReasons(results(a), constsMap)
+              out.append(s.lhs + " and " + s.rhs + " are NOT equivalent")
+              out.append("For example, when\n" + getReasons(results(a), constsMap))
             }
         }
-       out += key -> value
     }
 
-    out
+    out.mkString("\n")
   }
 
   private def getReasons(model: Model, constsMap: Map[String, Z3AST]) = {
