@@ -1,4 +1,4 @@
-// $ANTLR 3.4 /Users/jkuo/PealApp-lift/antlr/Z3Output.g 2013-07-13 08:58:53
+// $ANTLR 3.4 /Users/jkuo/PealApp-lift/antlr/Z3Output.g 2013-07-15 13:11:13
 
 package peal.antlr;
 import java.util.*;
@@ -82,7 +82,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "results"
-    // /Users/jkuo/PealApp-lift/antlr/Z3Output.g:33:1: results : ( 'Result of analysis [' IDENT '=' IDENT '?' IDENT ( IDENT )? ']:' ( 'unsat' Z3ERROR | 'sat' model ) )+ ;
+    // /Users/jkuo/PealApp-lift/antlr/Z3Output.g:33:1: results : ( 'Result of analysis [' IDENT '=' IDENT '?' IDENT ( IDENT )? ']:' ( model ) )+ ;
     public final Z3OutputParser.results_return results() throws RecognitionException {
         Z3OutputParser.results_return retval = new Z3OutputParser.results_return();
         retval.start = input.LT(1);
@@ -98,10 +98,7 @@ public TreeAdaptor getTreeAdaptor() {
         Token IDENT6=null;
         Token IDENT7=null;
         Token string_literal8=null;
-        Token string_literal9=null;
-        Token Z3ERROR10=null;
-        Token string_literal11=null;
-        Z3OutputParser.model_return model12 =null;
+        Z3OutputParser.model_return model9 =null;
 
 
         Object string_literal1_tree=null;
@@ -112,32 +109,29 @@ public TreeAdaptor getTreeAdaptor() {
         Object IDENT6_tree=null;
         Object IDENT7_tree=null;
         Object string_literal8_tree=null;
-        Object string_literal9_tree=null;
-        Object Z3ERROR10_tree=null;
-        Object string_literal11_tree=null;
 
         try {
-            // /Users/jkuo/PealApp-lift/antlr/Z3Output.g:33:9: ( ( 'Result of analysis [' IDENT '=' IDENT '?' IDENT ( IDENT )? ']:' ( 'unsat' Z3ERROR | 'sat' model ) )+ )
-            // /Users/jkuo/PealApp-lift/antlr/Z3Output.g:33:11: ( 'Result of analysis [' IDENT '=' IDENT '?' IDENT ( IDENT )? ']:' ( 'unsat' Z3ERROR | 'sat' model ) )+
+            // /Users/jkuo/PealApp-lift/antlr/Z3Output.g:33:9: ( ( 'Result of analysis [' IDENT '=' IDENT '?' IDENT ( IDENT )? ']:' ( model ) )+ )
+            // /Users/jkuo/PealApp-lift/antlr/Z3Output.g:33:11: ( 'Result of analysis [' IDENT '=' IDENT '?' IDENT ( IDENT )? ']:' ( model ) )+
             {
             root_0 = (Object)adaptor.nil();
 
 
-            // /Users/jkuo/PealApp-lift/antlr/Z3Output.g:33:11: ( 'Result of analysis [' IDENT '=' IDENT '?' IDENT ( IDENT )? ']:' ( 'unsat' Z3ERROR | 'sat' model ) )+
-            int cnt3=0;
-            loop3:
+            // /Users/jkuo/PealApp-lift/antlr/Z3Output.g:33:11: ( 'Result of analysis [' IDENT '=' IDENT '?' IDENT ( IDENT )? ']:' ( model ) )+
+            int cnt2=0;
+            loop2:
             do {
-                int alt3=2;
-                int LA3_0 = input.LA(1);
+                int alt2=2;
+                int LA2_0 = input.LA(1);
 
-                if ( (LA3_0==14) ) {
-                    alt3=1;
+                if ( (LA2_0==14) ) {
+                    alt2=1;
                 }
 
 
-                switch (alt3) {
+                switch (alt2) {
             	case 1 :
-            	    // /Users/jkuo/PealApp-lift/antlr/Z3Output.g:34:2: 'Result of analysis [' IDENT '=' IDENT '?' IDENT ( IDENT )? ']:' ( 'unsat' Z3ERROR | 'sat' model )
+            	    // /Users/jkuo/PealApp-lift/antlr/Z3Output.g:34:2: 'Result of analysis [' IDENT '=' IDENT '?' IDENT ( IDENT )? ']:' ( model )
             	    {
             	    string_literal1=(Token)match(input,14,FOLLOW_14_in_results52); 
             	    string_literal1_tree = 
@@ -212,62 +206,15 @@ public TreeAdaptor getTreeAdaptor() {
             	    adaptor.addChild(root_0, string_literal8_tree);
 
 
-            	    // /Users/jkuo/PealApp-lift/antlr/Z3Output.g:35:2: ( 'unsat' Z3ERROR | 'sat' model )
-            	    int alt2=2;
-            	    int LA2_0 = input.LA(1);
+            	    // /Users/jkuo/PealApp-lift/antlr/Z3Output.g:35:2: ( model )
+            	    // /Users/jkuo/PealApp-lift/antlr/Z3Output.g:35:3: model
+            	    {
+            	    pushFollow(FOLLOW_model_in_results73);
+            	    model9=model();
 
-            	    if ( (LA2_0==17) ) {
-            	        alt2=1;
-            	    }
-            	    else if ( (LA2_0==16) ) {
-            	        alt2=2;
-            	    }
-            	    else {
-            	        NoViableAltException nvae =
-            	            new NoViableAltException("", 2, 0, input);
+            	    state._fsp--;
 
-            	        throw nvae;
-
-            	    }
-            	    switch (alt2) {
-            	        case 1 :
-            	            // /Users/jkuo/PealApp-lift/antlr/Z3Output.g:35:3: 'unsat' Z3ERROR
-            	            {
-            	            string_literal9=(Token)match(input,17,FOLLOW_17_in_results73); 
-            	            string_literal9_tree = 
-            	            (Object)adaptor.create(string_literal9)
-            	            ;
-            	            adaptor.addChild(root_0, string_literal9_tree);
-
-
-            	            Z3ERROR10=(Token)match(input,Z3ERROR,FOLLOW_Z3ERROR_in_results75); 
-            	            Z3ERROR10_tree = 
-            	            (Object)adaptor.create(Z3ERROR10)
-            	            ;
-            	            adaptor.addChild(root_0, Z3ERROR10_tree);
-
-
-            	            }
-            	            break;
-            	        case 2 :
-            	            // /Users/jkuo/PealApp-lift/antlr/Z3Output.g:36:3: 'sat' model
-            	            {
-            	            string_literal11=(Token)match(input,16,FOLLOW_16_in_results80); 
-            	            string_literal11_tree = 
-            	            (Object)adaptor.create(string_literal11)
-            	            ;
-            	            adaptor.addChild(root_0, string_literal11_tree);
-
-
-            	            pushFollow(FOLLOW_model_in_results82);
-            	            model12=model();
-
-            	            state._fsp--;
-
-            	            adaptor.addChild(root_0, model12.getTree());
-
-            	            }
-            	            break;
+            	    adaptor.addChild(root_0, model9.getTree());
 
             	    }
 
@@ -276,12 +223,12 @@ public TreeAdaptor getTreeAdaptor() {
             	    break;
 
             	default :
-            	    if ( cnt3 >= 1 ) break loop3;
+            	    if ( cnt2 >= 1 ) break loop2;
                         EarlyExitException eee =
-                            new EarlyExitException(3, input);
+                            new EarlyExitException(2, input);
                         throw eee;
                 }
-                cnt3++;
+                cnt2++;
             } while (true);
 
 
@@ -316,7 +263,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "model"
-    // /Users/jkuo/PealApp-lift/antlr/Z3Output.g:40:1: model : '(model' ( define )+ ')' ;
+    // /Users/jkuo/PealApp-lift/antlr/Z3Output.g:39:1: model : ( 'sat' '(model' ( define )+ ')' | 'unsat' Z3ERROR );
     public final Z3OutputParser.model_return model() throws RecognitionException {
         Z3OutputParser.model_return retval = new Z3OutputParser.model_return();
         retval.start = input.LT(1);
@@ -324,73 +271,128 @@ public TreeAdaptor getTreeAdaptor() {
 
         Object root_0 = null;
 
-        Token string_literal13=null;
-        Token char_literal15=null;
-        Z3OutputParser.define_return define14 =null;
+        Token string_literal10=null;
+        Token string_literal11=null;
+        Token char_literal13=null;
+        Token string_literal14=null;
+        Token Z3ERROR15=null;
+        Z3OutputParser.define_return define12 =null;
 
 
-        Object string_literal13_tree=null;
-        Object char_literal15_tree=null;
+        Object string_literal10_tree=null;
+        Object string_literal11_tree=null;
+        Object char_literal13_tree=null;
+        Object string_literal14_tree=null;
+        Object Z3ERROR15_tree=null;
 
         try {
-            // /Users/jkuo/PealApp-lift/antlr/Z3Output.g:42:2: ( '(model' ( define )+ ')' )
-            // /Users/jkuo/PealApp-lift/antlr/Z3Output.g:42:4: '(model' ( define )+ ')'
-            {
-            root_0 = (Object)adaptor.nil();
+            // /Users/jkuo/PealApp-lift/antlr/Z3Output.g:41:2: ( 'sat' '(model' ( define )+ ')' | 'unsat' Z3ERROR )
+            int alt4=2;
+            int LA4_0 = input.LA(1);
 
+            if ( (LA4_0==16) ) {
+                alt4=1;
+            }
+            else if ( (LA4_0==17) ) {
+                alt4=2;
+            }
+            else {
+                NoViableAltException nvae =
+                    new NoViableAltException("", 4, 0, input);
 
-            string_literal13=(Token)match(input,10,FOLLOW_10_in_model101); 
-            string_literal13_tree = 
-            (Object)adaptor.create(string_literal13)
-            ;
-            adaptor.addChild(root_0, string_literal13_tree);
-
-
-            // /Users/jkuo/PealApp-lift/antlr/Z3Output.g:42:13: ( define )+
-            int cnt4=0;
-            loop4:
-            do {
-                int alt4=2;
-                int LA4_0 = input.LA(1);
-
-                if ( (LA4_0==9) ) {
-                    alt4=1;
-                }
-
-
-                switch (alt4) {
-            	case 1 :
-            	    // /Users/jkuo/PealApp-lift/antlr/Z3Output.g:42:14: define
-            	    {
-            	    pushFollow(FOLLOW_define_in_model104);
-            	    define14=define();
-
-            	    state._fsp--;
-
-            	    adaptor.addChild(root_0, define14.getTree());
-
-            	    }
-            	    break;
-
-            	default :
-            	    if ( cnt4 >= 1 ) break loop4;
-                        EarlyExitException eee =
-                            new EarlyExitException(4, input);
-                        throw eee;
-                }
-                cnt4++;
-            } while (true);
-
-
-            char_literal15=(Token)match(input,11,FOLLOW_11_in_model108); 
-            char_literal15_tree = 
-            (Object)adaptor.create(char_literal15)
-            ;
-            adaptor.addChild(root_0, char_literal15_tree);
-
+                throw nvae;
 
             }
+            switch (alt4) {
+                case 1 :
+                    // /Users/jkuo/PealApp-lift/antlr/Z3Output.g:41:4: 'sat' '(model' ( define )+ ')'
+                    {
+                    root_0 = (Object)adaptor.nil();
 
+
+                    string_literal10=(Token)match(input,16,FOLLOW_16_in_model92); 
+                    string_literal10_tree = 
+                    (Object)adaptor.create(string_literal10)
+                    ;
+                    adaptor.addChild(root_0, string_literal10_tree);
+
+
+                    string_literal11=(Token)match(input,10,FOLLOW_10_in_model94); 
+                    string_literal11_tree = 
+                    (Object)adaptor.create(string_literal11)
+                    ;
+                    adaptor.addChild(root_0, string_literal11_tree);
+
+
+                    // /Users/jkuo/PealApp-lift/antlr/Z3Output.g:41:19: ( define )+
+                    int cnt3=0;
+                    loop3:
+                    do {
+                        int alt3=2;
+                        int LA3_0 = input.LA(1);
+
+                        if ( (LA3_0==9) ) {
+                            alt3=1;
+                        }
+
+
+                        switch (alt3) {
+                    	case 1 :
+                    	    // /Users/jkuo/PealApp-lift/antlr/Z3Output.g:41:20: define
+                    	    {
+                    	    pushFollow(FOLLOW_define_in_model97);
+                    	    define12=define();
+
+                    	    state._fsp--;
+
+                    	    adaptor.addChild(root_0, define12.getTree());
+
+                    	    }
+                    	    break;
+
+                    	default :
+                    	    if ( cnt3 >= 1 ) break loop3;
+                                EarlyExitException eee =
+                                    new EarlyExitException(3, input);
+                                throw eee;
+                        }
+                        cnt3++;
+                    } while (true);
+
+
+                    char_literal13=(Token)match(input,11,FOLLOW_11_in_model101); 
+                    char_literal13_tree = 
+                    (Object)adaptor.create(char_literal13)
+                    ;
+                    adaptor.addChild(root_0, char_literal13_tree);
+
+
+                    }
+                    break;
+                case 2 :
+                    // /Users/jkuo/PealApp-lift/antlr/Z3Output.g:42:4: 'unsat' Z3ERROR
+                    {
+                    root_0 = (Object)adaptor.nil();
+
+
+                    string_literal14=(Token)match(input,17,FOLLOW_17_in_model106); 
+                    string_literal14_tree = 
+                    (Object)adaptor.create(string_literal14)
+                    ;
+                    adaptor.addChild(root_0, string_literal14_tree);
+
+
+                    Z3ERROR15=(Token)match(input,Z3ERROR,FOLLOW_Z3ERROR_in_model108); 
+                    Z3ERROR15_tree = 
+                    (Object)adaptor.create(Z3ERROR15)
+                    ;
+                    adaptor.addChild(root_0, Z3ERROR15_tree);
+
+
+                    }
+                    break;
+
+            }
             retval.stop = input.LT(-1);
 
 
@@ -449,42 +451,42 @@ public TreeAdaptor getTreeAdaptor() {
             root_0 = (Object)adaptor.nil();
 
 
-            string_literal16=(Token)match(input,9,FOLLOW_9_in_define122); 
+            string_literal16=(Token)match(input,9,FOLLOW_9_in_define123); 
             string_literal16_tree = 
             (Object)adaptor.create(string_literal16)
             ;
             adaptor.addChild(root_0, string_literal16_tree);
 
 
-            IDENT17=(Token)match(input,IDENT,FOLLOW_IDENT_in_define124); 
+            IDENT17=(Token)match(input,IDENT,FOLLOW_IDENT_in_define125); 
             IDENT17_tree = 
             (Object)adaptor.create(IDENT17)
             ;
             adaptor.addChild(root_0, IDENT17_tree);
 
 
-            string_literal18=(Token)match(input,8,FOLLOW_8_in_define126); 
+            string_literal18=(Token)match(input,8,FOLLOW_8_in_define127); 
             string_literal18_tree = 
             (Object)adaptor.create(string_literal18)
             ;
             adaptor.addChild(root_0, string_literal18_tree);
 
 
-            IDENT19=(Token)match(input,IDENT,FOLLOW_IDENT_in_define128); 
+            IDENT19=(Token)match(input,IDENT,FOLLOW_IDENT_in_define129); 
             IDENT19_tree = 
             (Object)adaptor.create(IDENT19)
             ;
             adaptor.addChild(root_0, IDENT19_tree);
 
 
-            IDENT20=(Token)match(input,IDENT,FOLLOW_IDENT_in_define130); 
+            IDENT20=(Token)match(input,IDENT,FOLLOW_IDENT_in_define131); 
             IDENT20_tree = 
             (Object)adaptor.create(IDENT20)
             ;
             adaptor.addChild(root_0, IDENT20_tree);
 
 
-            char_literal21=(Token)match(input,11,FOLLOW_11_in_define131); 
+            char_literal21=(Token)match(input,11,FOLLOW_11_in_define132); 
             char_literal21_tree = 
             (Object)adaptor.create(char_literal21)
             ;
@@ -527,18 +529,18 @@ public TreeAdaptor getTreeAdaptor() {
     public static final BitSet FOLLOW_IDENT_in_results62 = new BitSet(new long[]{0x0000000000008010L});
     public static final BitSet FOLLOW_IDENT_in_results65 = new BitSet(new long[]{0x0000000000008000L});
     public static final BitSet FOLLOW_15_in_results69 = new BitSet(new long[]{0x0000000000030000L});
-    public static final BitSet FOLLOW_17_in_results73 = new BitSet(new long[]{0x0000000000000080L});
-    public static final BitSet FOLLOW_Z3ERROR_in_results75 = new BitSet(new long[]{0x0000000000004002L});
-    public static final BitSet FOLLOW_16_in_results80 = new BitSet(new long[]{0x0000000000000400L});
-    public static final BitSet FOLLOW_model_in_results82 = new BitSet(new long[]{0x0000000000004002L});
-    public static final BitSet FOLLOW_10_in_model101 = new BitSet(new long[]{0x0000000000000200L});
-    public static final BitSet FOLLOW_define_in_model104 = new BitSet(new long[]{0x0000000000000A00L});
-    public static final BitSet FOLLOW_11_in_model108 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_9_in_define122 = new BitSet(new long[]{0x0000000000000010L});
-    public static final BitSet FOLLOW_IDENT_in_define124 = new BitSet(new long[]{0x0000000000000100L});
-    public static final BitSet FOLLOW_8_in_define126 = new BitSet(new long[]{0x0000000000000010L});
-    public static final BitSet FOLLOW_IDENT_in_define128 = new BitSet(new long[]{0x0000000000000010L});
-    public static final BitSet FOLLOW_IDENT_in_define130 = new BitSet(new long[]{0x0000000000000800L});
-    public static final BitSet FOLLOW_11_in_define131 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_model_in_results73 = new BitSet(new long[]{0x0000000000004002L});
+    public static final BitSet FOLLOW_16_in_model92 = new BitSet(new long[]{0x0000000000000400L});
+    public static final BitSet FOLLOW_10_in_model94 = new BitSet(new long[]{0x0000000000000200L});
+    public static final BitSet FOLLOW_define_in_model97 = new BitSet(new long[]{0x0000000000000A00L});
+    public static final BitSet FOLLOW_11_in_model101 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_17_in_model106 = new BitSet(new long[]{0x0000000000000080L});
+    public static final BitSet FOLLOW_Z3ERROR_in_model108 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_9_in_define123 = new BitSet(new long[]{0x0000000000000010L});
+    public static final BitSet FOLLOW_IDENT_in_define125 = new BitSet(new long[]{0x0000000000000100L});
+    public static final BitSet FOLLOW_8_in_define127 = new BitSet(new long[]{0x0000000000000010L});
+    public static final BitSet FOLLOW_IDENT_in_define129 = new BitSet(new long[]{0x0000000000000010L});
+    public static final BitSet FOLLOW_IDENT_in_define131 = new BitSet(new long[]{0x0000000000000800L});
+    public static final BitSet FOLLOW_11_in_define132 = new BitSet(new long[]{0x0000000000000002L});
 
 }

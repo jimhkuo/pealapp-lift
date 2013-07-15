@@ -32,14 +32,14 @@ package peal.antlr;
 //it builds a map of results
 results	: (
 	'Result of analysis [' IDENT '=' IDENT '?' IDENT (IDENT)? ']:'
-	('unsat' Z3ERROR 
-	|'sat' model)
+	(model)
 	)+
 	;
 	
 model 
 //@init {m = new Model();}
-	: '(model' (define)+ ')'
+	: 'sat' '(model' (define)+ ')'
+	| 'unsat' Z3ERROR 
 //	: '(model' (define[$m])+ ')'
 	;
 
