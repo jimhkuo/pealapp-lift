@@ -2,13 +2,12 @@ grammar Z3Output;
 
 options {
 language = Java;
-output=AST;
 }
 
 @header {
 package peal.antlr;
 import java.util.*;
-import peal.domain.*;
+import peal.domain.z3.*;
 import peal.*;
 import org.antlr.runtime.BitSet;
 import peal.synthesis.*;
@@ -17,6 +16,7 @@ import peal.domain.operator.*;
 }
 
 @members {
+
 
 @Override
 public void reportError(RecognitionException e) {
@@ -30,16 +30,17 @@ package peal.antlr;
 }
 
 //it builds a map of results
-results	: (
-	'Result of analysis [' IDENT '=' IDENT '?' IDENT (IDENT)? ']:'
-	(model)
+results returns	[Map<String, Model> r]
+@init {r = new HashMap<String, Model>();}
+	: (
+	'Result of analysis [' id0=IDENT '=' id1=IDENT '?' id2=IDENT (IDENT)? ']:'
+	(m=model) { r.put($id0.text, $m.m);}
 	)+
 	;
 	
-model 
-//@init {m = new Model();}
-	: 'sat' '(model' (define)+ ')'
-	| 'unsat' Z3ERROR 
+model returns [Model m]
+	: 'sat' '(model' (define)+ ')' { $m = new Model(Sat$.MODULE$, new ArrayList<Define>());}
+	| 'unsat' Z3ERROR { $m = new Model(Unsat$.MODULE$, new ArrayList<Define>());}
 //	: '(model' (define[$m])+ ')'
 	;
 

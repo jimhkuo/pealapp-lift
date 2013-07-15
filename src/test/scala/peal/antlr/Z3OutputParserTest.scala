@@ -6,6 +6,7 @@ import org.scalatest.junit.ShouldMatchersForJUnit
 import scala.collection.JavaConversions._
 import z3.scala.{Z3AST, Z3Config, Z3Context}
 import peal.util.Z3ModelMatcher
+import peal.domain.z3.{Unsat, Model}
 
 
 class Z3OutputParserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
@@ -31,7 +32,7 @@ class Z3OutputParserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
 
     val parser = getParser(input)
 
-    parser.results()
-
+    val results = parser.results()
+    results should contain key ("name7")
   }
 }
