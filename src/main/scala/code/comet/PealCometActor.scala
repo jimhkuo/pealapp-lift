@@ -292,7 +292,7 @@ class PealCometActor extends CometActor with Loggable {
 
     val analysedResults = performAnalysis(analyses, results.toMap, constsMap)
 
-    this ! Result(<pre>{z3SMTInput}</pre> <pre>Analysed results:<br/>{analysedResults}<br/>Z3 Raw Output:<br/>{resultList.mkString("")}</pre>)
+    this ! Result(<pre>{z3SMTInput}</pre> <pre>Analysed results:<br/>{analysedResults}<br/><br/>Z3 Raw Output:<br/>{resultList.mkString("")}</pre>)
   }
 
 
@@ -301,7 +301,7 @@ class PealCometActor extends CometActor with Loggable {
 
     analyses.keys.toSeq.sortWith(_ < _).foreach{
       a =>
-        out.append("\nResult of analysis: " + analyses(a).analysisName)
+        out.append("\nResult of analysis [" + analyses(a).analysisName + "]")
         analyses(a) match {
           case s : AlwaysTrue =>
             if (results(a).satResult == Unsat) {
