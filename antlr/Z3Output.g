@@ -39,13 +39,14 @@ results returns	[Map<String, Model> r]
 	;
 	
 model returns [Model m]
-	: 'sat' '(model' (define)+ ')' { $m = new Model(Sat$.MODULE$, new ArrayList<Define>());}
-	| 'unsat' Z3ERROR { $m = new Model(Unsat$.MODULE$, new ArrayList<Define>());}
+@init{ List<Define> l = new ArrayList<Define>(); }
+	: 'sat' '(model' (define {l.add($define.d);})+ ')' { $m = new Model(Sat$.MODULE$, l);}
+	| 'unsat' Z3ERROR { $m = new Model(Unsat$.MODULE$, l);}
 //	: '(model' (define[$m])+ ')'
 	;
 
-define 	
-	: '(define-fun' IDENT '()' IDENT IDENT')'	
+define 	returns [Define d]
+	: '(define-fun' id0=IDENT '()' id1=IDENT id2=IDENT')' {$d = new Define($id0.text, $id1.text, $id2.text.equals("true"));}	
 	//: '(define-fun' IDENT '()' IDENT IDENT')' {//add defs to model}	
 	;	
 	

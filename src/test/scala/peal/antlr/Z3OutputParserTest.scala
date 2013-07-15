@@ -6,7 +6,7 @@ import org.scalatest.junit.ShouldMatchersForJUnit
 import scala.collection.JavaConversions._
 import z3.scala.{Z3AST, Z3Config, Z3Context}
 import peal.util.Z3ModelMatcher
-import peal.domain.z3.{Unsat, Model}
+import peal.domain.z3.{Define, Sat, Unsat, Model}
 
 
 class Z3OutputParserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
@@ -35,5 +35,23 @@ class Z3OutputParserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
     val results = parser.results()
     results should contain key ("name7")
     results("name7").satResult should be (Unsat)
+  }
+
+  @Test
+  def testSimpleSatInput() {
+    val input = "Result of analysis [name8 = different? cond2 cond4]:\n" +
+      "sat\n" +
+      "(model \n  (define-fun q5 () Bool\n    true)\n" +
+      "  (define-fun different_name8 () Bool\n    true)\n" +
+      "  (define-fun q6 () Bool\n    true)\n)"
+
+    val parser = getParser(input)
+
+    val results = parser.results()
+    results should contain key ("name8")
+    results("name8").satResult should be (Sat)
+    results("name8").defines(0).name should be ("q5")
+    results("name8").defines(0).objectType should be ("Bool")
+    results("name8").defines(0).value should be (true)
   }
 }

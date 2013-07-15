@@ -1,4 +1,4 @@
-// $ANTLR 3.4 /Users/jkuo/PealApp-lift/antlr/Z3Output.g 2013-07-15 13:40:37
+// $ANTLR 3.4 /Users/jkuo/PealApp-lift/antlr/Z3Output.g 2013-07-15 13:52:01
 
 package peal.antlr;
 import java.util.*;
@@ -182,8 +182,12 @@ public class Z3OutputParser extends Parser {
         Model m = null;
 
 
+        Define define1 =null;
+
+
+         List<Define> l = new ArrayList<Define>(); 
         try {
-            // /Users/jkuo/PealApp-lift/antlr/Z3Output.g:42:2: ( 'sat' '(model' ( define )+ ')' | 'unsat' Z3ERROR )
+            // /Users/jkuo/PealApp-lift/antlr/Z3Output.g:43:2: ( 'sat' '(model' ( define )+ ')' | 'unsat' Z3ERROR )
             int alt4=2;
             int LA4_0 = input.LA(1);
 
@@ -202,13 +206,13 @@ public class Z3OutputParser extends Parser {
             }
             switch (alt4) {
                 case 1 :
-                    // /Users/jkuo/PealApp-lift/antlr/Z3Output.g:42:4: 'sat' '(model' ( define )+ ')'
+                    // /Users/jkuo/PealApp-lift/antlr/Z3Output.g:43:4: 'sat' '(model' ( define )+ ')'
                     {
-                    match(input,16,FOLLOW_16_in_model109); 
+                    match(input,16,FOLLOW_16_in_model113); 
 
-                    match(input,10,FOLLOW_10_in_model111); 
+                    match(input,10,FOLLOW_10_in_model115); 
 
-                    // /Users/jkuo/PealApp-lift/antlr/Z3Output.g:42:19: ( define )+
+                    // /Users/jkuo/PealApp-lift/antlr/Z3Output.g:43:19: ( define )+
                     int cnt3=0;
                     loop3:
                     do {
@@ -222,13 +226,15 @@ public class Z3OutputParser extends Parser {
 
                         switch (alt3) {
                     	case 1 :
-                    	    // /Users/jkuo/PealApp-lift/antlr/Z3Output.g:42:20: define
+                    	    // /Users/jkuo/PealApp-lift/antlr/Z3Output.g:43:20: define
                     	    {
-                    	    pushFollow(FOLLOW_define_in_model114);
-                    	    define();
+                    	    pushFollow(FOLLOW_define_in_model118);
+                    	    define1=define();
 
                     	    state._fsp--;
 
+
+                    	    l.add(define1);
 
                     	    }
                     	    break;
@@ -243,20 +249,20 @@ public class Z3OutputParser extends Parser {
                     } while (true);
 
 
-                    match(input,11,FOLLOW_11_in_model118); 
+                    match(input,11,FOLLOW_11_in_model124); 
 
-                     m = new Model(Sat$.MODULE$, new ArrayList<Define>());
+                     m = new Model(Sat$.MODULE$, l);
 
                     }
                     break;
                 case 2 :
-                    // /Users/jkuo/PealApp-lift/antlr/Z3Output.g:43:4: 'unsat' Z3ERROR
+                    // /Users/jkuo/PealApp-lift/antlr/Z3Output.g:44:4: 'unsat' Z3ERROR
                     {
-                    match(input,17,FOLLOW_17_in_model125); 
+                    match(input,17,FOLLOW_17_in_model131); 
 
-                    match(input,Z3ERROR,FOLLOW_Z3ERROR_in_model127); 
+                    match(input,Z3ERROR,FOLLOW_Z3ERROR_in_model133); 
 
-                     m = new Model(Unsat$.MODULE$, new ArrayList<Define>());
+                     m = new Model(Unsat$.MODULE$, l);
 
                     }
                     break;
@@ -278,23 +284,32 @@ public class Z3OutputParser extends Parser {
 
 
     // $ANTLR start "define"
-    // /Users/jkuo/PealApp-lift/antlr/Z3Output.g:47:1: define : '(define-fun' IDENT '()' IDENT IDENT ')' ;
-    public final void define() throws RecognitionException {
+    // /Users/jkuo/PealApp-lift/antlr/Z3Output.g:48:1: define returns [Define d] : '(define-fun' id0= IDENT '()' id1= IDENT id2= IDENT ')' ;
+    public final Define define() throws RecognitionException {
+        Define d = null;
+
+
+        Token id0=null;
+        Token id1=null;
+        Token id2=null;
+
         try {
-            // /Users/jkuo/PealApp-lift/antlr/Z3Output.g:48:2: ( '(define-fun' IDENT '()' IDENT IDENT ')' )
-            // /Users/jkuo/PealApp-lift/antlr/Z3Output.g:48:4: '(define-fun' IDENT '()' IDENT IDENT ')'
+            // /Users/jkuo/PealApp-lift/antlr/Z3Output.g:49:2: ( '(define-fun' id0= IDENT '()' id1= IDENT id2= IDENT ')' )
+            // /Users/jkuo/PealApp-lift/antlr/Z3Output.g:49:4: '(define-fun' id0= IDENT '()' id1= IDENT id2= IDENT ')'
             {
-            match(input,9,FOLLOW_9_in_define143); 
+            match(input,9,FOLLOW_9_in_define152); 
 
-            match(input,IDENT,FOLLOW_IDENT_in_define145); 
+            id0=(Token)match(input,IDENT,FOLLOW_IDENT_in_define156); 
 
-            match(input,8,FOLLOW_8_in_define147); 
+            match(input,8,FOLLOW_8_in_define158); 
 
-            match(input,IDENT,FOLLOW_IDENT_in_define149); 
+            id1=(Token)match(input,IDENT,FOLLOW_IDENT_in_define162); 
 
-            match(input,IDENT,FOLLOW_IDENT_in_define151); 
+            id2=(Token)match(input,IDENT,FOLLOW_IDENT_in_define166); 
 
-            match(input,11,FOLLOW_11_in_define152); 
+            match(input,11,FOLLOW_11_in_define167); 
+
+            d = new Define((id0!=null?id0.getText():null), (id1!=null?id1.getText():null), (id2!=null?id2.getText():null).equals("true"));
 
             }
 
@@ -307,7 +322,7 @@ public class Z3OutputParser extends Parser {
         finally {
         	// do for sure before leaving
         }
-        return ;
+        return d;
     }
     // $ANTLR end "define"
 
@@ -325,17 +340,17 @@ public class Z3OutputParser extends Parser {
     public static final BitSet FOLLOW_IDENT_in_results76 = new BitSet(new long[]{0x0000000000008000L});
     public static final BitSet FOLLOW_15_in_results80 = new BitSet(new long[]{0x0000000000030000L});
     public static final BitSet FOLLOW_model_in_results86 = new BitSet(new long[]{0x0000000000004002L});
-    public static final BitSet FOLLOW_16_in_model109 = new BitSet(new long[]{0x0000000000000400L});
-    public static final BitSet FOLLOW_10_in_model111 = new BitSet(new long[]{0x0000000000000200L});
-    public static final BitSet FOLLOW_define_in_model114 = new BitSet(new long[]{0x0000000000000A00L});
-    public static final BitSet FOLLOW_11_in_model118 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_17_in_model125 = new BitSet(new long[]{0x0000000000000080L});
-    public static final BitSet FOLLOW_Z3ERROR_in_model127 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_9_in_define143 = new BitSet(new long[]{0x0000000000000010L});
-    public static final BitSet FOLLOW_IDENT_in_define145 = new BitSet(new long[]{0x0000000000000100L});
-    public static final BitSet FOLLOW_8_in_define147 = new BitSet(new long[]{0x0000000000000010L});
-    public static final BitSet FOLLOW_IDENT_in_define149 = new BitSet(new long[]{0x0000000000000010L});
-    public static final BitSet FOLLOW_IDENT_in_define151 = new BitSet(new long[]{0x0000000000000800L});
-    public static final BitSet FOLLOW_11_in_define152 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_16_in_model113 = new BitSet(new long[]{0x0000000000000400L});
+    public static final BitSet FOLLOW_10_in_model115 = new BitSet(new long[]{0x0000000000000200L});
+    public static final BitSet FOLLOW_define_in_model118 = new BitSet(new long[]{0x0000000000000A00L});
+    public static final BitSet FOLLOW_11_in_model124 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_17_in_model131 = new BitSet(new long[]{0x0000000000000080L});
+    public static final BitSet FOLLOW_Z3ERROR_in_model133 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_9_in_define152 = new BitSet(new long[]{0x0000000000000010L});
+    public static final BitSet FOLLOW_IDENT_in_define156 = new BitSet(new long[]{0x0000000000000100L});
+    public static final BitSet FOLLOW_8_in_define158 = new BitSet(new long[]{0x0000000000000010L});
+    public static final BitSet FOLLOW_IDENT_in_define162 = new BitSet(new long[]{0x0000000000000010L});
+    public static final BitSet FOLLOW_IDENT_in_define166 = new BitSet(new long[]{0x0000000000000800L});
+    public static final BitSet FOLLOW_11_in_define167 = new BitSet(new long[]{0x0000000000000002L});
 
 }
