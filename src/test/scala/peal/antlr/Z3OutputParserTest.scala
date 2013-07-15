@@ -53,5 +53,7 @@ class Z3OutputParserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
     results("name8").defines(0).name should be ("q5")
     results("name8").defines(0).objectType should be ("Bool")
     results("name8").defines(0).value should be (true)
+    results("name8").defines(1).name should be ("different_name8")
+    results("name8").defines(2).name should be ("q6")
   }
 }
