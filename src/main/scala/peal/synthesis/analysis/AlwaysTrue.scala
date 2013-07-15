@@ -1,7 +1,7 @@
 package peal.synthesis.analysis
 
 
-class AlwaysTrue(name: String, cond: String) extends AnalysisGenerator {
+case class AlwaysTrue(name: String, cond: String) extends AnalysisGenerator {
 
   def z3SMTInput: String = "(push)\n" +
     "(declare-const always_true_" + name + " Bool)\n" +

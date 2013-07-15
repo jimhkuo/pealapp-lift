@@ -1,6 +1,6 @@
 package peal.synthesis.analysis
 
-class Equivalent(name: String, lhs: String, rhs: String) extends AnalysisGenerator {
+case class Equivalent(name: String, lhs: String, rhs: String) extends AnalysisGenerator {
 
    def z3SMTInput: String = "(push)\n" +
      "(declare-const equivalent_" + name + " Bool)\n" +

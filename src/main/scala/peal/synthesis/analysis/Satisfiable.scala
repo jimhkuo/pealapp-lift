@@ -1,6 +1,6 @@
 package peal.synthesis.analysis
 
-class Satisfiable(name: String, cond: String) extends AnalysisGenerator {
+case class Satisfiable(name: String, cond: String) extends AnalysisGenerator {
 
    def z3SMTInput: String = "(push)\n" +
      "(declare-const satisfiable_" + name + " Bool)\n" +

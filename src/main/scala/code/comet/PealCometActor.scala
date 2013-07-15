@@ -6,7 +6,7 @@ import net.liftweb.http.js.jquery.JqJE._
 import net.liftweb.http.js.JsCmds._
 import scala.xml.Text
 import org.antlr.runtime.{CommonTokenStream, ANTLRStringStream}
-import peal.antlr.{PealProgramParser, PealProgramLexer}
+import peal.antlr.{Z3OutputParser, Z3OutputLexer, PealProgramParser, PealProgramLexer}
 import net.liftweb.common.Loggable
 import scala.collection.JavaConversions._
 import z3.scala.Z3AST
@@ -22,8 +22,17 @@ import code.comet.util.Message
 import scala.Some
 import code.comet.util.Result
 import code.comet.util.SaveFile
-import peal.synthesis.analysis.AnalysisGenerator
+import peal.synthesis.analysis._
 import scala.collection.mutable.ListBuffer
+import peal.domain.z3.{Unsat, Model}
+import net.liftweb.http.js.jquery.JqJE.JqId
+import code.comet.util.Message
+import scala.Some
+import peal.synthesis.analysis.Satisfiable
+import code.comet.util.Result
+import code.comet.util.SaveFile
+import peal.synthesis.analysis.AlwaysFalse
+import peal.synthesis.analysis.AlwaysTrue
 
 class PealCometActor extends CometActor with Loggable {
   val resultList = ListBuffer[String]()
@@ -149,7 +158,14 @@ class PealCometActor extends CometActor with Loggable {
       partialUpdate(JqId("policies") ~> JqVal(inputPolicies))
   }
 
-  private def getParser(input: String) = {
+  private def getZ3OutputParser(input: String) = {
+    val charStream = new ANTLRStringStream(input)
+    val lexer = new Z3OutputLexer(charStream)
+    val tokenStream = new CommonTokenStream(lexer)
+    new Z3OutputParser(tokenStream)
+  }
+
+  private def getPealProgramParser(input: String) = {
     val charStream = new ANTLRStringStream(input)
     val lexer = new PealProgramLexer(charStream)
     val tokenStream = new CommonTokenStream(lexer)
@@ -157,7 +173,7 @@ class PealCometActor extends CometActor with Loggable {
   }
 
   private def onCompute(input: String): (Map[String, Z3AST], Map[String, Condition], Map[String, PolicySet], Map[String, AnalysisGenerator]) = {
-    val pealProgrmParser = getParser(input)
+    val pealProgrmParser = getPealProgramParser(input)
     val z3 = MyZ3Context.is
 
     try {
@@ -271,10 +287,62 @@ class PealCometActor extends CometActor with Loggable {
     println("tmpfile: " + tmp.getAbsolutePath)
     resultList.clear()
     Process(Seq("bash", "-c", "z3 -nw -smt2 " + tmp.getAbsolutePath), None, "PATH" -> Props.get("z3.location").get) ! processLogger
-    //TODO extract results from resultList using Z3Output.g
     tmp.delete()
-    //TODO need to interleave the results and models display here
-    this ! Result(<pre>{z3SMTInput}</pre> <pre>Z3 Output:<br/>{resultList.mkString("")}</pre>)
+    val z3Output = getZ3OutputParser(resultList.mkString(""))
+    val results = z3Output.results()
+
+    val analysedResults = performAnalysis(analyses, results.toMap)
+
+    this ! Result(<pre>{z3SMTInput}</pre> <pre>Z3 Output:<br/>{resultList.mkString("")}<br/>{analysedResults}</pre>)
+  }
+
+
+  private def performAnalysis(analyses: Map[String, AnalysisGenerator], results: Map[String, Model]) : String = {
+    val out = ListBuffer[String]()
+
+    analyses.keys.toSeq.sortWith(_ < _).foreach{
+      a =>
+        out.append("Result of analysis: " + analyses(a).analysisName)
+        analyses(a) match {
+          case s : AlwaysTrue =>
+            if (results(a).satResult == Unsat) {
+              out.append(s.cond + "is always true")
+            }
+            else {
+              out.append(s.cond + "is NOT always true")
+            }
+          case s: AlwaysFalse =>
+            if (results(a).satResult == Unsat) {
+              out.append(s.cond + " is always false")
+            }
+            else {
+              out.append(s.cond + " is NOT always false")
+            }
+          case s: Satisfiable =>
+            if (results(a).satResult == Unsat) {
+              out.append(s.cond + " is NOT satisfiable")
+            }
+            else {
+              out.append(s.cond + " is satisfiable")
+            }
+          case s: Different =>
+            if (results(a).satResult == Unsat) {
+              out.append(s.lhs + " and " + s.rhs + "are NOT different")
+            }
+            else {
+              out.append(s.lhs + " and " + s.rhs + "are different")
+            }
+          case s: Equivalent =>
+            if (results(a).satResult == Unsat) {
+              out.append(s.lhs + " and " + s.rhs + "are equivalent")
+            }
+            else {
+              out.append(s.lhs + " and " + s.rhs + "are NOT equivalent")
+            }
+        }
+    }
+
+    out.mkString("\n")
   }
 
   private def dealWithIt(e: Throwable) = {
