@@ -302,7 +302,7 @@ class PealCometActor extends CometActor with Loggable {
 
     analyses.keys.toSeq.sortWith(_ < _).foreach{
       a =>
-        out.append("Result of analysis: " + analyses(a).analysisName)
+        out.append("\nResult of analysis: " + analyses(a).analysisName)
         analyses(a) match {
           case s : AlwaysTrue =>
             if (results(a).satResult == Unsat) {
@@ -350,7 +350,8 @@ class PealCometActor extends CometActor with Loggable {
     out.mkString("\n")
   }
 
-  private def getReasons(model: Model) ={
+  private def getReasons(model: Model) = {
+    //TODO need to add filtering to remove predicates not involved
     val out = for (define <- model.defines) yield {
       define.name + " is " + define.value
     }
