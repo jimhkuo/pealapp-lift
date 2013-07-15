@@ -284,20 +284,19 @@ class PealCometActor extends CometActor with Loggable {
     val z3SMTInput = declarations.mkString("") +declarations1.mkString("") + body.mkString("") + generatedAnalyses.mkString("")
     val tmp = File.createTempFile("z3file", "")
     (Seq("echo", z3SMTInput) #> tmp).!!
-    println("tmpfile: " + tmp.getAbsolutePath)
     resultList.clear()
     Process(Seq("bash", "-c", "z3 -nw -smt2 " + tmp.getAbsolutePath), None, "PATH" -> Props.get("z3.location").get) ! processLogger
     tmp.delete()
     val z3Output = getZ3OutputParser(resultList.mkString(""))
     val results = z3Output.results()
 
-    val analysedResults = performAnalysis(analyses, results.toMap)
+    val analysedResults = performAnalysis(analyses, results.toMap, constsMap)
 
     this ! Result(<pre>{z3SMTInput}</pre> <pre>Z3 Output:<br/>{resultList.mkString("")}<br/>{analysedResults}</pre>)
   }
 
 
-  private def performAnalysis(analyses: Map[String, AnalysisGenerator], results: Map[String, Model]) : String = {
+  private def performAnalysis(analyses: Map[String, AnalysisGenerator], results: Map[String, Model], constsMap: Map[String, Z3AST]) : String = {
     val out = ListBuffer[String]()
 
     analyses.keys.toSeq.sortWith(_ < _).foreach{
@@ -310,7 +309,7 @@ class PealCometActor extends CometActor with Loggable {
             }
             else {
               out.append(s.cond + " is NOT always true")
-              out.append("For example, when\n" + getReasons(results(a)))
+              out.append("For example, when\n" + getReasons(results(a), constsMap))
             }
           case s: AlwaysFalse =>
             if (results(a).satResult == Unsat) {
@@ -318,7 +317,7 @@ class PealCometActor extends CometActor with Loggable {
             }
             else {
               out.append(s.cond + " is NOT always false")
-              out.append("For example, when\n" + getReasons(results(a)))
+              out.append("For example, when\n" + getReasons(results(a), constsMap))
             }
           case s: Satisfiable =>
             if (results(a).satResult == Unsat) {
@@ -326,7 +325,7 @@ class PealCometActor extends CometActor with Loggable {
             }
             else {
               out.append(s.cond + " is satisfiable")
-              out.append("For example, when\n" + getReasons(results(a)))
+              out.append("For example, when\n" + getReasons(results(a), constsMap))
             }
           case s: Different =>
             if (results(a).satResult == Unsat) {
@@ -334,7 +333,7 @@ class PealCometActor extends CometActor with Loggable {
             }
             else {
               out.append(s.lhs + " and " + s.rhs + " are different")
-              out.append("For example, when\n" + getReasons(results(a)))
+              out.append("For example, when\n" + getReasons(results(a), constsMap))
             }
           case s: Equivalent =>
             if (results(a).satResult == Unsat) {
@@ -342,7 +341,7 @@ class PealCometActor extends CometActor with Loggable {
             }
             else {
               out.append(s.lhs + " and " + s.rhs + " are NOT equivalent")
-              out.append("For example, when\n" + getReasons(results(a)))
+              out.append("For example, when\n" + getReasons(results(a), constsMap))
             }
         }
     }
@@ -350,9 +349,8 @@ class PealCometActor extends CometActor with Loggable {
     out.mkString("\n")
   }
 
-  private def getReasons(model: Model) = {
-    //TODO need to add filtering to remove predicates not involved
-    val out = for (define <- model.defines) yield {
+  private def getReasons(model: Model, constsMap: Map[String, Z3AST]) = {
+    val out = for (define <- model.defines if constsMap.contains(define.name)) yield {
       define.name + " is " + define.value
     }
 
