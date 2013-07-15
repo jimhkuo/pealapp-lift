@@ -34,5 +34,6 @@ class Z3OutputParserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
 
     val results = parser.results()
     results should contain key ("name7")
+    results("name7").satResult should be (Unsat)
   }
 }
