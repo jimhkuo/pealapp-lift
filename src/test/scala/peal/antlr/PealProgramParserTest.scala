@@ -6,6 +6,7 @@ import org.scalatest.junit.ShouldMatchersForJUnit
 import scala.collection.JavaConversions._
 import z3.scala.{Z3AST, Z3Config, Z3Context}
 import peal.util.Z3ModelMatcher
+import peal.synthesis.analysis.AlwaysTrue
 
 
 class PealProgramParserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
@@ -68,8 +69,7 @@ class PealProgramParserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
     pealProgrmParser.program()
 
     pealProgrmParser.conds("cond1").synthesis(z3, consts) should beZ3Model("(and (and (or q1 q2 q3) (or q1 q2)) (or (and (not q4) (not q5) (not q6)) (not false))) ")
-    pealProgrmParser.analyses("name1").toString should be ("AlwaysTrue(name1,cond1)")
-//    println(analyses("name1"))
+    pealProgrmParser.analyses("name1") should be (new AlwaysTrue("name1","cond1"))
   }
 
   @Test
