@@ -1,4 +1,4 @@
-package code.comet.util
+package code.lib
 
 import net.liftweb.util.StringHelpers
 import net.liftweb.http.js.{JsMember, JsExp}

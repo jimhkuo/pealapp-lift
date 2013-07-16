@@ -1,4 +1,4 @@
-package code.comet.util
+package code.lib
 
 import scala.xml.NodeSeq
 

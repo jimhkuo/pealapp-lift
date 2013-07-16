@@ -4,7 +4,7 @@ import net.liftweb.http.{Req, StreamingResponse, LiftRules}
 import net.liftweb.sitemap.{SiteMap, Menu}
 import net.liftweb.common.Full
 import scala.Nil
-import code.comet.util.Z3SMTData
+import code.lib.Z3SMTData
 
 class Boot {
   def boot {

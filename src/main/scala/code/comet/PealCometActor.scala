@@ -10,28 +10,25 @@ import peal.antlr.{Z3OutputParser, Z3OutputLexer, PealProgramParser, PealProgram
 import net.liftweb.common.Loggable
 import scala.collection.JavaConversions._
 import z3.scala.Z3AST
-import code.comet.util._
 import peal.synthesis.{PolicySet, Condition}
 import scala.Predef._
 import z3.ModelGetter
 import scala.sys.process._
 import net.liftweb.util.Props
 import java.io.File
-import net.liftweb.http.js.jquery.JqJE.JqId
-import code.comet.util.Message
-import scala.Some
-import code.comet.util.Result
-import code.comet.util.SaveFile
 import peal.synthesis.analysis._
 import scala.collection.mutable.ListBuffer
 import peal.domain.z3.{Unsat, Model}
+import code.lib._
 import net.liftweb.http.js.jquery.JqJE.JqId
-import code.comet.util.Message
+import code.lib.Message
 import scala.Some
+import peal.synthesis.analysis.Different
 import peal.synthesis.analysis.Satisfiable
-import code.comet.util.Result
-import code.comet.util.SaveFile
+import code.lib.Result
+import code.lib.SaveFile
 import peal.synthesis.analysis.AlwaysFalse
+import peal.synthesis.analysis.Equivalent
 import peal.synthesis.analysis.AlwaysTrue
 
 class PealCometActor extends CometActor with Loggable {
@@ -294,7 +291,6 @@ class PealCometActor extends CometActor with Loggable {
 
     this ! Result(<pre>{z3SMTInput}</pre> <pre>Analysed results:<br/>{analysedResults}<br/><br/>Z3 Raw Output:<br/>{resultList.mkString("")}</pre>)
   }
-
 
   private def performAnalysis(analyses: Map[String, AnalysisGenerator], results: Map[String, Model], constsMap: Map[String, Z3AST]) : String = {
     val out = ListBuffer[String]()
