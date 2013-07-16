@@ -36,6 +36,10 @@ class PealCometActor extends CometActor with Loggable {
     "cond2 = 0.6 < pSet2\n" +
     "cond3 = 0.5 < pSet2\n" +
     "cond4 = 0.4 < pSet2\n" +
+    "DOMAIN_SPECIFICS\n" +
+    "(declare-const x Real)\n" +
+    "(declare-const y Real)\n" +
+    "(assert (= q1 (< x (y+1)))\n" +
     "ANALYSES\n" +
     "name1 = always_true? cond1\n" +
     "name2 = always_false? cond1\n" +
