@@ -123,7 +123,7 @@ class PealCometActor extends CometActor with Loggable {
       onDisplay(constsMap, conds,  pSets, analyses, domainSpecific)
     case Download =>
       val (constsMap, conds,  pSets, analyses, domainSpecific) = onCompute(inputPolicies)
-      onDownload(constsMap, conds,  pSets, analyses)
+      onDownload(constsMap, conds,  pSets, analyses, domainSpecific)
     case Prepare =>
       partialUpdate(JqId("result") ~> JqHtml(Text("Synthesising... Please wait...")))
       this ! Download
@@ -187,34 +187,6 @@ class PealCometActor extends CometActor with Loggable {
     //    }
   }
 
-  private def onDisplay(constsMap: Map[String, Z3AST], conds: Map[String, Condition], pSets: Map[String, PolicySet], analyses: Map[String, AnalysisGenerator], domainSpecifics: Array[String]) {
-    val declarations = for (name <- constsMap.keys) yield <p>
-      {"(declare-const " + name + " Bool)"}
-    </p>
-    val declarations1 = for (name <- conds.keys) yield <p>
-      {"(declare-const " + name + " Bool)"}
-    </p>
-
-    val sortedConds = conds.keys.toSeq.sortWith(_ < _)
-    val conditions = for (cond <- sortedConds) yield {<p>
-      {"(assert (= " + cond + " " + conds(cond).synthesis(MyZ3Context.is, constsMap) + "))"}
-    </p>}
-
-    val sortedAnalyses = analyses.keys.toSeq.sortWith(_ < _)
-    val generatedAnalyses = for (analysis <- sortedAnalyses) yield {
-      <pre>{analyses(analysis).z3SMTInput}</pre>
-    }
-
-    val result = <span>
-      {declarations}
-      {declarations1}
-      {conditions}
-      {domainSpecifics.map(s => <p>{s}</p>)}
-      {generatedAnalyses}
-  </span>
-    this ! Result(result)
-  }
-
   private def onAnalysis1(constsMap: Map[String, Z3AST], conds: Map[String, Condition], pSets: Map[String, PolicySet]) {
     val sortedKeys = conds.keys.toSeq.sortWith(_ < _)
     val solver = MyZ3Context.is.mkSolver()
@@ -258,7 +230,35 @@ class PealCometActor extends CometActor with Loggable {
     this ! Result(results)
   }
 
-  private def onDownload(constsMap: Map[String, Z3AST], conds: Map[String, Condition], pSets: Map[String, PolicySet], analyses: Map[String, AnalysisGenerator]) {
+  private def onDisplay(constsMap: Map[String, Z3AST], conds: Map[String, Condition], pSets: Map[String, PolicySet], analyses: Map[String, AnalysisGenerator], domainSpecifics: Array[String]) {
+    val declarations = for (name <- constsMap.keys) yield <p>
+      {"(declare-const " + name + " Bool)"}
+    </p>
+    val declarations1 = for (name <- conds.keys) yield <p>
+      {"(declare-const " + name + " Bool)"}
+    </p>
+
+    val sortedConds = conds.keys.toSeq.sortWith(_ < _)
+    val conditions = for (cond <- sortedConds) yield {<p>
+      {"(assert (= " + cond + " " + conds(cond).synthesis(MyZ3Context.is, constsMap) + "))"}
+    </p>}
+
+    val sortedAnalyses = analyses.keys.toSeq.sortWith(_ < _)
+    val generatedAnalyses = for (analysis <- sortedAnalyses) yield {
+      <pre>{analyses(analysis).z3SMTInput}</pre>
+    }
+
+    val result = <span>
+      {declarations}
+      {declarations1}
+      {conditions}
+      {domainSpecifics.map(s => <p>{s}</p>)}
+      {generatedAnalyses}
+    </span>
+    this ! Result(result)
+  }
+
+  private def onDownload(constsMap: Map[String, Z3AST], conds: Map[String, Condition], pSets: Map[String, PolicySet], analyses: Map[String, AnalysisGenerator], domainSpecifics: Array[String]) {
     val declarations = for (name <- constsMap.keys) yield "(declare-const " + name + " Bool)\n"
     val declarations1 = for (name <- conds.keys) yield "(declare-const " + name + " Bool)\n"
     val sortedKeys = conds.keys.toSeq.sortWith(_ < _)
@@ -267,7 +267,7 @@ class PealCometActor extends CometActor with Loggable {
     val lapseTime = System.nanoTime() - start
     val sortedAnalyses = analyses.keys.toSeq.sortWith(_ < _)
     val generatedAnalyses = for (analysis <- sortedAnalyses) yield {analyses(analysis).z3SMTInput}
-    val z3SMTInput = declarations.mkString("") +declarations1.mkString("") + body.mkString("") + generatedAnalyses.mkString("")
+    val z3SMTInput = declarations.mkString("") +declarations1.mkString("") + body.mkString("") + domainSpecifics.mkString("", "\n","\n") + generatedAnalyses.mkString("")
     this ! SaveFile(z3SMTInput, lapseTime)
   }
 
