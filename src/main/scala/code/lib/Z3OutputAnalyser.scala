@@ -74,6 +74,6 @@ object Z3OutputAnalyser {
       define.name + " is " + define.value
     }
 
-    predicates.mkString("\n") + conds.mkString("\n", "\n", "\n")
+    (predicates  ++ conds).mkString("\n")
   }
 }
