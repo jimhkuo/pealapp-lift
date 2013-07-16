@@ -59,8 +59,8 @@ class PealProgramParserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
       "pSet1 = max(b1, b2)\n" +
       "cond1 = pSet1 <= 0.5\n" +
       "DOMAIN_SPECIFICS\n" +
-      "aaa\n" +
-      "assert 1.2 = \n" +
+      "(declare-const x Real)\n" +
+      "(declare-const y Real)\n" +
       "(assert (= q1 (< x (y+1)))\n" +
       "(assert (= q3 (= x (y + 3.5)))\n" +
       "(assert (= q2 (< x (y +1)))\n" +
