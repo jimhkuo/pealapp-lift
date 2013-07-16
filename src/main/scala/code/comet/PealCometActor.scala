@@ -175,22 +175,7 @@ class PealCometActor extends CometActor with Loggable {
       pealProgrmParser.program()
       val predicateNames: Seq[String] = pealProgrmParser.pols.values().flatMap(pol => pol.rules).map(r => r.q.name).toSeq.distinct
       val constsMap = predicateNames.toSeq.distinct.map(t => (t, z3.mkBoolConst(t))).toMap
-
-      //TODO this is ugly
-      var keep = false
-      val domainSpecifics =
-        for (line <- input.split("\n") if line.startsWith("DOMAIN_SPECIFICS") || keep) yield {
-          if (line.startsWith("DOMAIN_SPECIFICS")) {
-            keep = true
-            ""
-          }
-          else if (line.startsWith("ANALYSES")) {
-            keep = false
-            ""
-          }
-          else if (keep) line
-          else ""
-        }
+      val domainSpecifics = input.split("\n").dropWhile(!_.startsWith("DOMAIN_SPECIFICS")).takeWhile(!_.startsWith("ANALYSES")).drop(1)
 
       (constsMap, pealProgrmParser.conds.toMap, pealProgrmParser.pSets.toMap, pealProgrmParser.analyses.toMap, domainSpecifics)
     } catch {
