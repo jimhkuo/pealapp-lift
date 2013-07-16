@@ -61,11 +61,9 @@ class PealProgramParserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
       "DOMAIN_SPECIFICS\n" +
       "aaa\n" +
       "assert 1.2 = \n" +
-//      "(assert (= q1 (< x (y+1)))\n" +
+      "(assert (= q1 (< x (y+1)))\n" +
       "ANALYSES\n" +
       "name1 = always_true? cond1\n"
-
-    println(input)
 
     val pealProgrmParser = getParser(input)
     pealProgrmParser.program()
