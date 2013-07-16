@@ -63,7 +63,7 @@ class PealProgramParserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
       "(declare-const y Real)\n" +
       "(assert (= q1 (< x (y+1)))\n" +
       "(assert (= q3 (= x (y + 3.5)))\n" +
-      "(assert (= q2 (< x (y +1)))\n" +
+      "(assert (= q1 (< x (+ y 1))))\n" +
       "ANALYSES\n" +
       "name1 = always_true? cond1\n"
 

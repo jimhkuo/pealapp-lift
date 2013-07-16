@@ -46,7 +46,9 @@ model returns [Model m]
 	;
 
 define 	returns [Define d]
-	: '(define-fun' id0=IDENT '()' id1=IDENT id2=IDENT')' {$d = new Define($id0.text, $id1.text, $id2.text.equals("true"));}	
+	: '(define-fun' id0=IDENT '()' id1=IDENT id2=IDENT')' {$d = new Define($id0.text, $id1.text, $id2.text);}	
+	| '(define-fun' id0=IDENT '()' id1=IDENT id2=NUMBER')' {$d = new Define($id0.text, $id1.text, $id2.text);}	
+	| '(define-fun' id0=IDENT '()' id1=IDENT '(' id2=NUMBER id3=NUMBER')'')' {$d = new Define($id0.text, $id1.text, $id2.text + $id3.text);}	
 	//: '(define-fun' IDENT '()' IDENT IDENT')' {//add defs to model}	
 	;	
 	

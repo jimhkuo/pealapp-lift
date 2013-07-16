@@ -39,7 +39,7 @@ class PealCometActor extends CometActor with Loggable {
     "DOMAIN_SPECIFICS\n" +
     "(declare-const x Real)\n" +
     "(declare-const y Real)\n" +
-    "(assert (= q1 (< x (y+1)))\n" +
+    "(assert (= q1 (< x (+ y 1))))\n" +
     "ANALYSES\n" +
     "name1 = always_true? cond1\n" +
     "name2 = always_false? cond1\n" +
@@ -117,7 +117,7 @@ class PealCometActor extends CometActor with Loggable {
       onAnalysis2(constsMap, conds, pSets)
     case SynthesisAndCallZ3 =>
       val (constsMap,  conds, pSets, analyses, domainSpecific) = onCompute(inputPolicies)
-      onCallZ3ViaCommandLine(constsMap, conds,  pSets, analyses)
+      onCallZ3ViaCommandLine(constsMap, conds,  pSets, analyses, domainSpecific)
     case Display =>
       val (constsMap, conds,  pSets, analyses, domainSpecific) = onCompute(inputPolicies)
       onDisplay(constsMap, conds,  pSets, analyses, domainSpecific)
@@ -271,7 +271,7 @@ class PealCometActor extends CometActor with Loggable {
     this ! SaveFile(z3SMTInput, lapseTime)
   }
 
-  private def onCallZ3ViaCommandLine(constsMap: Map[String, Z3AST], conds: Map[String, Condition], pSets: Map[String, PolicySet], analyses: Map[String, AnalysisGenerator]) {
+  private def onCallZ3ViaCommandLine(constsMap: Map[String, Z3AST], conds: Map[String, Condition], pSets: Map[String, PolicySet], analyses: Map[String, AnalysisGenerator], domainSpecifics: Array[String]) {
     val declarations = for (name <- constsMap.keys) yield "(declare-const " + name + " Bool)\n"
     val declarations1 = for (name <- conds.keys) yield "(declare-const " + name + " Bool)\n"
     val sortedKeys = conds.keys.toSeq.sortWith(_ < _)
@@ -279,12 +279,13 @@ class PealCometActor extends CometActor with Loggable {
     val sortedAnalyses = analyses.keys.toSeq.sortWith(_ < _)
     val generatedAnalyses = for (analysis <- sortedAnalyses) yield {"(echo \"Result of analysis [" + analyses(analysis).analysisName + "]:\")\n" + analyses(analysis).z3SMTInput}
 
-    val z3SMTInput = declarations.mkString("") +declarations1.mkString("") + body.mkString("") + generatedAnalyses.mkString("")
+    val z3SMTInput = declarations.mkString("") +declarations1.mkString("") + body.mkString("") + domainSpecifics.mkString("", "\n","\n") + generatedAnalyses.mkString("")
     val tmp = File.createTempFile("z3file", "")
     (Seq("echo", z3SMTInput) #> tmp).!!
+    println(tmp.getAbsolutePath)
     resultList.clear()
     Process(Seq("bash", "-c", "z3 -nw -smt2 " + tmp.getAbsolutePath), None, "PATH" -> Props.get("z3.location").get) ! processLogger
-    tmp.delete()
+//    tmp.delete()
     val z3Output = getZ3OutputParser(resultList.mkString(""))
     val results = z3Output.results()
     val analysedResults = Z3OutputAnalyser.performAnalysis(analyses, results.toMap, constsMap)
