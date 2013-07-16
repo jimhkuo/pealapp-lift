@@ -18,18 +18,12 @@ import net.liftweb.util.Props
 import java.io.File
 import peal.synthesis.analysis._
 import scala.collection.mutable.ListBuffer
-import peal.domain.z3.{Unsat, Model}
 import code.lib._
 import net.liftweb.http.js.jquery.JqJE.JqId
 import code.lib.Message
 import scala.Some
-import peal.synthesis.analysis.Different
-import peal.synthesis.analysis.Satisfiable
 import code.lib.Result
 import code.lib.SaveFile
-import peal.synthesis.analysis.AlwaysFalse
-import peal.synthesis.analysis.Equivalent
-import peal.synthesis.analysis.AlwaysTrue
 
 class PealCometActor extends CometActor with Loggable {
   val resultList = ListBuffer[String]()
@@ -286,71 +280,9 @@ class PealCometActor extends CometActor with Loggable {
     tmp.delete()
     val z3Output = getZ3OutputParser(resultList.mkString(""))
     val results = z3Output.results()
-
-    val analysedResults = performAnalysis(analyses, results.toMap, constsMap)
+    val analysedResults = Z3OutputAnalyser.performAnalysis(analyses, results.toMap, constsMap)
 
     this ! Result(<pre>{z3SMTInput}</pre> <pre>Analysed results:<br/>{analysedResults}<br/><br/>Z3 Raw Output:<br/>{resultList.mkString("")}</pre>)
-  }
-
-  private def performAnalysis(analyses: Map[String, AnalysisGenerator], results: Map[String, Model], constsMap: Map[String, Z3AST]) : String = {
-    val out = ListBuffer[String]()
-
-    analyses.keys.toSeq.sortWith(_ < _).foreach{
-      a =>
-        out.append("\nResult of analysis [" + analyses(a).analysisName + "]")
-        analyses(a) match {
-          case s : AlwaysTrue =>
-            if (results(a).satResult == Unsat) {
-              out.append(s.cond + " is always true")
-            }
-            else {
-              out.append(s.cond + " is NOT always true")
-              out.append("For example, when\n" + getReasons(results(a), constsMap))
-            }
-          case s: AlwaysFalse =>
-            if (results(a).satResult == Unsat) {
-              out.append(s.cond + " is always false")
-            }
-            else {
-              out.append(s.cond + " is NOT always false")
-              out.append("For example, when\n" + getReasons(results(a), constsMap))
-            }
-          case s: Satisfiable =>
-            if (results(a).satResult == Unsat) {
-              out.append(s.cond + " is NOT satisfiable")
-            }
-            else {
-              out.append(s.cond + " is satisfiable")
-              out.append("For example, when\n" + getReasons(results(a), constsMap))
-            }
-          case s: Different =>
-            if (results(a).satResult == Unsat) {
-              out.append(s.lhs + " and " + s.rhs + " are NOT different")
-            }
-            else {
-              out.append(s.lhs + " and " + s.rhs + " are different")
-              out.append("For example, when\n" + getReasons(results(a), constsMap))
-            }
-          case s: Equivalent =>
-            if (results(a).satResult == Unsat) {
-              out.append(s.lhs + " and " + s.rhs + " are equivalent")
-            }
-            else {
-              out.append(s.lhs + " and " + s.rhs + " are NOT equivalent")
-              out.append("For example, when\n" + getReasons(results(a), constsMap))
-            }
-        }
-    }
-
-    out.mkString("\n")
-  }
-
-  private def getReasons(model: Model, constsMap: Map[String, Z3AST]) = {
-    val out = for (define <- model.defines if constsMap.contains(define.name)) yield {
-      define.name + " is " + define.value
-    }
-
-    out.mkString("\n")
   }
 
   private def dealWithIt(e: Throwable) = {
