@@ -65,12 +65,12 @@ object Z3OutputAnalyser {
   }
 
 
-  private def getReasons(model: Model, includeConditions: Set[String], constsMap: Map[String, Z3AST]) = {
+  private def getReasons(model: Model, includeNames: Set[String], constsMap: Map[String, Z3AST]) = {
     val predicates = for (define: Define <- model.defines if constsMap.contains(define.name)) yield {
       define.name + " is " + define.value
     }
 
-    val conds = for (define: Define <- model.defines if includeConditions.contains(define.name)) yield {
+    val conds = for (define: Define <- model.defines if includeNames.contains(define.name)) yield {
       define.name + " is " + define.value
     }
 
