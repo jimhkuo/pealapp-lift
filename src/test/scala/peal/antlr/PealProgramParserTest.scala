@@ -58,8 +58,8 @@ class PealProgramParserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
       "pSet1 = max(b1, b2)\n" +
       "cond1 = pSet1 <= 0.5\n" +
       "DOMAIN_SPECIFICS\n" +
-      "aaa\n" +
-      "(assert (= q1 (< x (y+1)))\n" +
+//      "aaa\n" +
+//      "(assert (= q1 (< x (y+1)))\n" +
       "ANALYSES\n" +
       "name1 = always_true? cond1\n"
 
@@ -68,6 +68,8 @@ class PealProgramParserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
     pealProgrmParser.program()
 
     pealProgrmParser.conds("cond1").synthesis(z3, consts) should beZ3Model("(and (and (or q1 q2 q3) (or q1 q2)) (or (and (not q4) (not q5) (not q6)) (not false))) ")
+    pealProgrmParser.analyses("name1").toString should be ("AlwaysTrue(name1,cond1)")
+//    println(analyses("name1"))
   }
 
   @Test
