@@ -110,19 +110,19 @@ class PealCometActor extends CometActor with Loggable {
   override def lowPriority = {
     case Init =>
     case Analysis1 =>
-      val (constsMap, conds, pSets, analyses) = onCompute(inputPolicies)
+      val (constsMap, conds, pSets, analyses, domainSpecific) = onCompute(inputPolicies)
       onAnalysis1(constsMap, conds, pSets)
     case Analysis2 =>
-      val (constsMap,  conds, pSets, analyses) = onCompute(inputPolicies)
+      val (constsMap,  conds, pSets, analyses, domainSpecific) = onCompute(inputPolicies)
       onAnalysis2(constsMap, conds, pSets)
     case SynthesisAndCallZ3 =>
-      val (constsMap,  conds, pSets, analyses) = onCompute(inputPolicies)
+      val (constsMap,  conds, pSets, analyses, domainSpecific) = onCompute(inputPolicies)
       onCallZ3ViaCommandLine(constsMap, conds,  pSets, analyses)
     case Display =>
-      val (constsMap, conds,  pSets, analyses) = onCompute(inputPolicies)
-      onDisplay(constsMap, conds,  pSets, analyses)
+      val (constsMap, conds,  pSets, analyses, domainSpecific) = onCompute(inputPolicies)
+      onDisplay(constsMap, conds,  pSets, analyses, domainSpecific)
     case Download =>
-      val (constsMap, conds,  pSets, analyses) = onCompute(inputPolicies)
+      val (constsMap, conds,  pSets, analyses, domainSpecific) = onCompute(inputPolicies)
       onDownload(constsMap, conds,  pSets, analyses)
     case Prepare =>
       partialUpdate(JqId("result") ~> JqHtml(Text("Synthesising... Please wait...")))
@@ -167,7 +167,7 @@ class PealCometActor extends CometActor with Loggable {
     new PealProgramParser(tokenStream)
   }
 
-  private def onCompute(input: String): (Map[String, Z3AST], Map[String, Condition], Map[String, PolicySet], Map[String, AnalysisGenerator]) = {
+  private def onCompute(input: String): (Map[String, Z3AST], Map[String, Condition], Map[String, PolicySet], Map[String, AnalysisGenerator], Array[String]) = {
     val pealProgrmParser = getPealProgramParser(input)
     val z3 = MyZ3Context.is
 
@@ -175,7 +175,24 @@ class PealCometActor extends CometActor with Loggable {
       pealProgrmParser.program()
       val predicateNames: Seq[String] = pealProgrmParser.pols.values().flatMap(pol => pol.rules).map(r => r.q.name).toSeq.distinct
       val constsMap = predicateNames.toSeq.distinct.map(t => (t, z3.mkBoolConst(t))).toMap
-      (constsMap, pealProgrmParser.conds.toMap, pealProgrmParser.pSets.toMap, pealProgrmParser.analyses.toMap)
+
+      //TODO this is ugly
+      var keep = false
+      val domainSpecifics =
+        for (line <- input.split("\n") if line.startsWith("DOMAIN_SPECIFICS") || keep) yield {
+          if (line.startsWith("DOMAIN_SPECIFICS")) {
+            keep = true
+            ""
+          }
+          else if (line.startsWith("ANALYSES")) {
+            keep = false
+            ""
+          }
+          else if (keep) line
+          else ""
+        }
+
+      (constsMap, pealProgrmParser.conds.toMap, pealProgrmParser.pSets.toMap, pealProgrmParser.analyses.toMap, domainSpecifics)
     } catch {
       case e2: NullPointerException => dealWithIt(e2)
       case e1: Throwable => dealWithIt(e1)
@@ -185,7 +202,7 @@ class PealCometActor extends CometActor with Loggable {
     //    }
   }
 
-  private def onDisplay(constsMap: Map[String, Z3AST], conds: Map[String, Condition], pSets: Map[String, PolicySet], analyses: Map[String, AnalysisGenerator]) {
+  private def onDisplay(constsMap: Map[String, Z3AST], conds: Map[String, Condition], pSets: Map[String, PolicySet], analyses: Map[String, AnalysisGenerator], domainSpecifics: Array[String]) {
     val declarations = for (name <- constsMap.keys) yield <p>
       {"(declare-const " + name + " Bool)"}
     </p>
@@ -207,6 +224,7 @@ class PealCometActor extends CometActor with Loggable {
       {declarations}
       {declarations1}
       {conditions}
+      {domainSpecifics.map(s => <p>{s}</p>)}
       {generatedAnalyses}
   </span>
     this ! Result(result)
