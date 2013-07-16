@@ -50,7 +50,8 @@ program
     	|
 	id0=IDENT '=' num=NUMBER '<' id2=IDENT {Condition cond = new GreaterThanThCondition(pSets.get($id2.text), Double.valueOf($num.text)); conds.put($id0.text, cond);}
 	)+
-	('DOMAIN_SPECIFICS' {ignore = true;})?
+	('DOMAIN_SPECIFICS' {ignore = true;}
+	(IDENT | OPERATOR | NUMBER | '=')*)?
 	('ANALYSES' {ignore = false;}
 	(id0=IDENT '=' 'always_true?' id1=IDENT {AnalysisGenerator analysis = new AlwaysTrue($id0.text, $id1.text); analyses.put($id0.text, analysis);}
 	|id0=IDENT '=' 'always_false?' id1=IDENT {AnalysisGenerator analysis = new AlwaysFalse($id0.text, $id1.text); analyses.put($id0.text, analysis);}
@@ -81,8 +82,8 @@ rule 	returns [Rule r]
 	: '(' IDENT NUMBER ')' {$r = new Rule(new Predicate($IDENT.text, ""),Double.valueOf($NUMBER.text));}
 	;
 
-NUMBER : ('.'|'0'..'9'|'-'|'E')+ ;
-COMPARE : ('>' | '>=' | '<' | '<=');
+NUMBER : ('.'|'0'..'9'|'-'|'E')+ {if(ignore) skip();};
+OPERATOR : ('>' | '>=' | '<' | '<=' | '+' | '=' | '(' | ')') {if(ignore) skip();};
 NEWLINE:'\r'? '\n' { $channel = HIDDEN;};
 IDENT : ('a'..'z' | 'A'..'Z')('a'..'z' | 'A'..'Z' | '0'..'9')* {if(ignore) skip();};
 WS : (' ' | '\t' | '\n' | '\r' | '\f')+ { $channel = HIDDEN;};
