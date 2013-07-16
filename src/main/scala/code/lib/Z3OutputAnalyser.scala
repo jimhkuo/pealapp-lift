@@ -24,7 +24,7 @@ object Z3OutputAnalyser {
             }
             else {
               out.append(s.cond + " is NOT always true")
-              out.append("For example, when\n" + getReasons(a, results, constsMap))
+              out.append("For example, when\n" + getReasons(results(a), Set(),constsMap))
             }
           case s: AlwaysFalse =>
             if (results(a).satResult == Unsat) {
@@ -32,7 +32,7 @@ object Z3OutputAnalyser {
             }
             else {
               out.append(s.cond + " is NOT always false")
-              out.append("For example, when\n" + getReasons(a, results, constsMap))
+              out.append("For example, when\n" + getReasons(results(a), Set(),constsMap))
             }
           case s: Satisfiable =>
             if (results(a).satResult == Unsat) {
@@ -40,7 +40,7 @@ object Z3OutputAnalyser {
             }
             else {
               out.append(s.cond + " is satisfiable")
-              out.append("For example, when\n" + getReasons(a, results, constsMap))
+              out.append("For example, when\n" + getReasons(results(a), Set(),constsMap))
             }
           case s: Different =>
             if (results(a).satResult == Unsat) {
@@ -48,7 +48,7 @@ object Z3OutputAnalyser {
             }
             else {
               out.append(s.lhs + " and " + s.rhs + " are different")
-              out.append("For example, when\n" + getReasons(a, results, constsMap))
+              out.append("For example, when\n" + getReasons(results(a), Set(s.lhs, s.rhs),constsMap))
             }
           case s: Equivalent =>
             if (results(a).satResult == Unsat) {
@@ -56,7 +56,7 @@ object Z3OutputAnalyser {
             }
             else {
               out.append(s.lhs + " and " + s.rhs + " are NOT equivalent")
-              out.append("For example, when\n" + getReasons(a, results, constsMap))
+              out.append("For example, when\n" + getReasons(results(a), Set(s.lhs, s.rhs),constsMap))
             }
         }
     }
@@ -65,12 +65,15 @@ object Z3OutputAnalyser {
   }
 
 
-  private def getReasons(analysis:String, results: Map[String, Model], constsMap: Map[String, Z3AST]) = {
-    val model = results(analysis)
-    val out = for (define : Define <- model.defines if constsMap.contains(define.name)) yield {
+  private def getReasons(model: Model, includeConds: Set[String], constsMap: Map[String, Z3AST]) = {
+    val predicates = for (define : Define <- model.defines if constsMap.contains(define.name)) yield {
       define.name + " is " + define.value
     }
 
-    out.mkString("\n")
+    val conds = for (define : Define <- model.defines if includeConds.contains(define.name)) yield {
+      define.name + " is " + define.value
+    }
+
+    predicates.mkString("\n") + conds.mkString("\n", "\n", "\n")
   }
 }
