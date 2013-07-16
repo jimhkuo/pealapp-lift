@@ -287,9 +287,9 @@ class PealCometActor extends CometActor with Loggable {
     Process(Seq("bash", "-c", "z3 -nw -smt2 " + tmp.getAbsolutePath), None, "PATH" -> Props.get("z3.location").get) ! processLogger
     tmp.delete()
     try {
-      val z3Output = getZ3OutputParser(resultList.mkString(""))
-      val results = z3Output.results()
-      val analysedResults = Z3OutputAnalyser.performAnalysis(analyses, results.toMap, constsMap)
+      val z3OutputParser = getZ3OutputParser(resultList.mkString(""))
+      val z3Models = z3OutputParser.results().toMap
+      val analysedResults = Z3OutputAnalyser.execute(analyses, z3Models, constsMap)
 
       this ! Result(<pre>{z3SMTInput}</pre> <pre>Analysed results:<br/>{analysedResults}<br/><br/>Z3 Raw Output:<br/>{resultList.mkString("")}</pre>)
     } catch {
