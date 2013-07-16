@@ -39,12 +39,12 @@ program
 	
 	(id1=IDENT '=' pol {pols.put($id1.text, $pol.p);})*
 	(id2=IDENT '=' pSet { pSets.put($id2.text, $pSet.t);})+
-//	(id2=IDENT '=' pSet[$id2.text] { pSets.put($id2.text, $pSet.t);})+
 	(
 	id0=IDENT '=' id2=IDENT '<=' num=NUMBER {Condition cond = new LessThanThCondition(pSets.get($id2.text), Double.valueOf($num.text)); conds.put($id0.text, cond);}
     	|
 	id0=IDENT '=' num=NUMBER '<' id2=IDENT {Condition cond = new GreaterThanThCondition(pSets.get($id2.text), Double.valueOf($num.text)); conds.put($id0.text, cond);}
 	)+
+	('DOMAIN_SPECIFICS')?
 	('ANALYSES'
 	(id0=IDENT '=' 'always_true?' id1=IDENT {AnalysisGenerator analysis = new AlwaysTrue($id0.text, $id1.text); analyses.put($id0.text, analysis);}
 	|id0=IDENT '=' 'always_false?' id1=IDENT {AnalysisGenerator analysis = new AlwaysFalse($id0.text, $id1.text); analyses.put($id0.text, analysis);}
@@ -55,7 +55,6 @@ program
 	)?
 	;
 
-//pSet [String s] returns [PolicySet t] 
 pSet  returns [PolicySet t] 
 	: id1=IDENT {$t = new BasicPolicySet(pols.get($id1.text));}
 	| 'max' '(' id1=IDENT ',' id2=IDENT ')' {$t = new MaxPolicySet(new BasicPolicySet(pols.get($id1.text)), new BasicPolicySet(pols.get($id2.text)));}
