@@ -52,6 +52,23 @@ class PealProgramParserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
   }
 
   @Test
+  def testIgnoreBetweenTags() {
+    val input = "b1 = min ((q1 0.2) (q2 0.4) (q3 0.9)) default 1\n" +
+      "b2 = + ((q4 0.1) (q5 0.2) (q6 0.2)) default 0\n" +
+      "pSet1 = max(b1, b2)\n" +
+      "cond1 = pSet1 <= 0.5\n" +
+//      "DOMAIN_SPECIFICS\n" +
+      "ANALYSES\n" +
+      "name1 = always_true? cond1\n"
+
+
+    val pealProgrmParser = getParser(input)
+    pealProgrmParser.program()
+
+    pealProgrmParser.conds("cond1").synthesis(z3, consts) should beZ3Model("(and (and (or q1 q2 q3) (or q1 q2)) (or (and (not q4) (not q5) (not q6)) (not false))) ")
+  }
+
+  @Test
   def testCanDealWithNestedInput() {
     val input = "b1 = min ((q1 0.2) (q2 0.4) (q3 0.9)) default 1\n" +
       "b2 = + ((q4 0.1) (q5 0.2) (q6 0.2)) default 0\n" +

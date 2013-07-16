@@ -22,6 +22,7 @@ public Map<String, AnalysisGenerator> analyses = new HashMap<String, AnalysisGen
 public Map<String, PolicySet> pSets = new HashMap<String, PolicySet>();
 private Map<String, String> pSetScores = new HashMap<String, String>();
 private List<Rule> l = null;
+private boolean ignore = false;
 
 
 @Override
@@ -35,6 +36,10 @@ public void reportError(RecognitionException e) {
 package peal.antlr;
 }
 
+@lexer::members {
+private boolean ignore = false;
+}
+
 program	
 	: 
 	
@@ -45,8 +50,8 @@ program
     	|
 	id0=IDENT '=' num=NUMBER '<' id2=IDENT {Condition cond = new GreaterThanThCondition(pSets.get($id2.text), Double.valueOf($num.text)); conds.put($id0.text, cond);}
 	)+
-	('DOMAIN_SPECIFICS')?
-	('ANALYSES'
+//	('DOMAIN_SPECIFICS' {ignore = true;} )?
+	('ANALYSES' {ignore = false;}
 	(id0=IDENT '=' 'always_true?' id1=IDENT {AnalysisGenerator analysis = new AlwaysTrue($id0.text, $id1.text); analyses.put($id0.text, analysis);}
 	|id0=IDENT '=' 'always_false?' id1=IDENT {AnalysisGenerator analysis = new AlwaysFalse($id0.text, $id1.text); analyses.put($id0.text, analysis);}
 	|id0=IDENT '=' 'satisfiable?' id1=IDENT {AnalysisGenerator analysis = new Satisfiable($id0.text, $id1.text); analyses.put($id0.text, analysis);}	
@@ -76,8 +81,9 @@ rule 	returns [Rule r]
 	: '(' IDENT NUMBER ')' {$r = new Rule(new Predicate($IDENT.text, ""),Double.valueOf($NUMBER.text));}
 	;
 
-NUMBER : ('.'|'0'..'9'|'-'|'E')+;
+//ALL 	: . {if(ignore) skip();} ;
+NUMBER : ('.'|'0'..'9'|'-'|'E')+ ;
 COMPARE : ('>' | '>=' | '<' | '<=');
 NEWLINE:'\r'? '\n' { $channel = HIDDEN;};
-IDENT : ('a'..'z' | 'A'..'Z')('a'..'z' | 'A'..'Z' | '0'..'9')*;
+IDENT : ('a'..'z' | 'A'..'Z')('a'..'z' | 'A'..'Z' | '0'..'9')* ;
 WS : (' ' | '\t' | '\n' | '\r' | '\f')+ { $channel = HIDDEN;};
