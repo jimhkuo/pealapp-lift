@@ -21,7 +21,8 @@ public Map<String, Condition> conds = new HashMap<String, Condition>();
 public Map<String, AnalysisGenerator> analyses = new HashMap<String, AnalysisGenerator>();
 public Map<String, PolicySet> pSets = new HashMap<String, PolicySet>();
 private Map<String, String> pSetScores = new HashMap<String, String>();
-List<Rule> l = new ArrayList<Rule>();
+private List<Rule> l = null;
+
 
 @Override
 public void reportError(RecognitionException e) {
