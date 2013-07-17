@@ -42,9 +42,11 @@ private boolean ignore = false;
 
 program	
 	: 
-	
+	('POLICIES')?
 	(id1=IDENT '=' pol {pols.put($id1.text, $pol.p);})*
+	('POLICY_SETS')?
 	(id2=IDENT '=' pSet { pSets.put($id2.text, $pSet.t);})+
+	('CONDITIONS')?
 	(
 	id0=IDENT '=' id2=IDENT '<=' num=NUMBER {Condition cond = new LessThanThCondition(pSets.get($id2.text), Double.valueOf($num.text)); conds.put($id0.text, cond);}
     	|
