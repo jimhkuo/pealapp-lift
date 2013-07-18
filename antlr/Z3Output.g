@@ -46,12 +46,16 @@ model returns [Model m]
 	;
 
 define 	returns [Define d]
-	: '(define-fun' id0=IDENT '()' id1=IDENT id2=IDENT')' {$d = new Define($id0.text, $id1.text, $id2.text);}	
-	| '(define-fun' id0=IDENT '()' id1=IDENT id2=NUMBER')' {$d = new Define($id0.text, $id1.text, $id2.text);}	
+	: '(define-fun' id0=IDENT '()' id1=IDENT id4=value')' {$d = new Define($id0.text, $id1.text, $id4.s);}	
+//	| '(define-fun' id0=IDENT '()' id1=IDENT id4=value')' {$d = new Define($id0.text, $id1.text, $id4.s);}	
 	| '(define-fun' id0=IDENT '()' id1=IDENT '(' id2=NUMBER id3=NUMBER')'')' {$d = new Define($id0.text, $id1.text, $id2.text + $id3.text);}	
 	//: '(define-fun' IDENT '()' IDENT IDENT')' {//add defs to model}	
 	;	
 	
+value returns [String s]
+	: IDENT {$s = $IDENT.text;}
+	| NUMBER {$s = $NUMBER.text;}
+	;	
 
 NUMBER : ('.'|'0'..'9'|'-'|'E')+;
 IDENT : ('a'..'z' | 'A'..'Z')( '_' | 'a'..'z' | 'A'..'Z' | '0'..'9')*;

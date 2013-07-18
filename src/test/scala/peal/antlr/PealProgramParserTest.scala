@@ -35,24 +35,6 @@ class PealProgramParserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
   }
 
   @Test
-  def testCanCreateConstsMap() {
-    val input =
-      "b1 = min ((q1 0.2) (q2 0.4) (q3 0.9)) default 1\n" +
-        "b2 = + ((q4 0.1) (q5 0.2) (q6 0.2)) default 0\n" +
-        "pSet = max(b1, max(b1,b2))\n" +
-        "cond1 = pSet <= 0.5\n"
-
-    val pealProgrmParser = getParser(input)
-    pealProgrmParser.program()
-
-    pealProgrmParser.pols should have size (2)
-    pealProgrmParser.pols should contain key ("b1")
-    pealProgrmParser.pols should contain key ("b2")
-    pealProgrmParser.conds should have size (1)
-    pealProgrmParser.conds should contain key ("cond1")
-  }
-
-  @Test
   def testCanDealWithTags() {
     val input = "POLICIES\n" +
       "b1 = min ((q1 0.2) (q2 0.4) (q3 0.9)) default 1\n" +
@@ -75,39 +57,6 @@ class PealProgramParserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
 
     pealProgrmParser.conds("cond1").synthesis(z3, consts) should beZ3Model("(and (and (or q1 q2 q3) (or q1 q2)) (or (and (not q4) (not q5) (not q6)) (not false))) ")
     pealProgrmParser.analyses("name1") should be (new AlwaysTrue("name1","cond1"))
-  }
-
-  @Test
-  def testCanDealWithNestedInput() {
-    val input = "b1 = min ((q1 0.2) (q2 0.4) (q3 0.9)) default 1\n" +
-      "b2 = + ((q4 0.1) (q5 0.2) (q6 0.2)) default 0\n" +
-      "pSet = max(b1, max(b1, b2))\n" +
-      "cond = pSet <= 0.5\n"
-
-    val pealProgrmParser = getParser(input)
-    pealProgrmParser.program()
-
-//    val pols = pealProgrmParser.pols
-//    pols("b1").rules.size should be(3)
-
-    pealProgrmParser.conds("cond").synthesis(z3, consts) should beZ3Model("(and (and (or q1 q2 q3) (or q1 q2)) (and (and (or q1 q2 q3) (or q1 q2)) (or (and (not q4) (not q5) (not q6)) (not false))))")
-  }
-
-  @Test
-  def testCanDealWithMul() {
-    val input =
-      "b1 = * ((q1 0.2) (q2 0.4) (q3 0.9)) default 1" +
-        "pSet = b1\n" +
-        "cond = pSet <= 0.5"
-
-    val pealProgrmParser = getParser(input)
-    pealProgrmParser.program()
-
-    val pols = pealProgrmParser.pols
-    pols("b1").rules.size should be(3)
-
-    val set = pealProgrmParser.conds.values().head
-    set.synthesis(z3, consts) should beZ3Model("(and (or q1 q2 q3) (or q1 q2))")
   }
 
   @Test

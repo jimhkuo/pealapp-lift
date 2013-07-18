@@ -1,4 +1,4 @@
-// $ANTLR 3.4 /Users/jkuo/PealApp-lift/antlr/Z3Output.g 2013-07-16 14:32:59
+// $ANTLR 3.4 /Users/jkuo/PealApp-lift/antlr/Z3Output.g 2013-07-18 15:42:58
 
 package peal.antlr;
 
@@ -292,10 +292,10 @@ public class Z3OutputLexer extends Lexer {
         try {
             int _type = NUMBER;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/jkuo/PealApp-lift/antlr/Z3Output.g:56:8: ( ( '.' | '0' .. '9' | '-' | 'E' )+ )
-            // /Users/jkuo/PealApp-lift/antlr/Z3Output.g:56:10: ( '.' | '0' .. '9' | '-' | 'E' )+
+            // /Users/jkuo/PealApp-lift/antlr/Z3Output.g:60:8: ( ( '.' | '0' .. '9' | '-' | 'E' )+ )
+            // /Users/jkuo/PealApp-lift/antlr/Z3Output.g:60:10: ( '.' | '0' .. '9' | '-' | 'E' )+
             {
-            // /Users/jkuo/PealApp-lift/antlr/Z3Output.g:56:10: ( '.' | '0' .. '9' | '-' | 'E' )+
+            // /Users/jkuo/PealApp-lift/antlr/Z3Output.g:60:10: ( '.' | '0' .. '9' | '-' | 'E' )+
             int cnt1=0;
             loop1:
             do {
@@ -350,8 +350,8 @@ public class Z3OutputLexer extends Lexer {
         try {
             int _type = IDENT;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/jkuo/PealApp-lift/antlr/Z3Output.g:57:7: ( ( 'a' .. 'z' | 'A' .. 'Z' ) ( '_' | 'a' .. 'z' | 'A' .. 'Z' | '0' .. '9' )* )
-            // /Users/jkuo/PealApp-lift/antlr/Z3Output.g:57:9: ( 'a' .. 'z' | 'A' .. 'Z' ) ( '_' | 'a' .. 'z' | 'A' .. 'Z' | '0' .. '9' )*
+            // /Users/jkuo/PealApp-lift/antlr/Z3Output.g:61:7: ( ( 'a' .. 'z' | 'A' .. 'Z' ) ( '_' | 'a' .. 'z' | 'A' .. 'Z' | '0' .. '9' )* )
+            // /Users/jkuo/PealApp-lift/antlr/Z3Output.g:61:9: ( 'a' .. 'z' | 'A' .. 'Z' ) ( '_' | 'a' .. 'z' | 'A' .. 'Z' | '0' .. '9' )*
             {
             if ( (input.LA(1) >= 'A' && input.LA(1) <= 'Z')||(input.LA(1) >= 'a' && input.LA(1) <= 'z') ) {
                 input.consume();
@@ -363,7 +363,7 @@ public class Z3OutputLexer extends Lexer {
             }
 
 
-            // /Users/jkuo/PealApp-lift/antlr/Z3Output.g:57:30: ( '_' | 'a' .. 'z' | 'A' .. 'Z' | '0' .. '9' )*
+            // /Users/jkuo/PealApp-lift/antlr/Z3Output.g:61:30: ( '_' | 'a' .. 'z' | 'A' .. 'Z' | '0' .. '9' )*
             loop2:
             do {
                 int alt2=2;
@@ -413,10 +413,10 @@ public class Z3OutputLexer extends Lexer {
         try {
             int _type = WS;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/jkuo/PealApp-lift/antlr/Z3Output.g:58:4: ( ( ' ' | '\\t' | '\\n' | '\\r' | '\\f' )+ )
-            // /Users/jkuo/PealApp-lift/antlr/Z3Output.g:58:6: ( ' ' | '\\t' | '\\n' | '\\r' | '\\f' )+
+            // /Users/jkuo/PealApp-lift/antlr/Z3Output.g:62:4: ( ( ' ' | '\\t' | '\\n' | '\\r' | '\\f' )+ )
+            // /Users/jkuo/PealApp-lift/antlr/Z3Output.g:62:6: ( ' ' | '\\t' | '\\n' | '\\r' | '\\f' )+
             {
-            // /Users/jkuo/PealApp-lift/antlr/Z3Output.g:58:6: ( ' ' | '\\t' | '\\n' | '\\r' | '\\f' )+
+            // /Users/jkuo/PealApp-lift/antlr/Z3Output.g:62:6: ( ' ' | '\\t' | '\\n' | '\\r' | '\\f' )+
             int cnt3=0;
             loop3:
             do {
@@ -473,8 +473,8 @@ public class Z3OutputLexer extends Lexer {
         try {
             int _type = Z3ERROR;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/jkuo/PealApp-lift/antlr/Z3Output.g:59:9: ( '(error \"line ' NUMBER ' column ' NUMBER ': model is not available\")' )
-            // /Users/jkuo/PealApp-lift/antlr/Z3Output.g:59:11: '(error \"line ' NUMBER ' column ' NUMBER ': model is not available\")'
+            // /Users/jkuo/PealApp-lift/antlr/Z3Output.g:63:9: ( '(error \"line ' NUMBER ' column ' NUMBER ': model is not available\")' )
+            // /Users/jkuo/PealApp-lift/antlr/Z3Output.g:63:11: '(error \"line ' NUMBER ' column ' NUMBER ': model is not available\")'
             {
             match("(error \"line "); 
 
