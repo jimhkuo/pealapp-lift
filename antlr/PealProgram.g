@@ -67,9 +67,9 @@ program
 pSet  returns [PolicySet t] 
 	: id1=IDENT {$t = new BasicPolicySet(pols.get($id1.text));}
 	| 'max' '(' id1=IDENT ',' id2=IDENT ')' {$t = new MaxPolicySet(new BasicPolicySet(pols.get($id1.text)), new BasicPolicySet(pols.get($id2.text)));}
-	| 'max' '(' id3=IDENT ',' id4=pSet ')' {$t = new MaxPolicySet(new BasicPolicySet(pols.get($id3.text)), $id4.t);}
+//	| 'max' '(' id3=IDENT ',' id4=pSet ')' {$t = new MaxPolicySet(new BasicPolicySet(pols.get($id3.text)), $id4.t);}
 	| 'min' '(' id1=IDENT ',' id2=IDENT ')' {$t = new MinPolicySet(new BasicPolicySet(pols.get($id1.text)), new BasicPolicySet(pols.get($id2.text)));}
-	| 'min' '(' id3=IDENT ',' id4=pSet ')' {$t = new MinPolicySet(new BasicPolicySet(pols.get($id3.text)), $id4.t);}
+//	| 'min' '(' id3=IDENT ',' id4=pSet ')' {$t = new MinPolicySet(new BasicPolicySet(pols.get($id3.text)), $id4.t);}
 	;
 
 pol	returns [Pol p] 
