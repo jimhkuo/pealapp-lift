@@ -8,6 +8,7 @@ language = Java;
 package peal.antlr;
 import java.util.*;
 import peal.domain.*;
+import peal.domain.util.*;
 import peal.*;
 import org.antlr.runtime.BitSet;
 import peal.synthesis.*;
@@ -66,10 +67,12 @@ program
 
 pSet  returns [PolicySet t] 
 	: id1=IDENT {$t = new BasicPolicySet(pols.get($id1.text));}
-	| 'max' '(' id1=IDENT ',' id2=IDENT ')' {$t = new MaxPolicySet(new BasicPolicySet(pols.get($id1.text)), new BasicPolicySet(pols.get($id2.text)));}
+//	| 'max' '(' id1=IDENT ',' id2=IDENT ')' {$t = new MaxPolicySet(new BasicPolicySet(pols.get($id1.text)), new BasicPolicySet(pols.get($id2.text)));}
 //	| 'max' '(' id3=IDENT ',' id4=pSet ')' {$t = new MaxPolicySet(new BasicPolicySet(pols.get($id3.text)), $id4.t);}
-	| 'min' '(' id1=IDENT ',' id2=IDENT ')' {$t = new MinPolicySet(new BasicPolicySet(pols.get($id1.text)), new BasicPolicySet(pols.get($id2.text)));}
+//	| 'min' '(' id1=IDENT ',' id2=IDENT ')' {$t = new MinPolicySet(new BasicPolicySet(pols.get($id1.text)), new BasicPolicySet(pols.get($id2.text)));}
 //	| 'min' '(' id3=IDENT ',' id4=pSet ')' {$t = new MinPolicySet(new BasicPolicySet(pols.get($id3.text)), $id4.t);}
+	| 'max' '(' id1=IDENT ',' id2=IDENT ')' {$t = new MaxPolicySet(PolicyResolver.getFromOr(pols, pSets, $id1.text), PolicyResolver.getFromOr(pols, pSets, $id2.text));}
+	| 'min' '(' id1=IDENT ',' id2=IDENT ')' {$t = new MinPolicySet(PolicyResolver.getFromOr(pols, pSets, $id1.text), PolicyResolver.getFromOr(pols, pSets, $id2.text));}
 	;
 
 pol	returns [Pol p] 
