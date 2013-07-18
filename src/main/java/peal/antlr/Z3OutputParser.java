@@ -1,4 +1,4 @@
-// $ANTLR 3.4 /Users/jkuo/PealApp-lift/antlr/Z3Output.g 2013-07-18 15:42:58
+// $ANTLR 3.4 /Users/jkuo/PealApp-lift/antlr/Z3Output.g 2013-07-18 16:11:57
 
 package peal.antlr;
 import java.util.*;
@@ -18,7 +18,7 @@ import java.util.ArrayList;
 @SuppressWarnings({"all", "warnings", "unchecked"})
 public class Z3OutputParser extends Parser {
     public static final String[] tokenNames = new String[] {
-        "<invalid>", "<EOR>", "<DOWN>", "<UP>", "IDENT", "NUMBER", "WS", "Z3ERROR", "'('", "'()'", "'(define-fun'", "'(model'", "')'", "'='", "'?'", "'Result of analysis ['", "']:'", "'sat'", "'unsat'"
+        "<invalid>", "<EOR>", "<DOWN>", "<UP>", "IDENT", "NUMBER", "WS", "Z3ERROR", "'('", "'()'", "'(define-fun'", "'(model'", "')'", "'-'", "'/'", "'='", "'?'", "'Result of analysis ['", "']:'", "'sat'", "'unsat'"
     };
 
     public static final int EOF=-1;
@@ -33,6 +33,8 @@ public class Z3OutputParser extends Parser {
     public static final int T__16=16;
     public static final int T__17=17;
     public static final int T__18=18;
+    public static final int T__19=19;
+    public static final int T__20=20;
     public static final int IDENT=4;
     public static final int NUMBER=5;
     public static final int WS=6;
@@ -91,7 +93,7 @@ public class Z3OutputParser extends Parser {
                 int alt2=2;
                 int LA2_0 = input.LA(1);
 
-                if ( (LA2_0==15) ) {
+                if ( (LA2_0==17) ) {
                     alt2=1;
                 }
 
@@ -100,15 +102,15 @@ public class Z3OutputParser extends Parser {
             	case 1 :
             	    // /Users/jkuo/PealApp-lift/antlr/Z3Output.g:36:2: 'Result of analysis [' id0= IDENT '=' id1= IDENT '?' id2= IDENT ( IDENT )? ']:' (m= model )
             	    {
-            	    match(input,15,FOLLOW_15_in_results57); 
+            	    match(input,17,FOLLOW_17_in_results57); 
 
             	    id0=(Token)match(input,IDENT,FOLLOW_IDENT_in_results61); 
 
-            	    match(input,13,FOLLOW_13_in_results63); 
+            	    match(input,15,FOLLOW_15_in_results63); 
 
             	    id1=(Token)match(input,IDENT,FOLLOW_IDENT_in_results67); 
 
-            	    match(input,14,FOLLOW_14_in_results69); 
+            	    match(input,16,FOLLOW_16_in_results69); 
 
             	    id2=(Token)match(input,IDENT,FOLLOW_IDENT_in_results73); 
 
@@ -131,7 +133,7 @@ public class Z3OutputParser extends Parser {
             	    }
 
 
-            	    match(input,16,FOLLOW_16_in_results80); 
+            	    match(input,18,FOLLOW_18_in_results80); 
 
             	    // /Users/jkuo/PealApp-lift/antlr/Z3Output.g:37:2: (m= model )
             	    // /Users/jkuo/PealApp-lift/antlr/Z3Output.g:37:3: m= model
@@ -192,10 +194,10 @@ public class Z3OutputParser extends Parser {
             int alt4=2;
             int LA4_0 = input.LA(1);
 
-            if ( (LA4_0==17) ) {
+            if ( (LA4_0==19) ) {
                 alt4=1;
             }
-            else if ( (LA4_0==18) ) {
+            else if ( (LA4_0==20) ) {
                 alt4=2;
             }
             else {
@@ -209,7 +211,7 @@ public class Z3OutputParser extends Parser {
                 case 1 :
                     // /Users/jkuo/PealApp-lift/antlr/Z3Output.g:43:4: 'sat' '(model' ( define )+ ')'
                     {
-                    match(input,17,FOLLOW_17_in_model113); 
+                    match(input,19,FOLLOW_19_in_model113); 
 
                     match(input,11,FOLLOW_11_in_model115); 
 
@@ -259,7 +261,7 @@ public class Z3OutputParser extends Parser {
                 case 2 :
                     // /Users/jkuo/PealApp-lift/antlr/Z3Output.g:44:4: 'unsat' Z3ERROR
                     {
-                    match(input,18,FOLLOW_18_in_model131); 
+                    match(input,20,FOLLOW_20_in_model131); 
 
                     match(input,Z3ERROR,FOLLOW_Z3ERROR_in_model133); 
 
@@ -285,131 +287,40 @@ public class Z3OutputParser extends Parser {
 
 
     // $ANTLR start "define"
-    // /Users/jkuo/PealApp-lift/antlr/Z3Output.g:48:1: define returns [Define d] : ( '(define-fun' id0= IDENT '()' id1= IDENT id4= value ')' | '(define-fun' id0= IDENT '()' id1= IDENT '(' id2= NUMBER id3= NUMBER ')' ')' );
+    // /Users/jkuo/PealApp-lift/antlr/Z3Output.g:48:1: define returns [Define d] : '(define-fun' id0= IDENT '()' id1= IDENT id2= value ')' ;
     public final Define define() throws RecognitionException {
         Define d = null;
 
 
         Token id0=null;
         Token id1=null;
-        Token id2=null;
-        Token id3=null;
-        String id4 =null;
+        String id2 =null;
 
 
         try {
-            // /Users/jkuo/PealApp-lift/antlr/Z3Output.g:49:2: ( '(define-fun' id0= IDENT '()' id1= IDENT id4= value ')' | '(define-fun' id0= IDENT '()' id1= IDENT '(' id2= NUMBER id3= NUMBER ')' ')' )
-            int alt5=2;
-            int LA5_0 = input.LA(1);
+            // /Users/jkuo/PealApp-lift/antlr/Z3Output.g:49:2: ( '(define-fun' id0= IDENT '()' id1= IDENT id2= value ')' )
+            // /Users/jkuo/PealApp-lift/antlr/Z3Output.g:49:3: '(define-fun' id0= IDENT '()' id1= IDENT id2= value ')'
+            {
+            match(input,10,FOLLOW_10_in_define151); 
 
-            if ( (LA5_0==10) ) {
-                int LA5_1 = input.LA(2);
+            id0=(Token)match(input,IDENT,FOLLOW_IDENT_in_define155); 
 
-                if ( (LA5_1==IDENT) ) {
-                    int LA5_2 = input.LA(3);
+            match(input,9,FOLLOW_9_in_define157); 
 
-                    if ( (LA5_2==9) ) {
-                        int LA5_3 = input.LA(4);
+            id1=(Token)match(input,IDENT,FOLLOW_IDENT_in_define161); 
 
-                        if ( (LA5_3==IDENT) ) {
-                            int LA5_4 = input.LA(5);
+            pushFollow(FOLLOW_value_in_define165);
+            id2=value();
 
-                            if ( (LA5_4==8) ) {
-                                alt5=2;
-                            }
-                            else if ( ((LA5_4 >= IDENT && LA5_4 <= NUMBER)) ) {
-                                alt5=1;
-                            }
-                            else {
-                                NoViableAltException nvae =
-                                    new NoViableAltException("", 5, 4, input);
+            state._fsp--;
 
-                                throw nvae;
 
-                            }
-                        }
-                        else {
-                            NoViableAltException nvae =
-                                new NoViableAltException("", 5, 3, input);
+            match(input,12,FOLLOW_12_in_define166); 
 
-                            throw nvae;
-
-                        }
-                    }
-                    else {
-                        NoViableAltException nvae =
-                            new NoViableAltException("", 5, 2, input);
-
-                        throw nvae;
-
-                    }
-                }
-                else {
-                    NoViableAltException nvae =
-                        new NoViableAltException("", 5, 1, input);
-
-                    throw nvae;
-
-                }
-            }
-            else {
-                NoViableAltException nvae =
-                    new NoViableAltException("", 5, 0, input);
-
-                throw nvae;
+            d = new Define((id0!=null?id0.getText():null), (id1!=null?id1.getText():null), id2);
 
             }
-            switch (alt5) {
-                case 1 :
-                    // /Users/jkuo/PealApp-lift/antlr/Z3Output.g:49:4: '(define-fun' id0= IDENT '()' id1= IDENT id4= value ')'
-                    {
-                    match(input,10,FOLLOW_10_in_define152); 
 
-                    id0=(Token)match(input,IDENT,FOLLOW_IDENT_in_define156); 
-
-                    match(input,9,FOLLOW_9_in_define158); 
-
-                    id1=(Token)match(input,IDENT,FOLLOW_IDENT_in_define162); 
-
-                    pushFollow(FOLLOW_value_in_define166);
-                    id4=value();
-
-                    state._fsp--;
-
-
-                    match(input,12,FOLLOW_12_in_define167); 
-
-                    d = new Define((id0!=null?id0.getText():null), (id1!=null?id1.getText():null), id4);
-
-                    }
-                    break;
-                case 2 :
-                    // /Users/jkuo/PealApp-lift/antlr/Z3Output.g:51:4: '(define-fun' id0= IDENT '()' id1= IDENT '(' id2= NUMBER id3= NUMBER ')' ')'
-                    {
-                    match(input,10,FOLLOW_10_in_define176); 
-
-                    id0=(Token)match(input,IDENT,FOLLOW_IDENT_in_define180); 
-
-                    match(input,9,FOLLOW_9_in_define182); 
-
-                    id1=(Token)match(input,IDENT,FOLLOW_IDENT_in_define186); 
-
-                    match(input,8,FOLLOW_8_in_define188); 
-
-                    id2=(Token)match(input,NUMBER,FOLLOW_NUMBER_in_define192); 
-
-                    id3=(Token)match(input,NUMBER,FOLLOW_NUMBER_in_define196); 
-
-                    match(input,12,FOLLOW_12_in_define197); 
-
-                    match(input,12,FOLLOW_12_in_define198); 
-
-                    d = new Define((id0!=null?id0.getText():null), (id1!=null?id1.getText():null), (id2!=null?id2.getText():null) + (id3!=null?id3.getText():null));
-
-                    }
-                    break;
-
-            }
         }
         catch (RecognitionException re) {
             reportError(re);
@@ -426,48 +337,111 @@ public class Z3OutputParser extends Parser {
 
 
     // $ANTLR start "value"
-    // /Users/jkuo/PealApp-lift/antlr/Z3Output.g:55:1: value returns [String s] : ( IDENT | NUMBER );
+    // /Users/jkuo/PealApp-lift/antlr/Z3Output.g:52:1: value returns [String s] : ( IDENT | NUMBER | '(' '-' unary ')' | '(' '/' lhs= NUMBER rhs= NUMBER ')' );
     public final String value() throws RecognitionException {
         String s = null;
 
 
+        Token lhs=null;
+        Token rhs=null;
         Token IDENT2=null;
         Token NUMBER3=null;
+        String unary4 =null;
+
 
         try {
-            // /Users/jkuo/PealApp-lift/antlr/Z3Output.g:56:2: ( IDENT | NUMBER )
-            int alt6=2;
-            int LA6_0 = input.LA(1);
+            // /Users/jkuo/PealApp-lift/antlr/Z3Output.g:53:2: ( IDENT | NUMBER | '(' '-' unary ')' | '(' '/' lhs= NUMBER rhs= NUMBER ')' )
+            int alt5=4;
+            switch ( input.LA(1) ) {
+            case IDENT:
+                {
+                alt5=1;
+                }
+                break;
+            case NUMBER:
+                {
+                alt5=2;
+                }
+                break;
+            case 8:
+                {
+                int LA5_3 = input.LA(2);
 
-            if ( (LA6_0==IDENT) ) {
-                alt6=1;
-            }
-            else if ( (LA6_0==NUMBER) ) {
-                alt6=2;
-            }
-            else {
+                if ( (LA5_3==13) ) {
+                    alt5=3;
+                }
+                else if ( (LA5_3==14) ) {
+                    alt5=4;
+                }
+                else {
+                    NoViableAltException nvae =
+                        new NoViableAltException("", 5, 3, input);
+
+                    throw nvae;
+
+                }
+                }
+                break;
+            default:
                 NoViableAltException nvae =
-                    new NoViableAltException("", 6, 0, input);
+                    new NoViableAltException("", 5, 0, input);
 
                 throw nvae;
 
             }
-            switch (alt6) {
+
+            switch (alt5) {
                 case 1 :
-                    // /Users/jkuo/PealApp-lift/antlr/Z3Output.g:56:4: IDENT
+                    // /Users/jkuo/PealApp-lift/antlr/Z3Output.g:53:4: IDENT
                     {
-                    IDENT2=(Token)match(input,IDENT,FOLLOW_IDENT_in_value220); 
+                    IDENT2=(Token)match(input,IDENT,FOLLOW_IDENT_in_value185); 
 
                     s = (IDENT2!=null?IDENT2.getText():null);
 
                     }
                     break;
                 case 2 :
-                    // /Users/jkuo/PealApp-lift/antlr/Z3Output.g:57:4: NUMBER
+                    // /Users/jkuo/PealApp-lift/antlr/Z3Output.g:54:4: NUMBER
                     {
-                    NUMBER3=(Token)match(input,NUMBER,FOLLOW_NUMBER_in_value227); 
+                    NUMBER3=(Token)match(input,NUMBER,FOLLOW_NUMBER_in_value192); 
 
                     s = (NUMBER3!=null?NUMBER3.getText():null);
+
+                    }
+                    break;
+                case 3 :
+                    // /Users/jkuo/PealApp-lift/antlr/Z3Output.g:55:4: '(' '-' unary ')'
+                    {
+                    match(input,8,FOLLOW_8_in_value199); 
+
+                    match(input,13,FOLLOW_13_in_value201); 
+
+                    pushFollow(FOLLOW_unary_in_value203);
+                    unary4=unary();
+
+                    state._fsp--;
+
+
+                    match(input,12,FOLLOW_12_in_value205); 
+
+                    s = "(- " + unary4 + ")";
+
+                    }
+                    break;
+                case 4 :
+                    // /Users/jkuo/PealApp-lift/antlr/Z3Output.g:56:4: '(' '/' lhs= NUMBER rhs= NUMBER ')'
+                    {
+                    match(input,8,FOLLOW_8_in_value212); 
+
+                    match(input,14,FOLLOW_14_in_value214); 
+
+                    lhs=(Token)match(input,NUMBER,FOLLOW_NUMBER_in_value218); 
+
+                    rhs=(Token)match(input,NUMBER,FOLLOW_NUMBER_in_value222); 
+
+                    match(input,12,FOLLOW_12_in_value224); 
+
+                    s = "(/ " + (lhs!=null?lhs.getText():null) + " " + (rhs!=null?rhs.getText():null) + ")";
 
                     }
                     break;
@@ -486,42 +460,132 @@ public class Z3OutputParser extends Parser {
     }
     // $ANTLR end "value"
 
+
+
+    // $ANTLR start "unary"
+    // /Users/jkuo/PealApp-lift/antlr/Z3Output.g:59:1: unary returns [String s] : ( IDENT | NUMBER | value );
+    public final String unary() throws RecognitionException {
+        String s = null;
+
+
+        Token IDENT5=null;
+        Token NUMBER6=null;
+        String value7 =null;
+
+
+        try {
+            // /Users/jkuo/PealApp-lift/antlr/Z3Output.g:60:2: ( IDENT | NUMBER | value )
+            int alt6=3;
+            switch ( input.LA(1) ) {
+            case IDENT:
+                {
+                alt6=1;
+                }
+                break;
+            case NUMBER:
+                {
+                alt6=2;
+                }
+                break;
+            case 8:
+                {
+                alt6=3;
+                }
+                break;
+            default:
+                NoViableAltException nvae =
+                    new NoViableAltException("", 6, 0, input);
+
+                throw nvae;
+
+            }
+
+            switch (alt6) {
+                case 1 :
+                    // /Users/jkuo/PealApp-lift/antlr/Z3Output.g:60:4: IDENT
+                    {
+                    IDENT5=(Token)match(input,IDENT,FOLLOW_IDENT_in_unary242); 
+
+                    s = (IDENT5!=null?IDENT5.getText():null);
+
+                    }
+                    break;
+                case 2 :
+                    // /Users/jkuo/PealApp-lift/antlr/Z3Output.g:61:4: NUMBER
+                    {
+                    NUMBER6=(Token)match(input,NUMBER,FOLLOW_NUMBER_in_unary249); 
+
+                    s = (NUMBER6!=null?NUMBER6.getText():null);
+
+                    }
+                    break;
+                case 3 :
+                    // /Users/jkuo/PealApp-lift/antlr/Z3Output.g:62:4: value
+                    {
+                    pushFollow(FOLLOW_value_in_unary256);
+                    value7=value();
+
+                    state._fsp--;
+
+
+                    s = value7;
+
+                    }
+                    break;
+
+            }
+        }
+        catch (RecognitionException re) {
+            reportError(re);
+            recover(input,re);
+        }
+
+        finally {
+        	// do for sure before leaving
+        }
+        return s;
+    }
+    // $ANTLR end "unary"
+
     // Delegated rules
 
 
  
 
-    public static final BitSet FOLLOW_15_in_results57 = new BitSet(new long[]{0x0000000000000010L});
-    public static final BitSet FOLLOW_IDENT_in_results61 = new BitSet(new long[]{0x0000000000002000L});
-    public static final BitSet FOLLOW_13_in_results63 = new BitSet(new long[]{0x0000000000000010L});
-    public static final BitSet FOLLOW_IDENT_in_results67 = new BitSet(new long[]{0x0000000000004000L});
-    public static final BitSet FOLLOW_14_in_results69 = new BitSet(new long[]{0x0000000000000010L});
-    public static final BitSet FOLLOW_IDENT_in_results73 = new BitSet(new long[]{0x0000000000010010L});
-    public static final BitSet FOLLOW_IDENT_in_results76 = new BitSet(new long[]{0x0000000000010000L});
-    public static final BitSet FOLLOW_16_in_results80 = new BitSet(new long[]{0x0000000000060000L});
-    public static final BitSet FOLLOW_model_in_results86 = new BitSet(new long[]{0x0000000000008002L});
-    public static final BitSet FOLLOW_17_in_model113 = new BitSet(new long[]{0x0000000000000800L});
+    public static final BitSet FOLLOW_17_in_results57 = new BitSet(new long[]{0x0000000000000010L});
+    public static final BitSet FOLLOW_IDENT_in_results61 = new BitSet(new long[]{0x0000000000008000L});
+    public static final BitSet FOLLOW_15_in_results63 = new BitSet(new long[]{0x0000000000000010L});
+    public static final BitSet FOLLOW_IDENT_in_results67 = new BitSet(new long[]{0x0000000000010000L});
+    public static final BitSet FOLLOW_16_in_results69 = new BitSet(new long[]{0x0000000000000010L});
+    public static final BitSet FOLLOW_IDENT_in_results73 = new BitSet(new long[]{0x0000000000040010L});
+    public static final BitSet FOLLOW_IDENT_in_results76 = new BitSet(new long[]{0x0000000000040000L});
+    public static final BitSet FOLLOW_18_in_results80 = new BitSet(new long[]{0x0000000000180000L});
+    public static final BitSet FOLLOW_model_in_results86 = new BitSet(new long[]{0x0000000000020002L});
+    public static final BitSet FOLLOW_19_in_model113 = new BitSet(new long[]{0x0000000000000800L});
     public static final BitSet FOLLOW_11_in_model115 = new BitSet(new long[]{0x0000000000000400L});
     public static final BitSet FOLLOW_define_in_model118 = new BitSet(new long[]{0x0000000000001400L});
     public static final BitSet FOLLOW_12_in_model124 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_18_in_model131 = new BitSet(new long[]{0x0000000000000080L});
+    public static final BitSet FOLLOW_20_in_model131 = new BitSet(new long[]{0x0000000000000080L});
     public static final BitSet FOLLOW_Z3ERROR_in_model133 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_10_in_define152 = new BitSet(new long[]{0x0000000000000010L});
-    public static final BitSet FOLLOW_IDENT_in_define156 = new BitSet(new long[]{0x0000000000000200L});
-    public static final BitSet FOLLOW_9_in_define158 = new BitSet(new long[]{0x0000000000000010L});
-    public static final BitSet FOLLOW_IDENT_in_define162 = new BitSet(new long[]{0x0000000000000030L});
-    public static final BitSet FOLLOW_value_in_define166 = new BitSet(new long[]{0x0000000000001000L});
-    public static final BitSet FOLLOW_12_in_define167 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_10_in_define176 = new BitSet(new long[]{0x0000000000000010L});
-    public static final BitSet FOLLOW_IDENT_in_define180 = new BitSet(new long[]{0x0000000000000200L});
-    public static final BitSet FOLLOW_9_in_define182 = new BitSet(new long[]{0x0000000000000010L});
-    public static final BitSet FOLLOW_IDENT_in_define186 = new BitSet(new long[]{0x0000000000000100L});
-    public static final BitSet FOLLOW_8_in_define188 = new BitSet(new long[]{0x0000000000000020L});
-    public static final BitSet FOLLOW_NUMBER_in_define192 = new BitSet(new long[]{0x0000000000000020L});
-    public static final BitSet FOLLOW_NUMBER_in_define196 = new BitSet(new long[]{0x0000000000001000L});
-    public static final BitSet FOLLOW_12_in_define197 = new BitSet(new long[]{0x0000000000001000L});
-    public static final BitSet FOLLOW_12_in_define198 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_IDENT_in_value220 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_NUMBER_in_value227 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_10_in_define151 = new BitSet(new long[]{0x0000000000000010L});
+    public static final BitSet FOLLOW_IDENT_in_define155 = new BitSet(new long[]{0x0000000000000200L});
+    public static final BitSet FOLLOW_9_in_define157 = new BitSet(new long[]{0x0000000000000010L});
+    public static final BitSet FOLLOW_IDENT_in_define161 = new BitSet(new long[]{0x0000000000000130L});
+    public static final BitSet FOLLOW_value_in_define165 = new BitSet(new long[]{0x0000000000001000L});
+    public static final BitSet FOLLOW_12_in_define166 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_IDENT_in_value185 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_NUMBER_in_value192 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_8_in_value199 = new BitSet(new long[]{0x0000000000002000L});
+    public static final BitSet FOLLOW_13_in_value201 = new BitSet(new long[]{0x0000000000000130L});
+    public static final BitSet FOLLOW_unary_in_value203 = new BitSet(new long[]{0x0000000000001000L});
+    public static final BitSet FOLLOW_12_in_value205 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_8_in_value212 = new BitSet(new long[]{0x0000000000004000L});
+    public static final BitSet FOLLOW_14_in_value214 = new BitSet(new long[]{0x0000000000000020L});
+    public static final BitSet FOLLOW_NUMBER_in_value218 = new BitSet(new long[]{0x0000000000000020L});
+    public static final BitSet FOLLOW_NUMBER_in_value222 = new BitSet(new long[]{0x0000000000001000L});
+    public static final BitSet FOLLOW_12_in_value224 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_IDENT_in_unary242 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_NUMBER_in_unary249 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_value_in_unary256 = new BitSet(new long[]{0x0000000000000002L});
 
 }

@@ -1,4 +1,4 @@
-// $ANTLR 3.4 /Users/jkuo/PealApp-lift/antlr/Z3Output.g 2013-07-18 15:42:58
+// $ANTLR 3.4 /Users/jkuo/PealApp-lift/antlr/Z3Output.g 2013-07-18 16:11:57
 
 package peal.antlr;
 
@@ -22,6 +22,8 @@ public class Z3OutputLexer extends Lexer {
     public static final int T__16=16;
     public static final int T__17=17;
     public static final int T__18=18;
+    public static final int T__19=19;
+    public static final int T__20=20;
     public static final int IDENT=4;
     public static final int NUMBER=5;
     public static final int WS=6;
@@ -158,10 +160,10 @@ public class Z3OutputLexer extends Lexer {
         try {
             int _type = T__13;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/jkuo/PealApp-lift/antlr/Z3Output.g:16:7: ( '=' )
-            // /Users/jkuo/PealApp-lift/antlr/Z3Output.g:16:9: '='
+            // /Users/jkuo/PealApp-lift/antlr/Z3Output.g:16:7: ( '-' )
+            // /Users/jkuo/PealApp-lift/antlr/Z3Output.g:16:9: '-'
             {
-            match('='); 
+            match('-'); 
 
             }
 
@@ -179,10 +181,10 @@ public class Z3OutputLexer extends Lexer {
         try {
             int _type = T__14;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/jkuo/PealApp-lift/antlr/Z3Output.g:17:7: ( '?' )
-            // /Users/jkuo/PealApp-lift/antlr/Z3Output.g:17:9: '?'
+            // /Users/jkuo/PealApp-lift/antlr/Z3Output.g:17:7: ( '/' )
+            // /Users/jkuo/PealApp-lift/antlr/Z3Output.g:17:9: '/'
             {
-            match('?'); 
+            match('/'); 
 
             }
 
@@ -200,12 +202,10 @@ public class Z3OutputLexer extends Lexer {
         try {
             int _type = T__15;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/jkuo/PealApp-lift/antlr/Z3Output.g:18:7: ( 'Result of analysis [' )
-            // /Users/jkuo/PealApp-lift/antlr/Z3Output.g:18:9: 'Result of analysis ['
+            // /Users/jkuo/PealApp-lift/antlr/Z3Output.g:18:7: ( '=' )
+            // /Users/jkuo/PealApp-lift/antlr/Z3Output.g:18:9: '='
             {
-            match("Result of analysis ["); 
-
-
+            match('='); 
 
             }
 
@@ -223,12 +223,10 @@ public class Z3OutputLexer extends Lexer {
         try {
             int _type = T__16;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/jkuo/PealApp-lift/antlr/Z3Output.g:19:7: ( ']:' )
-            // /Users/jkuo/PealApp-lift/antlr/Z3Output.g:19:9: ']:'
+            // /Users/jkuo/PealApp-lift/antlr/Z3Output.g:19:7: ( '?' )
+            // /Users/jkuo/PealApp-lift/antlr/Z3Output.g:19:9: '?'
             {
-            match("]:"); 
-
-
+            match('?'); 
 
             }
 
@@ -246,10 +244,10 @@ public class Z3OutputLexer extends Lexer {
         try {
             int _type = T__17;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/jkuo/PealApp-lift/antlr/Z3Output.g:20:7: ( 'sat' )
-            // /Users/jkuo/PealApp-lift/antlr/Z3Output.g:20:9: 'sat'
+            // /Users/jkuo/PealApp-lift/antlr/Z3Output.g:20:7: ( 'Result of analysis [' )
+            // /Users/jkuo/PealApp-lift/antlr/Z3Output.g:20:9: 'Result of analysis ['
             {
-            match("sat"); 
+            match("Result of analysis ["); 
 
 
 
@@ -269,10 +267,10 @@ public class Z3OutputLexer extends Lexer {
         try {
             int _type = T__18;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/jkuo/PealApp-lift/antlr/Z3Output.g:21:7: ( 'unsat' )
-            // /Users/jkuo/PealApp-lift/antlr/Z3Output.g:21:9: 'unsat'
+            // /Users/jkuo/PealApp-lift/antlr/Z3Output.g:21:7: ( ']:' )
+            // /Users/jkuo/PealApp-lift/antlr/Z3Output.g:21:9: ']:'
             {
-            match("unsat"); 
+            match("]:"); 
 
 
 
@@ -287,15 +285,61 @@ public class Z3OutputLexer extends Lexer {
     }
     // $ANTLR end "T__18"
 
+    // $ANTLR start "T__19"
+    public final void mT__19() throws RecognitionException {
+        try {
+            int _type = T__19;
+            int _channel = DEFAULT_TOKEN_CHANNEL;
+            // /Users/jkuo/PealApp-lift/antlr/Z3Output.g:22:7: ( 'sat' )
+            // /Users/jkuo/PealApp-lift/antlr/Z3Output.g:22:9: 'sat'
+            {
+            match("sat"); 
+
+
+
+            }
+
+            state.type = _type;
+            state.channel = _channel;
+        }
+        finally {
+        	// do for sure before leaving
+        }
+    }
+    // $ANTLR end "T__19"
+
+    // $ANTLR start "T__20"
+    public final void mT__20() throws RecognitionException {
+        try {
+            int _type = T__20;
+            int _channel = DEFAULT_TOKEN_CHANNEL;
+            // /Users/jkuo/PealApp-lift/antlr/Z3Output.g:23:7: ( 'unsat' )
+            // /Users/jkuo/PealApp-lift/antlr/Z3Output.g:23:9: 'unsat'
+            {
+            match("unsat"); 
+
+
+
+            }
+
+            state.type = _type;
+            state.channel = _channel;
+        }
+        finally {
+        	// do for sure before leaving
+        }
+    }
+    // $ANTLR end "T__20"
+
     // $ANTLR start "NUMBER"
     public final void mNUMBER() throws RecognitionException {
         try {
             int _type = NUMBER;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/jkuo/PealApp-lift/antlr/Z3Output.g:60:8: ( ( '.' | '0' .. '9' | '-' | 'E' )+ )
-            // /Users/jkuo/PealApp-lift/antlr/Z3Output.g:60:10: ( '.' | '0' .. '9' | '-' | 'E' )+
+            // /Users/jkuo/PealApp-lift/antlr/Z3Output.g:66:8: ( ( '.' | '0' .. '9' | '-' | 'E' )+ )
+            // /Users/jkuo/PealApp-lift/antlr/Z3Output.g:66:10: ( '.' | '0' .. '9' | '-' | 'E' )+
             {
-            // /Users/jkuo/PealApp-lift/antlr/Z3Output.g:60:10: ( '.' | '0' .. '9' | '-' | 'E' )+
+            // /Users/jkuo/PealApp-lift/antlr/Z3Output.g:66:10: ( '.' | '0' .. '9' | '-' | 'E' )+
             int cnt1=0;
             loop1:
             do {
@@ -350,8 +394,8 @@ public class Z3OutputLexer extends Lexer {
         try {
             int _type = IDENT;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/jkuo/PealApp-lift/antlr/Z3Output.g:61:7: ( ( 'a' .. 'z' | 'A' .. 'Z' ) ( '_' | 'a' .. 'z' | 'A' .. 'Z' | '0' .. '9' )* )
-            // /Users/jkuo/PealApp-lift/antlr/Z3Output.g:61:9: ( 'a' .. 'z' | 'A' .. 'Z' ) ( '_' | 'a' .. 'z' | 'A' .. 'Z' | '0' .. '9' )*
+            // /Users/jkuo/PealApp-lift/antlr/Z3Output.g:67:7: ( ( 'a' .. 'z' | 'A' .. 'Z' ) ( '_' | 'a' .. 'z' | 'A' .. 'Z' | '0' .. '9' )* )
+            // /Users/jkuo/PealApp-lift/antlr/Z3Output.g:67:9: ( 'a' .. 'z' | 'A' .. 'Z' ) ( '_' | 'a' .. 'z' | 'A' .. 'Z' | '0' .. '9' )*
             {
             if ( (input.LA(1) >= 'A' && input.LA(1) <= 'Z')||(input.LA(1) >= 'a' && input.LA(1) <= 'z') ) {
                 input.consume();
@@ -363,7 +407,7 @@ public class Z3OutputLexer extends Lexer {
             }
 
 
-            // /Users/jkuo/PealApp-lift/antlr/Z3Output.g:61:30: ( '_' | 'a' .. 'z' | 'A' .. 'Z' | '0' .. '9' )*
+            // /Users/jkuo/PealApp-lift/antlr/Z3Output.g:67:30: ( '_' | 'a' .. 'z' | 'A' .. 'Z' | '0' .. '9' )*
             loop2:
             do {
                 int alt2=2;
@@ -413,10 +457,10 @@ public class Z3OutputLexer extends Lexer {
         try {
             int _type = WS;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/jkuo/PealApp-lift/antlr/Z3Output.g:62:4: ( ( ' ' | '\\t' | '\\n' | '\\r' | '\\f' )+ )
-            // /Users/jkuo/PealApp-lift/antlr/Z3Output.g:62:6: ( ' ' | '\\t' | '\\n' | '\\r' | '\\f' )+
+            // /Users/jkuo/PealApp-lift/antlr/Z3Output.g:68:4: ( ( ' ' | '\\t' | '\\n' | '\\r' | '\\f' )+ )
+            // /Users/jkuo/PealApp-lift/antlr/Z3Output.g:68:6: ( ' ' | '\\t' | '\\n' | '\\r' | '\\f' )+
             {
-            // /Users/jkuo/PealApp-lift/antlr/Z3Output.g:62:6: ( ' ' | '\\t' | '\\n' | '\\r' | '\\f' )+
+            // /Users/jkuo/PealApp-lift/antlr/Z3Output.g:68:6: ( ' ' | '\\t' | '\\n' | '\\r' | '\\f' )+
             int cnt3=0;
             loop3:
             do {
@@ -473,8 +517,8 @@ public class Z3OutputLexer extends Lexer {
         try {
             int _type = Z3ERROR;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/jkuo/PealApp-lift/antlr/Z3Output.g:63:9: ( '(error \"line ' NUMBER ' column ' NUMBER ': model is not available\")' )
-            // /Users/jkuo/PealApp-lift/antlr/Z3Output.g:63:11: '(error \"line ' NUMBER ' column ' NUMBER ': model is not available\")'
+            // /Users/jkuo/PealApp-lift/antlr/Z3Output.g:69:9: ( '(error \"line ' NUMBER ' column ' NUMBER ': model is not available\")' )
+            // /Users/jkuo/PealApp-lift/antlr/Z3Output.g:69:11: '(error \"line ' NUMBER ' column ' NUMBER ': model is not available\")'
             {
             match("(error \"line "); 
 
@@ -506,8 +550,8 @@ public class Z3OutputLexer extends Lexer {
     // $ANTLR end "Z3ERROR"
 
     public void mTokens() throws RecognitionException {
-        // /Users/jkuo/PealApp-lift/antlr/Z3Output.g:1:8: ( T__8 | T__9 | T__10 | T__11 | T__12 | T__13 | T__14 | T__15 | T__16 | T__17 | T__18 | NUMBER | IDENT | WS | Z3ERROR )
-        int alt4=15;
+        // /Users/jkuo/PealApp-lift/antlr/Z3Output.g:1:8: ( T__8 | T__9 | T__10 | T__11 | T__12 | T__13 | T__14 | T__15 | T__16 | T__17 | T__18 | T__19 | T__20 | NUMBER | IDENT | WS | Z3ERROR )
+        int alt4=17;
         alt4 = dfa4.predict(input);
         switch (alt4) {
             case 1 :
@@ -599,31 +643,47 @@ public class Z3OutputLexer extends Lexer {
                 }
                 break;
             case 12 :
-                // /Users/jkuo/PealApp-lift/antlr/Z3Output.g:1:74: NUMBER
+                // /Users/jkuo/PealApp-lift/antlr/Z3Output.g:1:74: T__19
+                {
+                mT__19(); 
+
+
+                }
+                break;
+            case 13 :
+                // /Users/jkuo/PealApp-lift/antlr/Z3Output.g:1:80: T__20
+                {
+                mT__20(); 
+
+
+                }
+                break;
+            case 14 :
+                // /Users/jkuo/PealApp-lift/antlr/Z3Output.g:1:86: NUMBER
                 {
                 mNUMBER(); 
 
 
                 }
                 break;
-            case 13 :
-                // /Users/jkuo/PealApp-lift/antlr/Z3Output.g:1:81: IDENT
+            case 15 :
+                // /Users/jkuo/PealApp-lift/antlr/Z3Output.g:1:93: IDENT
                 {
                 mIDENT(); 
 
 
                 }
                 break;
-            case 14 :
-                // /Users/jkuo/PealApp-lift/antlr/Z3Output.g:1:87: WS
+            case 16 :
+                // /Users/jkuo/PealApp-lift/antlr/Z3Output.g:1:99: WS
                 {
                 mWS(); 
 
 
                 }
                 break;
-            case 15 :
-                // /Users/jkuo/PealApp-lift/antlr/Z3Output.g:1:90: Z3ERROR
+            case 17 :
+                // /Users/jkuo/PealApp-lift/antlr/Z3Output.g:1:102: Z3ERROR
                 {
                 mZ3ERROR(); 
 
@@ -638,57 +698,60 @@ public class Z3OutputLexer extends Lexer {
 
     protected DFA4 dfa4 = new DFA4(this);
     static final String DFA4_eotS =
-        "\1\uffff\1\21\3\uffff\1\13\1\uffff\2\13\1\12\10\uffff\3\13\1\12"+
-        "\1\13\1\32\2\13\1\uffff\2\13\1\37\1\13\2\uffff";
+        "\1\uffff\1\23\1\uffff\1\24\3\uffff\1\15\1\uffff\2\15\1\14\11\uffff"+
+        "\3\15\1\14\1\15\1\35\2\15\1\uffff\2\15\1\42\1\15\2\uffff";
     static final String DFA4_eofS =
-        "\41\uffff";
+        "\44\uffff";
     static final String DFA4_minS =
-        "\1\11\1\51\3\uffff\1\145\1\uffff\1\141\1\156\1\60\10\uffff\1\163"+
-        "\1\164\1\163\1\60\1\165\1\60\1\141\1\154\1\uffff\2\164\1\60\1\40"+
-        "\2\uffff";
+        "\1\11\1\51\1\uffff\1\55\3\uffff\1\145\1\uffff\1\141\1\156\1\60\11"+
+        "\uffff\1\163\1\164\1\163\1\60\1\165\1\60\1\141\1\154\1\uffff\2\164"+
+        "\1\60\1\40\2\uffff";
     static final String DFA4_maxS =
-        "\1\172\1\155\3\uffff\1\145\1\uffff\1\141\1\156\1\172\10\uffff\1"+
-        "\163\1\164\1\163\1\172\1\165\1\172\1\141\1\154\1\uffff\2\164\1\172"+
-        "\1\40\2\uffff";
+        "\1\172\1\155\1\uffff\1\105\3\uffff\1\145\1\uffff\1\141\1\156\1\172"+
+        "\11\uffff\1\163\1\164\1\163\1\172\1\165\1\172\1\141\1\154\1\uffff"+
+        "\2\164\1\172\1\40\2\uffff";
     static final String DFA4_acceptS =
-        "\2\uffff\1\5\1\6\1\7\1\uffff\1\11\3\uffff\1\14\1\15\1\16\1\2\1\3"+
-        "\1\4\1\17\1\1\10\uffff\1\12\4\uffff\1\13\1\10";
+        "\2\uffff\1\5\1\uffff\1\7\1\10\1\11\1\uffff\1\13\3\uffff\1\16\1\17"+
+        "\1\20\1\2\1\3\1\4\1\21\1\1\1\6\10\uffff\1\14\4\uffff\1\15\1\12";
     static final String DFA4_specialS =
-        "\41\uffff}>";
+        "\44\uffff}>";
     static final String[] DFA4_transitionS = {
-            "\2\14\1\uffff\2\14\22\uffff\1\14\7\uffff\1\1\1\2\3\uffff\2\12"+
-            "\1\uffff\12\12\3\uffff\1\3\1\uffff\1\4\1\uffff\4\13\1\11\14"+
-            "\13\1\5\10\13\2\uffff\1\6\3\uffff\22\13\1\7\1\13\1\10\5\13",
-            "\1\15\72\uffff\1\16\1\20\7\uffff\1\17",
+            "\2\16\1\uffff\2\16\22\uffff\1\16\7\uffff\1\1\1\2\3\uffff\1\3"+
+            "\1\14\1\4\12\14\3\uffff\1\5\1\uffff\1\6\1\uffff\4\15\1\13\14"+
+            "\15\1\7\10\15\2\uffff\1\10\3\uffff\22\15\1\11\1\15\1\12\5\15",
+            "\1\17\72\uffff\1\20\1\22\7\uffff\1\21",
+            "",
+            "\2\14\1\uffff\12\14\13\uffff\1\14",
             "",
             "",
             "",
-            "\1\22",
-            "",
-            "\1\23",
-            "\1\24",
-            "\12\25\7\uffff\4\13\1\25\25\13\4\uffff\1\13\1\uffff\32\13",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
+            "\1\25",
             "",
             "\1\26",
             "\1\27",
-            "\1\30",
-            "\12\25\7\uffff\4\13\1\25\25\13\4\uffff\1\13\1\uffff\32\13",
-            "\1\31",
-            "\12\13\7\uffff\32\13\4\uffff\1\13\1\uffff\32\13",
-            "\1\33",
-            "\1\34",
+            "\12\30\7\uffff\4\15\1\30\25\15\4\uffff\1\15\1\uffff\32\15",
             "",
-            "\1\35",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "\1\31",
+            "\1\32",
+            "\1\33",
+            "\12\30\7\uffff\4\15\1\30\25\15\4\uffff\1\15\1\uffff\32\15",
+            "\1\34",
+            "\12\15\7\uffff\32\15\4\uffff\1\15\1\uffff\32\15",
             "\1\36",
-            "\12\13\7\uffff\32\13\4\uffff\1\13\1\uffff\32\13",
+            "\1\37",
+            "",
             "\1\40",
+            "\1\41",
+            "\12\15\7\uffff\32\15\4\uffff\1\15\1\uffff\32\15",
+            "\1\43",
             "",
             ""
     };
@@ -723,7 +786,7 @@ public class Z3OutputLexer extends Lexer {
             this.transition = DFA4_transition;
         }
         public String getDescription() {
-            return "1:1: Tokens : ( T__8 | T__9 | T__10 | T__11 | T__12 | T__13 | T__14 | T__15 | T__16 | T__17 | T__18 | NUMBER | IDENT | WS | Z3ERROR );";
+            return "1:1: Tokens : ( T__8 | T__9 | T__10 | T__11 | T__12 | T__13 | T__14 | T__15 | T__16 | T__17 | T__18 | T__19 | T__20 | NUMBER | IDENT | WS | Z3ERROR );";
         }
     }
  
