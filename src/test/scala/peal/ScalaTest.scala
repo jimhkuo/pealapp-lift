@@ -7,8 +7,14 @@ import org.scalatest.junit.ShouldMatchersForJUnit
 import scala.collection.JavaConversions._
 import scala.sys.process._
 import java.io.File
+import test.i
 
 class ScalaTest extends ShouldMatchersForJUnit {
+
+  @Test
+  def testCanUseI() {
+      i.sayHi
+  }
 
   @Test
   def testProcess() {
