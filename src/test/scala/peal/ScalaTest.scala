@@ -15,6 +15,7 @@ class ScalaTest extends ShouldMatchersForJUnit {
   def testSubProject() {
       Hi.say
   }
+
   @Test
   def testProcess() {
     println("ls".!!)
