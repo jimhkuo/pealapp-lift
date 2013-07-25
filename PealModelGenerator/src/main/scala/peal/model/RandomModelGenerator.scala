@@ -3,7 +3,7 @@ package peal.model
 import peal.domain.{Pol, Rule, Predicate}
 import scala.collection.JavaConversions._
 import scala.util.Random
-import peal.domain.operator.Min
+import peal.domain.operator.{Mul, Plus, Max, Min}
 
 object RandomModelGenerator {
 
@@ -18,15 +18,36 @@ object RandomModelGenerator {
 
 
     val minPolicies = for (j <- 0 until n) yield {
-
       val rules = for (i <- 0 until m0) yield {
         new Rule(predicates(i), Random.nextDouble())
       }
-
       new Pol(rules, Min, Random.nextDouble())
     }
 
-    println(minPolicies.toList)
+    val maxPolicies = for (j <- 0 until n) yield {
+      val rules = for (i <- 0 until m1) yield {
+        new Rule(predicates(i), Random.nextDouble())
+      }
+      new Pol(rules, Max, Random.nextDouble())
+    }
+
+    val plusPolicies = for (j <- 0 until n) yield {
+      val rules = for (i <- 0 until m2) yield {
+        new Rule(predicates(i), Random.nextDouble())
+      }
+      new Pol(rules, Plus, Random.nextDouble())
+    }
+
+    val mulPolicies = for (j <- 0 until n) yield {
+      val rules = for (i <- 0 until m3) yield {
+        new Rule(predicates(i), Random.nextDouble())
+      }
+      new Pol(rules, Mul, Random.nextDouble())
+    }
+
+    val policies = minPolicies ++ maxPolicies ++ plusPolicies ++ mulPolicies
+
+    println(policies.toList)
     ""
   }
 
