@@ -48,11 +48,11 @@ object RandomModelGenerator {
     val policiesMap = policies.map {
       b =>
         i += 1
-        ("b" + i, b)
+        (i, b)
     }.toMap
 
     val out = for (s <- policiesMap.keys.toSeq.sortWith(_ < _)) yield {
-      s + " = " + policiesMap(s).toString
+      "b" + s + " = " + policiesMap(s).toString
     }
 
     out.toSeq.mkString("\n")
