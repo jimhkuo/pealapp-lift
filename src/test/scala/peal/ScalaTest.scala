@@ -7,20 +7,21 @@ import org.scalatest.junit.ShouldMatchersForJUnit
 import scala.collection.JavaConversions._
 import scala.sys.process._
 import java.io.File
-import test.Hi
+import test.{Hello, Hi}
 
 class ScalaTest extends ShouldMatchersForJUnit {
 
   @Test
   def testSubProject() {
-      Hi.say
+    Hi.say
+    Hello.say
   }
 
   @Test
   def testProcess() {
     println("ls".!!)
     println(Process(Seq("bash", "-c", "z3 -h"), None, "PATH" -> "/Users/jkuo/tools/z3/bin").!!)
-//    println("z3".!!)
+    //    println("z3".!!)
   }
 
   @Test
