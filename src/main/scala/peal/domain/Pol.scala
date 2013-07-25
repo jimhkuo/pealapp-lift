@@ -6,5 +6,5 @@ import peal.domain.operator.Operators
 import peal.synthesis.PolicySet
 
 case class Pol(val rules: java.util.List[Rule], val operator: Operators, val defaultScore: Double) extends PolicySet {
-  override def toString: String = operator + " (" + rules.mkString(" ") + ") default " + defaultScore
+  override def toString: String = operator + " (" + rules.mkString(" ") + ") default " + "%.2f".format(defaultScore)
 }
