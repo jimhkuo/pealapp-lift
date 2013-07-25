@@ -45,14 +45,16 @@ object RandomModelGenerator {
     val policies = Random.shuffle(minPolicies ++ maxPolicies ++ plusPolicies ++ mulPolicies)
 
     var i = -1
-    val policiesMap = policies.map{b =>
-      i += 1
-      ("b" + i, b)
+    val policiesMap = policies.map {
+      b =>
+        i += 1
+        ("b" + i, b)
     }.toMap
 
-    println(policiesMap)
+    val out = for (s <- policiesMap.keys.toSeq.sortWith(_ < _)) yield {
+      s + " = " + policiesMap(s).toString
+    }
 
-    ""
+    out.toSeq.mkString("\n")
   }
-
 }
