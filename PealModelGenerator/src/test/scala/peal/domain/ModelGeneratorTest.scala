@@ -12,19 +12,20 @@ class ModelGeneratorTest {
 
   @Test
   def testBuildLattice() {
-    val n = 16
+    var x = 12
 
-    val base = for (i <- 0 until n by 2) yield (i)
-    val base2 = for (i <- 1 until n by 2) yield (i)
+    var n = math.pow(2, math.sqrt(x).toInt).toInt
 
-    val basePairs = base.zip(base2)
-    println(basePairs)
+    println(n)
 
-    val first = for (i <- 0 until basePairs.size by 2) yield(i)
-    val first2 = for (i <- 1 until basePairs.size by 2) yield(i)
+    while (n != 1) {
+      val base = for (i <- 0 until n by 2) yield (i)
+      val base2 = for (i <- 1 until n by 2) yield (i)
+      val basePairs = base.zip(base2)
+      println(basePairs)
 
-    val firstPairs = first.zip(first2)
-    println(firstPairs)
+      n = basePairs.size
+    }
 
   }
 
