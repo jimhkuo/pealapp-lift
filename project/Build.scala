@@ -4,7 +4,7 @@ import sbt._
 import Keys._
 
 object PealBuild extends Build {
-  lazy val root = Project(id = "PealApp-lift", base = file(".")) dependsOn (pmg, child1)
+  lazy val root = Project(id = "PealApp-lift", base = file(".")) aggregate (pmg, child1) dependsOn(pmg, child1)
 
   lazy val pmg = Project(id = "PealModelGenerator", base = file("PealModelGenerator"))
 
