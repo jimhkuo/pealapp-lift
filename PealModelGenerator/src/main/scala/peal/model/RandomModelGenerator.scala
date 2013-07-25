@@ -11,13 +11,9 @@ object RandomModelGenerator {
     var predicates = for (i <- 0 until k) yield (new Predicate("q" + i))
     println(predicates)
 
-    predicates = Random.shuffle(predicates)
-
-    println(predicates)
-
-
 
     val minPolicies = for (j <- 0 until n) yield {
+      predicates = Random.shuffle(predicates)
       val rules = for (i <- 0 until m0) yield {
         new Rule(predicates(i), Random.nextDouble())
       }
@@ -25,6 +21,7 @@ object RandomModelGenerator {
     }
 
     val maxPolicies = for (j <- 0 until n) yield {
+      predicates = Random.shuffle(predicates)
       val rules = for (i <- 0 until m1) yield {
         new Rule(predicates(i), Random.nextDouble())
       }
@@ -32,6 +29,7 @@ object RandomModelGenerator {
     }
 
     val plusPolicies = for (j <- 0 until n) yield {
+      predicates = Random.shuffle(predicates)
       val rules = for (i <- 0 until m2) yield {
         new Rule(predicates(i), Random.nextDouble())
       }
@@ -39,6 +37,7 @@ object RandomModelGenerator {
     }
 
     val mulPolicies = for (j <- 0 until n) yield {
+      predicates = Random.shuffle(predicates)
       val rules = for (i <- 0 until m3) yield {
         new Rule(predicates(i), Random.nextDouble())
       }
