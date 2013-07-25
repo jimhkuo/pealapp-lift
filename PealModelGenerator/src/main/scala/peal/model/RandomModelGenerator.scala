@@ -42,19 +42,21 @@ object RandomModelGenerator {
       new Pol(rules, Mul, Random.nextDouble())
     }
 
-    val policies = Random.shuffle(minPolicies ++ maxPolicies ++ plusPolicies ++ mulPolicies)
+    val policyList = Random.shuffle(minPolicies ++ maxPolicies ++ plusPolicies ++ mulPolicies)
 
     var i = -1
-    val policiesMap = policies.map {
+    val policyMap = policyList.map {
       b =>
         i += 1
         (i, b)
     }.toMap
 
-    val out = for (s <- policiesMap.keys.toSeq.sortWith(_ < _)) yield {
-      "b" + s + " = " + policiesMap(s).toString
+    val policies = for (s <- policyMap.keys.toSeq.sortWith(_ < _)) yield {
+      "b" + s + " = " + policyMap(s).toString
     }
 
-    out.toSeq.mkString("\n")
+
+
+    policies.toSeq.mkString("\n")
   }
 }
