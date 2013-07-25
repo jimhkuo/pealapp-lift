@@ -9,8 +9,6 @@ object RandomModelGenerator {
 
   def generate(n: Int, m0: Int, m1: Int, m2: Int, m3: Int, k: Int, th: Double, delta: Double): String = {
     var predicates = for (i <- 0 until k) yield (new Predicate("q" + i))
-    println(predicates)
-
 
     val minPolicies = for (j <- 0 until n) yield {
       predicates = Random.shuffle(predicates)
@@ -44,9 +42,16 @@ object RandomModelGenerator {
       new Pol(rules, Mul, Random.nextDouble())
     }
 
-    val policies = minPolicies ++ maxPolicies ++ plusPolicies ++ mulPolicies
+    val policies = Random.shuffle(minPolicies ++ maxPolicies ++ plusPolicies ++ mulPolicies)
 
-    println(policies.toList)
+    var i = -1
+    val policiesMap = policies.map{b =>
+      i += 1
+      ("b" + i, b)
+    }.toMap
+
+    println(policiesMap)
+
     ""
   }
 
