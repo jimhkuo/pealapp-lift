@@ -5,6 +5,7 @@ import peal.model.RandomModelGenerator
 
 class ModelGeneratorTest {
 
+  //TODO wip
   @Test
   def test() {
     println(RandomModelGenerator.generate(4, 5, 4, 3, 2, 7, 0, 0))
@@ -12,7 +13,7 @@ class ModelGeneratorTest {
 
   @Test
   def testBuildLattice() {
-    var x = 12
+    val x = 16
 
     var n = math.pow(2, math.sqrt(x).toInt).toInt
 

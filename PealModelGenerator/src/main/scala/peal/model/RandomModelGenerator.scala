@@ -4,6 +4,7 @@ import peal.domain.{Pol, Rule, Predicate}
 import scala.collection.JavaConversions._
 import scala.util.Random
 import peal.domain.operator.{Mul, Plus, Max, Min}
+import scala.collection.mutable.ListBuffer
 
 object RandomModelGenerator {
 
@@ -55,8 +56,35 @@ object RandomModelGenerator {
       "b" + s + " = " + policyMap(s).toString
     }
 
+    val x = n * 4
 
+    var m = math.pow(2, math.sqrt(x).toInt).toInt
 
-    policies.toSeq.mkString("\n")
+    println(m)
+
+    val lattice = ListBuffer[Seq[(Int, Int)]]()
+    while (m != 1) {
+      val lhs = for (i <- 0 until m by 2) yield (i)
+      val rhs = for (i <- 1 until m by 2) yield (i)
+      val pairs = lhs.zip(rhs)
+      lattice.append(pairs)
+
+      m = pairs.size
+    }
+
+    val pSets = for (i <- 0 until lattice.size) yield {
+        val pSet = for (j <- 0 until lattice(i).size) yield {
+          if (i == 0) {
+            "p" + lattice(i)(j)._1 + "_" + lattice(i)(j)._2 + " = min(b" + lattice(i)(j)._1 + ",b" + lattice(i)(j)._2 + ")"
+          }
+          else {
+            "p" + lattice(i-1)(j)._1 + "_" + lattice(i-1)(j+1)._2 + " = "
+          }
+        }
+
+      pSet.mkString("\n")
+    }
+
+    policies.toSeq.mkString("\n") + "\n" + pSets.mkString("\n")  + "\n" + lattice.mkString("\n")
   }
 }
