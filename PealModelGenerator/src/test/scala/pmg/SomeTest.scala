@@ -7,6 +7,6 @@ class SomeTest extends ShouldMatchersForJUnit {
 
   @Test
   def testSubProject() {
-    println("hi")
+    println("SomeTest in PealModelGenerator")
   }
 }
