@@ -59,9 +59,6 @@ object RandomModelGenerator {
     val x = n * 4
 
     var m = math.pow(2, math.sqrt(x).toInt).toInt
-
-    println(m)
-
     var layer = 0
     val lattice = ListBuffer[Seq[(Int, Int)]]()
     while (m != 1) {
@@ -89,13 +86,13 @@ object RandomModelGenerator {
           "p" + lattice(i)(j)._1 + "_" + lattice(i)(j)._2 + " = min(b" + lattice(i)(j)._1 + ",b" + lattice(i)(j)._2 + ")"
         }
         else {
-          "p" + lattice(i)(j)._1 + "_" + lattice(i)(j)._2 + " = min(b" + lattice(i)(j)._1 + "_" + lattice(i-1)(j*2)._2 + ",b" + lattice(i-1)(j+1)._1 + "_" + lattice(i)(j)._2 + ")"
+          "p" + lattice(i)(j)._1 + "_" + lattice(i)(j)._2 + " = min(b" + lattice(i)(j)._1 + "_" + lattice(i-1)(j*2)._2 + ",b" + lattice(i-1)(j*2+1)._1 + "_" + lattice(i)(j)._2 + ")"
         }
       }
 
       pSet.mkString("\n")
     }
 
-    policies.toSeq.mkString("\n") + "\n" + pSets.mkString("\n") + "\n" + lattice.mkString("\n")
+    policies.toSeq.mkString("\n") + "\n" + pSets.mkString("\n") //+ "\n" + lattice.mkString("\n")
   }
 }
