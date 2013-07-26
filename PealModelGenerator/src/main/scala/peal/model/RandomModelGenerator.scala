@@ -86,7 +86,11 @@ object RandomModelGenerator {
           "p" + lattice(i)(j)._1 + "_" + lattice(i)(j)._2 + " = min(b" + lattice(i)(j)._1 + ",b" + lattice(i)(j)._2 + ")"
         }
         else {
-          "p" + lattice(i)(j)._1 + "_" + lattice(i)(j)._2 + " = min(b" + lattice(i)(j)._1 + "_" + lattice(i-1)(j*2)._2 + ",b" + lattice(i-1)(j*2+1)._1 + "_" + lattice(i)(j)._2 + ")"
+          val operator = i % 2 match {
+            case 0 => "min"
+            case 1 => "max"
+          }
+          "p" + lattice(i)(j)._1 + "_" + lattice(i)(j)._2 + " = " + operator + "(b" + lattice(i)(j)._1 + "_" + lattice(i-1)(j*2)._2 + ",b" + lattice(i-1)(j*2+1)._1 + "_" + lattice(i)(j)._2 + ")"
         }
       }
 
