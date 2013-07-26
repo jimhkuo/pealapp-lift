@@ -56,6 +56,7 @@ object RandomModelGenerator {
       "b" + s + " = " + policyMap(s).toString
     }
 
+    //TODO need to deal with reminders
     val x = n * 4
 
     var m = math.pow(2, math.sqrt(x).toInt).toInt
