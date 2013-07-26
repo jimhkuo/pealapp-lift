@@ -1,9 +1,9 @@
 package peal.domain.util
 
 import peal.domain.{BasicPolicySet, Pol}
-import peal.synthesis.PolicySet
 import java.util.Map
 import scala.collection.JavaConversions._
+import peal.synthesis.PolicySet
 
 
 object PolicyResolver {

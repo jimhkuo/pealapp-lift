@@ -1,6 +1,5 @@
 package peal.domain
 
-
 import scala.collection.JavaConversions._
 import peal.domain.operator.Operators
 import peal.synthesis.PolicySet

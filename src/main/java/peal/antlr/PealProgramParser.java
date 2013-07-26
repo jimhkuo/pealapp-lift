@@ -1,4 +1,4 @@
-// $ANTLR 3.4 /Users/jkuo/PealApp-lift/antlr/PealProgram.g 2013-07-18 15:26:03
+// $ANTLR 3.4 /Users/jkuo/PealApp-lift/antlr/PealProgram.g 2013-07-26 14:23:48
 
 package peal.antlr;
 import java.util.*;
@@ -996,7 +996,7 @@ public class PealProgramParser extends Parser {
 
             match(input,9,FOLLOW_9_in_rule495); 
 
-            r = new Rule(new Predicate((IDENT11!=null?IDENT11.getText():null), ""),Double.valueOf((NUMBER12!=null?NUMBER12.getText():null)));
+            r = new Rule(new Predicate((IDENT11!=null?IDENT11.getText():null)),Double.valueOf((NUMBER12!=null?NUMBER12.getText():null)));
 
             }
 

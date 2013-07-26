@@ -1,7 +1,11 @@
 package peal.synthesis
 
 import _root_.z3.scala.{Z3AST, Z3Context}
-import peal.domain.{MaxPolicySet, Pol, BasicPolicySet, MinPolicySet}
+import peal.domain._
+import peal.domain.BasicPolicySet
+import peal.domain.MinPolicySet
+import peal.domain.MaxPolicySet
+import peal.domain.Pol
 
 class LessThanThCondition(phi: PolicySet, th: Double) extends Condition {
   def synthesis(z3: Z3Context, consts: Map[String, Z3AST]): Z3AST = phi match {

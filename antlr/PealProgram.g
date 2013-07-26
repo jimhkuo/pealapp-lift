@@ -84,7 +84,7 @@ pol	returns [Pol p]
 	;
 
 rule 	returns [Rule r]
-	: '(' IDENT NUMBER ')' {$r = new Rule(new Predicate($IDENT.text, ""),Double.valueOf($NUMBER.text));}
+	: '(' IDENT NUMBER ')' {$r = new Rule(new Predicate($IDENT.text),Double.valueOf($NUMBER.text));}
 	;
 
 NUMBER : ('.'|'0'..'9'|'-'|'E')+ {if(ignore) skip();};
