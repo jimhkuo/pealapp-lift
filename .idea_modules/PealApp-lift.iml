@@ -60,6 +60,8 @@
     <orderEntry type="library" name="antlr-3.4-complete.jar" level="project" />
     <orderEntry type="library" name="scalaz3_2.10-2.0-20130627-mac.jar" level="project" />
     <orderEntry type="library" name="scalaz3_2.10-2.0-20130706-linux.jar" level="project" />
+    <orderEntry type="module" module-name="Domain" exported="" />
+    <orderEntry type="module" module-name="PealModelGenerator" exported="" />
   </component>
 </module>
 
