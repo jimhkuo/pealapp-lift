@@ -56,7 +56,6 @@ object RandomModelGenerator {
       "b" + s + " = " + policyMap(s).toString
     }
 
-    //TODO need to deal with reminders
     val x = n * 4
 
     var m = math.pow(2, math.sqrt(x).toInt).toInt
@@ -101,13 +100,25 @@ object RandomModelGenerator {
     val end = math.pow(2, math.sqrt(x).toInt).toInt
 
     val reminder = for (i <- end until x by 2) yield {
-      "p" + i + "_" + (i+1) + " = min(b" + i + ", b" + (i+1) + ")"
+      ("p" + i + "_" + (i+1), "min(b" + i + ", b" + (i+1) + ")")
     }
 
     val top = pSets.flatten.toSeq.last._1
-    println(top)
 
+    var accumulated = top
+    var ii = -1
+    var lastBit = ""
+    for (r <- reminder) {
 
-    policies.toSeq.mkString("\n") + "\n" + pSets.flatten.toSeq.map(c => c._1 + " = " + c._2).mkString("\n") + "\n" + reminder.mkString("\n")
+      ii += 1
+      val out = ii % 2 match {
+        case 0 => top + "_" + ii + " = min(" + accumulated + "," + r._1 + ")\n"
+        case 1 => top + "_" + ii + " = max(" + accumulated + "," + r._1 + ")\n"
+      }
+      lastBit += out
+      accumulated = top + "_" + ii
+    }
+
+    policies.toSeq.mkString("\n") + "\n" + pSets.flatten.toSeq.map(c => c._1 + " = " + c._2).mkString("\n") + "\n" + reminder.toSeq.map(c => c._1 + " = " + c._2).mkString("\n") + "\n" + lastBit
   }
 }
