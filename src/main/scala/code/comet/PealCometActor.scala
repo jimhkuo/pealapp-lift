@@ -54,6 +54,7 @@ class PealCometActor extends CometActor with Loggable {
     "name5 = different? cond1 cond2\n"
   var inputPolicies = defaultInput
   var majorityVotingCount = 10
+  var randomModelParam = "5, 5, 4, 3, 2, 7, 0, 0"
 
   def render = {
     this ! Init
@@ -82,6 +83,15 @@ class PealCometActor extends CometActor with Loggable {
           majorityVotingCount = s.toInt
           _Noop
         }, "id" -> "n", "size" -> "10")}
+        </div>
+        <div>
+          {SHtml.ajaxButton("Reset to sample policies", () => {
+          this ! Reset
+          _Noop
+        }) }{SHtml.ajaxText(randomModelParam, s => {
+          randomModelParam = s
+          _Noop
+        }, "id" -> "r", "size" -> "20")}
         </div>
         <div>
           {SHtml.ajaxButton("Synthesise (and show results)", () => {
