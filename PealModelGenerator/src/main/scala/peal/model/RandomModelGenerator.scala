@@ -101,9 +101,9 @@ object RandomModelGenerator {
       pSet
     }
 
-//    val end = math.pow(2, math.sqrt(x).toInt).toInt
+    val end = math.pow(2, l).toInt
 
-    val reminder = for (i <- l until x by 2) yield {
+    val reminder = for (i <- end until x by 2) yield {
       ("p" + i + "_" + (i+1), "min(b" + i + ", b" + (i+1) + ")")
     }
 
@@ -123,6 +123,6 @@ object RandomModelGenerator {
       accumulated = top + "_" + ii
     }
 
-    policies.toSeq.mkString("\n") + "\n" + pSets.flatten.toSeq.map(c => c._1 + " = " + c._2).mkString("\n") + "\n" + reminder.toSeq.map(c => c._1 + " = " + c._2).mkString("\n") + "\n" + lastBit
+    policies.toSeq.mkString("\n") + "\n" + pSets.flatten.toSeq.map(c => c._1 + " = " + c._2).mkString("\n") + "\n\n" + reminder.toSeq.map(c => c._1 + " = " + c._2).mkString("\n") + "\n\n" + lastBit
   }
 }
