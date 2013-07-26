@@ -61,8 +61,8 @@ object RandomModelGenerator {
     }
 
     val x = n * 4
-
-    var m = math.pow(2, math.sqrt(x).toInt).toInt
+    val l = math.log(x) / math.log(2)
+    var m = math.pow(2, l.floor.toInt).toInt
     var layer = 0
     val lattice = ListBuffer[Seq[(Int, Int)]]()
     while (m != 1) {
