@@ -61,8 +61,8 @@ object RandomModelGenerator {
     }
 
     val x = n * 4
-    val l = math.log(x) / math.log(2)
-    var m = math.pow(2, l.floor.toInt).toInt
+    val l = (math.log(x) / math.log(2)).floor.toInt
+    var m = math.pow(2, l).toInt
     var layer = 0
     val lattice = ListBuffer[Seq[(Int, Int)]]()
     while (m != 1) {
@@ -101,9 +101,9 @@ object RandomModelGenerator {
       pSet
     }
 
-    val end = math.pow(2, math.sqrt(x).toInt).toInt
+//    val end = math.pow(2, math.sqrt(x).toInt).toInt
 
-    val reminder = for (i <- end until x by 2) yield {
+    val reminder = for (i <- l until x by 2) yield {
       ("p" + i + "_" + (i+1), "min(b" + i + ", b" + (i+1) + ")")
     }
 
