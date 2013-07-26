@@ -89,6 +89,6 @@ rule 	returns [Rule r]
 
 NUMBER : ('.'|'0'..'9'|'-'|'E')+ {if(ignore) skip();};
 NEWLINE:'\r'? '\n' { $channel = HIDDEN;};
-IDENT : ('a'..'z' | 'A'..'Z')('a'..'z' | 'A'..'Z' | '0'..'9')* {if(ignore) skip();};
+IDENT : ('a'..'z' | 'A'..'Z')('a'..'z' | 'A'..'Z' | '0'..'9' | '_')* {if(ignore) skip();};
 WS : (' ' | '\t' | '\n' | '\r' | '\f')+ { $channel = HIDDEN;};
 
