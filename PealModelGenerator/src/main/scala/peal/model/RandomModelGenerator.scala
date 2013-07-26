@@ -84,20 +84,30 @@ object RandomModelGenerator {
     val pSets = for (i <- 0 until lattice.size) yield {
       val pSet = for (j <- 0 until lattice(i).size) yield {
         if (i == 0) {
-          "p" + lattice(i)(j)._1 + "_" + lattice(i)(j)._2 + " = min(b" + lattice(i)(j)._1 + ",b" + lattice(i)(j)._2 + ")"
+          ("p" + lattice(i)(j)._1 + "_" + lattice(i)(j)._2, "min(b" + lattice(i)(j)._1 + ",b" + lattice(i)(j)._2 + ")")
         }
         else {
           val operator = i % 2 match {
             case 0 => "min"
             case 1 => "max"
           }
-          "p" + lattice(i)(j)._1 + "_" + lattice(i)(j)._2 + " = " + operator + "(b" + lattice(i)(j)._1 + "_" + lattice(i-1)(j*2)._2 + ",b" + lattice(i-1)(j*2+1)._1 + "_" + lattice(i)(j)._2 + ")"
+          ("p" + lattice(i)(j)._1 + "_" + lattice(i)(j)._2, operator + "(b" + lattice(i)(j)._1 + "_" + lattice(i-1)(j*2)._2 + ",b" + lattice(i-1)(j*2+1)._1 + "_" + lattice(i)(j)._2 + ")")
         }
       }
 
-      pSet.mkString("\n")
+      pSet
     }
 
-    policies.toSeq.mkString("\n") + "\n" + pSets.mkString("\n") //+ "\n" + lattice.mkString("\n")
+    val end = math.pow(2, math.sqrt(x).toInt).toInt
+
+    val reminder = for (i <- end until x by 2) yield {
+      "p" + i + "_" + (i+1) + " = min(b" + i + ", b" + (i+1) + ")"
+    }
+
+    val top = pSets.flatten.toSeq.last._1
+    println(top)
+
+
+    policies.toSeq.mkString("\n") + "\n" + pSets.flatten.toSeq.map(c => c._1 + " = " + c._2).mkString("\n") + "\n" + reminder.mkString("\n")
   }
 }
