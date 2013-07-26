@@ -77,8 +77,8 @@ object RandomModelGenerator {
           if (i == 0) {
             "p" + lattice(i)(j)._1 + "_" + lattice(i)(j)._2 + " = min(b" + lattice(i)(j)._1 + ",b" + lattice(i)(j)._2 + ")"
           }
-          else {
-            "p" + lattice(i-1)(j)._1 + "_" + lattice(i-1)(j+1)._2 + " = "
+          else { //if (j % 2 == 0) {
+            "p" + lattice(i-1)(j*2)._1 + "_" + lattice(i-1)((j*2)+1)._2 + " = "
           }
         }
 
