@@ -24,6 +24,7 @@ import code.lib.Message
 import scala.Some
 import code.lib.Result
 import code.lib.SaveFile
+import peal.model.RandomModelGenerator
 
 class PealCometActor extends CometActor with Loggable {
   val resultList = ListBuffer[String]()
@@ -85,8 +86,8 @@ class PealCometActor extends CometActor with Loggable {
         }, "id" -> "n", "size" -> "10")}
         </div>
         <div>
-          {SHtml.ajaxButton("Reset to sample policies", () => {
-          this ! Reset
+          {SHtml.ajaxButton("Generate random model", () => {
+          this ! Generate
           _Noop
         }) }{SHtml.ajaxText(randomModelParam, s => {
           randomModelParam = s
@@ -166,6 +167,13 @@ class PealCometActor extends CometActor with Loggable {
     case Reset =>
       this ! Message("")
       inputPolicies = defaultInput
+      partialUpdate(JqId("policies") ~> JqVal(inputPolicies))
+    case Generate =>
+      this ! Message("")
+//      println(randomModelParam)
+//      println(randomModelParam.split(Array(' ', ',')).toSeq.filterNot(_ == ""))
+//      println(RandomModelGenerator.generate(randomModelParam.split(Array(' ', ',')).filterNot(_ == ""):_*))
+      inputPolicies = RandomModelGenerator.generate(randomModelParam.split(Array(' ', ',')).filterNot(_ == ""):_*)
       partialUpdate(JqId("policies") ~> JqVal(inputPolicies))
   }
 
