@@ -62,29 +62,41 @@ object RandomModelGenerator {
 
     println(m)
 
+    var layer = 0
     val lattice = ListBuffer[Seq[(Int, Int)]]()
     while (m != 1) {
-      val lhs = for (i <- 0 until m by 2) yield (i)
-      val rhs = for (i <- 1 until m by 2) yield (i)
-      val pairs = lhs.zip(rhs)
-      lattice.append(pairs)
+      if (layer == 0) {
+        val lhs = for (i <- 0 until m by 2) yield (i)
+        val rhs = for (i <- 0 until m by 2) yield (i+1)
+        val pairs = lhs.zip(rhs)
+        lattice.append(pairs)
+        m = pairs.size
+      }
+      else {
+        val lhs = for (i <- 0 until m by 2) yield (lattice(layer-1)(i)._1)
+        val rhs = for (i <- 0 until m by 2) yield (lattice(layer-1)(i+1)._2)
+        val pairs = lhs.zip(rhs)
+        lattice.append(pairs)
+        m = pairs.size
+      }
 
-      m = pairs.size
+      layer += 1
     }
 
     val pSets = for (i <- 0 until lattice.size) yield {
-        val pSet = for (j <- 0 until lattice(i).size) yield {
-          if (i == 0) {
-            "p" + lattice(i)(j)._1 + "_" + lattice(i)(j)._2 + " = min(b" + lattice(i)(j)._1 + ",b" + lattice(i)(j)._2 + ")"
-          }
-          else { //if (j % 2 == 0) {
-            "p" + lattice(i-1)(j*2)._1 + "_" + lattice(i-1)((j*2)+1)._2 + " = "
-          }
+      val pSet = for (j <- 0 until lattice(i).size) yield {
+        if (i == 0) {
+          "p" + lattice(i)(j)._1 + "_" + lattice(i)(j)._2 + " = min(b" + lattice(i)(j)._1 + ",b" + lattice(i)(j)._2 + ")"
         }
+        else {
+          //if (j % 2 == 0) {
+          "p" + lattice(i - 1)(j * 2)._1 + "_" + lattice(i - 1)((j * 2) + 1)._2 + " = "
+        }
+      }
 
       pSet.mkString("\n")
     }
 
-    policies.toSeq.mkString("\n") + "\n" + pSets.mkString("\n")  + "\n" + lattice.mkString("\n")
+    policies.toSeq.mkString("\n") + "\n" + pSets.mkString("\n") + "\n" + lattice.mkString("\n")
   }
 }
