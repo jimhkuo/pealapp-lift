@@ -123,12 +123,12 @@ object RandomModelGenerator {
     }
 
     if (!lastBit.isEmpty) {
-      lastBit = "\n\n" + lastBit + "\n"
+      lastBit = "\n\n" + lastBit
     }
 
     val cond1 = "cond1 = " + "%.2f".format(th) + " < " + finalPolicySet
     val cond2 = "cond2 = " + "%.2f".format(th + delta) + " < " + finalPolicySet
 
-    policies.toSeq.mkString("\n") + "\n" + pSets.flatten.toSeq.map(c => c._1 + " = " + c._2).mkString("\n") + "\n\n" + reminder.toSeq.map(c => c._1 + " = " + c._2).mkString("\n") + lastBit + cond1 + "\n" + cond2
+    "POLICIES\n" + policies.toSeq.mkString("\n") + "\nPOLICY_SETS\n" + pSets.flatten.toSeq.map(c => c._1 + " = " + c._2).mkString("\n") + "\n\n" + reminder.toSeq.map(c => c._1 + " = " + c._2).mkString("\n") + lastBit + "CONDITIONS\n" + cond1 + "\n" + cond2
   }
 }
