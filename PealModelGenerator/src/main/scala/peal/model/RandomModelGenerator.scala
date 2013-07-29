@@ -108,21 +108,27 @@ object RandomModelGenerator {
     }
 
     val top = pSets.flatten.toSeq.last._1
-
-    var accumulated = top
+    var finalPolicySet = top
     var ii = -1
     var lastBit = ""
     for (r <- reminder) {
 
       ii += 1
       val out = ii % 2 match {
-        case 0 => top + "_" + ii + " = min(" + accumulated + "," + r._1 + ")\n"
-        case 1 => top + "_" + ii + " = max(" + accumulated + "," + r._1 + ")\n"
+        case 0 => top + "_" + ii + " = min(" + finalPolicySet + "," + r._1 + ")\n"
+        case 1 => top + "_" + ii + " = max(" + finalPolicySet + "," + r._1 + ")\n"
       }
       lastBit += out
-      accumulated = top + "_" + ii
+      finalPolicySet = top + "_" + ii
     }
 
-    policies.toSeq.mkString("\n") + "\n" + pSets.flatten.toSeq.map(c => c._1 + " = " + c._2).mkString("\n") + "\n\n" + reminder.toSeq.map(c => c._1 + " = " + c._2).mkString("\n") + "\n\n" + lastBit
+    if (!lastBit.isEmpty) {
+      lastBit = "\n\n" + lastBit + "\n"
+    }
+
+    val cond1 = "cond1 = " + "%.2f".format(th) + " < " + finalPolicySet
+    val cond2 = "cond2 = " + "%.2f".format(th + delta) + " < " + finalPolicySet
+
+    policies.toSeq.mkString("\n") + "\n" + pSets.flatten.toSeq.map(c => c._1 + " = " + c._2).mkString("\n") + "\n\n" + reminder.toSeq.map(c => c._1 + " = " + c._2).mkString("\n") + lastBit + cond1 + "\n" + cond2
   }
 }
