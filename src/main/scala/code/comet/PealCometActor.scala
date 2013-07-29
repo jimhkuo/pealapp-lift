@@ -92,7 +92,7 @@ class PealCometActor extends CometActor with Loggable {
         }) }{SHtml.ajaxText(randomModelParam, s => {
           randomModelParam = s
           _Noop
-        }, "id" -> "r", "size" -> "20")}
+        }, "id" -> "r", "size" -> "30")}
         </div>
         <div>
           {SHtml.ajaxButton("Synthesise (and show results)", () => {
