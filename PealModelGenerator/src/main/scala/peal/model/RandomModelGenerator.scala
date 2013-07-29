@@ -129,6 +129,7 @@ object RandomModelGenerator {
     val cond1 = "cond1 = " + "%.2f".format(th) + " < " + finalPolicySet
     val cond2 = "cond2 = " + "%.2f".format(th + delta) + " < " + finalPolicySet
 
+    //TODO remove the first two analysis for experiment 5 described in experimental_plan_logical_synthesis.txt
     val analyses = "analysis1 = always_true? cond1\nanalysis2 = always_false? cond2\nanalysis3 = different? cond1 cond2\n"
 
     "POLICIES\n" + policies.toSeq.mkString("\n") + "\nPOLICY_SETS\n" + pSets.flatten.toSeq.map(c => c._1 + " = " + c._2).mkString("\n") + "\n\n" + reminder.toSeq.map(c => c._1 + " = " + c._2).mkString("\n") + lastBit + "CONDITIONS\n" + cond1 + "\n" + cond2 + "\nANALYSES\n" + analyses
