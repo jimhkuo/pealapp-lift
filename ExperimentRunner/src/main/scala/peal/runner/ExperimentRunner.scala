@@ -12,6 +12,7 @@ import peal.runner.actor.{Run, ExperimentActor}
 class ExperimentRunner(duration: Long) {
   implicit val system = ActorSystem("demo")
 
+  // TODO timeout apply to both input generation and running of z3
   def run(params: String) {
     try {
       implicit val timeout = Timeout(duration, MILLISECONDS)

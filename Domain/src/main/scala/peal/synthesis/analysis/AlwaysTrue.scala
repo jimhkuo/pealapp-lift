@@ -1,6 +1,5 @@
 package peal.synthesis.analysis
 
-
 case class AlwaysTrue(name: String, cond: String) extends AnalysisGenerator {
 
   def z3SMTInput: String = "(push)\n" +

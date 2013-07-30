@@ -1,8 +1,8 @@
 package peal.synthesis
 
-import _root_.z3.scala.{Z3Context, Z3AST}
 import peal.domain.Pol
 import scala.collection.JavaConversions._
+import _root_.z3.scala.{Z3AST, Z3Context}
 
 
 class PolLessThanThCondition(pol: Pol, th: Double) extends Condition {

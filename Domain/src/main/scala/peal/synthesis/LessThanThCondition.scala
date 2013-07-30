@@ -1,10 +1,8 @@
 package peal.synthesis
 
-import _root_.z3.scala.{Z3AST, Z3Context}
 import peal.domain._
-import peal.domain.BasicPolicySet
-import peal.domain.MinPolicySet
-import peal.domain.MaxPolicySet
+import _root_.z3.scala.{Z3AST, Z3Context}
+
 import peal.domain.Pol
 
 class LessThanThCondition(phi: PolicySet, th: Double) extends Condition {

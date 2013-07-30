@@ -1,6 +1,6 @@
 package peal.synthesis
+import _root_.z3.scala.{Z3AST, Z3Context}
 
-import z3.scala.{Z3AST, Z3Context}
 
 trait NonDefaultSet {
 

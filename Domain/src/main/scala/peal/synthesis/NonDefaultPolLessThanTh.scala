@@ -1,9 +1,9 @@
 package peal.synthesis
 
-import _root_.z3.scala.{Z3AST, Z3Context}
 import peal.domain.{Rule, Pol}
 import scala.collection.JavaConversions._
 import peal.domain.operator.{Mul, Max, Plus, Min}
+import _root_.z3.scala.{Z3AST, Z3Context}
 
 class NonDefaultPolLessThanTh(pol: Pol, th: Double) extends NonDefaultSet {
   def synthesis(z3: Z3Context, consts: Map[String, Z3AST]): Z3AST = pol.operator match {
