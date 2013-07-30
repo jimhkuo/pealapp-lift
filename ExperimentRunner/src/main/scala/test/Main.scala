@@ -3,17 +3,16 @@ package test
 import akka.actor.ActorDSL._
 import akka.actor.ActorSystem
 import peal.model.RandomModelGenerator
-import scala.concurrent.{ExecutionContext, Future, Await}
+import scala.concurrent.ExecutionContext
 import ExecutionContext.Implicits.global
 import scala.concurrent.duration._
 import akka.pattern.ask
-import scala.concurrent.{Future, Await}
 import akka.util.Timeout
 
 object Main extends App {
   implicit val system = ActorSystem("demo")
   try {
-    implicit val timeout = Timeout(100.millis)
+    implicit val timeout = Timeout(500 millis)
 
     val a = actor(new Act {
       become {
