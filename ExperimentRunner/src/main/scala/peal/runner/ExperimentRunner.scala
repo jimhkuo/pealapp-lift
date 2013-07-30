@@ -12,11 +12,11 @@ import peal.runner.actor.{Run, ExperimentActor}
 class ExperimentRunner(duration: Long) {
   implicit val system = ActorSystem("demo")
 
-  def run {
+  def run(params: String) {
     try {
       implicit val timeout = Timeout(duration, MILLISECONDS)
 
-      val runner = system.actorOf(Props(new ExperimentActor("10, 5, 4, 3, 2, 7, 0.6, 0.1")))
+      val runner = system.actorOf(Props(new ExperimentActor(params)))
 
       val future = for (i <- ask(runner, Run).mapTo[String]) yield (i)
       future.foreach("RESULT:\n" + println(_))
