@@ -11,16 +11,18 @@ import akka.pattern.pipe
 import peal.runner.actor.{Z3CallerActor, Run, ModelGeneratorActor}
 import scala.util.{Failure, Success}
 import java.util.concurrent.TimeoutException
+import z3.scala.{Z3Config, Z3Context}
 
 class ExperimentRunner(duration: Long) {
   implicit val system = ActorSystem("demo")
 
   def run(params: String) {
     try {
+      val z3 = new Z3Context(new Z3Config("MODEL" -> true))
       implicit val timeout = Timeout(duration, MILLISECONDS)
 
       val generatorRunner = system.actorOf(Props(new ModelGeneratorActor(params)))
-      val z3Runner = system.actorOf(Props[Z3CallerActor])
+      val z3Runner = system.actorOf(Props(new Z3CallerActor(z3)))
 
       val inputFuture = generatorRunner ? Run
       val input = Await.result(inputFuture, timeout.duration).asInstanceOf[String]
@@ -29,9 +31,9 @@ class ExperimentRunner(duration: Long) {
 
       val resultFuture = z3Runner ? input
 
-      val result = Await.result(resultFuture, timeout.duration).asInstanceOf[String]
+      val result = Await.result(resultFuture, timeout.duration)
 
-      println("RESULT\n" + result)
+      println("result:\n" + result)
 
 
       //      val future = ask(generatorRunner, Run).mapTo[String]

@@ -5,8 +5,11 @@ import peal.model.RandomModelGenerator
 import org.antlr.runtime.{CommonTokenStream, ANTLRStringStream}
 import peal.antlr.{PealProgramParser, PealProgramLexer}
 import scala.concurrent.Future
+import z3.scala.Z3Context
+import scala.collection.JavaConversions._
 
-class Z3CallerActor extends Actor {
+
+class Z3CallerActor(z3: Z3Context) extends Actor {
 
   private def getPealProgramParser(input: String) = {
     val charStream = new ANTLRStringStream(input)
@@ -16,20 +19,16 @@ class Z3CallerActor extends Actor {
   }
 
   def receive = {
-    case s: String =>
-//      val pealProgrmParser = getPealProgramParser(input)
-//      val z3 = MyZ3Context.is
-//
-//      try {
-//        pealProgrmParser.program()
-//        val predicateNames: Seq[String] = pealProgrmParser.pols.values().flatMap(pol => pol.rules).map(r => r.q.name).toSeq.distinct
-//        val constsMap = predicateNames.toSeq.distinct.map(t => (t, z3.mkBoolConst(t))).toMap
-//        val domainSpecifics = input.split("\n").dropWhile(!_.startsWith("DOMAIN_SPECIFICS")).takeWhile(!_.startsWith("ANALYSES")).drop(1)
-//
-////        (constsMap, pealProgrmParser.conds.toMap, pealProgrmParser.pSets.toMap, pealProgrmParser.analyses.toMap, domainSpecifics)
+    case input: String =>
+      val pealProgrmParser = getPealProgramParser(input)
 
+        pealProgrmParser.program()
+        val predicateNames: Seq[String] = pealProgrmParser.pols.values().flatMap(pol => pol.rules).map(r => r.q.name).toSeq.distinct
+        val constsMap = predicateNames.toSeq.distinct.map(t => (t, z3.mkBoolConst(t))).toMap
+        val domainSpecifics = input.split("\n").dropWhile(!_.startsWith("DOMAIN_SPECIFICS")).takeWhile(!_.startsWith("ANALYSES")).drop(1)
 
-      println("received: " + s)
-      sender ! s
+        sender ! (constsMap, pealProgrmParser.conds.toMap, pealProgrmParser.pSets.toMap, pealProgrmParser.analyses.toMap, domainSpecifics)
+
+//      sender ! s
   }
 }
