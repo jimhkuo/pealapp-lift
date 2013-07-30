@@ -14,7 +14,7 @@ object Main extends App {
   try {
     implicit val timeout = Timeout(500 millis)
 
-    val a = actor(new Act {
+    val runner = actor(new Act {
       become {
         case s: String ⇒
           val result = RandomModelGenerator.generate(s.split(Array(' ', ',')).filterNot(_ == ""): _*)
@@ -23,12 +23,8 @@ object Main extends App {
     })
 
     val msg = "10, 5, 4, 3, 2, 7, 0.6, 0.1"
-    val future = for (i <- ask(a, msg).mapTo[String]) yield (i)
-    future.foreach("future: " + println(_))
-
-//    val result = Await.result(future, timeout.duration).asInstanceOf[String]
-//    println(result)
-    println("Done")
+    val future = for (i <- ask(runner, msg).mapTo[String]) yield (i)
+    future.foreach("RESULT:\n" + println(_))
   }
   finally {
 
