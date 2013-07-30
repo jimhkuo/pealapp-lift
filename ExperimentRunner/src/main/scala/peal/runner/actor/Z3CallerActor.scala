@@ -20,15 +20,13 @@ class Z3CallerActor(z3: Z3Context) extends Actor {
 
   def receive = {
     case input: String =>
-      val pealProgrmParser = getPealProgramParser(input)
+      val pealProgramParser = getPealProgramParser(input)
 
-        pealProgrmParser.program()
-        val predicateNames: Seq[String] = pealProgrmParser.pols.values().flatMap(pol => pol.rules).map(r => r.q.name).toSeq.distinct
+        pealProgramParser.program()
+        val predicateNames: Seq[String] = pealProgramParser.pols.values().flatMap(pol => pol.rules).map(r => r.q.name).toSeq.distinct
         val constsMap = predicateNames.toSeq.distinct.map(t => (t, z3.mkBoolConst(t))).toMap
         val domainSpecifics = input.split("\n").dropWhile(!_.startsWith("DOMAIN_SPECIFICS")).takeWhile(!_.startsWith("ANALYSES")).drop(1)
 
-        sender ! (constsMap, pealProgrmParser.conds.toMap, pealProgrmParser.pSets.toMap, pealProgrmParser.analyses.toMap, domainSpecifics)
-
-//      sender ! s
+        sender ! (constsMap, pealProgramParser.conds.toMap, pealProgramParser.pSets.toMap, pealProgramParser.analyses.toMap, domainSpecifics)
   }
 }
