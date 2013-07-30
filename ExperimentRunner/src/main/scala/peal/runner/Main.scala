@@ -5,6 +5,6 @@ import z3.scala.{Z3Config, Z3Context}
 
 object Main extends App {
   val z3 = new Z3Context(new Z3Config("MODEL" -> true))
-  new ExperimentRunner(z3, 1000).run("10, 5, 4, 3, 2, 7, 0.6, 0.1")
+  new ExperimentRunner(z3, 100).run("10, 5, 4, 3, 2, 7, 0.6, 0.1")
 }
 
