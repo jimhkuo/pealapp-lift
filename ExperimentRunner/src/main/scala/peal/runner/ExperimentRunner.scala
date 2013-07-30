@@ -21,12 +21,14 @@ class ExperimentRunner(z3 : Z3Context, duration: Long) {
       implicit val timeout = Timeout(duration, MILLISECONDS)
 
       val generatorRunner = system.actorOf(Props(new ModelGeneratorActor(params)))
-      val z3InputGenerator = system.actorOf(Props(new Z3InputGeneratorActor(z3)))
-      val z3Caller = system.actorOf(Props[Z3CallerActor])
       val modelFuture = generatorRunner ? Run
       val model = Await.result(modelFuture, timeout.duration).asInstanceOf[String]
+
+      val z3InputGenerator = system.actorOf(Props(new Z3InputGeneratorActor(z3)))
       val inputFuture = z3InputGenerator ? model
       val input = Await.result(inputFuture, timeout.duration)
+
+      val z3Caller = system.actorOf(Props[Z3CallerActor])
       val resultFuture = z3Caller ? input
       val result = Await.result(resultFuture, timeout.duration)
 

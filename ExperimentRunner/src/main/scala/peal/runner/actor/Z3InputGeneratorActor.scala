@@ -1,12 +1,10 @@
 package peal.runner.actor
 
 import akka.actor.Actor
-import scala.sys.process._
 import org.antlr.runtime.{CommonTokenStream, ANTLRStringStream}
 import peal.antlr.{PealProgramParser, PealProgramLexer}
 import z3.scala.Z3Context
 import scala.collection.JavaConversions._
-import scala.collection.mutable.ListBuffer
 
 
 class Z3InputGeneratorActor(z3: Z3Context) extends Actor {
