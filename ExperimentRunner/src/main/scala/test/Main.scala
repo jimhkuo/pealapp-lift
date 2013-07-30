@@ -18,21 +18,18 @@ object Main extends App {
     val a = actor(new Act {
       become {
         case s: String ⇒
-          for (i <- 0 until 1000) {
-            print(".")
-          }
-          println()
-          //        println(RandomModelGenerator.generate(s.split(Array(' ', ',')).filterNot(_ == ""): _*))
-          sender ! "done"
+          val result = RandomModelGenerator.generate(s.split(Array(' ', ',')).filterNot(_ == ""): _*)
+          sender ! result
       }
     })
 
-    val msg = "100, 5, 4, 3, 2, 7, 0.6, 0.1"
+    val msg = "10, 5, 4, 3, 2, 7, 0.6, 0.1"
     val future = for (i <- ask(a, msg).mapTo[String]) yield (i)
-//    future.foreach("future: " + println(_))
+    future.foreach("future: " + println(_))
 
-    val result = Await.result(future, timeout.duration).asInstanceOf[String]
-    println(result)
+//    val result = Await.result(future, timeout.duration).asInstanceOf[String]
+//    println(result)
+    println("Done")
   }
   finally {
 
