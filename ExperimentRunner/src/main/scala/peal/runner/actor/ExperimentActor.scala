@@ -1,4 +1,4 @@
-package peal.actor
+package peal.runner.actor
 
 import akka.actor.Actor
 import peal.model.RandomModelGenerator

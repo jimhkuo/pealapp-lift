@@ -4,7 +4,7 @@ assemblySettings
 
 test in assembly := {}
 
-mainClass in assembly := Some("test.Main")
+mainClass in assembly := Some("peal.runner.Main")
 
 name := "ExperimentRunner"
 
