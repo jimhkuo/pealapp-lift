@@ -12,7 +12,7 @@ import java.io.File
 import scala.collection.mutable.ListBuffer
 
 
-class Z3CallerActor extends Actor {
+class Z3CallerActor(z3Path : String) extends Actor {
   val resultList = ListBuffer[String]()
   val processLogger = ProcessLogger(
     (o: String) => resultList.append(o + "\n"),
@@ -23,7 +23,8 @@ class Z3CallerActor extends Actor {
     case input: String =>
       val tmp = File.createTempFile("z3file", "")
       (Seq("echo", input) #> tmp).!!
-      Process(Seq("bash", "-c", "z3 -nw -smt2 " + tmp.getAbsolutePath), None, "PATH" -> "/Users/jkuo/tools/z3/bin") ! processLogger
+//      val z3Path: String = "/Users/jkuo/tools/z3/bin"
+      Process(Seq("bash", "-c", "z3 -nw -smt2 " + tmp.getAbsolutePath), None, "PATH" -> z3Path) ! processLogger
       tmp.delete()
 
       sender ! resultList.mkString("\n")

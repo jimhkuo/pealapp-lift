@@ -13,10 +13,10 @@ import scala.util.{Failure, Success}
 import java.util.concurrent.TimeoutException
 import z3.scala.{Z3Config, Z3Context}
 
-class ExperimentRunner(z3 : Z3Context, duration: Long) {
+class ExperimentRunner(z3: Z3Context, duration: Long) {
   implicit val system = ActorSystem("exp-runner")
 
-  def run(params: String) {
+  def run(params: String, z3Path: String) {
     try {
       implicit val timeout = Timeout(duration, MILLISECONDS)
 
@@ -24,18 +24,28 @@ class ExperimentRunner(z3 : Z3Context, duration: Long) {
       val modelFuture = generatorRunner ? Run
       val model = Await.result(modelFuture, timeout.duration).asInstanceOf[String]
 
-      val z3InputGenerator = system.actorOf(Props(new Z3InputGeneratorActor(z3)))
-      val inputFuture = z3InputGenerator ? model
-      val input = Await.result(inputFuture, timeout.duration)
+      try {
+        val z3InputGenerator = system.actorOf(Props(new Z3InputGeneratorActor(z3)))
+        val inputFuture = z3InputGenerator ? model
+        val input = Await.result(inputFuture, timeout.duration)
 
-      val z3Caller = system.actorOf(Props[Z3CallerActor])
-      val resultFuture = z3Caller ? input
-      val result = Await.result(resultFuture, timeout.duration)
+        try {
+          val z3Caller = system.actorOf(Props(new Z3CallerActor(z3Path)))
+          val resultFuture = z3Caller ? input
+          val result = Await.result(resultFuture, timeout.duration)
 
-      println("result:\n" + result)
+          println("result:\n" + result)
+        }
+        catch {
+          case e: TimeoutException => println("timed out in z3")
+        }
+      }
+      catch {
+        case e: TimeoutException => println("timed out in synthesis")
+      }
     }
     catch {
-      case e: TimeoutException => println("timed out")
+      case e: TimeoutException => println("timed out in model generation")
     }
     finally {
       system.shutdown()
