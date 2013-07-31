@@ -9,6 +9,8 @@ object PealBuild extends Build {
 
   lazy val root = Project(id = "PealApp-lift", base = file(".")) aggregate (domain, generator, parser) dependsOn(domain, generator, parser)
 
+  lazy val synthesiser = Project(id = "PealSynthesiser", base = file("PealSynthesiser")) dependsOn(domain, parser)
+
   lazy val parser = Project(id = "PealParser", base = file("PealParser")) dependsOn(domain)
 
   lazy val generator = Project(id = "PealModelGenerator", base = file("PealModelGenerator")) dependsOn(domain)

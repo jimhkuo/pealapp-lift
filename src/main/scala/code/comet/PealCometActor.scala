@@ -170,9 +170,6 @@ class PealCometActor extends CometActor with Loggable {
       partialUpdate(JqId("policies") ~> JqVal(inputPolicies))
     case Generate =>
       this ! Message("")
-//      println(randomModelParam)
-//      println(randomModelParam.split(Array(' ', ',')).toSeq.filterNot(_ == ""))
-//      println(RandomModelGenerator.generate(randomModelParam.split(Array(' ', ',')).filterNot(_ == ""):_*))
       inputPolicies = RandomModelGenerator.generate(randomModelParam.split(Array(' ', ',')).filterNot(_ == ""):_*)
       partialUpdate(JqId("policies") ~> JqVal(inputPolicies))
   }

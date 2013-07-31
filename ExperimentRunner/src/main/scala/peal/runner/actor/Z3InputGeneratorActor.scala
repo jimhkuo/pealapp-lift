@@ -20,15 +20,15 @@ class Z3InputGeneratorActor(z3: Z3Context) extends Actor {
     case input: String =>
 
       val pealProgramParser = getPealProgramParser(input)
-
       pealProgramParser.program()
+
       val predicateNames: Seq[String] = pealProgramParser.pols.values().flatMap(pol => pol.rules).map(r => r.q.name).toSeq.distinct
       val constsMap = predicateNames.toSeq.distinct.map(t => (t, z3.mkBoolConst(t))).toMap
       val domainSpecifics = input.split("\n").dropWhile(!_.startsWith("DOMAIN_SPECIFICS")).takeWhile(!_.startsWith("ANALYSES")).drop(1)
-
       val conds = pealProgramParser.conds.toMap
       val analyses = pealProgramParser.analyses.toMap
 
+      //TODO should break this into a separate class
       val declarations = for (name <- constsMap.keys) yield "(declare-const " + name + " Bool)\n"
       val declarations1 = for (name <- conds.keys) yield "(declare-const " + name + " Bool)\n"
       val sortedKeys = conds.keys.toSeq.sortWith(_ < _)
