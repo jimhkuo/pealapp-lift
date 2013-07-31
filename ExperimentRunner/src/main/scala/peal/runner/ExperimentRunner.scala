@@ -1,17 +1,13 @@
 package peal.runner
 
-import akka.actor.ActorDSL._
-import scala.concurrent.{ExecutionContext, Future, Await}
-import ExecutionContext.Implicits.global
+import scala.concurrent.Await
 import scala.concurrent.duration._
 import akka.pattern.ask
 import akka.util.Timeout
 import akka.actor.{Props, ActorSystem}
-import akka.pattern.pipe
 import peal.runner.actor.{Z3InputGeneratorActor, Z3CallerActor, Run, ModelGeneratorActor}
-import scala.util.{Failure, Success}
 import java.util.concurrent.TimeoutException
-import z3.scala.{Z3Config, Z3Context}
+import z3.scala.Z3Context
 
 class ExperimentRunner(z3: Z3Context, duration: Long) {
   implicit val system = ActorSystem("exp-runner")
