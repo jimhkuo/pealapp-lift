@@ -70,14 +70,38 @@ class LazySynthesisSpike extends ShouldMatchersForJUnit {
                 " (< " + s.th + " (" + o + " " + pols(bName).rules.map(bName + "_" + _.q.name).mkString(" ") + "))))))")
             case s: LessThanThCondition =>
               println("(assert (= " + condName + "_" + bName +
-                " (or (and (<= "  + " " + pols(bName).defaultScore + " " + s.th + ") (not (or " + pols(bName).rules.map(_.q.name).mkString(" ") + "))) " +
+                " (or (and (<= " + " " + pols(bName).defaultScore + " " + s.th + ") (not (or " + pols(bName).rules.map(_.q.name).mkString(" ") + "))) " +
                 " (and (or " + pols(bName).rules.map(_.q.name).mkString(" ") + ") " +
                 " (<= " + " (" + o + " " + pols(bName).rules.map(bName + "_" + _.q.name).mkString(" ") + ") " + s.th + ")))))")
           }
 
       }
-
     }
+
+    def generatePolicySetAssertions(condName: String) {
+      conds(condName) match {
+        case s: GreaterThanThCondition => // <
+          println("(assert (= " + condName + " " + genPSA("<", s.getPol) + ")")
+        case s: LessThanThCondition => // >=
+          println("(assert (= " + condName + " " + genPSA("<=", s.getPol) + ")")
+      }
+
+      def genPSA(operator: String, pSet: PolicySet): String = operator match {
+        case "<" =>
+          pSet match {
+            case s: MaxPolicySet => "(or " + genPSA(operator, s.lhs) + " " + genPSA(operator, s.rhs) + ")"
+            case s: MinPolicySet => "(and " + genPSA(operator, s.lhs) + " " + genPSA(operator, s.rhs) + ")"
+            case s: BasicPolicySet => condName + "_" + s.pol.asInstanceOf[Pol].name
+          }
+        case "<=" =>
+          pSet match {
+            case s: MinPolicySet => "(or " + genPSA(operator, s.lhs) + " " + genPSA(operator, s.rhs) + ")"
+            case s: MaxPolicySet => "(and " + genPSA(operator, s.lhs) + " " + genPSA(operator, s.rhs) + ")"
+            case s: BasicPolicySet => condName + "_" + s.pol.asInstanceOf[Pol].name
+          }
+      }
+    }
+
     //generateEffectDeclarations()
     pols.filter(p => p._2.operator == Plus || p._2.operator == Mul).foreach {
       case (name, b) =>
@@ -99,8 +123,8 @@ class LazySynthesisSpike extends ShouldMatchersForJUnit {
             generateConditionEnforcement(name, b)
         }
 
+        //generatePolicySetAssertions(cop, pSet)
+        generatePolicySetAssertions(name)
     }
   }
-
-
 }
