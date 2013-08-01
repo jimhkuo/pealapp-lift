@@ -38,6 +38,7 @@ class LazySynthesisSpike extends ShouldMatchersForJUnit {
 
     val pols = pealProgramParser.pols
 
+    //generateEffectDeclarations()
     pols.filter(p => p._2.operator == Plus || p._2.operator == Mul).foreach {
       case (name, b) =>
       val unit = if (b.operator == Plus) 0.0 else 1.0
@@ -50,6 +51,14 @@ class LazySynthesisSpike extends ShouldMatchersForJUnit {
       }
     }
 
+    val conds = pealProgramParser.conds
+    //generateConditionDeclarations()
+
+    conds.foreach {
+      case (name, c) =>
+
+//      println("(declare-const " + )
+    }
   }
 
 }

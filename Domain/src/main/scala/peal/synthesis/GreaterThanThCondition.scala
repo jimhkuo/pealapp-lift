@@ -11,4 +11,6 @@ class GreaterThanThCondition(phi: PolicySet, th: Double) extends Condition {
      case s: BasicPolicySet => new GreaterThanThCondition(s.pol, th).synthesis(z3, consts)
      case s: Pol => new ThLessThanPolCondition(s, th).synthesis(z3, consts)
    }
- }
+
+  def getPol = phi
+}

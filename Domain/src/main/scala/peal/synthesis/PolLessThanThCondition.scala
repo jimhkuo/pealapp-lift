@@ -25,4 +25,6 @@ class PolLessThanThCondition(pol: Pol, th: Double) extends Condition {
       case s if s > 1 => z3.mkOr(pol.rules.map(p => consts(p.q.name)):_*) //pol.rules.map(_.q.name).mkString("(or ", " ", ")")
     }
   }
+
+  def getPol: PolicySet = pol
 }
