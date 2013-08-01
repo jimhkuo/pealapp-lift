@@ -10,7 +10,7 @@ import peal.antlr.{Z3OutputParser, Z3OutputLexer, PealProgramParser, PealProgram
 import net.liftweb.common.Loggable
 import scala.collection.JavaConversions._
 import z3.scala.Z3AST
-import peal.synthesis.{PolicySet, Condition}
+import peal.synthesis.{Condition}
 import scala.Predef._
 import z3.ModelGetter
 import scala.sys.process._
@@ -25,6 +25,7 @@ import scala.Some
 import code.lib.Result
 import code.lib.SaveFile
 import peal.model.RandomModelGenerator
+import peal.domain.PolicySet
 
 class PealCometActor extends CometActor with Loggable {
   val resultList = ListBuffer[String]()

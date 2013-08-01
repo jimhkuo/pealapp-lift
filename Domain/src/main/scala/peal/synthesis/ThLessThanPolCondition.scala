@@ -1,6 +1,6 @@
 package peal.synthesis
 
-import peal.domain.Pol
+import peal.domain.{PolicySet, Pol}
 import scala.collection.JavaConversions._
 import _root_.z3.scala.{Z3AST, Z3Context}
 
@@ -25,4 +25,6 @@ class ThLessThanPolCondition(pol: Pol, th: Double) extends Condition {
       case s if s > 1 => z3.mkOr(pol.rules.map(p => consts(p.q.name)):_*) //pol.rules.map(_.q.name).mkString("(or ", " ", ")")
     }
   }
+
+  def getPol: PolicySet = pol
 }

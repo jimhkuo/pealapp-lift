@@ -44,7 +44,7 @@ private boolean ignore = false;
 program	
 	: 
 	('POLICIES')?
-	(id1=IDENT '=' pol {pols.put($id1.text, $pol.p);})*
+	(pol {pols.put($pol.p.getName(), $pol.p);})*
 	('POLICY_SETS')?
 	(id2=IDENT '=' pSet { pSets.put($id2.text, $pSet.t);})+
 	('CONDITIONS')?
@@ -67,20 +67,16 @@ program
 
 pSet  returns [PolicySet t] 
 	: id1=IDENT {$t = new BasicPolicySet(pols.get($id1.text));}
-//	| 'max' '(' id1=IDENT ',' id2=IDENT ')' {$t = new MaxPolicySet(new BasicPolicySet(pols.get($id1.text)), new BasicPolicySet(pols.get($id2.text)));}
-//	| 'max' '(' id3=IDENT ',' id4=pSet ')' {$t = new MaxPolicySet(new BasicPolicySet(pols.get($id3.text)), $id4.t);}
-//	| 'min' '(' id1=IDENT ',' id2=IDENT ')' {$t = new MinPolicySet(new BasicPolicySet(pols.get($id1.text)), new BasicPolicySet(pols.get($id2.text)));}
-//	| 'min' '(' id3=IDENT ',' id4=pSet ')' {$t = new MinPolicySet(new BasicPolicySet(pols.get($id3.text)), $id4.t);}
 	| 'max' '(' id1=IDENT ',' id2=IDENT ')' {$t = new MaxPolicySet(PolicyResolver.getFromOr(pols, pSets, $id1.text), PolicyResolver.getFromOr(pols, pSets, $id2.text));}
 	| 'min' '(' id1=IDENT ',' id2=IDENT ')' {$t = new MinPolicySet(PolicyResolver.getFromOr(pols, pSets, $id1.text), PolicyResolver.getFromOr(pols, pSets, $id2.text));}
 	;
 
 pol	returns [Pol p] 
 @init {l = new ArrayList<Rule>(); }
-	:  '+' '(' (rule {l.add($rule.r);})* ')' 'default' NUMBER {$p = new Pol(l, Plus$.MODULE$, Double.valueOf($NUMBER.text));}
-	| 'max' '(' (rule {l.add($rule.r);})* ')' 'default' NUMBER {$p = new Pol(l, Max$.MODULE$, Double.valueOf($NUMBER.text));}
-	| 'min' '(' (rule {l.add($rule.r);})* ')' 'default' NUMBER {$p = new Pol(l, Min$.MODULE$, Double.valueOf($NUMBER.text));} 
-	| '*' '(' (rule {l.add($rule.r);})* ')' 'default' NUMBER {$p = new Pol(l, Mul$.MODULE$, Double.valueOf($NUMBER.text));}
+	:id1=IDENT '='   '+' '(' (rule {l.add($rule.r);})* ')' 'default' NUMBER {$p = new Pol(l, Plus$.MODULE$, Double.valueOf($NUMBER.text), $id1.text);}
+	|id1=IDENT '='  'max' '(' (rule {l.add($rule.r);})* ')' 'default' NUMBER {$p = new Pol(l, Max$.MODULE$, Double.valueOf($NUMBER.text),  $id1.text);}
+	|id1=IDENT '='  'min' '(' (rule {l.add($rule.r);})* ')' 'default' NUMBER {$p = new Pol(l, Min$.MODULE$, Double.valueOf($NUMBER.text), $id1.text);} 
+	|id1=IDENT '='  '*' '(' (rule {l.add($rule.r);})* ')' 'default' NUMBER {$p = new Pol(l, Mul$.MODULE$, Double.valueOf($NUMBER.text), $id1.text);}
 	;
 
 rule 	returns [Rule r]
