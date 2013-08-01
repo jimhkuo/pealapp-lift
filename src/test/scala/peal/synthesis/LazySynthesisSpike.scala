@@ -31,7 +31,7 @@ class LazySynthesisSpike extends ShouldMatchersForJUnit {
     val input = "POLICIES\n" +
       "b1 = min ((q1 0.2) (q2 0.4) (q3 0.9)) default 1\n" +
       "b2 = + ((q4 0.1) (q5 0.2) (q6 0.2)) default 0\n" +
-      "b3 = + ((q7 0.1) (q8 0.2) (q9 0.2)) default 0\n" +
+      "b3 = * ((q7 0.1) (q8 0.2) (q9 0.2)) default 0\n" +
       "b4 = + ((q10 0.1) (q11 0.2) (q12 0.2)) default 0\n" +
       "POLICY_SETS\n" +
       "pSet1 = max(b1, b2)\n" +
@@ -39,6 +39,7 @@ class LazySynthesisSpike extends ShouldMatchersForJUnit {
       "pSet3 = max(pSet2, pSet1)\n" +
       "CONDITIONS\n" +
       "cond1 = 0.5 < pSet3\n" +
+      "cond2 = pSet3 <= 0.4\n" +
       "ANALYSES\n" +
       "name1 = always_true? cond1\n"
 
@@ -59,14 +60,19 @@ class LazySynthesisSpike extends ShouldMatchersForJUnit {
       pols(bName).operator match {
         case Min => println("(assert (= " + condName + "_" + bName + " genMinFormula(" + bName + "))")
         case Max => println("(assert (= " + condName + "_" + bName + " genMaxFormula(" + bName + "))")
-        case Plus =>
+        case o =>
 
           conds(condName) match {
             case s: GreaterThanThCondition =>
               println("(assert (= " + condName + "_" + bName +
                 " (or (and (< " + s.th + " " + pols(bName).defaultScore + ") (not (or " + pols(bName).rules.map(_.q.name).mkString(" ") + "))) " +
                 " (and (or " + pols(bName).rules.map(_.q.name).mkString(" ") + ") " +
-                " (< " + s.th + " (+ " + pols(bName).rules.map(bName + "_" + _.q.name).mkString(" ") + "))))))")
+                " (< " + s.th + " (" + o + " " + pols(bName).rules.map(bName + "_" + _.q.name).mkString(" ") + "))))))")
+            case s: LessThanThCondition =>
+              println("(assert (= " + condName + "_" + bName +
+                " (or (and (=> " + s.th + " " + pols(bName).defaultScore + ") (not (or " + pols(bName).rules.map(_.q.name).mkString(" ") + "))) " +
+                " (and (or " + pols(bName).rules.map(_.q.name).mkString(" ") + ") " +
+                " (=> " + s.th + " (" + o + " " + pols(bName).rules.map(bName + "_" + _.q.name).mkString(" ") + "))))))")
           }
 
       }
