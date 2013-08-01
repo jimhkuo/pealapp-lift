@@ -1,4 +1,4 @@
-// $ANTLR 3.4 /Users/jkuo/PealApp-lift/antlr/PealProgram.g 2013-07-30 15:03:56
+// $ANTLR 3.4 /Users/jkuo/PealApp-lift/antlr/PealProgram.g 2013-08-01 13:17:10
 
 package peal.antlr;
 import java.util.*;
@@ -807,7 +807,7 @@ public class PealProgramParser extends Parser {
 
                     NUMBER4=(Token)match(input,NUMBER,FOLLOW_NUMBER_in_pol404); 
 
-                    p = new Pol(l, Plus$.MODULE$, Double.valueOf((NUMBER4!=null?NUMBER4.getText():null)));
+                    p = new Pol(l, Plus$.MODULE$, Double.valueOf((NUMBER4!=null?NUMBER4.getText():null)), "");
 
                     }
                     break;
@@ -856,7 +856,7 @@ public class PealProgramParser extends Parser {
 
                     NUMBER6=(Token)match(input,NUMBER,FOLLOW_NUMBER_in_pol426); 
 
-                    p = new Pol(l, Max$.MODULE$, Double.valueOf((NUMBER6!=null?NUMBER6.getText():null)));
+                    p = new Pol(l, Max$.MODULE$, Double.valueOf((NUMBER6!=null?NUMBER6.getText():null)), "");
 
                     }
                     break;
@@ -905,7 +905,7 @@ public class PealProgramParser extends Parser {
 
                     NUMBER8=(Token)match(input,NUMBER,FOLLOW_NUMBER_in_pol448); 
 
-                    p = new Pol(l, Min$.MODULE$, Double.valueOf((NUMBER8!=null?NUMBER8.getText():null)));
+                    p = new Pol(l, Min$.MODULE$, Double.valueOf((NUMBER8!=null?NUMBER8.getText():null)), "");
 
                     }
                     break;
@@ -954,7 +954,7 @@ public class PealProgramParser extends Parser {
 
                     NUMBER10=(Token)match(input,NUMBER,FOLLOW_NUMBER_in_pol471); 
 
-                    p = new Pol(l, Mul$.MODULE$, Double.valueOf((NUMBER10!=null?NUMBER10.getText():null)));
+                    p = new Pol(l, Mul$.MODULE$, Double.valueOf((NUMBER10!=null?NUMBER10.getText():null)), "");
 
                     }
                     break;

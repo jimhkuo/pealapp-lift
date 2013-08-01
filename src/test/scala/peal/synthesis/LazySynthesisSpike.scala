@@ -37,6 +37,16 @@ class LazySynthesisSpike extends ShouldMatchersForJUnit {
     pealProgramParser.program()
 
     val pols = pealProgramParser.pols
+    val conds = pealProgramParser.conds
+    val pSets = pealProgramParser.pSets
+
+    def findAllPSets(cond : String) : Set[String] = {
+      var setOfPolicies = Set[String]()
+//      conds(cond).getPol.
+
+
+      setOfPolicies
+    }
 
     //generateEffectDeclarations()
     pols.filter(p => p._2.operator == Plus || p._2.operator == Mul).foreach {
@@ -47,18 +57,17 @@ class LazySynthesisSpike extends ShouldMatchersForJUnit {
         println("(declare-const " + name + "_" + predicate.q.name + " Real)")
         println("(assert (implies " + predicate.q.name + " (= " + predicate.score + " " + name + "_" + predicate.q.name + ")))")
         println("(assert (implies (not (= " + unit + " " + name + "_" + predicate.q.name + ")) " + predicate.q.name + "))")
-
       }
     }
 
-    val conds = pealProgramParser.conds
     //generateConditionDeclarations()
 
     conds.foreach {
       case (name, c) =>
-
+      c.getPol
 //      println("(declare-const " + )
     }
   }
+
 
 }
