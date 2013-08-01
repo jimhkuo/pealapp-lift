@@ -5,7 +5,7 @@ import org.junit.Test
 import scala.collection.JavaConversions._
 import org.antlr.runtime.{CommonTokenStream, ANTLRStringStream}
 import peal.antlr.{PealProgramParser, PealProgramLexer}
-import peal.domain.operator.{Mul, Plus}
+import peal.domain.operator.{Max, Min, Mul, Plus}
 import peal.domain._
 import peal.domain.BasicPolicySet
 import peal.domain.MaxPolicySet
@@ -31,14 +31,14 @@ class LazySynthesisSpike extends ShouldMatchersForJUnit {
     val input = "POLICIES\n" +
       "b1 = min ((q1 0.2) (q2 0.4) (q3 0.9)) default 1\n" +
       "b2 = + ((q4 0.1) (q5 0.2) (q6 0.2)) default 0\n" +
-      "b3 = + ((q4 0.1) (q5 0.2) (q6 0.2)) default 0\n" +
-      "b4 = + ((q4 0.1) (q5 0.2) (q6 0.2)) default 0\n" +
+      "b3 = + ((q7 0.1) (q8 0.2) (q9 0.2)) default 0\n" +
+      "b4 = + ((q10 0.1) (q11 0.2) (q12 0.2)) default 0\n" +
       "POLICY_SETS\n" +
       "pSet1 = max(b1, b2)\n" +
       "pSet2 = min(pSet1, b3)\n" +
       "pSet3 = max(pSet2, pSet1)\n" +
       "CONDITIONS\n" +
-      "cond1 = pSet3 <= 0.5\n" +
+      "cond1 = 0.5 < pSet3\n" +
       "ANALYSES\n" +
       "name1 = always_true? cond1\n"
 
@@ -55,6 +55,23 @@ class LazySynthesisSpike extends ShouldMatchersForJUnit {
       case s: MinPolicySet => findAllPolicySets(s.lhs) ++ findAllPolicySets(s.rhs)
     }
 
+    def generateConditionEnforcement(condName: String, bName: String) {
+      pols(bName).operator match {
+        case Min => println("(assert (= " + condName + "_" + bName + " genMinFormula(" + bName + "))")
+        case Max => println("(assert (= " + condName + "_" + bName + " genMaxFormula(" + bName + "))")
+        case Plus =>
+
+          conds(condName) match {
+            case s: GreaterThanThCondition =>
+              println("(assert (= " + condName + "_" + bName +
+                " (or (and (< " + s.th + " " + pols(bName).defaultScore + ") (not (or " + pols(bName).rules.map(_.q.name).mkString(" ") + "))) " +
+                " (and (or " + pols(bName).rules.map(_.q.name).mkString(" ") + ") " +
+                " (< " + s.th + " (+ " + pols(bName).rules.map(bName + "_" + _.q.name).mkString(" ") + "))))))")
+          }
+
+      }
+
+    }
     //generateEffectDeclarations()
     pols.filter(p => p._2.operator == Plus || p._2.operator == Mul).foreach {
       case (name, b) =>
@@ -68,11 +85,14 @@ class LazySynthesisSpike extends ShouldMatchersForJUnit {
     }
 
     //generateConditionDeclarations()
-
     conds.foreach {
       case (name, c) =>
-      println(name + ": " + findAllPolicySets(conds(name).getPol))
-      //      println("(declare-const " + )
+        findAllPolicySets(conds(name).getPol).foreach {
+          b =>
+            println("(declare-const " + name + "_" + b + " Bool)")
+            generateConditionEnforcement(name, b)
+        }
+
     }
   }
 
