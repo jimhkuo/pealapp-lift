@@ -70,9 +70,9 @@ class LazySynthesisSpike extends ShouldMatchersForJUnit {
                 " (< " + s.th + " (" + o + " " + pols(bName).rules.map(bName + "_" + _.q.name).mkString(" ") + "))))))")
             case s: LessThanThCondition =>
               println("(assert (= " + condName + "_" + bName +
-                " (or (and (=> " + s.th + " " + pols(bName).defaultScore + ") (not (or " + pols(bName).rules.map(_.q.name).mkString(" ") + "))) " +
+                " (or (and (<= "  + " " + pols(bName).defaultScore + s.th + ") (not (or " + pols(bName).rules.map(_.q.name).mkString(" ") + "))) " +
                 " (and (or " + pols(bName).rules.map(_.q.name).mkString(" ") + ") " +
-                " (=> " + s.th + " (" + o + " " + pols(bName).rules.map(bName + "_" + _.q.name).mkString(" ") + "))))))")
+                " (<= " + " (" + o + " " + pols(bName).rules.map(bName + "_" + _.q.name).mkString(" ") + ") " + s.th + ")))))")
           }
 
       }
