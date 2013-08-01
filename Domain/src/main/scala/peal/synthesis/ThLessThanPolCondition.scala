@@ -1,6 +1,6 @@
 package peal.synthesis
 
-import peal.domain.Pol
+import peal.domain.{PolicySet, Pol}
 import scala.collection.JavaConversions._
 import _root_.z3.scala.{Z3AST, Z3Context}
 
