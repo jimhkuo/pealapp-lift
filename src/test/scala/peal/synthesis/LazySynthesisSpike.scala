@@ -37,11 +37,14 @@ class LazySynthesisSpike extends ShouldMatchersForJUnit {
       "pSet1 = max(b1, b2)\n" +
       "pSet2 = min(pSet1, b3)\n" +
       "pSet3 = max(pSet2, pSet1)\n" +
+      "pSet4 = b4\n" +
       "CONDITIONS\n" +
       "cond1 = 0.5 < pSet3\n" +
-      "cond2 = pSet3 <= 0.4\n" +
+      "cond2 = pSet2 <= 0.4\n" +
       "ANALYSES\n" +
       "name1 = always_true? cond1\n"
+
+    println(input)
 
     val pealProgramParser = getParser(input)
     pealProgramParser.program()
@@ -103,7 +106,13 @@ class LazySynthesisSpike extends ShouldMatchersForJUnit {
     }
 
     //generateEffectDeclarations()
-    pols.filter(p => p._2.operator == Plus || p._2.operator == Mul).foreach {
+
+    val usedB = for
+    (c <- conds;
+     b <- findAllPolicySets(conds(c._1).getPol)
+     ) yield (b)
+
+    pols.filter(p => usedB.toSet.contains(p._1)).filter(p => p._2.operator == Plus || p._2.operator == Mul).foreach {
       case (name, b) =>
         val unit = if (b.operator == Plus) 0.0 else 1.0
         b.rules.foreach {
