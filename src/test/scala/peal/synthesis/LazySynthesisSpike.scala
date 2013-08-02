@@ -85,7 +85,13 @@ class LazySynthesisSpike extends ShouldMatchersForJUnit {
 
   def generateConditionEnforcement(condName: String, bName: String) {
     pols(bName).operator match {
-      case Min | Max => println("(assert (= " + condName + "_" + bName + " " + conds(condName).synthesis(z3, constsMap) + ")")
+      case Min | Max =>
+        val gen = conds(condName) match {
+          case s: GreaterThanThCondition => new ThLessThanPolCondition(pols("b1"), conds("cond1").getTh).synthesis(z3, constsMap)
+          case s: LessThanThCondition => new PolLessThanThCondition(pols("b1"), conds("cond1").getTh).synthesis(z3, constsMap)
+        }
+
+        println("(assert (= " + condName + "_" + bName + " " + gen + ")")
       case o =>
         conds(condName) match {
           case s: GreaterThanThCondition =>
