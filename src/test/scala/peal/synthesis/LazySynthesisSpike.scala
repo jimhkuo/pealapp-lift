@@ -17,7 +17,6 @@ class LazySynthesisSpike extends ShouldMatchersForJUnit {
 
   val z3 = new Z3Context(new Z3Config("MODEL" -> true))
 
-
   private def getParser(input: String) = {
     val charStream = new ANTLRStringStream(input)
     val lexer = new PealProgramLexer(charStream)
@@ -44,8 +43,6 @@ class LazySynthesisSpike extends ShouldMatchersForJUnit {
     //    "cond4 = 0.4 < pSet2\n" +
     "ANALYSES\nname1 = always_true? cond1\n"
 
-  //  println(input)
-
   val pealProgramParser = getParser(input)
   pealProgramParser.program()
 
@@ -55,10 +52,8 @@ class LazySynthesisSpike extends ShouldMatchersForJUnit {
   val predicateNames: Seq[String] = pealProgramParser.pols.values().flatMap(pol => pol.rules).map(r => r.q.name).toSeq.distinct
   val constsMap = predicateNames.toSeq.distinct.map(t => (t, z3.mkBoolConst(t))).toMap
 
-
   @Test
   def testGetMinFormula() {
-
     val th = 0.5
 
     val q = for (
@@ -67,14 +62,6 @@ class LazySynthesisSpike extends ShouldMatchersForJUnit {
     ) yield (rule.q.name)
 
     println(q)
-    //    val s = "(not " + pols.filterKeys(findAllPolicySets(conds(condName).getPol).contains(_)).filter{
-    //      case (n , p) =>
-    //      p.rules
-    //      false
-    //    } + ")"
-    //
-    //    println(s)
-
   }
 
   def findAllPolicySets(policySet: PolicySet): Set[String] = policySet match {
@@ -132,12 +119,10 @@ class LazySynthesisSpike extends ShouldMatchersForJUnit {
     }
   }
 
-
   @Test
   def testGenerate() {
 
     //generateEffectDeclarations()
-
     val usedB = for
     (c <- conds;
      b <- findAllPolicySets(conds(c._1).getPol)
