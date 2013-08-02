@@ -13,4 +13,6 @@ case class GreaterThanThCondition(phi: PolicySet, th: Double) extends Condition 
    }
 
   def getPol = phi
+
+  def getTh: Double = th
 }

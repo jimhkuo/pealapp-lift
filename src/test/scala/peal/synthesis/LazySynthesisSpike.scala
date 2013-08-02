@@ -28,6 +28,8 @@ class LazySynthesisSpike extends ShouldMatchersForJUnit {
   val input = "POLICIES\n" +
     "b1 = min ((q1 0.2) (q2 0.4) (q3 0.9)) default 1\n" +
     "b2 = + ((q4 0.1) (q5 0.2) (q6 0.2)) default 0\n" +
+    "b3 = + ((q4 0.1) (q5 0.2) (q6 0.2)) default 0\n" +
+    "b4 = + ((q4 0.1) (q5 0.2) (q6 0.2)) default 0\n" +
     "POLICY_SETS\n" +
     "pSet1 = max(b1, b2)\n" +
     "pSet2 = min(b1, b2)\n" +
@@ -38,7 +40,7 @@ class LazySynthesisSpike extends ShouldMatchersForJUnit {
     "cond4 = 0.4 < pSet2\n" +
     "ANALYSES\nname1 = always_true? cond1\n"
 
-  println(input)
+//  println(input)
 
   val pealProgramParser = getParser(input)
   pealProgramParser.program()
@@ -50,32 +52,22 @@ class LazySynthesisSpike extends ShouldMatchersForJUnit {
 
   @Test
   def testGetMinFormula() {
-    val input = "POLICIES\n" +
-      "b1 = min ((q1 0.2) (q2 0.4) (q3 0.9)) default 1\n" +
-      "b2 = + ((q4 0.1) (q5 0.2) (q6 0.2)) default 0\n" +
-      "POLICY_SETS\n" +
-      "pSet1 = max(b1, b2)\n" +
-      "pSet2 = min(b1, b2)\n" +
-      "CONDITIONS\n" +
-      "cond1 = pSet1 <= 0.5\n" +
-      "cond2 = 0.6 < pSet2\n" +
-      "cond3 = 0.5 < pSet2\n" +
-      "cond4 = 0.4 < pSet2\n" +
-      "ANALYSES\nname1 = always_true? cond1\n"
 
-    println(input)
+    val th = 0.5
 
-    val pealProgramParser = getParser(input)
-    pealProgramParser.program()
+    val q = for (
+      rule <- pols("b1").rules
+      if (rule.score <= th)
+    ) yield (rule.q.name)
 
-    val pols = pealProgramParser.pols
-    val conds = pealProgramParser.conds
-    val pSets = pealProgramParser.pSets
-
-
-    //    val genMin = conds("cond1") match {
-    //      case GreaterThanThCondition => "(not " + pols.filterKeys(findAllPolicySets(conds(condName).getPol).contains(_)).filter(case (name, p) => ) + ")"
-    //    }
+    println(q)
+//    val s = "(not " + pols.filterKeys(findAllPolicySets(conds(condName).getPol).contains(_)).filter{
+//      case (n , p) =>
+//      p.rules
+//      false
+//    } + ")"
+//
+//    println(s)
 
   }
 
@@ -87,7 +79,13 @@ class LazySynthesisSpike extends ShouldMatchersForJUnit {
 
   def generateConditionEnforcement(condName: String, bName: String) {
     pols(bName).operator match {
-      case Min => println("(assert (= " + condName + "_" + bName + " genMinFormula(" + bName + "))")
+      case Min =>
+        val genMin = conds(condName) match {
+          case s: LessThanThCondition => pols(bName).rules.filter(_.score <= conds(condName).getTh).map(_.q.name).mkString("(or ", " ", ")")
+          case s: GreaterThanThCondition => "(not " + pols(bName).rules.filter(_.score <= conds(condName).getTh).map(_.q.name).mkString("(or ", " ", ")") + ")"
+        }
+
+        println("(assert (= " + condName + "_" + bName + " " + genMin + ")")
       case Max => println("(assert (= " + condName + "_" + bName + " genMaxFormula(" + bName + "))")
       case o =>
 

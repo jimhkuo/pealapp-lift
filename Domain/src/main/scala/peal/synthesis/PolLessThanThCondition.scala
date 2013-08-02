@@ -27,4 +27,5 @@ class PolLessThanThCondition(pol: Pol, th: Double) extends Condition {
   }
 
   def getPol: PolicySet = pol
+  def getTh: Double = th
 }
