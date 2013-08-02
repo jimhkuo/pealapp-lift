@@ -25,9 +25,31 @@ class LazySynthesisSpike extends ShouldMatchersForJUnit {
   //  public Map<String, Condition> conds = new HashMap<String, Condition>();
   //  public Map<String, AnalysisGenerator> analyses = new HashMap<String, AnalysisGenerator>();
   //  public Map<String, PolicySet> pSets = new HashMap<String, PolicySet>();
+  val input = "POLICIES\n" +
+    "b1 = min ((q1 0.2) (q2 0.4) (q3 0.9)) default 1\n" +
+    "b2 = + ((q4 0.1) (q5 0.2) (q6 0.2)) default 0\n" +
+    "POLICY_SETS\n" +
+    "pSet1 = max(b1, b2)\n" +
+    "pSet2 = min(b1, b2)\n" +
+    "CONDITIONS\n" +
+    "cond1 = pSet1 <= 0.5\n" +
+    "cond2 = 0.6 < pSet2\n" +
+    "cond3 = 0.5 < pSet2\n" +
+    "cond4 = 0.4 < pSet2\n" +
+    "ANALYSES\nname1 = always_true? cond1\n"
+
+  println(input)
+
+  val pealProgramParser = getParser(input)
+  pealProgramParser.program()
+
+  val pols = pealProgramParser.pols
+  val conds = pealProgramParser.conds
+  val pSets = pealProgramParser.pSets
+
 
   @Test
-  def testGenerate() {
+  def testGetMinFormula() {
     val input = "POLICIES\n" +
       "b1 = min ((q1 0.2) (q2 0.4) (q3 0.9)) default 1\n" +
       "b2 = + ((q4 0.1) (q5 0.2) (q6 0.2)) default 0\n" +
@@ -50,64 +72,75 @@ class LazySynthesisSpike extends ShouldMatchersForJUnit {
     val conds = pealProgramParser.conds
     val pSets = pealProgramParser.pSets
 
-    def findAllPolicySets(policySet: PolicySet): Set[String] = policySet match {
-      case s: BasicPolicySet => Set(s.pol.asInstanceOf[Pol].name)
-      case s: MaxPolicySet => findAllPolicySets(s.lhs) ++ findAllPolicySets(s.rhs)
-      case s: MinPolicySet => findAllPolicySets(s.lhs) ++ findAllPolicySets(s.rhs)
+
+    //    val genMin = conds("cond1") match {
+    //      case GreaterThanThCondition => "(not " + pols.filterKeys(findAllPolicySets(conds(condName).getPol).contains(_)).filter(case (name, p) => ) + ")"
+    //    }
+
+  }
+
+  def findAllPolicySets(policySet: PolicySet): Set[String] = policySet match {
+    case s: BasicPolicySet => Set(s.pol.asInstanceOf[Pol].name)
+    case s: MaxPolicySet => findAllPolicySets(s.lhs) ++ findAllPolicySets(s.rhs)
+    case s: MinPolicySet => findAllPolicySets(s.lhs) ++ findAllPolicySets(s.rhs)
+  }
+
+  def generateConditionEnforcement(condName: String, bName: String) {
+    pols(bName).operator match {
+      case Min => println("(assert (= " + condName + "_" + bName + " genMinFormula(" + bName + "))")
+      case Max => println("(assert (= " + condName + "_" + bName + " genMaxFormula(" + bName + "))")
+      case o =>
+
+        conds(condName) match {
+          case s: GreaterThanThCondition =>
+            println("(assert (= " + condName + "_" + bName +
+              " (or (and (< " + s.th + " " + pols(bName).defaultScore + ") (not (or " + pols(bName).rules.map(_.q.name).mkString(" ") + "))) " +
+              " (and (or " + pols(bName).rules.map(_.q.name).mkString(" ") + ") " +
+              " (< " + s.th + " (" + o + " " + pols(bName).rules.map(bName + "_score_" + _.q.name).mkString(" ") + "))))))")
+          case s: LessThanThCondition =>
+            println("(assert (= " + condName + "_" + bName +
+              " (or (and (<= " + " " + pols(bName).defaultScore + " " + s.th + ") (not (or " + pols(bName).rules.map(_.q.name).mkString(" ") + "))) " +
+              " (and (or " + pols(bName).rules.map(_.q.name).mkString(" ") + ") " +
+              " (<= " + " (" + o + " " + pols(bName).rules.map(bName + "_score_" + _.q.name).mkString(" ") + ") " + s.th + ")))))")
+        }
+
+    }
+  }
+
+  def generatePolicySetAssertions(condName: String) {
+    conds(condName) match {
+      case s: GreaterThanThCondition => // <
+        println("(assert (= " + condName + " " + genPSA("<", s.getPol) + ")")
+      case s: LessThanThCondition => // >=
+        println("(assert (= " + condName + " " + genPSA("<=", s.getPol) + ")")
     }
 
-    def generateConditionEnforcement(condName: String, bName: String) {
-      pols(bName).operator match {
-        case Min => println("(assert (= " + condName + "_" + bName + " genMinFormula(" + bName + "))")
-        case Max => println("(assert (= " + condName + "_" + bName + " genMaxFormula(" + bName + "))")
-        case o =>
-
-          conds(condName) match {
-            case s: GreaterThanThCondition =>
-              println("(assert (= " + condName + "_" + bName +
-                " (or (and (< " + s.th + " " + pols(bName).defaultScore + ") (not (or " + pols(bName).rules.map(_.q.name).mkString(" ") + "))) " +
-                " (and (or " + pols(bName).rules.map(_.q.name).mkString(" ") + ") " +
-                " (< " + s.th + " (" + o + " " + pols(bName).rules.map(bName + "_score_" + _.q.name).mkString(" ") + "))))))")
-            case s: LessThanThCondition =>
-              println("(assert (= " + condName + "_" + bName +
-                " (or (and (<= " + " " + pols(bName).defaultScore + " " + s.th + ") (not (or " + pols(bName).rules.map(_.q.name).mkString(" ") + "))) " +
-                " (and (or " + pols(bName).rules.map(_.q.name).mkString(" ") + ") " +
-                " (<= " + " (" + o + " " + pols(bName).rules.map(bName + "_score_" + _.q.name).mkString(" ") + ") " + s.th + ")))))")
-          }
-
-      }
+    def genPSA(operator: String, pSet: PolicySet): String = operator match {
+      case "<" =>
+        pSet match {
+          case s: MaxPolicySet => "(or " + genPSA(operator, s.lhs) + " " + genPSA(operator, s.rhs) + ")"
+          case s: MinPolicySet => "(and " + genPSA(operator, s.lhs) + " " + genPSA(operator, s.rhs) + ")"
+          case s: BasicPolicySet => condName + "_" + s.pol.asInstanceOf[Pol].name
+        }
+      case "<=" =>
+        pSet match {
+          case s: MinPolicySet => "(or " + genPSA(operator, s.lhs) + " " + genPSA(operator, s.rhs) + ")"
+          case s: MaxPolicySet => "(and " + genPSA(operator, s.lhs) + " " + genPSA(operator, s.rhs) + ")"
+          case s: BasicPolicySet => condName + "_" + s.pol.asInstanceOf[Pol].name
+        }
     }
+  }
 
-    def generatePolicySetAssertions(condName: String) {
-      conds(condName) match {
-        case s: GreaterThanThCondition => // <
-          println("(assert (= " + condName + " " + genPSA("<", s.getPol) + ")")
-        case s: LessThanThCondition => // >=
-          println("(assert (= " + condName + " " + genPSA("<=", s.getPol) + ")")
-      }
 
-      def genPSA(operator: String, pSet: PolicySet): String = operator match {
-        case "<" =>
-          pSet match {
-            case s: MaxPolicySet => "(or " + genPSA(operator, s.lhs) + " " + genPSA(operator, s.rhs) + ")"
-            case s: MinPolicySet => "(and " + genPSA(operator, s.lhs) + " " + genPSA(operator, s.rhs) + ")"
-            case s: BasicPolicySet => condName + "_" + s.pol.asInstanceOf[Pol].name
-          }
-        case "<=" =>
-          pSet match {
-            case s: MinPolicySet => "(or " + genPSA(operator, s.lhs) + " " + genPSA(operator, s.rhs) + ")"
-            case s: MaxPolicySet => "(and " + genPSA(operator, s.lhs) + " " + genPSA(operator, s.rhs) + ")"
-            case s: BasicPolicySet => condName + "_" + s.pol.asInstanceOf[Pol].name
-          }
-      }
-    }
+  @Test
+  def testGenerate() {
 
     //generateEffectDeclarations()
 
     val usedB = for
     (c <- conds;
      b <- findAllPolicySets(conds(c._1).getPol)
-     ) yield (b)
+    ) yield (b)
 
     pols.filter(p => usedB.toSet.contains(p._1)).filter(p => p._2.operator == Plus || p._2.operator == Mul).foreach {
       case (bName, b) =>
