@@ -190,16 +190,16 @@ class PealCometActor extends CometActor with Loggable {
   }
 
   private def onCompute(input: String): (Map[String, Z3AST], Map[String, Condition], Map[String, PolicySet], Map[String, AnalysisGenerator], Array[String]) = {
-    val pealProgrmParser = getPealProgramParser(input)
+    val pealProgramParser = getPealProgramParser(input)
     val z3 = MyZ3Context.is
 
     try {
-      pealProgrmParser.program()
-      val predicateNames: Seq[String] = pealProgrmParser.pols.values().flatMap(pol => pol.rules).map(r => r.q.name).toSeq.distinct
+      pealProgramParser.program()
+      val predicateNames: Seq[String] = pealProgramParser.pols.values().flatMap(pol => pol.rules).map(r => r.q.name).toSeq.distinct
       val constsMap = predicateNames.toSeq.distinct.map(t => (t, z3.mkBoolConst(t))).toMap
       val domainSpecifics = input.split("\n").dropWhile(!_.startsWith("DOMAIN_SPECIFICS")).takeWhile(!_.startsWith("ANALYSES")).drop(1)
 
-      (constsMap, pealProgrmParser.conds.toMap, pealProgrmParser.pSets.toMap, pealProgrmParser.analyses.toMap, domainSpecifics)
+      (constsMap, pealProgramParser.conds.toMap, pealProgramParser.pSets.toMap, pealProgramParser.analyses.toMap, domainSpecifics)
     } catch {
       case e2: NullPointerException => dealWithIt(e2)
       case e1: Throwable => dealWithIt(e1)
