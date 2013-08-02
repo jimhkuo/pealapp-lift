@@ -31,18 +31,15 @@ class LazySynthesisSpike extends ShouldMatchersForJUnit {
     val input = "POLICIES\n" +
       "b1 = min ((q1 0.2) (q2 0.4) (q3 0.9)) default 1\n" +
       "b2 = + ((q4 0.1) (q5 0.2) (q6 0.2)) default 0\n" +
-      "b3 = * ((q7 0.1) (q8 0.2) (q9 0.2)) default 0\n" +
-      "b4 = + ((q10 0.1) (q11 0.2) (q12 0.2)) default 0\n" +
       "POLICY_SETS\n" +
       "pSet1 = max(b1, b2)\n" +
-      "pSet2 = min(pSet1, b3)\n" +
-      "pSet3 = max(pSet2, pSet1)\n" +
-      "pSet4 = b4\n" +
+      "pSet2 = min(b1, b2)\n" +
       "CONDITIONS\n" +
-      "cond1 = 0.5 < pSet3\n" +
-      "cond2 = pSet2 <= 0.4\n" +
-      "ANALYSES\n" +
-      "name1 = always_true? cond1\n"
+      "cond1 = pSet1 <= 0.5\n" +
+      "cond2 = 0.6 < pSet2\n" +
+      "cond3 = 0.5 < pSet2\n" +
+      "cond4 = 0.4 < pSet2\n" +
+      "ANALYSES\nname1 = always_true? cond1\n"
 
     println(input)
 
@@ -70,12 +67,12 @@ class LazySynthesisSpike extends ShouldMatchersForJUnit {
               println("(assert (= " + condName + "_" + bName +
                 " (or (and (< " + s.th + " " + pols(bName).defaultScore + ") (not (or " + pols(bName).rules.map(_.q.name).mkString(" ") + "))) " +
                 " (and (or " + pols(bName).rules.map(_.q.name).mkString(" ") + ") " +
-                " (< " + s.th + " (" + o + " " + pols(bName).rules.map(bName + "_" + _.q.name).mkString(" ") + "))))))")
+                " (< " + s.th + " (" + o + " " + pols(bName).rules.map(bName + "_score_" + _.q.name).mkString(" ") + "))))))")
             case s: LessThanThCondition =>
               println("(assert (= " + condName + "_" + bName +
                 " (or (and (<= " + " " + pols(bName).defaultScore + " " + s.th + ") (not (or " + pols(bName).rules.map(_.q.name).mkString(" ") + "))) " +
                 " (and (or " + pols(bName).rules.map(_.q.name).mkString(" ") + ") " +
-                " (<= " + " (" + o + " " + pols(bName).rules.map(bName + "_" + _.q.name).mkString(" ") + ") " + s.th + ")))))")
+                " (<= " + " (" + o + " " + pols(bName).rules.map(bName + "_score_" + _.q.name).mkString(" ") + ") " + s.th + ")))))")
           }
 
       }
@@ -113,13 +110,13 @@ class LazySynthesisSpike extends ShouldMatchersForJUnit {
      ) yield (b)
 
     pols.filter(p => usedB.toSet.contains(p._1)).filter(p => p._2.operator == Plus || p._2.operator == Mul).foreach {
-      case (name, b) =>
+      case (bName, b) =>
         val unit = if (b.operator == Plus) 0.0 else 1.0
         b.rules.foreach {
           predicate =>
-            println("(declare-const " + name + "_" + predicate.q.name + " Real)")
-            println("(assert (implies " + predicate.q.name + " (= " + predicate.score + " " + name + "_" + predicate.q.name + ")))")
-            println("(assert (implies (not (= " + unit + " " + name + "_" + predicate.q.name + ")) " + predicate.q.name + "))")
+            println("(declare-const " + bName + "_score_" + predicate.q.name + " Real)")
+            println("(assert (implies " + predicate.q.name + " (= " + predicate.score + " " + bName + "_score_" + predicate.q.name + ")))")
+            println("(assert (implies (not (= " + unit + " " + bName + "_score_" + predicate.q.name + ")) " + predicate.q.name + "))")
         }
     }
 
