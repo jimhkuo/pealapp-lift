@@ -17,7 +17,6 @@ class LazySynthesisSpike extends ShouldMatchersForJUnit {
 
   val z3 = new Z3Context(new Z3Config("MODEL" -> true))
 
-
   private def getParser(input: String) = {
     val charStream = new ANTLRStringStream(input)
     val lexer = new PealProgramLexer(charStream)
@@ -44,8 +43,6 @@ class LazySynthesisSpike extends ShouldMatchersForJUnit {
     //    "cond4 = 0.4 < pSet2\n" +
     "ANALYSES\nname1 = always_true? cond1\n"
 
-  //  println(input)
-
   val pealProgramParser = getParser(input)
   pealProgramParser.program()
 
@@ -57,10 +54,21 @@ class LazySynthesisSpike extends ShouldMatchersForJUnit {
 
   @Test
   def testGetMinFormula() {
+<<<<<<< HEAD
     println(new NonDefaultPolLessThanTh(pols("b1"), conds("cond1").getTh).synthesis(z3, constsMap))
     println(new LessThanThCondition(pols("b1"), conds("cond1").getTh).synthesis(z3, constsMap))
     println(new NonDefaultThLessThanPol(pols("b1"), conds("cond2").getTh).synthesis(z3, constsMap))
     println(new ThLessThanPolCondition(pols("b1"), conds("cond2").getTh).synthesis(z3, constsMap))
+=======
+    val th = 0.5
+
+    val q = for (
+      rule <- pols("b1").rules
+      if (rule.score <= th)
+    ) yield (rule.q.name)
+
+    println(q)
+>>>>>>> 24f6035146efff0913c4065a95425c424b7e75d2
   }
 
   def findAllPolicySets(policySet: PolicySet): Set[String] = policySet match {
@@ -81,6 +89,16 @@ class LazySynthesisSpike extends ShouldMatchersForJUnit {
         println("(assert (= " + condName + "_" + bName + " " + genFormula + ")")
       //      case Max =>
       //        println("(assert (= " + condName + "_" + bName + " genMaxFormula(" + bName + "))")
+//=======
+//
+//        //TODO change this to section 6.4
+//        val gen = conds(condName) match {
+//          case s: GreaterThanThCondition => new ThLessThanPolCondition(pols(bName), conds(condName).getTh).synthesis(z3, constsMap)
+//          case s: LessThanThCondition => new PolLessThanThCondition(pols(bName), conds(condName).getTh).synthesis(z3, constsMap)
+//        }
+//
+//        println("(assert (= " + condName + "_" + bName + " " + gen + ")")
+//>>>>>>> 24f6035146efff0913c4065a95425c424b7e75d2
       case o =>
 
         conds(condName) match {
@@ -123,12 +141,10 @@ class LazySynthesisSpike extends ShouldMatchersForJUnit {
     }
   }
 
-
   @Test
   def testGenerate() {
 
     //generateEffectDeclarations()
-
     val usedB = for
     (c <- conds;
      b <- findAllPolicySets(conds(c._1).getPol)
