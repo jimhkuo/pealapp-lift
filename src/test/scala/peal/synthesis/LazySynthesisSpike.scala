@@ -54,21 +54,10 @@ class LazySynthesisSpike extends ShouldMatchersForJUnit {
 
   @Test
   def testGetMinFormula() {
-<<<<<<< HEAD
     println(new NonDefaultPolLessThanTh(pols("b1"), conds("cond1").getTh).synthesis(z3, constsMap))
     println(new LessThanThCondition(pols("b1"), conds("cond1").getTh).synthesis(z3, constsMap))
     println(new NonDefaultThLessThanPol(pols("b1"), conds("cond2").getTh).synthesis(z3, constsMap))
     println(new ThLessThanPolCondition(pols("b1"), conds("cond2").getTh).synthesis(z3, constsMap))
-=======
-    val th = 0.5
-
-    val q = for (
-      rule <- pols("b1").rules
-      if (rule.score <= th)
-    ) yield (rule.q.name)
-
-    println(q)
->>>>>>> 24f6035146efff0913c4065a95425c424b7e75d2
   }
 
   def findAllPolicySets(policySet: PolicySet): Set[String] = policySet match {
