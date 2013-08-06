@@ -14,7 +14,6 @@ case class LessThanThCondition(phi: PolicySet, th: Double) extends Condition {
   }
 
   def getPol: PolicySet = phi
-
   def getTh: Double = th
 }
 

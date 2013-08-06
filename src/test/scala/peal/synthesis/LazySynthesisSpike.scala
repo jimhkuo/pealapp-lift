@@ -55,26 +55,12 @@ class LazySynthesisSpike extends ShouldMatchersForJUnit {
   val predicateNames: Seq[String] = pealProgramParser.pols.values().flatMap(pol => pol.rules).map(r => r.q.name).toSeq.distinct
   val constsMap = predicateNames.toSeq.distinct.map(t => (t, z3.mkBoolConst(t))).toMap
 
-
   @Test
   def testGetMinFormula() {
-
-    val th = 0.5
-
-    val q = for (
-      rule <- pols("b1").rules
-      if (rule.score <= th)
-    ) yield (rule.q.name)
-
-    println(q)
-    //    val s = "(not " + pols.filterKeys(findAllPolicySets(conds(condName).getPol).contains(_)).filter{
-    //      case (n , p) =>
-    //      p.rules
-    //      false
-    //    } + ")"
-    //
-    //    println(s)
-
+    println(new NonDefaultPolLessThanTh(pols("b1"), conds("cond1").getTh).synthesis(z3, constsMap))
+    println(new LessThanThCondition(pols("b1"), conds("cond1").getTh).synthesis(z3, constsMap))
+    println(new NonDefaultThLessThanPol(pols("b1"), conds("cond2").getTh).synthesis(z3, constsMap))
+    println(new ThLessThanPolCondition(pols("b1"), conds("cond2").getTh).synthesis(z3, constsMap))
   }
 
   def findAllPolicySets(policySet: PolicySet): Set[String] = policySet match {
@@ -85,8 +71,18 @@ class LazySynthesisSpike extends ShouldMatchersForJUnit {
 
   def generateConditionEnforcement(condName: String, bName: String) {
     pols(bName).operator match {
-      case Min | Max => println("(assert (= " + condName + "_" + bName + " " + conds(condName).synthesis(z3, constsMap) + ")")
+      case Min | Max =>
+        val genFormula = conds(condName) match {
+          case s: LessThanThCondition =>
+            new PolLessThanThCondition(pols(bName), conds(condName).getTh).synthesis(z3, constsMap)
+          case s: GreaterThanThCondition =>
+            new ThLessThanPolCondition(pols(bName), conds(condName).getTh).synthesis(z3, constsMap)
+        }
+        println("(assert (= " + condName + "_" + bName + " " + genFormula + ")")
+      //      case Max =>
+      //        println("(assert (= " + condName + "_" + bName + " genMaxFormula(" + bName + "))")
       case o =>
+
         conds(condName) match {
           case s: GreaterThanThCondition =>
             println("(assert (= " + condName + "_" + bName +
@@ -99,6 +95,7 @@ class LazySynthesisSpike extends ShouldMatchersForJUnit {
               " (and (or " + pols(bName).rules.map(_.q.name).mkString(" ") + ") " +
               " (<= " + " (" + o + " " + pols(bName).rules.map(bName + "_score_" + _.q.name).mkString(" ") + ") " + s.th + ")))))")
         }
+
     }
   }
 
