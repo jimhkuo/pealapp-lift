@@ -68,16 +68,27 @@ class LazySynthesisSpike extends ShouldMatchersForJUnit {
 
   def generateConditionEnforcement(condName: String, bName: String) {
     pols(bName).operator match {
-      case Min | Max =>
-        val genFormula = conds(condName) match {
-          case s: LessThanThCondition =>
-            new PolLessThanThCondition(pols(bName), conds(condName).getTh).synthesis(z3, constsMap)
-          case s: GreaterThanThCondition =>
-            new ThLessThanPolCondition(pols(bName), conds(condName).getTh).synthesis(z3, constsMap)
-        }
-        println("(assert (= " + condName + "_" + bName + " " + genFormula + ")")
+      case Min =>
+              val genFormula = conds(condName) match {
+                case cond: LessThanThCondition =>
+                  "(or (and (<= " + pols(bName).defaultScore + " " + cond.getTh + ") (not (or " + pols(bName).rules.map(_.q.name).mkString(" ") + ")))\n" +
+                    "(or " + pols(bName).rules.filter(_.score <= cond.getTh).map(_.q.name).mkString(" ") + "))))"
+                case cond: GreaterThanThCondition =>
+                  "(or (and (< " + cond.getTh + " " + pols(bName).defaultScore + ") (not (or " + pols(bName).rules.map(_.q.name).mkString(" ") + ")))\n" +
+                    "(and (or " + pols(bName).rules.map(_.q.name).mkString(" ") + ") " + "(not (or " +  pols(bName).rules.filter(_.score <= cond.getTh).map(_.q.name).mkString(" ") + "))))))"
+              }
+              println("(assert (= " + condName + "_" + bName + " " + genFormula + ")")
+//      case Max =>
+//              val genFormula = conds(condName) match {
+//                case cond: LessThanThCondition =>
+//                  "(or (and (<= " + pols(bName).defaultScore + " " + cond.getTh + ") (not (or " + pols(bName).rules.map(_.q.name).mkString(" ") + ")))\n" +
+//                    "(or " + pols(bName).rules.filter(_.score <= cond.getTh).map(_.q.name).mkString(" ") + "))))"
+//                case cond: GreaterThanThCondition =>
+//                  "(or (and (< " + cond.getTh + " " + pols(bName).defaultScore + ") (not (or " + pols(bName).rules.map(_.q.name).mkString(" ") + ")))\n" +
+//                    "(and (or " + pols(bName).rules.map(_.q.name).mkString(" ") + ") " + "(not (or " +  pols(bName).rules.filter(_.score <= cond.getTh).map(_.q.name).mkString(" ") + "))))))"
+//              }
+//              println("(assert (= " + condName + "_" + bName + " " + genFormula + ")")
       case o =>
-
         conds(condName) match {
           case s: GreaterThanThCondition =>
             println("(assert (= " + condName + "_" + bName +
