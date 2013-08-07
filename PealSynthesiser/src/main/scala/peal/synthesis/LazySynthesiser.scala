@@ -101,12 +101,13 @@ class LazySynthesiser(z3: Z3Context, input: String) {
     buffer.toString()
   }
 
-  private  def generatePolicySetAssertions(condName: String) {
+  private  def generatePolicySetAssertions(condName: String) : String = {
+    val buffer = new StringBuilder
     conds(condName) match {
       case s: GreaterThanThCondition => // <
-        println("(assert (= " + condName + " " + genPSA("<", s.getPol) + ")")
+        buffer.append("(assert (= " + condName + " " + genPSA("<", s.getPol) + ")\n")
       case s: LessThanThCondition => // >=
-        println("(assert (= " + condName + " " + genPSA("<=", s.getPol) + ")")
+        buffer.append("(assert (= " + condName + " " + genPSA("<=", s.getPol) + ")\n")
     }
 
     def genPSA(operator: String, pSet: PolicySet): String = operator match {
@@ -123,6 +124,8 @@ class LazySynthesiser(z3: Z3Context, input: String) {
           case s: BasicPolicySet => condName + "_" + s.pol.asInstanceOf[Pol].name
         }
     }
+
+    buffer.toString()
   }
 
   def generate(): String = {
@@ -155,7 +158,7 @@ class LazySynthesiser(z3: Z3Context, input: String) {
         }
 
         //generatePolicySetAssertions(cop, pSet)
-        generatePolicySetAssertions(name)
+        buffer.append(generatePolicySetAssertions(name))
     }
 
     buffer.toString()
