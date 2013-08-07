@@ -26,6 +26,6 @@ class LazySynthesiserTest extends ShouldMatchersForJUnit {
     val z3 = new Z3Context(new Z3Config("MODEL" -> true))
 
     val generator = new LazySynthesiser(z3, input)
-    generator.generate()
+    println("output:\n" + generator.generate())
   }
 }
