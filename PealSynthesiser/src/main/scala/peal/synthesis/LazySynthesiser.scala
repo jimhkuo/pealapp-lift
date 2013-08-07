@@ -131,12 +131,21 @@ class LazySynthesiser(z3: Z3Context, input: String) {
   def generate(): String = {
 
     val buffer = new StringBuilder
+
     //generateEffectDeclarations()
     val usedB = for
     (c <- conds;
      b <- findAllPolicySets(conds(c._1).getPol)
     ) yield (b)
 
+
+    pols.filter(p => usedB.toSet.contains(p._1)).foreach {
+      case (bName, b) =>
+        b.rules.foreach {
+          predicate =>
+            buffer.append("(declare-const " + predicate.q.name + " Bool)\n")
+        }
+    }
     pols.filter(p => usedB.toSet.contains(p._1)).filter(p => p._2.operator == Plus || p._2.operator == Mul).foreach {
       case (bName, b) =>
         val unit = if (b.operator == Plus) 0.0 else 1.0
