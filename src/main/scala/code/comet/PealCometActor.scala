@@ -26,6 +26,8 @@ import code.lib.Result
 import code.lib.SaveFile
 import peal.model.RandomModelGenerator
 import peal.domain.PolicySet
+import peal.lazysynthesis.LazySynthesiser
+
 //import peal.lazysynthesis.LazySynthesiser
 
 class PealCometActor extends CometActor with Loggable {
@@ -146,11 +148,11 @@ class PealCometActor extends CometActor with Loggable {
     case SynthesisAndCallZ3 =>
       val (constsMap,  conds, pSets, analyses, domainSpecific) = onCompute(inputPolicies)
       onCallZ3ViaCommandLine(constsMap, conds,  pSets, analyses, domainSpecific)
-//    case LazySynthesisAndCallZ3 =>
-//      val input = new LazySynthesiser(MyZ3Context.is, inputPolicies).generate()
-//      onCallZ3(input)
-//    case LazyDisplay =>
-//      this ! Result(<pre>{new LazySynthesiser(MyZ3Context.is, inputPolicies).generate()}</pre>)
+    case LazySynthesisAndCallZ3 =>
+      val input = new LazySynthesiser(MyZ3Context.is, inputPolicies).generate()
+      onCallZ3(input)
+    case LazyDisplay =>
+      this ! Result(<pre>{new LazySynthesiser(MyZ3Context.is, inputPolicies).generate()}</pre>)
     case Display =>
       val (constsMap, conds,  pSets, analyses, domainSpecific) = onCompute(inputPolicies)
       onDisplay(constsMap, conds,  pSets, analyses, domainSpecific)
