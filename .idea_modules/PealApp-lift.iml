@@ -57,13 +57,11 @@
     <orderEntry type="library" scope="TEST" name="SBT: junit:junit:4.8.2:test" level="project" />
     <orderEntry type="library" scope="TEST" name="SBT: org.scala-tools.testing:test-interface:0.5:test" level="project" />
     <orderEntry type="library" scope="TEST" name="SBT: org.scalatest:scalatest_2.10:1.9.1:test" level="project" />
+    <orderEntry type="library" name="antlr-3.4-complete.jar" level="project" />
     <orderEntry type="library" name="scalaz3_2.10-2.0-20130706-linux.jar" level="project" />
     <orderEntry type="library" name="scalaz3_2.10-2.0-20130627-mac.jar" level="project" />
-    <orderEntry type="library" name="antlr-3.4-complete.jar" level="project" />
-    <orderEntry type="module" module-name="Domain" exported="" />
     <orderEntry type="module" module-name="PealModelGenerator" exported="" />
-    <orderEntry type="module" module-name="PealParser" exported="" />
-    <orderEntry type="module" module-name="PealSynthesiser" exported="" />
+    <orderEntry type="module" module-name="Domain" exported="" />
   </component>
 </module>
 

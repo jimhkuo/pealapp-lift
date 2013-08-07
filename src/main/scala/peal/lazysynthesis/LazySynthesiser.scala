@@ -1,6 +1,6 @@
-package peal.synthesis
+package peal.lazysynthesis
 
-import _root_.z3.scala.{Z3Config, Z3Context}
+import _root_.z3.scala.Z3Context
 import scala.collection.JavaConversions._
 import org.antlr.runtime.{CommonTokenStream, ANTLRStringStream}
 import peal.antlr.{PealProgramParser, PealProgramLexer}
@@ -10,6 +10,7 @@ import peal.domain.BasicPolicySet
 import peal.domain.MaxPolicySet
 import peal.domain.MinPolicySet
 import peal.domain.Pol
+import peal.synthesis.{GreaterThanThCondition, LessThanThCondition}
 
 class LazySynthesiser(z3: Z3Context, input: String) {
 

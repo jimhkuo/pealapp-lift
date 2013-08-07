@@ -10,7 +10,7 @@ import peal.antlr.{Z3OutputParser, Z3OutputLexer, PealProgramParser, PealProgram
 import net.liftweb.common.Loggable
 import scala.collection.JavaConversions._
 import z3.scala.Z3AST
-import peal.synthesis.{LazySynthesiser, Condition}
+import peal.synthesis.{Condition}
 import scala.Predef._
 import z3.ModelGetter
 import scala.sys.process._
@@ -26,6 +26,7 @@ import code.lib.Result
 import code.lib.SaveFile
 import peal.model.RandomModelGenerator
 import peal.domain.PolicySet
+//import peal.lazysynthesis.LazySynthesiser
 
 class PealCometActor extends CometActor with Loggable {
   val resultList = ListBuffer[String]()
@@ -145,11 +146,11 @@ class PealCometActor extends CometActor with Loggable {
     case SynthesisAndCallZ3 =>
       val (constsMap,  conds, pSets, analyses, domainSpecific) = onCompute(inputPolicies)
       onCallZ3ViaCommandLine(constsMap, conds,  pSets, analyses, domainSpecific)
-    case LazySynthesisAndCallZ3 =>
-      val input = new LazySynthesiser(MyZ3Context.is, inputPolicies).generate()
-      onCallZ3(input)
-    case LazyDisplay =>
-      this ! Result(<pre>{new LazySynthesiser(MyZ3Context.is, inputPolicies).generate()}</pre>)
+//    case LazySynthesisAndCallZ3 =>
+//      val input = new LazySynthesiser(MyZ3Context.is, inputPolicies).generate()
+//      onCallZ3(input)
+//    case LazyDisplay =>
+//      this ! Result(<pre>{new LazySynthesiser(MyZ3Context.is, inputPolicies).generate()}</pre>)
     case Display =>
       val (constsMap, conds,  pSets, analyses, domainSpecific) = onCompute(inputPolicies)
       onDisplay(constsMap, conds,  pSets, analyses, domainSpecific)
