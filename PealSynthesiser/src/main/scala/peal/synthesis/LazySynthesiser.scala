@@ -22,25 +22,6 @@ class LazySynthesiser(z3: Z3Context, input: String) {
     new PealProgramParser(tokenStream)
   }
 
-  //  public Map<String, Pol> pols = new HashMap<String, Pol>();
-  //  public Map<String, Condition> conds = new HashMap<String, Condition>();
-  //  public Map<String, AnalysisGenerator> analyses = new HashMap<String, AnalysisGenerator>();
-  //  public Map<String, PolicySet> pSets = new HashMap<String, PolicySet>();
-//  val input = "POLICIES\n" +
-//    "b1 = min ((q1 0.2) (q2 0.4) (q3 0.9)) default 1\n" +
-//    "b2 = + ((q4 0.1) (q5 0.2) (q6 0.2)) default 0\n" +
-//    "b3 = + ((q4 0.1) (q5 0.2) (q6 0.2)) default 0\n" +
-//    "b4 = + ((q4 0.1) (q5 0.2) (q6 0.2)) default 0\n" +
-//    "POLICY_SETS\n" +
-//    "pSet1 = max(b1, b2)\n" +
-//    "pSet2 = min(b1, b2)\n" +
-//    "CONDITIONS\n" +
-//    "cond1 = pSet1 <= 0.5\n" +
-//    "cond2 = 0.6 < pSet2\n" +
-//    //    "cond3 = 0.5 < pSet2\n" +
-//    //    "cond4 = 0.4 < pSet2\n" +
-//    "ANALYSES\nname1 = always_true? cond1\n"
-
   val pealProgramParser = getParser(input)
   pealProgramParser.program()
 
