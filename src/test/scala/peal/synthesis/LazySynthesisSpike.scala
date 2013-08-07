@@ -52,14 +52,6 @@ class LazySynthesisSpike extends ShouldMatchersForJUnit {
   val predicateNames: Seq[String] = pealProgramParser.pols.values().flatMap(pol => pol.rules).map(r => r.q.name).toSeq.distinct
   val constsMap = predicateNames.toSeq.distinct.map(t => (t, z3.mkBoolConst(t))).toMap
 
-  @Test
-  def testGetMinFormula() {
-    println(new NonDefaultPolLessThanTh(pols("b1"), conds("cond1").getTh).synthesis(z3, constsMap))
-    println(new LessThanThCondition(pols("b1"), conds("cond1").getTh).synthesis(z3, constsMap))
-    println(new NonDefaultThLessThanPol(pols("b1"), conds("cond2").getTh).synthesis(z3, constsMap))
-    println(new ThLessThanPolCondition(pols("b1"), conds("cond2").getTh).synthesis(z3, constsMap))
-  }
-
   def findAllPolicySets(policySet: PolicySet): Set[String] = policySet match {
     case s: BasicPolicySet => Set(s.pol.asInstanceOf[Pol].name)
     case s: MaxPolicySet => findAllPolicySets(s.lhs) ++ findAllPolicySets(s.rhs)
