@@ -173,6 +173,6 @@ class LazySynthesiser(z3: Z3Context, input: String) {
         buffer.append(generatePolicySetAssertions(name))
     }
 
-    declarations1.mkString("") + buffer.toString()
+    declarations1.mkString("") + buffer.toString() + "(check-sat)\n(get-model)\n"
   }
 }
