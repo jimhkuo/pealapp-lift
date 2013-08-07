@@ -22,6 +22,7 @@ case object Reset
 case object MajorityVoting
 
 case object Display
+case object LazyDisplay
 
 case object Analysis1
 

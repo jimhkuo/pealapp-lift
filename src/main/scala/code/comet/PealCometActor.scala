@@ -10,7 +10,7 @@ import peal.antlr.{Z3OutputParser, Z3OutputLexer, PealProgramParser, PealProgram
 import net.liftweb.common.Loggable
 import scala.collection.JavaConversions._
 import z3.scala.Z3AST
-import peal.synthesis.{Condition}
+import peal.synthesis.{LazySynthesiser, Condition}
 import scala.Predef._
 import z3.ModelGetter
 import scala.sys.process._
@@ -107,6 +107,12 @@ class PealCometActor extends CometActor with Loggable {
           _Noop
         })}
         </div>
+        <div>
+          {SHtml.ajaxButton("Lazy Synthesise (and show results)", () => {
+          this ! LazyDisplay
+          _Noop
+        })}
+        </div>
         <div style="display: none;">
           {SHtml.ajaxButton("Analysis1 (!cond)", () => {
           this ! Analysis1
@@ -136,6 +142,8 @@ class PealCometActor extends CometActor with Loggable {
     case SynthesisAndCallZ3 =>
       val (constsMap,  conds, pSets, analyses, domainSpecific) = onCompute(inputPolicies)
       onCallZ3ViaCommandLine(constsMap, conds,  pSets, analyses, domainSpecific)
+    case LazyDisplay =>
+      this ! Result(<pre>{new LazySynthesiser(MyZ3Context.is, inputPolicies).generate()}</pre>)
     case Display =>
       val (constsMap, conds,  pSets, analyses, domainSpecific) = onCompute(inputPolicies)
       onDisplay(constsMap, conds,  pSets, analyses, domainSpecific)

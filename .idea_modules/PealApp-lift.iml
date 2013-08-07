@@ -63,6 +63,7 @@
     <orderEntry type="module" module-name="Domain" exported="" />
     <orderEntry type="module" module-name="PealModelGenerator" exported="" />
     <orderEntry type="module" module-name="PealParser" exported="" />
+    <orderEntry type="module" module-name="PealSynthesiser" exported="" />
   </component>
 </module>
 
