@@ -1,8 +1,6 @@
 package peal.synthesis
 
 import _root_.z3.scala.{Z3Config, Z3Context}
-import org.scalatest.junit.ShouldMatchersForJUnit
-import org.junit.Test
 import scala.collection.JavaConversions._
 import org.antlr.runtime.{CommonTokenStream, ANTLRStringStream}
 import peal.antlr.{PealProgramParser, PealProgramLexer}
@@ -13,9 +11,9 @@ import peal.domain.MaxPolicySet
 import peal.domain.MinPolicySet
 import peal.domain.Pol
 
-class LazySynthesisSpike extends ShouldMatchersForJUnit {
+class LazySynthesiser(z3: Z3Context, input: String) {
 
-  val z3 = new Z3Context(new Z3Config("MODEL" -> true))
+//  val z3 = new Z3Context(new Z3Config("MODEL" -> true))
 
   private def getParser(input: String) = {
     val charStream = new ANTLRStringStream(input)
@@ -28,20 +26,20 @@ class LazySynthesisSpike extends ShouldMatchersForJUnit {
   //  public Map<String, Condition> conds = new HashMap<String, Condition>();
   //  public Map<String, AnalysisGenerator> analyses = new HashMap<String, AnalysisGenerator>();
   //  public Map<String, PolicySet> pSets = new HashMap<String, PolicySet>();
-  val input = "POLICIES\n" +
-    "b1 = min ((q1 0.2) (q2 0.4) (q3 0.9)) default 1\n" +
-    "b2 = + ((q4 0.1) (q5 0.2) (q6 0.2)) default 0\n" +
-    "b3 = + ((q4 0.1) (q5 0.2) (q6 0.2)) default 0\n" +
-    "b4 = + ((q4 0.1) (q5 0.2) (q6 0.2)) default 0\n" +
-    "POLICY_SETS\n" +
-    "pSet1 = max(b1, b2)\n" +
-    "pSet2 = min(b1, b2)\n" +
-    "CONDITIONS\n" +
-    "cond1 = pSet1 <= 0.5\n" +
-    "cond2 = 0.6 < pSet2\n" +
-    //    "cond3 = 0.5 < pSet2\n" +
-    //    "cond4 = 0.4 < pSet2\n" +
-    "ANALYSES\nname1 = always_true? cond1\n"
+//  val input = "POLICIES\n" +
+//    "b1 = min ((q1 0.2) (q2 0.4) (q3 0.9)) default 1\n" +
+//    "b2 = + ((q4 0.1) (q5 0.2) (q6 0.2)) default 0\n" +
+//    "b3 = + ((q4 0.1) (q5 0.2) (q6 0.2)) default 0\n" +
+//    "b4 = + ((q4 0.1) (q5 0.2) (q6 0.2)) default 0\n" +
+//    "POLICY_SETS\n" +
+//    "pSet1 = max(b1, b2)\n" +
+//    "pSet2 = min(b1, b2)\n" +
+//    "CONDITIONS\n" +
+//    "cond1 = pSet1 <= 0.5\n" +
+//    "cond2 = 0.6 < pSet2\n" +
+//    //    "cond3 = 0.5 < pSet2\n" +
+//    //    "cond4 = 0.4 < pSet2\n" +
+//    "ANALYSES\nname1 = always_true? cond1\n"
 
   val pealProgramParser = getParser(input)
   pealProgramParser.program()
@@ -52,13 +50,13 @@ class LazySynthesisSpike extends ShouldMatchersForJUnit {
   val predicateNames: Seq[String] = pealProgramParser.pols.values().flatMap(pol => pol.rules).map(r => r.q.name).toSeq.distinct
   val constsMap = predicateNames.toSeq.distinct.map(t => (t, z3.mkBoolConst(t))).toMap
 
-  def findAllPolicySets(policySet: PolicySet): Set[String] = policySet match {
+  private def findAllPolicySets(policySet: PolicySet): Set[String] = policySet match {
     case s: BasicPolicySet => Set(s.pol.asInstanceOf[Pol].name)
     case s: MaxPolicySet => findAllPolicySets(s.lhs) ++ findAllPolicySets(s.rhs)
     case s: MinPolicySet => findAllPolicySets(s.lhs) ++ findAllPolicySets(s.rhs)
   }
 
-  def generateConditionEnforcement(condName: String, bName: String) {
+  private def generateConditionEnforcement(condName: String, bName: String) {
     pols(bName).operator match {
       case Min =>
         val genFormula = conds(condName) match {
@@ -127,7 +125,7 @@ class LazySynthesisSpike extends ShouldMatchersForJUnit {
     }
   }
 
-  def generatePolicySetAssertions(condName: String) {
+  private  def generatePolicySetAssertions(condName: String) {
     conds(condName) match {
       case s: GreaterThanThCondition => // <
         println("(assert (= " + condName + " " + genPSA("<", s.getPol) + ")")
@@ -151,8 +149,7 @@ class LazySynthesisSpike extends ShouldMatchersForJUnit {
     }
   }
 
-  @Test
-  def testGenerate() {
+  def generate() {
 
     //generateEffectDeclarations()
     val usedB = for
