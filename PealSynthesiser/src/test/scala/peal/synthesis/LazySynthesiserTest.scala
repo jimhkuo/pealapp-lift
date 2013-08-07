@@ -3,18 +3,8 @@ package peal.synthesis
 import _root_.z3.scala.{Z3Config, Z3Context}
 import org.scalatest.junit.ShouldMatchersForJUnit
 import org.junit.Test
-import scala.collection.JavaConversions._
-import org.antlr.runtime.{CommonTokenStream, ANTLRStringStream}
-import peal.antlr.{PealProgramParser, PealProgramLexer}
-import peal.domain.operator.{Max, Min, Mul, Plus}
-import peal.domain._
-import peal.domain.BasicPolicySet
-import peal.domain.MaxPolicySet
-import peal.domain.MinPolicySet
-import peal.domain.Pol
 
 class LazySynthesiserTest extends ShouldMatchersForJUnit {
-
 
   val input = "POLICIES\n" +
     "b1 = min ((q1 0.2) (q2 0.4) (q3 0.9)) default 1\n" +
@@ -36,8 +26,6 @@ class LazySynthesiserTest extends ShouldMatchersForJUnit {
     val z3 = new Z3Context(new Z3Config("MODEL" -> true))
 
     val generator = new LazySynthesiser(z3, input)
-
-
     generator.generate()
   }
 }
