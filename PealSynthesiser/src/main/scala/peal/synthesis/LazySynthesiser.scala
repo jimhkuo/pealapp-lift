@@ -72,9 +72,6 @@ class LazySynthesiser(z3: Z3Context, input: String) {
             else {
               "(or (and (<= " + pols(bName).defaultScore + " " + cond.getTh + ") (not (or " + pols(bName).rules.map(_.q.name).mkString(" ") + "))))\n"
             }
-
-//            "(or (and (<= " + pols(bName).defaultScore + " " + cond.getTh + ") (not (or " + pols(bName).rules.map(_.q.name).mkString(" ") + ")))\n" +
-//              "(and (or " + pols(bName).rules.map(_.q.name).mkString(" ") + ") " + "(not (or " + pols(bName).rules.filter(_.score <= cond.getTh).map(_.q.name).mkString(" ") + "))))))"
           case cond: GreaterThanThCondition =>
             val filtered = pols(bName).rules.filter(cond.getTh < _.score)
             if (filtered.size > 0) {
@@ -84,9 +81,6 @@ class LazySynthesiser(z3: Z3Context, input: String) {
             else {
               "(or (and (< " + cond.getTh + " " + pols(bName).defaultScore + ") (not (or " + pols(bName).rules.map(_.q.name).mkString(" ") + "))))\n"
             }
-
-//            "(or (and (< " + cond.getTh + " " + pols(bName).defaultScore + ") (not (or " + pols(bName).rules.map(_.q.name).mkString(" ") + ")))\n" +
-//              "(or " + pols(bName).rules.filter(cond.getTh < _.score).map(_.q.name).mkString(" ") + "))))"
         }
         println("(assert (= " + condName + "_" + bName + " " + genFormula + ")")
       case o =>
@@ -102,7 +96,6 @@ class LazySynthesiser(z3: Z3Context, input: String) {
               " (and (or " + pols(bName).rules.map(_.q.name).mkString(" ") + ") " +
               " (<= " + " (" + o + " " + pols(bName).rules.map(bName + "_score_" + _.q.name).mkString(" ") + ") " + s.th + ")))))")
         }
-
     }
   }
 
