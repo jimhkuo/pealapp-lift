@@ -151,7 +151,7 @@ class LazySynthesiser(z3: Z3Context, input: String) {
         findAllPolicySets(conds(name).getPol).foreach {
           b =>
             buffer.append("(declare-const " + name + "_" + b + " Bool)\n")
-            generateConditionEnforcement(name, b)
+            buffer.append(generateConditionEnforcement(name, b))
         }
 
         //generatePolicySetAssertions(cop, pSet)
