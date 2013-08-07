@@ -111,6 +111,9 @@ class PealCometActor extends CometActor with Loggable {
           {SHtml.ajaxButton("Lazy Synthesise (and show results)", () => {
           this ! LazyDisplay
           _Noop
+        })++ SHtml.ajaxButton("Lazy Synthesis and call z3", () => {
+          this ! LazySynthesisAndCallZ3
+          _Noop
         })}
         </div>
         <div style="display: none;">
@@ -142,6 +145,9 @@ class PealCometActor extends CometActor with Loggable {
     case SynthesisAndCallZ3 =>
       val (constsMap,  conds, pSets, analyses, domainSpecific) = onCompute(inputPolicies)
       onCallZ3ViaCommandLine(constsMap, conds,  pSets, analyses, domainSpecific)
+    case LazySynthesisAndCallZ3 =>
+      val input = new LazySynthesiser(MyZ3Context.is, inputPolicies).generate()
+      onCallZ3(input)
     case LazyDisplay =>
       this ! Result(<pre>{new LazySynthesiser(MyZ3Context.is, inputPolicies).generate()}</pre>)
     case Display =>
@@ -322,6 +328,20 @@ class PealCometActor extends CometActor with Loggable {
       val analysedResults = Z3OutputAnalyser.execute(analyses, z3Models, constsMap)
 
       this ! Result(<pre>{z3SMTInput}</pre> <pre>Analysed results:<br/>{analysedResults}<br/><br/>Z3 Raw Output:<br/>{resultList.mkString("")}</pre>)
+    } catch {
+      case e: Exception =>  dealWithIt(e)
+    }
+  }
+
+  private def onCallZ3(z3SMTInput : String) {
+    val tmp = File.createTempFile("z3file", "")
+    (Seq("echo", z3SMTInput) #> tmp).!!
+    println(tmp.getAbsolutePath)
+    resultList.clear()
+    Process(Seq("bash", "-c", "z3 -nw -smt2 " + tmp.getAbsolutePath), None, "PATH" -> Props.get("z3.location").get) ! processLogger
+    tmp.delete()
+    try {
+      this ! Result(<pre>{z3SMTInput}</pre><span>Z3 Raw Output:<br/></span><pre>{resultList.mkString("")}</pre>)
     } catch {
       case e: Exception =>  dealWithIt(e)
     }

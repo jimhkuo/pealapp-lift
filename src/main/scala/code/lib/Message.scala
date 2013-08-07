@@ -27,6 +27,7 @@ case object LazyDisplay
 case object Analysis1
 
 case object SynthesisAndCallZ3
+case object LazySynthesisAndCallZ3
 
 case object Analysis2
 
