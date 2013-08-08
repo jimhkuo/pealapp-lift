@@ -48,7 +48,7 @@ public class Z3OutputLexer extends Lexer {
     public final void mT__8() throws RecognitionException {
         try {
             int _type = T__8;
-            int _channel = DEFAULT_TOKEN_CHANNEL;
+            int _channel = BaseRecognizer.DEFAULT_TOKEN_CHANNEL;
             // /Users/jkuo/PealApp-lift/antlr/Z3Output.g:11:6: ( '(' )
             // /Users/jkuo/PealApp-lift/antlr/Z3Output.g:11:8: '('
             {
@@ -69,7 +69,7 @@ public class Z3OutputLexer extends Lexer {
     public final void mT__9() throws RecognitionException {
         try {
             int _type = T__9;
-            int _channel = DEFAULT_TOKEN_CHANNEL;
+            int _channel = BaseRecognizer.DEFAULT_TOKEN_CHANNEL;
             // /Users/jkuo/PealApp-lift/antlr/Z3Output.g:12:6: ( '()' )
             // /Users/jkuo/PealApp-lift/antlr/Z3Output.g:12:8: '()'
             {
@@ -92,7 +92,7 @@ public class Z3OutputLexer extends Lexer {
     public final void mT__10() throws RecognitionException {
         try {
             int _type = T__10;
-            int _channel = DEFAULT_TOKEN_CHANNEL;
+            int _channel = BaseRecognizer.DEFAULT_TOKEN_CHANNEL;
             // /Users/jkuo/PealApp-lift/antlr/Z3Output.g:13:7: ( '(define-fun' )
             // /Users/jkuo/PealApp-lift/antlr/Z3Output.g:13:9: '(define-fun'
             {
@@ -115,7 +115,7 @@ public class Z3OutputLexer extends Lexer {
     public final void mT__11() throws RecognitionException {
         try {
             int _type = T__11;
-            int _channel = DEFAULT_TOKEN_CHANNEL;
+            int _channel = BaseRecognizer.DEFAULT_TOKEN_CHANNEL;
             // /Users/jkuo/PealApp-lift/antlr/Z3Output.g:14:7: ( '(model' )
             // /Users/jkuo/PealApp-lift/antlr/Z3Output.g:14:9: '(model'
             {
@@ -138,7 +138,7 @@ public class Z3OutputLexer extends Lexer {
     public final void mT__12() throws RecognitionException {
         try {
             int _type = T__12;
-            int _channel = DEFAULT_TOKEN_CHANNEL;
+            int _channel = BaseRecognizer.DEFAULT_TOKEN_CHANNEL;
             // /Users/jkuo/PealApp-lift/antlr/Z3Output.g:15:7: ( ')' )
             // /Users/jkuo/PealApp-lift/antlr/Z3Output.g:15:9: ')'
             {
@@ -159,7 +159,7 @@ public class Z3OutputLexer extends Lexer {
     public final void mT__13() throws RecognitionException {
         try {
             int _type = T__13;
-            int _channel = DEFAULT_TOKEN_CHANNEL;
+            int _channel = BaseRecognizer.DEFAULT_TOKEN_CHANNEL;
             // /Users/jkuo/PealApp-lift/antlr/Z3Output.g:16:7: ( '-' )
             // /Users/jkuo/PealApp-lift/antlr/Z3Output.g:16:9: '-'
             {
@@ -180,7 +180,7 @@ public class Z3OutputLexer extends Lexer {
     public final void mT__14() throws RecognitionException {
         try {
             int _type = T__14;
-            int _channel = DEFAULT_TOKEN_CHANNEL;
+            int _channel = BaseRecognizer.DEFAULT_TOKEN_CHANNEL;
             // /Users/jkuo/PealApp-lift/antlr/Z3Output.g:17:7: ( '/' )
             // /Users/jkuo/PealApp-lift/antlr/Z3Output.g:17:9: '/'
             {
@@ -201,7 +201,7 @@ public class Z3OutputLexer extends Lexer {
     public final void mT__15() throws RecognitionException {
         try {
             int _type = T__15;
-            int _channel = DEFAULT_TOKEN_CHANNEL;
+            int _channel = BaseRecognizer.DEFAULT_TOKEN_CHANNEL;
             // /Users/jkuo/PealApp-lift/antlr/Z3Output.g:18:7: ( '=' )
             // /Users/jkuo/PealApp-lift/antlr/Z3Output.g:18:9: '='
             {
@@ -222,7 +222,7 @@ public class Z3OutputLexer extends Lexer {
     public final void mT__16() throws RecognitionException {
         try {
             int _type = T__16;
-            int _channel = DEFAULT_TOKEN_CHANNEL;
+            int _channel = BaseRecognizer.DEFAULT_TOKEN_CHANNEL;
             // /Users/jkuo/PealApp-lift/antlr/Z3Output.g:19:7: ( '?' )
             // /Users/jkuo/PealApp-lift/antlr/Z3Output.g:19:9: '?'
             {
@@ -243,7 +243,7 @@ public class Z3OutputLexer extends Lexer {
     public final void mT__17() throws RecognitionException {
         try {
             int _type = T__17;
-            int _channel = DEFAULT_TOKEN_CHANNEL;
+            int _channel = BaseRecognizer.DEFAULT_TOKEN_CHANNEL;
             // /Users/jkuo/PealApp-lift/antlr/Z3Output.g:20:7: ( 'Result of analysis [' )
             // /Users/jkuo/PealApp-lift/antlr/Z3Output.g:20:9: 'Result of analysis ['
             {
@@ -266,7 +266,7 @@ public class Z3OutputLexer extends Lexer {
     public final void mT__18() throws RecognitionException {
         try {
             int _type = T__18;
-            int _channel = DEFAULT_TOKEN_CHANNEL;
+            int _channel = BaseRecognizer.DEFAULT_TOKEN_CHANNEL;
             // /Users/jkuo/PealApp-lift/antlr/Z3Output.g:21:7: ( ']:' )
             // /Users/jkuo/PealApp-lift/antlr/Z3Output.g:21:9: ']:'
             {
@@ -289,7 +289,7 @@ public class Z3OutputLexer extends Lexer {
     public final void mT__19() throws RecognitionException {
         try {
             int _type = T__19;
-            int _channel = DEFAULT_TOKEN_CHANNEL;
+            int _channel = BaseRecognizer.DEFAULT_TOKEN_CHANNEL;
             // /Users/jkuo/PealApp-lift/antlr/Z3Output.g:22:7: ( 'sat' )
             // /Users/jkuo/PealApp-lift/antlr/Z3Output.g:22:9: 'sat'
             {
@@ -312,7 +312,7 @@ public class Z3OutputLexer extends Lexer {
     public final void mT__20() throws RecognitionException {
         try {
             int _type = T__20;
-            int _channel = DEFAULT_TOKEN_CHANNEL;
+            int _channel = BaseRecognizer.DEFAULT_TOKEN_CHANNEL;
             // /Users/jkuo/PealApp-lift/antlr/Z3Output.g:23:7: ( 'unsat' )
             // /Users/jkuo/PealApp-lift/antlr/Z3Output.g:23:9: 'unsat'
             {
@@ -335,7 +335,7 @@ public class Z3OutputLexer extends Lexer {
     public final void mNUMBER() throws RecognitionException {
         try {
             int _type = NUMBER;
-            int _channel = DEFAULT_TOKEN_CHANNEL;
+            int _channel = BaseRecognizer.DEFAULT_TOKEN_CHANNEL;
             // /Users/jkuo/PealApp-lift/antlr/Z3Output.g:66:8: ( ( '.' | '0' .. '9' | '-' | 'E' )+ )
             // /Users/jkuo/PealApp-lift/antlr/Z3Output.g:66:10: ( '.' | '0' .. '9' | '-' | 'E' )+
             {
@@ -393,7 +393,7 @@ public class Z3OutputLexer extends Lexer {
     public final void mIDENT() throws RecognitionException {
         try {
             int _type = IDENT;
-            int _channel = DEFAULT_TOKEN_CHANNEL;
+            int _channel = BaseRecognizer.DEFAULT_TOKEN_CHANNEL;
             // /Users/jkuo/PealApp-lift/antlr/Z3Output.g:67:7: ( ( 'a' .. 'z' | 'A' .. 'Z' ) ( '_' | 'a' .. 'z' | 'A' .. 'Z' | '0' .. '9' )* )
             // /Users/jkuo/PealApp-lift/antlr/Z3Output.g:67:9: ( 'a' .. 'z' | 'A' .. 'Z' ) ( '_' | 'a' .. 'z' | 'A' .. 'Z' | '0' .. '9' )*
             {
@@ -456,7 +456,7 @@ public class Z3OutputLexer extends Lexer {
     public final void mWS() throws RecognitionException {
         try {
             int _type = WS;
-            int _channel = DEFAULT_TOKEN_CHANNEL;
+            int _channel = BaseRecognizer.DEFAULT_TOKEN_CHANNEL;
             // /Users/jkuo/PealApp-lift/antlr/Z3Output.g:68:4: ( ( ' ' | '\\t' | '\\n' | '\\r' | '\\f' )+ )
             // /Users/jkuo/PealApp-lift/antlr/Z3Output.g:68:6: ( ' ' | '\\t' | '\\n' | '\\r' | '\\f' )+
             {
@@ -499,7 +499,7 @@ public class Z3OutputLexer extends Lexer {
             } while (true);
 
 
-             _channel = HIDDEN;
+             _channel = BaseRecognizer.HIDDEN;
 
             }
 
@@ -516,7 +516,7 @@ public class Z3OutputLexer extends Lexer {
     public final void mZ3ERROR() throws RecognitionException {
         try {
             int _type = Z3ERROR;
-            int _channel = DEFAULT_TOKEN_CHANNEL;
+            int _channel = BaseRecognizer.DEFAULT_TOKEN_CHANNEL;
             // /Users/jkuo/PealApp-lift/antlr/Z3Output.g:69:9: ( '(error \"line ' NUMBER ' column ' NUMBER ': model is not available\")' )
             // /Users/jkuo/PealApp-lift/antlr/Z3Output.g:69:11: '(error \"line ' NUMBER ' column ' NUMBER ': model is not available\")'
             {
