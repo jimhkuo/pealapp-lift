@@ -7,7 +7,7 @@ case class Different(name: String, lhs: String, rhs: String) extends AnalysisGen
     "(assert (= different_" + name + " (or (and " + lhs + " (not " + rhs + ")) (and (not " + lhs + ") " + rhs + "))))\n" +
     "(assert different_" + name + ")\n" +
     "(check-sat)\n" +
-    "(get-model)\n" +
+//    "(get-model)\n" +
     "(pop)\n"
 
   def analysisName: String = name + " = different? " + lhs + " " + rhs

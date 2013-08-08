@@ -45,7 +45,7 @@ class ExperimentRunner(z3: Z3Context, duration: Long) {
           lapsedTime = System.nanoTime() - start
           print(milliTime(lapsedTime) + ",")
 
-          println("result:\n" + result)
+          println("result1:\n" + result)
         }
         catch {
           case e: TimeoutException => print("timed out in z3,")
@@ -72,7 +72,7 @@ class ExperimentRunner(z3: Z3Context, duration: Long) {
           lapsedTime = System.nanoTime() - start
           print(milliTime(lapsedTime))
 
-          println("result:\n" + result)
+          println("result2:\n" + result)
         }
         catch {
           case e: TimeoutException => println("timed out in lazy z3")

@@ -28,7 +28,6 @@ class Z3InputGeneratorActor(z3: Z3Context) extends Actor {
       val conds = pealProgramParser.conds.toMap
       val analyses = pealProgramParser.analyses.toMap
 
-      //TODO should break this into a separate class
       val declarations = for (name <- constsMap.keys) yield "(declare-const " + name + " Bool)\n"
       val declarations1 = for (name <- conds.keys) yield "(declare-const " + name + " Bool)\n"
       val sortedKeys = conds.keys.toSeq.sortWith(_ < _)

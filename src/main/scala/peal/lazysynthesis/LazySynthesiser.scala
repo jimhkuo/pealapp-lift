@@ -31,6 +31,8 @@ class LazySynthesiser(z3: Z3Context, input: String) {
   val pSets = pealProgramParser.pSets
   val predicateNames: Seq[String] = pealProgramParser.pols.values().flatMap(pol => pol.rules).map(r => r.q.name).toSeq.distinct
   val constsMap = predicateNames.toSeq.distinct.map(t => (t, z3.mkBoolConst(t))).toMap
+  val analyses = pealProgramParser.analyses.toMap
+
 
   private def findAllPolicySets(policySet: PolicySet): Set[String] = policySet match {
     case s: BasicPolicySet => Set(s.pol.asInstanceOf[Pol].name)
@@ -176,6 +178,11 @@ class LazySynthesiser(z3: Z3Context, input: String) {
         buffer.append(generatePolicySetAssertions(name))
     }
 
-    declarations.mkString("") + declarations1.mkString("") + buffer.toString() + "(check-sat)\n(get-model)\n"
+    val sortedAnalyses = analyses.keys.toSeq.sortWith(_ < _)
+    val generatedAnalyses = for (analysis <- sortedAnalyses) yield {
+      "(echo \"Result of analysis [" + analyses(analysis).analysisName + "]:\")\n" + analyses(analysis).z3SMTInput
+    }
+
+    declarations.mkString("") + declarations1.mkString("") + buffer.toString() + generatedAnalyses.mkString("")
   }
 }
