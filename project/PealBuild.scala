@@ -5,7 +5,7 @@ import Keys._
 
 object PealBuild extends Build {
 
-//  lazy val runner = Project(id = "ExperimentRunner", base = file("ExperimentRunner")) dependsOn(generator, parser)
+  lazy val runner = Project(id = "ExperimentRunner", base = file("ExperimentRunner")) dependsOn(generator, root)
 
   lazy val root = Project(id = "PealApp-lift", base = file(".")) dependsOn(generator, domain)
 
