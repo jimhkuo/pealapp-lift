@@ -7,7 +7,7 @@ case class Equivalent(name: String, lhs: String, rhs: String) extends AnalysisGe
      "(assert (= equivalent_" + name + " (or (and " + lhs + " (not " + rhs + ")) (and (not " + lhs + ") " + rhs + "))))\n" +
      "(assert equivalent_" + name + ")\n" +
      "(check-sat)\n" +
-//     "(get-model)\n" +
+     "(get-model)\n" +
      "(pop)\n"
   def analysisName: String = name + " = equivalent? " + lhs + " " + rhs
 

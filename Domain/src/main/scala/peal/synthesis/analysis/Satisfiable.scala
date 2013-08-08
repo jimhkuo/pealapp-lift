@@ -7,7 +7,7 @@ case class Satisfiable(name: String, cond: String) extends AnalysisGenerator {
      "(assert (= satisfiable_" + name + " " + cond + "))\n" +
      "(assert satisfiable_" + name + ")\n" +
      "(check-sat)\n" +
-//     "(get-model)\n" +
+     "(get-model)\n" +
      "(pop)\n"
   def analysisName: String = name + " = satisfiable? " + cond
 }
