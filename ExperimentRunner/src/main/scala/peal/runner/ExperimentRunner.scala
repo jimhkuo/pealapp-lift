@@ -63,7 +63,7 @@ class ExperimentRunner(z3: Z3Context, duration: Long) {
         lapsedTime = System.nanoTime() - start
         print(milliTime(lapsedTime) + ",")
 
-        println(lazyInput)
+//        println(lazyInput)
         try {
           val z3Caller = system.actorOf(Props(new Z3CallerActor(z3Path)))
           start = System.nanoTime()
