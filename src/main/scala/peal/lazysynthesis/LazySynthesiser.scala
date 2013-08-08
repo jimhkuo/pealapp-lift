@@ -140,13 +140,15 @@ class LazySynthesiser(z3: Z3Context, input: String) {
     ) yield (b)
 
 
-    pols.filter(p => usedB.toSet.contains(p._1)).foreach {
-      case (bName, b) =>
-        b.rules.foreach {
-          predicate =>
-            buffer.append("(declare-const " + predicate.q.name + " Bool)\n")
-        }
-    }
+    val declarations = for (name <- constsMap.keys) yield "(declare-const " + name + " Bool)\n"
+
+//    pols.filter(p => usedB.toSet.contains(p._1)).foreach {
+//      case (bName, b) =>
+//        b.rules.foreach {
+//          predicate =>
+//            buffer.append("(declare-const " + predicate.q.name + " Bool)\n")
+//        }
+//    }
 
     val declarations1 = for (name <- conds.keys) yield "(declare-const " + name + " Bool)\n"
 
@@ -174,6 +176,6 @@ class LazySynthesiser(z3: Z3Context, input: String) {
         buffer.append(generatePolicySetAssertions(name))
     }
 
-    declarations1.mkString("") + buffer.toString() + "(check-sat)\n(get-model)\n"
+    declarations.mkString("") + declarations1.mkString("") + buffer.toString() + "(check-sat)\n(get-model)\n"
   }
 }

@@ -35,6 +35,8 @@ class ExperimentRunner(z3: Z3Context, duration: Long) {
         lapsedTime = System.nanoTime() - start
         print(milliTime(lapsedTime) + ",")
 
+//        println(input)
+
         try {
           val z3Caller = system.actorOf(Props(new Z3CallerActor(z3Path)))
           start = System.nanoTime()
@@ -61,6 +63,7 @@ class ExperimentRunner(z3: Z3Context, duration: Long) {
         lapsedTime = System.nanoTime() - start
         print(milliTime(lapsedTime) + ",")
 
+        println(lazyInput)
         try {
           val z3Caller = system.actorOf(Props(new Z3CallerActor(z3Path)))
           start = System.nanoTime()
@@ -68,6 +71,8 @@ class ExperimentRunner(z3: Z3Context, duration: Long) {
           val result = Await.result(resultFuture, timeout.duration)
           lapsedTime = System.nanoTime() - start
           print(milliTime(lapsedTime))
+
+          println("result:\n" + result)
         }
         catch {
           case e: TimeoutException => println("timed out in lazy z3")
