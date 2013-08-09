@@ -4,22 +4,20 @@ import org.scalatest.junit.ShouldMatchersForJUnit
 import org.junit.Test
 
 class ResultAnalyserTest extends ShouldMatchersForJUnit {
-  val spec = """Result of analysis \[([-\w. =?]+)\]:""".r
-  val status = """[ ]+([-\w]+)[ ]+""".r
 
   @Test
   def testCanDealWithZ3Model() {
     val input = "Result of analysis [analysis1 = always_true? cond1]:"
-    val spec(name) = input
+    val ResultAnalyser.spec(name) = input
     println(name)
     name should be("analysis1 = always_true? cond1")
   }
 
   @Test
   def testStatus() {
-    val status(s) = "  sat  "
+    val ResultAnalyser.status(s) = "  sat  "
     s should be ("sat")
-    val status(us) = "  unsat  "
+    val ResultAnalyser.status(us) = "  unsat  "
     us should be ("unsat")
   }
 
