@@ -5,8 +5,8 @@ import org.antlr.runtime.{CommonTokenStream, ANTLRStringStream}
 import org.scalatest.junit.ShouldMatchersForJUnit
 import scala.collection.JavaConversions._
 import z3.scala.{Z3AST, Z3Config, Z3Context}
-import peal.util.Z3ModelMatcher
 import peal.synthesis.analysis.AlwaysTrue
+import peal.util.Z3ModelMatcher
 
 
 class PealProgramParserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
