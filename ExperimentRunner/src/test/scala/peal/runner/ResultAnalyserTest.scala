@@ -15,9 +15,9 @@ class ResultAnalyserTest extends ShouldMatchersForJUnit {
 
   @Test
   def testStatus() {
-    val ResultAnalyser.status(s) = "  sat  "
+    val ResultAnalyser.status(s) = "sat"
     s should be ("sat")
-    val ResultAnalyser.status(us) = "  unsat  "
+    val ResultAnalyser.status(us) = "unsat"
     us should be ("unsat")
   }
 
