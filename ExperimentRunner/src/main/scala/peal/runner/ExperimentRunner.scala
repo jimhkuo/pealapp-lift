@@ -13,12 +13,15 @@ class ExperimentRunner(z3: Z3Context, duration: Long) {
   implicit val system = ActorSystem("exp-runner")
 
   private def milliTime(timeInNano: Long) = {
-    "%.2f".format(timeInNano.toDouble/1000000)
+    "%.2f".format(timeInNano.toDouble / 1000000)
   }
 
   def run(params: String, z3Path: String) {
     try {
       implicit val timeout = Timeout(duration, MILLISECONDS)
+
+      var results1: Map[String, String] = null
+      var results2: Map[String, String] = null
 
       val generatorRunner = system.actorOf(Props(new ModelGeneratorActor(params)))
       var start = System.nanoTime()
@@ -35,7 +38,7 @@ class ExperimentRunner(z3: Z3Context, duration: Long) {
         lapsedTime = System.nanoTime() - start
         print(milliTime(lapsedTime) + ",")
 
-//        println(input)
+        //        println(input)
 
         try {
           val z3Caller = system.actorOf(Props(new Z3CallerActor(z3Path)))
@@ -46,7 +49,9 @@ class ExperimentRunner(z3: Z3Context, duration: Long) {
           print(milliTime(lapsedTime) + ",")
 
           //TODO need to analyse the results here
-          println("result1:\n" + result)
+          results1 = ResultAnalyser.execute(result.toString)
+//          println(results1)
+
         }
         catch {
           case e: TimeoutException => print("timed out in z3,")
@@ -64,17 +69,19 @@ class ExperimentRunner(z3: Z3Context, duration: Long) {
         lapsedTime = System.nanoTime() - start
         print(milliTime(lapsedTime) + ",")
 
-//        println(lazyInput)
+        //        println(lazyInput)
         try {
           val z3Caller = system.actorOf(Props(new Z3CallerActor(z3Path)))
           start = System.nanoTime()
           val resultFuture = z3Caller ? lazyInput
           val result = Await.result(resultFuture, timeout.duration)
           lapsedTime = System.nanoTime() - start
-          print(milliTime(lapsedTime))
+          print(milliTime(lapsedTime) + ",")
 
           //TODO need to analyse the results here
-          println("result2:\n" + result)
+          results2 = ResultAnalyser.execute(result.toString)
+//          println(results2)
+          print(results1.toString() == results2.toString())
         }
         catch {
           case e: TimeoutException => println("timed out in lazy z3")
