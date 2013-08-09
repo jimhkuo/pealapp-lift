@@ -84,7 +84,7 @@ class ExperimentRunner(z3: Z3Context, duration: Long) {
           print(results1.toString() == results2.toString())
 
           if (results1.toString() != results2.toString()) {
-            print("," + results1.toString() + "," + results2.toString())
+            print("," + results1.toString() + "," + results2.toString() + "," + model)
           }
         }
         catch {
