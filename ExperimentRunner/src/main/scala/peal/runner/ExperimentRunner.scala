@@ -82,6 +82,10 @@ class ExperimentRunner(z3: Z3Context, duration: Long) {
           results2 = ResultAnalyser.execute(result.toString)
 //          println(results2)
           print(results1.toString() == results2.toString())
+
+          if (results1.toString() != results2.toString()) {
+            print("," + results1.toString() + "," + results2.toString())
+          }
         }
         catch {
           case e: TimeoutException => println("timed out in lazy z3")
