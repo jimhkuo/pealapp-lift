@@ -45,6 +45,7 @@ class ExperimentRunner(z3: Z3Context, duration: Long) {
           lapsedTime = System.nanoTime() - start
           print(milliTime(lapsedTime) + ",")
 
+          //TODO need to analyse the results here
           println("result1:\n" + result)
         }
         catch {
@@ -72,6 +73,7 @@ class ExperimentRunner(z3: Z3Context, duration: Long) {
           lapsedTime = System.nanoTime() - start
           print(milliTime(lapsedTime))
 
+          //TODO need to analyse the results here
           println("result2:\n" + result)
         }
         catch {
