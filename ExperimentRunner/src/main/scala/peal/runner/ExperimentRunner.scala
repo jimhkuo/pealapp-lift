@@ -54,7 +54,7 @@ class ExperimentRunner(z3: Z3Context, duration: Long) {
 
         }
         catch {
-          case e: TimeoutException => print("timed out in z3,")
+          case e: TimeoutException => print("timed out in calling z3,")
         }
       }
       catch {
@@ -88,7 +88,7 @@ class ExperimentRunner(z3: Z3Context, duration: Long) {
           }
         }
         catch {
-          case e: TimeoutException => println("timed out in lazy z3")
+          case e: TimeoutException => println("timed out in calling lazy z3")
         }
       }
       catch {
