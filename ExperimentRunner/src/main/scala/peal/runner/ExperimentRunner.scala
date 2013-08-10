@@ -81,11 +81,17 @@ class ExperimentRunner(z3: Z3Context, duration: Long) {
           //TODO need to analyse the results here
           results2 = ResultAnalyser.execute(result.toString)
 //          println(results2)
-          print(results1.toString() == results2.toString())
-
-          if (results1.toString() != results2.toString()) {
-            print("," + results1.toString() + "," + results2.toString() + "," + model)
+          if (results1 != null && results2 != null) {
+            print(results1.toString() == results2.toString())
           }
+          else {
+            print("not completed")
+            print("," + results1 + "," + results2 + "," + model)
+          }
+
+//          if (results1.toString() != results2.toString()) {
+//            print("," + results1.toString() + "," + results2.toString() + "," + model)
+//          }
         }
         catch {
           case e: TimeoutException => println("timed out in calling lazy z3")
