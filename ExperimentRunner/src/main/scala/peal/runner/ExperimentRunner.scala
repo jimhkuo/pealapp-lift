@@ -78,7 +78,6 @@ class ExperimentRunner(z3: Z3Context, duration: Long) {
       output
     }
     finally {
-      //just throw
       system.shutdown()
     }
   }
