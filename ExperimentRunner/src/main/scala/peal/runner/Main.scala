@@ -5,7 +5,6 @@ import java.util.concurrent.TimeoutException
 
 
 object Main extends App {
-//  val z3 = new Z3Context(new Z3Config("MODEL" -> true))
 
   var lastSuccess = 0
   var lastFailure = 0
@@ -29,8 +28,6 @@ object Main extends App {
         lastFailure = p
       }
     }
-  } finally {
-//    z3.delete
   }
 
   private def milliTime(timeInNano: Long) = {
