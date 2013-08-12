@@ -34,7 +34,7 @@ class NonDefaultPolLessThanThTest extends ShouldMatchersForJUnit with Z3ModelMat
   def testSimpleCaseScoreEqualToThForMin() {
     val p = new Pol(List(new Rule(new Predicate("q1"), 0.6)), Min, 1)
     val pSet = new NonDefaultPolLessThanTh(p, 0.6)
-    pSet.synthesis(z3,consts) should beZ3Model("false")
+    pSet.synthesis(z3,consts) should beZ3Model("q1")
   }
 
   @Test

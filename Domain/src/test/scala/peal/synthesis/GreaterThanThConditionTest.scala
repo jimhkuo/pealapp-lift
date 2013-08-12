@@ -5,14 +5,14 @@ import org.junit.{After, Test}
 import org.scalatest.junit.ShouldMatchersForJUnit
 import peal.domain._
 import scala.collection.JavaConversions._
-import peal.domain.operator.Min
+import peal.domain.operator.{Plus, Max, Min}
 import peal.util.Z3ModelMatcher
 import peal.domain.MinPolicySet
 import peal.domain.Pol
 
 class GreaterThanThConditionTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
   val z3: Z3Context = new Z3Context(new Z3Config("MODEL" -> true))
-  val consts = Map[String, Z3AST]("q1" -> z3.mkBoolConst("q1"), "q2" -> z3.mkBoolConst("q2"), "q3" -> z3.mkBoolConst("q3"), "q4" -> z3.mkBoolConst("q4"), "q5" -> z3.mkBoolConst("q5"), "q6" -> z3.mkBoolConst("q6"))
+  val consts = Map[String, Z3AST]("q0" -> z3.mkBoolConst("q0"), "q1" -> z3.mkBoolConst("q1"), "q2" -> z3.mkBoolConst("q2"), "q3" -> z3.mkBoolConst("q3"), "q4" -> z3.mkBoolConst("q4"), "q5" -> z3.mkBoolConst("q5"), "q6" -> z3.mkBoolConst("q6"))
 
   @After def tearDown() {
     z3.delete()
@@ -47,5 +47,36 @@ class GreaterThanThConditionTest extends ShouldMatchersForJUnit with Z3ModelMatc
     val pSet2 = new MaxPolicySet(new BasicPolicySet(p1), pSet1)
     val phi = new GreaterThanThCondition(pSet2, 0.6)
     phi.synthesis(z3, consts) should beZ3Model("(or (or (not q1) (not q1)) (and q2 (not q2)))")
+  }
+
+  @Test
+  def testBrokenCase() {
+    //    POLICIES
+    //    b0 = min ((q1 0.26) (q2 0.50)) default 0.07
+    //    b1 = max ((q3 0.65)) default 0.32
+    //    b2 = + ((q0 0.04)) default 0.63
+    //    b3 = * ((q4 0.11)) default 0.64
+    //    POLICY_SETS
+    //    p0_1 = min(b0,b1)
+    //    p2_3 = min(b2,b3)
+    //    p0_3 = max(p0_1,p2_3)
+    //
+    //    CONDITIONS
+    //    cond1 = 0.50 < p0_3
+
+    val b0 = new Pol(List(new Rule(new Predicate("q1"), 0.26), new Rule(new Predicate("q2"), 0.50)), Min, 0.07)
+    val b1 = new Pol(List(new Rule(new Predicate("q3"), 0.65)), Max, 0.32)
+    val b2 = new Pol(List(new Rule(new Predicate("q0"), 0.04)), Plus, 0.63)
+    val b3 = new Pol(List(new Rule(new Predicate("q4"), 0.11)), Plus, 0.64)
+    val p0_1 = new MinPolicySet(new BasicPolicySet(b0), new BasicPolicySet(b1))
+    val p2_3 = new MinPolicySet(new BasicPolicySet(b2), new BasicPolicySet(b3))
+    val p0_3 = new MaxPolicySet(p0_1, p2_3)
+
+    println(new ThLessThanPolCondition(b0, 0.50).synthesis(z3, consts))
+
+    val cond1 = new GreaterThanThCondition(p0_3, 0.50)
+
+    println(cond1.synthesis(z3, consts))
+
   }
 }

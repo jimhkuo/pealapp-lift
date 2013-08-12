@@ -75,9 +75,9 @@ class ExperimentRunner(duration: Long) {
       if (output.model1Result == output.model2Result) {
         output.isSameOutput = true
       }
-      //      else {
-      //        output.pealInput = model
-      //      }
+      else {
+        output.pealInput = model
+      }
       output
     }
     finally {

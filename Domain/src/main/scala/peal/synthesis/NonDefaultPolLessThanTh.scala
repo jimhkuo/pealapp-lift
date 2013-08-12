@@ -8,10 +8,10 @@ import _root_.z3.scala.{Z3AST, Z3Context}
 class NonDefaultPolLessThanTh(pol: Pol, th: Double) extends NonDefaultSet {
   def synthesis(z3: Z3Context, consts: Map[String, Z3AST]): Z3AST = pol.operator match {
     case Min => {
-      val rules = pol.rules.filter(th > _.score)
+      val rules = pol.rules.filter(th >= _.score)
       rules.size match {
         case 0 => z3.mkFalse()
-        case 1 => consts(rules(0).q.name)//z3.mkBoolConst(rules(0).q.name) //rules.map(_.q.name).mkString("")
+//        case 1 => consts(rules(0).q.name)//z3.mkBoolConst(rules(0).q.name) //rules.map(_.q.name).mkString("")
         case _ => z3.mkOr(rules.map(r => consts(r.q.name)): _*)//z3.mkOr(rules.map(r => z3.mkBoolConst(r.q.name)): _*) //rules.map(_.q.name).mkString("(or ", " ", ")")
       }
     }
