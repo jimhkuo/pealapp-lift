@@ -7,7 +7,7 @@ import akka.util.Timeout
 import akka.actor.{Props, ActorSystem}
 import peal.runner.actor._
 import java.util.concurrent.TimeoutException
-import z3.scala.Z3Context
+import z3.scala.{Z3Config, Z3Context}
 
 class TimingOutput(var modelGeneration: Long = 0, var eagerSynthesis: Long = 0, var eagerZ3: Long = 0, var lazySynthesis: Long = 0, var lazyZ3: Long = 0, var isSameOutput: Boolean = false, var model1Result: Map[String, String] = Map(), var model2Result: Map[String, String] = Map(), var pealInput: String = "") {
 
@@ -20,7 +20,7 @@ class TimingOutput(var modelGeneration: Long = 0, var eagerSynthesis: Long = 0, 
   override def toString = milliTime(modelGeneration) + "," + milliTime(eagerSynthesis) + "," + milliTime(eagerZ3) + "," + milliTime(lazySynthesis) + "," + milliTime(lazyZ3) + "," + isSameOutput + "," + model1Result + "," + model2Result + "," + pealInput
 }
 
-class ExperimentRunner(z3: Z3Context, duration: Long) {
+class ExperimentRunner(duration: Long) {
   implicit val system = ActorSystem("exp-runner")
 
   def run(n: Int, min: Int, max: Int, plus: Int, mul: Int, k: Int, th: Double, delta: Double, z3Path: String): TimingOutput = {
@@ -36,32 +36,36 @@ class ExperimentRunner(z3: Z3Context, duration: Long) {
       var lapsedTime = System.nanoTime() - start
       output.modelGeneration = lapsedTime
 
-      val z3InputGenerator = system.actorOf(Props(new Z3InputGeneratorActor(z3)))
+      val z3Eager = new Z3Context(new Z3Config("MODEL" -> true))
+      val z3InputGenerator = system.actorOf(Props(new Z3InputGeneratorActor(z3Eager)))
       start = System.nanoTime()
       val inputFuture1 = z3InputGenerator ? model
       val input = Await.result(inputFuture1, timeout.duration)
       lapsedTime = System.nanoTime() - start
       output.eagerSynthesis = lapsedTime
+      z3Eager.delete()
 
-      val z3Caller1 = system.actorOf(Props(new Z3CallerActor(z3Path)))
+      val eagerZ3Caller = system.actorOf(Props(new Z3CallerActor(z3Path)))
       start = System.nanoTime()
-      val resultFuture1 = z3Caller1 ? input
+      val resultFuture1 = eagerZ3Caller ? input
       val result1 = Await.result(resultFuture1, timeout.duration)
       lapsedTime = System.nanoTime() - start
       output.eagerZ3 = lapsedTime
       val results1 = ResultAnalyser.execute(result1.toString)
       output.model1Result = results1
 
-      val z3LazyInputGenerator = system.actorOf(Props(new Z3LazyInputGeneratorActor(z3)))
+      val z3Lazy = new Z3Context(new Z3Config("MODEL" -> true))
+      val z3LazyInputGenerator = system.actorOf(Props(new Z3LazyInputGeneratorActor(z3Lazy)))
       start = System.nanoTime()
       val inputFuture = z3LazyInputGenerator ? model
       val lazyInput = Await.result(inputFuture, timeout.duration)
       lapsedTime = System.nanoTime() - start
       output.lazySynthesis = lapsedTime
+      z3Lazy.delete()
 
-      val z3Caller2 = system.actorOf(Props(new Z3CallerActor(z3Path)))
+      val lazyZ3Caller = system.actorOf(Props(new Z3CallerActor(z3Path)))
       start = System.nanoTime()
-      val resultFuture = z3Caller2 ? lazyInput
+      val resultFuture = lazyZ3Caller ? lazyInput
       val result = Await.result(resultFuture, timeout.duration)
       lapsedTime = System.nanoTime() - start
       output.lazyZ3 = lapsedTime
