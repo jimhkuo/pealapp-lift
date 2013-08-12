@@ -5,11 +5,12 @@ import java.util.concurrent.TimeoutException
 
 
 object Main extends App {
-  val z3 = new Z3Context(new Z3Config("MODEL" -> true))
+//  val z3 = new Z3Context(new Z3Config("MODEL" -> true))
 
   var lastSuccess = 0
   var lastFailure = 0
   var p = 2
+
   try {
     while (execute(p)) {
       lastSuccess = p
@@ -26,10 +27,8 @@ object Main extends App {
         lastFailure = p
       }
     }
-
-
   } finally {
-    z3.delete
+//    z3.delete
   }
 
   private def milliTime(timeInNano: Long) = {
@@ -38,14 +37,19 @@ object Main extends App {
 
   private def execute(p: Int): Boolean = {
     try {
+
       for (i <- 1 to 5) {
-        val output = new ExperimentRunner(z3, 5000).run(1, p, 1 , 1, 1, 3 * p, 0.5, 0.1, "/Users/jkuo/tools/z3/bin")
+        val z3 = new Z3Context(new Z3Config("MODEL" -> true))
+        val output = new ExperimentRunner(z3, 500).run(1, p, 1 , 1, 1, 3 * p, 0.5, 0.1, "/Users/jkuo/tools/z3/bin")
         println("p=" + p + "," + milliTime(output.modelGeneration) + "," + milliTime(output.eagerSynthesis) + "," + milliTime(output.eagerZ3) + "," + milliTime(output.lazySynthesis) + "," + milliTime(output.lazyZ3) + "," + output.isSameOutput)
+        z3.delete
       }
       true
     }  catch {
       case e : TimeoutException =>
         false
+    }
+    finally {
     }
   }
 }
