@@ -9,6 +9,10 @@ import peal.runner.actor._
 import java.util.concurrent.TimeoutException
 import z3.scala.Z3Context
 
+class TimingOutput(var modelGeneration: String = "", var eagerSynthesis: String = "", var eagerZ3: String = "", var lazySynthesis: String = "", var lazyZ3: String = "", var isSameOutput: Boolean = false, var model1Result: Map[String, String] = Map(), var model2Result: Map[String, String] = Map(), var pealInput: String = "") {
+  override def toString = modelGeneration + "," + eagerSynthesis + "," + eagerZ3 + "," + lazySynthesis + "," + lazyZ3 + "," + isSameOutput + "," + model1Result + "," + model2Result + "," + pealInput
+}
+
 class ExperimentRunner(z3: Z3Context, duration: Long) {
   implicit val system = ActorSystem("exp-runner")
 
@@ -16,19 +20,21 @@ class ExperimentRunner(z3: Z3Context, duration: Long) {
     "%.2f".format(timeInNano.toDouble / 1000000)
   }
 
-  def run(params: String, z3Path: String) {
+  def run(params: String, z3Path: String): TimingOutput = {
+    val output = new TimingOutput()
+
     try {
       implicit val timeout = Timeout(duration, MILLISECONDS)
 
-      var results1: Map[String, String] = null
-      var results2: Map[String, String] = null
+//      var results1: Map[String, String] = null
+//      var results2: Map[String, String] = null
 
       val generatorRunner = system.actorOf(Props(new ModelGeneratorActor(params)))
       var start = System.nanoTime()
       val modelFuture = generatorRunner ? Run
       val model = Await.result(modelFuture, timeout.duration).asInstanceOf[String]
       var lapsedTime = System.nanoTime() - start
-      print(milliTime(lapsedTime) + ",")
+      output.modelGeneration = milliTime(lapsedTime)
 
       try {
         val z3InputGenerator = system.actorOf(Props(new Z3InputGeneratorActor(z3)))
@@ -36,9 +42,7 @@ class ExperimentRunner(z3: Z3Context, duration: Long) {
         val inputFuture = z3InputGenerator ? model
         val input = Await.result(inputFuture, timeout.duration)
         lapsedTime = System.nanoTime() - start
-        print(milliTime(lapsedTime) + ",")
-
-        //        println(input)
+        output.eagerSynthesis = milliTime(lapsedTime)
 
         try {
           val z3Caller = system.actorOf(Props(new Z3CallerActor(z3Path)))
@@ -46,19 +50,18 @@ class ExperimentRunner(z3: Z3Context, duration: Long) {
           val resultFuture = z3Caller ? input
           val result = Await.result(resultFuture, timeout.duration)
           lapsedTime = System.nanoTime() - start
-          print(milliTime(lapsedTime) + ",")
-
-          //TODO need to analyse the results here
-          results1 = ResultAnalyser.execute(result.toString)
-//          println(results1)
-
+          output.eagerZ3 = milliTime(lapsedTime)
+          val results1 = ResultAnalyser.execute(result.toString)
+          output.model1Result = results1
         }
         catch {
-          case e: TimeoutException => print("timed out in calling z3,")
+          case e: TimeoutException => output.eagerZ3 = "TimeOut"
         }
       }
       catch {
-        case e: TimeoutException => print("timed out in synthesis,NotRun,")
+        case e: TimeoutException =>
+          output.eagerSynthesis = "TimeOut"
+          output.eagerZ3 = "NotRun"
       }
 
       try {
@@ -67,46 +70,47 @@ class ExperimentRunner(z3: Z3Context, duration: Long) {
         val inputFuture = z3LazyInputGenerator ? model
         val lazyInput = Await.result(inputFuture, timeout.duration)
         lapsedTime = System.nanoTime() - start
-        print(milliTime(lapsedTime) + ",")
+        output.lazySynthesis = milliTime(lapsedTime)
 
-        //        println(lazyInput)
         try {
           val z3Caller = system.actorOf(Props(new Z3CallerActor(z3Path)))
           start = System.nanoTime()
           val resultFuture = z3Caller ? lazyInput
           val result = Await.result(resultFuture, timeout.duration)
           lapsedTime = System.nanoTime() - start
-          print(milliTime(lapsedTime) + ",")
+          output.lazyZ3 = milliTime(lapsedTime)
+          val results2 = ResultAnalyser.execute(result.toString)
+          output.model2Result = results2
 
-          //TODO need to analyse the results here
-          results2 = ResultAnalyser.execute(result.toString)
-//          println(results2)
-          if (results1 != null && results2 != null) {
-            print(results1.toString() == results2.toString())
+          if (output.model1Result == output.model2Result) {
+            output.isSameOutput = true
           }
           else {
-            print("not completed")
-            print("," + results1 + "," + results2 + "," + model)
+            output.pealInput = model
           }
-
-//          if (results1.toString() != results2.toString()) {
-//            print("," + results1.toString() + "," + results2.toString() + "," + model)
-//          }
+          output
         }
         catch {
-          case e: TimeoutException => println("timed out in calling lazy z3")
+          case e: TimeoutException => output.lazyZ3 = "TimeOut"
+            output
         }
       }
       catch {
-        case e: TimeoutException => println("timed out in lazy synthesis,NotRun")
+        case e: TimeoutException =>
+          output.lazySynthesis = "TimeOut"
+          output.lazyZ3 = "NotRun"
+          output
       }
     }
-    catch {
-      case e: TimeoutException => println("timed out in model generation,NotRun,NotRun,NotRun,NotRun")
-    }
+    //    catch {
+    //      case e: TimeoutException =>
+    //                output.
+    //        println("timed out in model generation,NotRun,NotRun,NotRun,NotRun")
+    //    }
     finally {
       println()
       system.shutdown()
+      return output
     }
   }
 }
