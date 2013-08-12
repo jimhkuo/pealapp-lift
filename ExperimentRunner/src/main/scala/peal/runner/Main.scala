@@ -39,14 +39,12 @@ object Main extends App {
   private def execute(p: Int): Boolean = {
     try {
       for (i <- 1 to 5) {
-        val output = new ExperimentRunner(z3, 200).run("1, " + p + ", 1, 1, 1, " + 3 * p + ", 0.5, 0.1", "/Users/jkuo/tools/z3/bin")
+        val output = new ExperimentRunner(z3, 5000).run(1, p, 1 , 1, 1, 3 * p, 0.5, 0.1, "/Users/jkuo/tools/z3/bin")
         println("p=" + p + "," + milliTime(output.modelGeneration) + "," + milliTime(output.eagerSynthesis) + "," + milliTime(output.eagerZ3) + "," + milliTime(output.lazySynthesis) + "," + milliTime(output.lazyZ3) + "," + output.isSameOutput)
       }
       true
     }  catch {
       case e : TimeoutException =>
-//        e.printStackTrace()
-//        println(e.getMessage)
         false
     }
   }

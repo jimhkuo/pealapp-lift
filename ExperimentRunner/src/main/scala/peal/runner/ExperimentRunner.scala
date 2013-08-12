@@ -23,14 +23,13 @@ class TimingOutput(var modelGeneration: Long = 0, var eagerSynthesis: Long = 0, 
 class ExperimentRunner(z3: Z3Context, duration: Long) {
   implicit val system = ActorSystem("exp-runner")
 
-
-  def run(params: String, z3Path: String): TimingOutput = {
+  def run(n: Int, min: Int, max: Int, plus: Int, mul: Int, k: Int, th: Double, delta: Double, z3Path: String): TimingOutput = {
     val output = new TimingOutput()
 
     try {
       implicit val timeout = Timeout(duration, MILLISECONDS)
 
-      val generatorRunner = system.actorOf(Props(new ModelGeneratorActor(params)))
+      val generatorRunner = system.actorOf(Props(new ModelGeneratorActor(n, min, max, plus, mul, k, th, delta)))
       var start = System.nanoTime()
       val modelFuture = generatorRunner ? Run
       val model = Await.result(modelFuture, timeout.duration).asInstanceOf[String]
@@ -72,9 +71,9 @@ class ExperimentRunner(z3: Z3Context, duration: Long) {
       if (output.model1Result == output.model2Result) {
         output.isSameOutput = true
       }
-//      else {
-//        output.pealInput = model
-//      }
+      //      else {
+      //        output.pealInput = model
+      //      }
       output
     }
     finally {
