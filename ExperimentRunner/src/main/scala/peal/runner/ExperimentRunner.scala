@@ -109,7 +109,6 @@ class ExperimentRunner(z3: Z3Context, duration: Long) {
     //        println("timed out in model generation,NotRun,NotRun,NotRun,NotRun")
     //    }
     finally {
-      println()
       system.shutdown()
       return output
     }
