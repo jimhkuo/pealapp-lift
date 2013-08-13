@@ -14,8 +14,6 @@ import peal.synthesis.{GreaterThanThCondition, LessThanThCondition}
 
 class LazySynthesiser(z3: Z3Context, input: String) {
 
-//  val z3 = new Z3Context(new Z3Config("MODEL" -> true))
-
   private def getParser(input: String) = {
     val charStream = new ANTLRStringStream(input)
     val lexer = new PealProgramLexer(charStream)
