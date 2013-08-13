@@ -11,7 +11,7 @@ object Main extends App {
   var p = 2
 
   try {
-    while (execute(p)) {
+    while (execute(1, p, 1, 1, 1, 0.5, 0.1)) {
       lastSuccess = p
       p = p * 2
       lastFailure = p
@@ -21,7 +21,7 @@ object Main extends App {
 
     while (lastFailure - lastSuccess > 10) {
       p = (lastSuccess + lastFailure) / 2
-      if (execute(p)) {
+      if (execute(1, p, 1, 1, 1, 0.5, 0.1)) {
         lastSuccess = p
       }
       else {
@@ -34,15 +34,15 @@ object Main extends App {
     "%.2f".format(timeInNano.toDouble / 1000000)
   }
 
-  private def execute(p: Int): Boolean = {
+  private def execute(n: Int, m0: Int, m1: Int, m2: Int, m3: Int, th: Double, delta: Double): Boolean = {
     var z3: Z3Context = null
-    val z3Path: String = if (args.size ==0 ) "/Users/jkuo/tools/z3/bin" else args(0)
+    val z3Path: String = if (args.size == 0) "/Users/jkuo/tools/z3/bin" else args(0)
     try {
 
       for (i <- 1 to 5) {
         z3 = new Z3Context(new Z3Config("MODEL" -> true))
-        val output = new ExperimentRunner(5000).run(1, p, 1, 1, 1, 3 * p, 0.5, 0.1, z3Path)
-        println("p=" + p + "," + milliTime(output.modelGeneration) + "," + milliTime(output.eagerSynthesis) + "," + milliTime(output.eagerZ3) + "," + milliTime(output.lazySynthesis) + "," + milliTime(output.lazyZ3) + "," + output.isSameOutput.toString.toUpperCase + "," + output.model1Result + "," + output.pealInput)
+        val output = new ExperimentRunner(5000).run(n, m0, m1, m2, m3, 3 * p, th, delta, z3Path)
+        println(n + "-" + m0 + "-" + m1 + "-" + m2 + "-" + m3 + "-" + th + "-" + delta + "," + milliTime(output.modelGeneration) + "," + milliTime(output.eagerSynthesis) + "," + milliTime(output.eagerZ3) + "," + milliTime(output.lazySynthesis) + "," + milliTime(output.lazyZ3) + "," + output.isSameOutput.toString.toUpperCase + "," + output.model1Result + "," + output.pealInput)
         z3.delete
         z3 = null
       }
