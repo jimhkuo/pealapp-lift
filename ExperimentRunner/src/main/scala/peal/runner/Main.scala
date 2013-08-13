@@ -14,11 +14,11 @@ object Main extends App {
     while (execute(1, p, 1, 1, 1, 0.5, 0.1)) {
       lastSuccess = p
       p = p * 2
-      lastFailure = p
     }
 
     println("############################")
 
+    lastFailure = p
     while (lastFailure - lastSuccess > 10) {
       p = (lastSuccess + lastFailure) / 2
       if (execute(1, p, 1, 1, 1, 0.5, 0.1)) {
