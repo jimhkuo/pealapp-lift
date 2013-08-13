@@ -35,7 +35,7 @@ class ExperimentRunner(duration: Long) {
       val model = Await.result(modelFuture, timeout.duration).asInstanceOf[String]
       var lapsedTime = System.nanoTime() - start
       output.modelGeneration = lapsedTime
-
+      print("m")
       val z3Eager = new Z3Context(new Z3Config("MODEL" -> true))
       val z3InputGenerator = system.actorOf(Props(new Z3InputGeneratorActor(z3Eager)))
       start = System.nanoTime()
@@ -44,6 +44,7 @@ class ExperimentRunner(duration: Long) {
       lapsedTime = System.nanoTime() - start
       output.eagerSynthesis = lapsedTime
       z3Eager.delete()
+      print("e")
 
       val eagerZ3Caller = system.actorOf(Props(new Z3CallerActor(z3Path)))
       start = System.nanoTime()
@@ -51,6 +52,7 @@ class ExperimentRunner(duration: Long) {
       val result1 = Await.result(resultFuture1, timeout.duration)
       lapsedTime = System.nanoTime() - start
       output.eagerZ3 = lapsedTime
+      print("z")
       val results1 = ResultAnalyser.execute(result1.toString)
       output.model1Result = results1
 
@@ -62,6 +64,7 @@ class ExperimentRunner(duration: Long) {
       lapsedTime = System.nanoTime() - start
       output.lazySynthesis = lapsedTime
       z3Lazy.delete()
+      print("l")
 
       val lazyZ3Caller = system.actorOf(Props(new Z3CallerActor(z3Path)))
       start = System.nanoTime()
@@ -69,6 +72,7 @@ class ExperimentRunner(duration: Long) {
       val result = Await.result(resultFuture, timeout.duration)
       lapsedTime = System.nanoTime() - start
       output.lazyZ3 = lapsedTime
+      print("z")
       val results2 = ResultAnalyser.execute(result.toString)
       output.model2Result = results2
 
