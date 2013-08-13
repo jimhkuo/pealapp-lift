@@ -36,11 +36,12 @@ object Main extends App {
 
   private def execute(p: Int): Boolean = {
     var z3: Z3Context = null
+    val z3Path: String = if (args.size ==0 ) "/Users/jkuo/tools/z3/bin" else args(0)
     try {
 
       for (i <- 1 to 5) {
         z3 = new Z3Context(new Z3Config("MODEL" -> true))
-        val output = new ExperimentRunner(5000).run(1, p, 1, 1, 1, 3 * p, 0.5, 0.1, "/Users/jkuo/tools/z3/bin")
+        val output = new ExperimentRunner(300000).run(1, p, 1, 1, 1, 3 * p, 0.5, 0.1, z3Path)
         println("p=" + p + "," + milliTime(output.modelGeneration) + "," + milliTime(output.eagerSynthesis) + "," + milliTime(output.eagerZ3) + "," + milliTime(output.lazySynthesis) + "," + milliTime(output.lazyZ3) + "," + output.isSameOutput + "," + output.pealInput)
         z3.delete
         z3 = null
