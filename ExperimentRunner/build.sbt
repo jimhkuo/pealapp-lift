@@ -6,6 +6,17 @@ test in assembly := {}
 
 mainClass in assembly := Some("peal.runner.Main")
 
+//use linux jar in assembly
+unmanagedJars in Compile <++= baseDirectory map { base =>
+	val baseDirectories = (base / "../lib_linux")
+	val customJars = (baseDirectories ** "*.jar")
+	customJars.classpath
+}
+
+excludedJars in assembly <<= (fullClasspath in assembly) map { cp =>
+  cp filter {_.data.getName.endsWith("-mac.jar")}
+}
+
 name := "ExperimentRunner"
 
 version := "0.1"
