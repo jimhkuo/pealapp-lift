@@ -35,6 +35,8 @@ object Main extends App {
   }
 
   private def execute(n: Int, m0: Int, m1: Int, m2: Int, m3: Int, th: Double, delta: Double, timeout: Long = 30000): Boolean = {
+    val iterations: Int = 5
+
     var z3: Z3Context = null
     val z3Path: String = if (args.size == 0) "/Users/jkuo/tools/z3/bin" else args(0)
     var mt = 0l
@@ -44,7 +46,7 @@ object Main extends App {
     var lzt = 0l
 
     try {
-      for (i <- 1 to 5) {
+      for (i <- 1 to iterations) {
         z3 = new Z3Context(new Z3Config("MODEL" -> true))
         val output = new ExperimentRunner(timeout).run(n, m0, m1, m2, m3, 3 * p, th, delta, z3Path)
         mt += output.modelGeneration
@@ -59,7 +61,7 @@ object Main extends App {
         z3 = null
       }
 
-      println("," + n + "-" + m0 + "-" + m1 + "-" + m2 + "-" + m3 + "-" + th + "-" + delta + "," + timeout + "," + milliTime(mt / 5) + "," + milliTime(et / 5) + "," + milliTime(ezt / 5) + "," + milliTime(lt / 5) + "," + milliTime(lzt / 5))
+      println("," + n + "-" + m0 + "-" + m1 + "-" + m2 + "-" + m3 + "-" + th + "-" + delta + "," + timeout + "," + milliTime(mt / iterations) + "," + milliTime(et / iterations) + "," + milliTime(ezt / iterations) + "," + milliTime(lt / iterations) + "," + milliTime(lzt / iterations))
       true
     } catch {
       case e: TimeoutException =>
