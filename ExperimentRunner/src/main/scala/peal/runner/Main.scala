@@ -52,7 +52,6 @@ object Main extends App {
         ezt += output.eagerZ3
         lt += output.lazySynthesis
         lzt += output.lazyZ3
-        //        println(n + "-" + m0 + "-" + m1 + "-" + m2 + "-" + m3 + "-" + th + "-" + delta + "," + milliTime(output.modelGeneration) + "," + milliTime(output.eagerSynthesis) + "," + milliTime(output.eagerZ3) + "," + milliTime(output.lazySynthesis) + "," + milliTime(output.lazyZ3) + "," + output.isSameOutput.toString.toUpperCase + "," + output.model1Result + "," + output.pealInput)
         if (!output.isSameOutput) {
           println("eager and lazy produce different result," + n + "-" + m0 + "-" + m1 + "-" + m2 + "-" + m3 + "-" + th + "-" + delta + "," + output.pealInput)
         }
