@@ -21,6 +21,7 @@ class TimingOutput(var modelGeneration: Long = 0, var eagerSynthesis: Long = 0, 
 }
 
 class ExperimentRunner(duration: Long) {
+  //TODO record which step timeout occurs
   implicit val system = ActorSystem("exp-runner")
 
   def run(n: Int, min: Int, max: Int, plus: Int, mul: Int, k: Int, th: Double, delta: Double, z3Path: String): TimingOutput = {
