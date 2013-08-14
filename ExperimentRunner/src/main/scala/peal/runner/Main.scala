@@ -34,7 +34,7 @@ object Main extends App {
     "%.2f".format(timeInNano.toDouble / 1000000)
   }
 
-  private def execute(n: Int, m0: Int, m1: Int, m2: Int, m3: Int, th: Double, delta: Double): Boolean = {
+  private def execute(n: Int, m0: Int, m1: Int, m2: Int, m3: Int, th: Double, delta: Double, timeout: Long = 5000): Boolean = {
     var z3: Z3Context = null
     val z3Path: String = if (args.size == 0) "/Users/jkuo/tools/z3/bin" else args(0)
     var mt = 0l
@@ -46,24 +46,24 @@ object Main extends App {
     try {
       for (i <- 1 to 5) {
         z3 = new Z3Context(new Z3Config("MODEL" -> true))
-        val output = new ExperimentRunner(5000).run(n, m0, m1, m2, m3, 3 * p, th, delta, z3Path)
+        val output = new ExperimentRunner(timeout).run(n, m0, m1, m2, m3, 3 * p, th, delta, z3Path)
         mt += output.modelGeneration
         et += output.eagerSynthesis
         ezt += output.eagerZ3
         lt += output.lazySynthesis
         lzt += output.lazyZ3
         if (!output.isSameOutput) {
-          println("eager and lazy produce different result," + n + "-" + m0 + "-" + m1 + "-" + m2 + "-" + m3 + "-" + th + "-" + delta + "," + output.pealInput)
+          println("eager and lazy produce different result," + n + "-" + m0 + "-" + m1 + "-" + m2 + "-" + m3 + "-" + th + "-" + delta + "," + timeout + "," + output.pealInput)
         }
         z3.delete
         z3 = null
       }
 
-      println("," + n + "-" + m0 + "-" + m1 + "-" + m2 + "-" + m3 + "-" + th + "-" + delta + "," + milliTime(mt / 5) + "," + milliTime(et / 5) + "," + milliTime(ezt / 5) + "," + milliTime(lt / 5) + "," + milliTime(lzt / 5))
+      println("," + n + "-" + m0 + "-" + m1 + "-" + m2 + "-" + m3 + "-" + th + "-" + delta + "," + timeout + "," + milliTime(mt / 5) + "," + milliTime(et / 5) + "," + milliTime(ezt / 5) + "," + milliTime(lt / 5) + "," + milliTime(lzt / 5))
       true
     } catch {
       case e: TimeoutException =>
-        println("," + n + "-" + m0 + "-" + m1 + "-" + m2 + "-" + m3 + "-" + th + "-" + delta + ",-1,-1,-1,-1,-1")
+        println("," + n + "-" + m0 + "-" + m1 + "-" + m2 + "-" + m3 + "-" + th + "-" + delta + "," + timeout + ",TIMEOUT,TIMEOUT,TIMEOUT,TIMEOUT,TIMEOUT")
         false
     }
     finally {
