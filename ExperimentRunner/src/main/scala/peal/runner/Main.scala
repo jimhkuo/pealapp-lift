@@ -34,7 +34,7 @@ object Main extends App {
     "%.2f".format(timeInNano.toDouble / 1000000)
   }
 
-  private def execute(n: Int, m0: Int, m1: Int, m2: Int, m3: Int, th: Double, delta: Double, timeout: Long = 5000): Boolean = {
+  private def execute(n: Int, m0: Int, m1: Int, m2: Int, m3: Int, th: Double, delta: Double, timeout: Long = 30000): Boolean = {
     var z3: Z3Context = null
     val z3Path: String = if (args.size == 0) "/Users/jkuo/tools/z3/bin" else args(0)
     var mt = 0l
