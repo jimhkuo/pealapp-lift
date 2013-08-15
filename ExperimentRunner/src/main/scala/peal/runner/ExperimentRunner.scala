@@ -35,6 +35,7 @@ class ExperimentRunner(duration: Long) {
       var lapsedTime = System.nanoTime() - start
       output.modelGeneration = lapsedTime
       print("m")
+
       val z3Eager = new Z3Context(new Z3Config("MODEL" -> true))
       val z3InputGenerator = system.actorOf(Props(new Z3InputGeneratorActor(z3Eager)))
       start = System.nanoTime()
@@ -75,6 +76,7 @@ class ExperimentRunner(duration: Long) {
       val results2 = ResultAnalyser.execute(result.toString)
       output.model2Result = results2
 
+      //      output.isSameOutput = true
       if (!output.model1Result.isEmpty && output.model1Result == output.model2Result) {
         output.isSameOutput = true
       }

@@ -7,6 +7,11 @@ import java.util.concurrent.TimeoutException
 object Main extends App {
 
   val defaultZ3Path = "/Users/jkuo/tools/z3/bin"
+
+  if (args.size == 0) {
+    println("Warning: z3 path is not specified, default to " + defaultZ3Path)
+  }
+
   var lastSuccess = 0
   var lastFailure = 0
   var p = 2
@@ -40,9 +45,6 @@ object Main extends App {
 
     var z3: Z3Context = null
     val z3Path: String = if (args.size == 0) defaultZ3Path else args(0)
-    if (args.size == 0) {
-      println("Warning: z3 path is not specified, default to " + defaultZ3Path)
-    }
     var mt = 0l
     var et = 0l
     var ezt = 0l
