@@ -39,6 +39,9 @@ object Main extends App {
 
     var z3: Z3Context = null
     val z3Path: String = if (args.size == 0) "/Users/jkuo/tools/z3/bin" else args(0)
+    if (args.size == 0) {
+      println("Warning: z3 path is not specified, default to /Users/jkuo/tools/z3/bin")
+    }
     var mt = 0l
     var et = 0l
     var ezt = 0l
