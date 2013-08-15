@@ -75,7 +75,7 @@ class ExperimentRunner(duration: Long) {
       val results2 = ResultAnalyser.execute(result.toString)
       output.model2Result = results2
 
-      if (output.model1Result == output.model2Result) {
+      if (!output.model1Result.isEmpty && output.model1Result == output.model2Result) {
         output.isSameOutput = true
       }
       else {
