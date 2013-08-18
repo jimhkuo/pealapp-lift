@@ -11,6 +11,19 @@ import java.io.File
 class ScalaTest extends ShouldMatchersForJUnit {
 
   @Test
+  def testFinally() {
+    try {
+      println("try")
+//      System.exit(-1)
+      return
+//      throw new RuntimeException("error")
+    }
+    finally {
+      println("finally")
+    }
+  }
+
+  @Test
   def testProcess() {
     println("ls".!!)
     println(Process(Seq("bash", "-c", "z3 -h"), None, "PATH" -> "/Users/jkuo/tools/z3/bin").!!)
