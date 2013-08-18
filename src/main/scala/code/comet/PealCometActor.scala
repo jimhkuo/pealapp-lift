@@ -150,11 +150,12 @@ class PealCometActor extends CometActor with Loggable {
       val (constsMap,  conds, pSets, analyses, domainSpecific) = onCompute(inputPolicies)
       onCallZ3ViaCommandLine(constsMap, conds,  pSets, analyses, domainSpecific)
     case LazySynthesisAndCallZ3 =>
-      val input = new LazySynthesiser(MyZ3Context.is, inputPolicies).generate()
+      val input = new LazySynthesiser(MyZ3Context.get, inputPolicies).generate()
       onCallZ3(input)
     case LazyDisplay =>
-      this ! Result(<pre>{new LazySynthesiser(MyZ3Context.is, inputPolicies).generate()}</pre>)
+      this ! Result(<pre>{new LazySynthesiser(MyZ3Context.get, inputPolicies).generate()}</pre>)
     case Display =>
+      println("Display")
       val (constsMap, conds,  pSets, analyses, domainSpecific) = onCompute(inputPolicies)
       onDisplay(constsMap, conds,  pSets, analyses, domainSpecific)
     case Download =>
@@ -208,19 +209,34 @@ class PealCometActor extends CometActor with Loggable {
   }
 
   private def onCompute(input: String): (Map[String, Z3AST], Map[String, Condition], Map[String, PolicySet], Map[String, AnalysisGenerator], Array[String]) = {
+    println("onCompute: " + input)
     val pealProgramParser = getPealProgramParser(input)
-    val z3 = MyZ3Context.is
+    println("getParser")
 
     try {
+      val z3 = MyZ3Context.get
+      println("get z3")
+
+      println("pre program")
+
       pealProgramParser.program()
+      println("post program")
       val predicateNames: Seq[String] = pealProgramParser.pols.values().flatMap(pol => pol.rules).map(r => r.q.name).toSeq.distinct
       val constsMap = predicateNames.toSeq.distinct.map(t => (t, z3.mkBoolConst(t))).toMap
       val domainSpecifics = input.split("\n").dropWhile(!_.startsWith("DOMAIN_SPECIFICS")).takeWhile(!_.startsWith("ANALYSES")).drop(1)
 
+      println("computes")
       (constsMap, pealProgramParser.conds.toMap, pealProgramParser.pSets.toMap, pealProgramParser.analyses.toMap, domainSpecifics)
     } catch {
-      case e2: NullPointerException => dealWithIt(e2)
-      case e1: Throwable => dealWithIt(e1)
+      case e: Exception =>
+        e.printStackTrace()
+        dealWithIt(e)
+      case e2: NullPointerException =>
+        e2.printStackTrace()
+        dealWithIt(e2)
+      case e1: Throwable =>
+        e1.printStackTrace()
+        dealWithIt(e1)
     }
     //    finally {
     //      z3.delete()
@@ -229,12 +245,12 @@ class PealCometActor extends CometActor with Loggable {
 
   private def onAnalysis1(constsMap: Map[String, Z3AST], conds: Map[String, Condition], pSets: Map[String, PolicySet]) {
     val sortedKeys = conds.keys.toSeq.sortWith(_ < _)
-    val solver = MyZ3Context.is.mkSolver()
+    val solver = MyZ3Context.get.mkSolver()
     val results = for (name <- sortedKeys) yield {
       solver.reset()
-      val cond = MyZ3Context.is.mkBoolConst(name)
-      solver.assertCnstr(MyZ3Context.is.mkEq(cond, conds(name).synthesis(MyZ3Context, constsMap)))
-      solver.assertCnstr(MyZ3Context.is.mkNot(cond))
+      val cond = MyZ3Context.get.mkBoolConst(name)
+      solver.assertCnstr(MyZ3Context.get.mkEq(cond, conds(name).synthesis(MyZ3Context.get, constsMap)))
+      solver.assertCnstr(MyZ3Context.get.mkNot(cond))
       val (sol, model) = ModelGetter.get(solver)
 
       val result = sol match {
@@ -252,11 +268,11 @@ class PealCometActor extends CometActor with Loggable {
 
   private def onAnalysis2(constsMap: Map[String, Z3AST], conds: Map[String, Condition], pSets: Map[String, PolicySet]) {
     val sortedKeys = conds.keys.toSeq.sortWith(_ < _)
-    val solver = MyZ3Context.is.mkSolver()
+    val solver = MyZ3Context.get.mkSolver()
     val results = for (name <- sortedKeys) yield {
       solver.reset()
-      val cond = MyZ3Context.is.mkBoolConst(name)
-      solver.assertCnstr(MyZ3Context.is.mkEq(cond, conds(name).synthesis(MyZ3Context, constsMap)))
+      val cond = MyZ3Context.get.mkBoolConst(name)
+      solver.assertCnstr(MyZ3Context.get.mkEq(cond, conds(name).synthesis(MyZ3Context.get, constsMap)))
       val (sol, model) = ModelGetter.get(solver)
 
       val result = sol match {
@@ -280,7 +296,7 @@ class PealCometActor extends CometActor with Loggable {
 
     val sortedConds = conds.keys.toSeq.sortWith(_ < _)
     val conditions = for (cond <- sortedConds) yield {<p>
-      {"(assert (= " + cond + " " + conds(cond).synthesis(MyZ3Context.is, constsMap) + "))"}
+      {"(assert (= " + cond + " " + conds(cond).synthesis(MyZ3Context.get, constsMap) + "))"}
     </p>}
 
     val sortedAnalyses = analyses.keys.toSeq.sortWith(_ < _)
@@ -303,7 +319,7 @@ class PealCometActor extends CometActor with Loggable {
     val declarations1 = for (name <- conds.keys) yield "(declare-const " + name + " Bool)\n"
     val sortedKeys = conds.keys.toSeq.sortWith(_ < _)
     val start = System.nanoTime()
-    val body = for (cond <- sortedKeys) yield {"(assert (= " + cond + " " + conds(cond).synthesis(MyZ3Context.is, constsMap) + "))\n"}
+    val body = for (cond <- sortedKeys) yield {"(assert (= " + cond + " " + conds(cond).synthesis(MyZ3Context.get, constsMap) + "))\n"}
     val lapseTime = System.nanoTime() - start
     val sortedAnalyses = analyses.keys.toSeq.sortWith(_ < _)
     val generatedAnalyses = for (analysis <- sortedAnalyses) yield {analyses(analysis).z3SMTInput}
@@ -315,7 +331,7 @@ class PealCometActor extends CometActor with Loggable {
     val declarations = for (name <- constsMap.keys) yield "(declare-const " + name + " Bool)\n"
     val declarations1 = for (name <- conds.keys) yield "(declare-const " + name + " Bool)\n"
     val sortedKeys = conds.keys.toSeq.sortWith(_ < _)
-    val body = for (cond <- sortedKeys) yield {"(assert (= " + cond + " " + conds(cond).synthesis(MyZ3Context.is, constsMap) + "))\n"}
+    val body = for (cond <- sortedKeys) yield {"(assert (= " + cond + " " + conds(cond).synthesis(MyZ3Context.get, constsMap) + "))\n"}
     val sortedAnalyses = analyses.keys.toSeq.sortWith(_ < _)
     val generatedAnalyses = for (analysis <- sortedAnalyses) yield {"(echo \"Result of analysis [" + analyses(analysis).analysisName + "]:\")\n" + analyses(analysis).z3SMTInput}
 
