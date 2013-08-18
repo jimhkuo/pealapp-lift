@@ -1,1 +1,2 @@
-bash -> ulimit -v 7000000 (to 7G) restrict z3 memory usage
+bash -> ulimit -v 45000000
+to restrict z3 memory usage
