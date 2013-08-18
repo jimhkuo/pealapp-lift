@@ -34,6 +34,8 @@ class ExperimentRunner(duration: Long) {
       val model = Await.result(modelFuture, timeout.duration).asInstanceOf[String]
       var lapsedTime = System.nanoTime() - start
       output.modelGeneration = lapsedTime
+//      generatorRunner.ter 
+
       print("m")
 
       val z3Eager = new Z3Context(new Z3Config("MODEL" -> true))
