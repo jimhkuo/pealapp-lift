@@ -24,6 +24,7 @@ class Z3CallerActor(z3Path: String) extends Actor {
   }
 
   def receive = {
+    //TODO this is not advisable, google for solution on dealing with huge messages
     case input: String =>
       val tmp = File.createTempFile("z3file", "")
       writeToFile(tmp.getAbsolutePath, input)
