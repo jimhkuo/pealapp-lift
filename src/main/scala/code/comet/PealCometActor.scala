@@ -28,7 +28,6 @@ import peal.model.RandomModelGenerator
 import peal.domain.PolicySet
 import peal.lazysynthesis.LazySynthesiser
 
-//import peal.lazysynthesis.LazySynthesiser
 
 class PealCometActor extends CometActor with Loggable {
   val resultList = ListBuffer[String]()
@@ -332,7 +331,8 @@ class PealCometActor extends CometActor with Loggable {
     (Seq("echo", z3SMTInput) #> tmp).!!
     println(tmp.getAbsolutePath)
     resultList.clear()
-    Process(Seq("bash", "-c", "z3 -nw -smt2 " + tmp.getAbsolutePath), None, "PATH" -> Props.get("z3.location").get) ! processLogger
+//    Process(Seq("bash", "-c", "z3 -nw -smt2 " + tmp.getAbsolutePath), None, "PATH" -> Props.get("z3.location").get ) ! processLogger
+    Process(Seq("bash", "-c", "z3 -nw -smt2 " + tmp.getAbsolutePath)) ! processLogger
     tmp.delete()
     try {
       val z3OutputParser = getZ3OutputParser(resultList.mkString(""))
