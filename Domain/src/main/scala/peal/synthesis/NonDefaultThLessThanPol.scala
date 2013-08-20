@@ -8,7 +8,7 @@ import scala.collection.mutable.ListBuffer
 
 import _root_.z3.scala.{Z3AST, Z3Context}
 
-class NonDefaultThLessThanPol(pol: Pol, th: Double) extends NonDefaultSet {
+class NonDefaultThLessThanPol(pol: Pol, th: BigDecimal) extends NonDefaultSet {
   def synthesis(z3: Z3Context, consts: Map[String, Z3AST]): Z3AST = pol.operator match {
     case Plus => {
       val m1 = enumOneForPlus()
@@ -45,10 +45,10 @@ class NonDefaultThLessThanPol(pol: Pol, th: Double) extends NonDefaultSet {
 
   def enumOneForPlus(): ListBuffer[List[Rule]] = {
     val sortedRulesByScore = pol.rules.sortBy(_.score)
-    val t = sortedRulesByScore.map(_.score).scanLeft(0.00)((remaining, score) => "%.2f".format(remaining + score).toDouble).drop(1)
+    val t = sortedRulesByScore.map(_.score).scanLeft(BigDecimal.valueOf(0.00))((remaining, score) => remaining + score).drop(1)
     var m1 = ListBuffer[List[Rule]]()
 
-    def enumOne(x: List[Rule], sum: Double, index: Integer) {
+    def enumOne(x: List[Rule], sum: BigDecimal, index: Integer) {
       if (sum > th) {
         m1 += x
       }

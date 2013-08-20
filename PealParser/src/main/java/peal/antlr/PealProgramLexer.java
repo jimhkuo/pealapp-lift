@@ -1,4 +1,4 @@
-// $ANTLR 3.4 /Users/jkuo/PealApp-lift/antlr/PealProgram.g 2013-08-01 13:34:16
+// $ANTLR 3.4 /Users/jkuo/PealApp-lift/antlr/PealProgram.g 2013-08-20 15:23:09
 
 package peal.antlr;
 
@@ -59,7 +59,7 @@ public class PealProgramLexer extends Lexer {
     public final void mT__8() throws RecognitionException {
         try {
             int _type = T__8;
-            int _channel = BaseRecognizer.DEFAULT_TOKEN_CHANNEL;
+            int _channel = DEFAULT_TOKEN_CHANNEL;
             // /Users/jkuo/PealApp-lift/antlr/PealProgram.g:14:6: ( '(' )
             // /Users/jkuo/PealApp-lift/antlr/PealProgram.g:14:8: '('
             {
@@ -80,7 +80,7 @@ public class PealProgramLexer extends Lexer {
     public final void mT__9() throws RecognitionException {
         try {
             int _type = T__9;
-            int _channel = BaseRecognizer.DEFAULT_TOKEN_CHANNEL;
+            int _channel = DEFAULT_TOKEN_CHANNEL;
             // /Users/jkuo/PealApp-lift/antlr/PealProgram.g:15:6: ( ')' )
             // /Users/jkuo/PealApp-lift/antlr/PealProgram.g:15:8: ')'
             {
@@ -101,7 +101,7 @@ public class PealProgramLexer extends Lexer {
     public final void mT__10() throws RecognitionException {
         try {
             int _type = T__10;
-            int _channel = BaseRecognizer.DEFAULT_TOKEN_CHANNEL;
+            int _channel = DEFAULT_TOKEN_CHANNEL;
             // /Users/jkuo/PealApp-lift/antlr/PealProgram.g:16:7: ( '*' )
             // /Users/jkuo/PealApp-lift/antlr/PealProgram.g:16:9: '*'
             {
@@ -122,7 +122,7 @@ public class PealProgramLexer extends Lexer {
     public final void mT__11() throws RecognitionException {
         try {
             int _type = T__11;
-            int _channel = BaseRecognizer.DEFAULT_TOKEN_CHANNEL;
+            int _channel = DEFAULT_TOKEN_CHANNEL;
             // /Users/jkuo/PealApp-lift/antlr/PealProgram.g:17:7: ( '+' )
             // /Users/jkuo/PealApp-lift/antlr/PealProgram.g:17:9: '+'
             {
@@ -143,7 +143,7 @@ public class PealProgramLexer extends Lexer {
     public final void mT__12() throws RecognitionException {
         try {
             int _type = T__12;
-            int _channel = BaseRecognizer.DEFAULT_TOKEN_CHANNEL;
+            int _channel = DEFAULT_TOKEN_CHANNEL;
             // /Users/jkuo/PealApp-lift/antlr/PealProgram.g:18:7: ( ',' )
             // /Users/jkuo/PealApp-lift/antlr/PealProgram.g:18:9: ','
             {
@@ -164,7 +164,7 @@ public class PealProgramLexer extends Lexer {
     public final void mT__13() throws RecognitionException {
         try {
             int _type = T__13;
-            int _channel = BaseRecognizer.DEFAULT_TOKEN_CHANNEL;
+            int _channel = DEFAULT_TOKEN_CHANNEL;
             // /Users/jkuo/PealApp-lift/antlr/PealProgram.g:19:7: ( '<' )
             // /Users/jkuo/PealApp-lift/antlr/PealProgram.g:19:9: '<'
             {
@@ -185,7 +185,7 @@ public class PealProgramLexer extends Lexer {
     public final void mT__14() throws RecognitionException {
         try {
             int _type = T__14;
-            int _channel = BaseRecognizer.DEFAULT_TOKEN_CHANNEL;
+            int _channel = DEFAULT_TOKEN_CHANNEL;
             // /Users/jkuo/PealApp-lift/antlr/PealProgram.g:20:7: ( '<=' )
             // /Users/jkuo/PealApp-lift/antlr/PealProgram.g:20:9: '<='
             {
@@ -208,7 +208,7 @@ public class PealProgramLexer extends Lexer {
     public final void mT__15() throws RecognitionException {
         try {
             int _type = T__15;
-            int _channel = BaseRecognizer.DEFAULT_TOKEN_CHANNEL;
+            int _channel = DEFAULT_TOKEN_CHANNEL;
             // /Users/jkuo/PealApp-lift/antlr/PealProgram.g:21:7: ( '=' )
             // /Users/jkuo/PealApp-lift/antlr/PealProgram.g:21:9: '='
             {
@@ -229,7 +229,7 @@ public class PealProgramLexer extends Lexer {
     public final void mT__16() throws RecognitionException {
         try {
             int _type = T__16;
-            int _channel = BaseRecognizer.DEFAULT_TOKEN_CHANNEL;
+            int _channel = DEFAULT_TOKEN_CHANNEL;
             // /Users/jkuo/PealApp-lift/antlr/PealProgram.g:22:7: ( 'ANALYSES' )
             // /Users/jkuo/PealApp-lift/antlr/PealProgram.g:22:9: 'ANALYSES'
             {
@@ -252,7 +252,7 @@ public class PealProgramLexer extends Lexer {
     public final void mT__17() throws RecognitionException {
         try {
             int _type = T__17;
-            int _channel = BaseRecognizer.DEFAULT_TOKEN_CHANNEL;
+            int _channel = DEFAULT_TOKEN_CHANNEL;
             // /Users/jkuo/PealApp-lift/antlr/PealProgram.g:23:7: ( 'CONDITIONS' )
             // /Users/jkuo/PealApp-lift/antlr/PealProgram.g:23:9: 'CONDITIONS'
             {
@@ -275,7 +275,7 @@ public class PealProgramLexer extends Lexer {
     public final void mT__18() throws RecognitionException {
         try {
             int _type = T__18;
-            int _channel = BaseRecognizer.DEFAULT_TOKEN_CHANNEL;
+            int _channel = DEFAULT_TOKEN_CHANNEL;
             // /Users/jkuo/PealApp-lift/antlr/PealProgram.g:24:7: ( 'DOMAIN_SPECIFICS' )
             // /Users/jkuo/PealApp-lift/antlr/PealProgram.g:24:9: 'DOMAIN_SPECIFICS'
             {
@@ -298,7 +298,7 @@ public class PealProgramLexer extends Lexer {
     public final void mT__19() throws RecognitionException {
         try {
             int _type = T__19;
-            int _channel = BaseRecognizer.DEFAULT_TOKEN_CHANNEL;
+            int _channel = DEFAULT_TOKEN_CHANNEL;
             // /Users/jkuo/PealApp-lift/antlr/PealProgram.g:25:7: ( 'POLICIES' )
             // /Users/jkuo/PealApp-lift/antlr/PealProgram.g:25:9: 'POLICIES'
             {
@@ -321,7 +321,7 @@ public class PealProgramLexer extends Lexer {
     public final void mT__20() throws RecognitionException {
         try {
             int _type = T__20;
-            int _channel = BaseRecognizer.DEFAULT_TOKEN_CHANNEL;
+            int _channel = DEFAULT_TOKEN_CHANNEL;
             // /Users/jkuo/PealApp-lift/antlr/PealProgram.g:26:7: ( 'POLICY_SETS' )
             // /Users/jkuo/PealApp-lift/antlr/PealProgram.g:26:9: 'POLICY_SETS'
             {
@@ -344,7 +344,7 @@ public class PealProgramLexer extends Lexer {
     public final void mT__21() throws RecognitionException {
         try {
             int _type = T__21;
-            int _channel = BaseRecognizer.DEFAULT_TOKEN_CHANNEL;
+            int _channel = DEFAULT_TOKEN_CHANNEL;
             // /Users/jkuo/PealApp-lift/antlr/PealProgram.g:27:7: ( 'always_false?' )
             // /Users/jkuo/PealApp-lift/antlr/PealProgram.g:27:9: 'always_false?'
             {
@@ -367,7 +367,7 @@ public class PealProgramLexer extends Lexer {
     public final void mT__22() throws RecognitionException {
         try {
             int _type = T__22;
-            int _channel = BaseRecognizer.DEFAULT_TOKEN_CHANNEL;
+            int _channel = DEFAULT_TOKEN_CHANNEL;
             // /Users/jkuo/PealApp-lift/antlr/PealProgram.g:28:7: ( 'always_true?' )
             // /Users/jkuo/PealApp-lift/antlr/PealProgram.g:28:9: 'always_true?'
             {
@@ -390,7 +390,7 @@ public class PealProgramLexer extends Lexer {
     public final void mT__23() throws RecognitionException {
         try {
             int _type = T__23;
-            int _channel = BaseRecognizer.DEFAULT_TOKEN_CHANNEL;
+            int _channel = DEFAULT_TOKEN_CHANNEL;
             // /Users/jkuo/PealApp-lift/antlr/PealProgram.g:29:7: ( 'default' )
             // /Users/jkuo/PealApp-lift/antlr/PealProgram.g:29:9: 'default'
             {
@@ -413,7 +413,7 @@ public class PealProgramLexer extends Lexer {
     public final void mT__24() throws RecognitionException {
         try {
             int _type = T__24;
-            int _channel = BaseRecognizer.DEFAULT_TOKEN_CHANNEL;
+            int _channel = DEFAULT_TOKEN_CHANNEL;
             // /Users/jkuo/PealApp-lift/antlr/PealProgram.g:30:7: ( 'different?' )
             // /Users/jkuo/PealApp-lift/antlr/PealProgram.g:30:9: 'different?'
             {
@@ -436,7 +436,7 @@ public class PealProgramLexer extends Lexer {
     public final void mT__25() throws RecognitionException {
         try {
             int _type = T__25;
-            int _channel = BaseRecognizer.DEFAULT_TOKEN_CHANNEL;
+            int _channel = DEFAULT_TOKEN_CHANNEL;
             // /Users/jkuo/PealApp-lift/antlr/PealProgram.g:31:7: ( 'equivalent?' )
             // /Users/jkuo/PealApp-lift/antlr/PealProgram.g:31:9: 'equivalent?'
             {
@@ -459,7 +459,7 @@ public class PealProgramLexer extends Lexer {
     public final void mT__26() throws RecognitionException {
         try {
             int _type = T__26;
-            int _channel = BaseRecognizer.DEFAULT_TOKEN_CHANNEL;
+            int _channel = DEFAULT_TOKEN_CHANNEL;
             // /Users/jkuo/PealApp-lift/antlr/PealProgram.g:32:7: ( 'max' )
             // /Users/jkuo/PealApp-lift/antlr/PealProgram.g:32:9: 'max'
             {
@@ -482,7 +482,7 @@ public class PealProgramLexer extends Lexer {
     public final void mT__27() throws RecognitionException {
         try {
             int _type = T__27;
-            int _channel = BaseRecognizer.DEFAULT_TOKEN_CHANNEL;
+            int _channel = DEFAULT_TOKEN_CHANNEL;
             // /Users/jkuo/PealApp-lift/antlr/PealProgram.g:33:7: ( 'min' )
             // /Users/jkuo/PealApp-lift/antlr/PealProgram.g:33:9: 'min'
             {
@@ -505,7 +505,7 @@ public class PealProgramLexer extends Lexer {
     public final void mT__28() throws RecognitionException {
         try {
             int _type = T__28;
-            int _channel = BaseRecognizer.DEFAULT_TOKEN_CHANNEL;
+            int _channel = DEFAULT_TOKEN_CHANNEL;
             // /Users/jkuo/PealApp-lift/antlr/PealProgram.g:34:7: ( 'satisfiable?' )
             // /Users/jkuo/PealApp-lift/antlr/PealProgram.g:34:9: 'satisfiable?'
             {
@@ -528,11 +528,11 @@ public class PealProgramLexer extends Lexer {
     public final void mNUMBER() throws RecognitionException {
         try {
             int _type = NUMBER;
-            int _channel = BaseRecognizer.DEFAULT_TOKEN_CHANNEL;
-            // /Users/jkuo/PealApp-lift/antlr/PealProgram.g:86:8: ( ( '.' | '0' .. '9' | '-' | 'E' )+ )
-            // /Users/jkuo/PealApp-lift/antlr/PealProgram.g:86:10: ( '.' | '0' .. '9' | '-' | 'E' )+
+            int _channel = DEFAULT_TOKEN_CHANNEL;
+            // /Users/jkuo/PealApp-lift/antlr/PealProgram.g:87:8: ( ( '.' | '0' .. '9' | '-' | 'E' )+ )
+            // /Users/jkuo/PealApp-lift/antlr/PealProgram.g:87:10: ( '.' | '0' .. '9' | '-' | 'E' )+
             {
-            // /Users/jkuo/PealApp-lift/antlr/PealProgram.g:86:10: ( '.' | '0' .. '9' | '-' | 'E' )+
+            // /Users/jkuo/PealApp-lift/antlr/PealProgram.g:87:10: ( '.' | '0' .. '9' | '-' | 'E' )+
             int cnt1=0;
             loop1:
             do {
@@ -588,11 +588,11 @@ public class PealProgramLexer extends Lexer {
     public final void mNEWLINE() throws RecognitionException {
         try {
             int _type = NEWLINE;
-            int _channel = BaseRecognizer.DEFAULT_TOKEN_CHANNEL;
-            // /Users/jkuo/PealApp-lift/antlr/PealProgram.g:87:8: ( ( '\\r' )? '\\n' )
-            // /Users/jkuo/PealApp-lift/antlr/PealProgram.g:87:9: ( '\\r' )? '\\n'
+            int _channel = DEFAULT_TOKEN_CHANNEL;
+            // /Users/jkuo/PealApp-lift/antlr/PealProgram.g:88:8: ( ( '\\r' )? '\\n' )
+            // /Users/jkuo/PealApp-lift/antlr/PealProgram.g:88:9: ( '\\r' )? '\\n'
             {
-            // /Users/jkuo/PealApp-lift/antlr/PealProgram.g:87:9: ( '\\r' )?
+            // /Users/jkuo/PealApp-lift/antlr/PealProgram.g:88:9: ( '\\r' )?
             int alt2=2;
             int LA2_0 = input.LA(1);
 
@@ -601,7 +601,7 @@ public class PealProgramLexer extends Lexer {
             }
             switch (alt2) {
                 case 1 :
-                    // /Users/jkuo/PealApp-lift/antlr/PealProgram.g:87:9: '\\r'
+                    // /Users/jkuo/PealApp-lift/antlr/PealProgram.g:88:9: '\\r'
                     {
                     match('\r'); 
 
@@ -613,7 +613,7 @@ public class PealProgramLexer extends Lexer {
 
             match('\n'); 
 
-             _channel = BaseRecognizer.HIDDEN;
+             _channel = HIDDEN;
 
             }
 
@@ -630,9 +630,9 @@ public class PealProgramLexer extends Lexer {
     public final void mIDENT() throws RecognitionException {
         try {
             int _type = IDENT;
-            int _channel = BaseRecognizer.DEFAULT_TOKEN_CHANNEL;
-            // /Users/jkuo/PealApp-lift/antlr/PealProgram.g:88:7: ( ( 'a' .. 'z' | 'A' .. 'Z' ) ( 'a' .. 'z' | 'A' .. 'Z' | '0' .. '9' | '_' )* )
-            // /Users/jkuo/PealApp-lift/antlr/PealProgram.g:88:9: ( 'a' .. 'z' | 'A' .. 'Z' ) ( 'a' .. 'z' | 'A' .. 'Z' | '0' .. '9' | '_' )*
+            int _channel = DEFAULT_TOKEN_CHANNEL;
+            // /Users/jkuo/PealApp-lift/antlr/PealProgram.g:89:7: ( ( 'a' .. 'z' | 'A' .. 'Z' ) ( 'a' .. 'z' | 'A' .. 'Z' | '0' .. '9' | '_' )* )
+            // /Users/jkuo/PealApp-lift/antlr/PealProgram.g:89:9: ( 'a' .. 'z' | 'A' .. 'Z' ) ( 'a' .. 'z' | 'A' .. 'Z' | '0' .. '9' | '_' )*
             {
             if ( (input.LA(1) >= 'A' && input.LA(1) <= 'Z')||(input.LA(1) >= 'a' && input.LA(1) <= 'z') ) {
                 input.consume();
@@ -644,7 +644,7 @@ public class PealProgramLexer extends Lexer {
             }
 
 
-            // /Users/jkuo/PealApp-lift/antlr/PealProgram.g:88:30: ( 'a' .. 'z' | 'A' .. 'Z' | '0' .. '9' | '_' )*
+            // /Users/jkuo/PealApp-lift/antlr/PealProgram.g:89:30: ( 'a' .. 'z' | 'A' .. 'Z' | '0' .. '9' | '_' )*
             loop3:
             do {
                 int alt3=2;
@@ -695,11 +695,11 @@ public class PealProgramLexer extends Lexer {
     public final void mWS() throws RecognitionException {
         try {
             int _type = WS;
-            int _channel = BaseRecognizer.DEFAULT_TOKEN_CHANNEL;
-            // /Users/jkuo/PealApp-lift/antlr/PealProgram.g:89:4: ( ( ' ' | '\\t' | '\\n' | '\\r' | '\\f' )+ )
-            // /Users/jkuo/PealApp-lift/antlr/PealProgram.g:89:6: ( ' ' | '\\t' | '\\n' | '\\r' | '\\f' )+
+            int _channel = DEFAULT_TOKEN_CHANNEL;
+            // /Users/jkuo/PealApp-lift/antlr/PealProgram.g:90:4: ( ( ' ' | '\\t' | '\\n' | '\\r' | '\\f' )+ )
+            // /Users/jkuo/PealApp-lift/antlr/PealProgram.g:90:6: ( ' ' | '\\t' | '\\n' | '\\r' | '\\f' )+
             {
-            // /Users/jkuo/PealApp-lift/antlr/PealProgram.g:89:6: ( ' ' | '\\t' | '\\n' | '\\r' | '\\f' )+
+            // /Users/jkuo/PealApp-lift/antlr/PealProgram.g:90:6: ( ' ' | '\\t' | '\\n' | '\\r' | '\\f' )+
             int cnt4=0;
             loop4:
             do {
@@ -738,7 +738,7 @@ public class PealProgramLexer extends Lexer {
             } while (true);
 
 
-             _channel = BaseRecognizer.HIDDEN;
+             _channel = HIDDEN;
 
             }
 

@@ -14,7 +14,7 @@ import org.antlr.runtime.BitSet;
 import peal.synthesis.*;
 import peal.synthesis.analysis.*;
 import peal.domain.operator.*;
-import java.math.*;
+import scala.math.BigDecimal;
 }
 
 @members {
@@ -50,9 +50,9 @@ program
 	(id2=IDENT '=' pSet { pSets.put($id2.text, $pSet.t);})+
 	('CONDITIONS')?
 	(
-	id0=IDENT '=' id2=IDENT '<=' num=NUMBER {Condition cond = new LessThanThCondition(pSets.get($id2.text), Double.valueOf($num.text)); conds.put($id0.text, cond);}
+	id0=IDENT '=' id2=IDENT '<=' num=NUMBER {Condition cond = new LessThanThCondition(pSets.get($id2.text), BigDecimal.valueOf(Double.valueOf($num.text))); conds.put($id0.text, cond);}
     	|
-	id0=IDENT '=' num=NUMBER '<' id2=IDENT {Condition cond = new GreaterThanThCondition(pSets.get($id2.text), Double.valueOf($num.text)); conds.put($id0.text, cond);}
+	id0=IDENT '=' num=NUMBER '<' id2=IDENT {Condition cond = new GreaterThanThCondition(pSets.get($id2.text), BigDecimal.valueOf(Double.valueOf($num.text))); conds.put($id0.text, cond);}
 	)+
 	('DOMAIN_SPECIFICS' {ignore = true;}
 	(IDENT | NUMBER | '+' | '=' | '(' | ')' | '<' | '<=' )*)?
@@ -74,14 +74,14 @@ pSet  returns [PolicySet t]
 
 pol	returns [Pol p] 
 @init {l = new ArrayList<Rule>(); }
-	:id1=IDENT '='   '+' '(' (rule {l.add($rule.r);})* ')' 'default' NUMBER {$p = new Pol(l, Plus$.MODULE$, Double.valueOf($NUMBER.text), $id1.text);}
-	|id1=IDENT '='  'max' '(' (rule {l.add($rule.r);})* ')' 'default' NUMBER {$p = new Pol(l, Max$.MODULE$, Double.valueOf($NUMBER.text),  $id1.text);}
-	|id1=IDENT '='  'min' '(' (rule {l.add($rule.r);})* ')' 'default' NUMBER {$p = new Pol(l, Min$.MODULE$, Double.valueOf($NUMBER.text), $id1.text);} 
-	|id1=IDENT '='  '*' '(' (rule {l.add($rule.r);})* ')' 'default' NUMBER {$p = new Pol(l, Mul$.MODULE$, Double.valueOf($NUMBER.text), $id1.text);}
+	:id1=IDENT '='   '+' '(' (rule {l.add($rule.r);})* ')' 'default' NUMBER {$p = new Pol(l, Plus$.MODULE$, BigDecimal.valueOf(Double.valueOf($NUMBER.text)), $id1.text);}
+	|id1=IDENT '='  'max' '(' (rule {l.add($rule.r);})* ')' 'default' NUMBER {$p = new Pol(l, Max$.MODULE$, BigDecimal.valueOf(Double.valueOf($NUMBER.text)),  $id1.text);}
+	|id1=IDENT '='  'min' '(' (rule {l.add($rule.r);})* ')' 'default' NUMBER {$p = new Pol(l, Min$.MODULE$, BigDecimal.valueOf(Double.valueOf($NUMBER.text)), $id1.text);} 
+	|id1=IDENT '='  '*' '(' (rule {l.add($rule.r);})* ')' 'default' NUMBER {$p = new Pol(l, Mul$.MODULE$, BigDecimal.valueOf(Double.valueOf($NUMBER.text)), $id1.text);}
 	;
 
 rule 	returns [Rule r]
-	: '(' IDENT NUMBER ')' {$r = new Rule(new Predicate($IDENT.text),Double.valueOf($NUMBER.text));}
+	: '(' IDENT NUMBER ')' {$r = new Rule(new Predicate($IDENT.text),BigDecimal.valueOf(Double.valueOf($NUMBER.text)));}
 	;
 
 NUMBER : ('.'|'0'..'9'|'-'|'E')+ {if(ignore) skip();};

@@ -5,7 +5,7 @@ import scala.collection.JavaConversions._
 import peal.domain.operator.{Mul, Max, Plus, Min}
 import _root_.z3.scala.{Z3AST, Z3Context}
 
-class NonDefaultPolLessThanTh(pol: Pol, th: Double) extends NonDefaultSet {
+class NonDefaultPolLessThanTh(pol: Pol, th: BigDecimal) extends NonDefaultSet {
   def synthesis(z3: Z3Context, consts: Map[String, Z3AST]): Z3AST = pol.operator match {
     case Min => {
       val rules = pol.rules.filter(th >= _.score)
@@ -42,10 +42,10 @@ class NonDefaultPolLessThanTh(pol: Pol, th: Double) extends NonDefaultSet {
 
   def enumTwoForMul(): Set[Set[Rule]] = {
     val sortedRulesByScoreDesc = pol.rules.sortWith(_.score > _.score)
-    val t = sortedRulesByScoreDesc.map(_.score).scanLeft(1.0)((remaining, score) => remaining * score).drop(1)
+    val t = sortedRulesByScoreDesc.map(_.score).scanLeft(BigDecimal.valueOf(1.0))((remaining, score) => remaining * score).drop(1)
     var m2 = Set[Set[Rule]]()
 
-    def enumTwo(x: Set[Rule], sum: Double, index: Integer) {
+    def enumTwo(x: Set[Rule], sum: BigDecimal, index: Integer) {
       if (sum <= th) {
         m2 += x
       }
