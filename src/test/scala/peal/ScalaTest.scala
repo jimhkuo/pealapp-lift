@@ -11,6 +11,14 @@ import java.io.File
 class ScalaTest extends ShouldMatchersForJUnit {
 
   @Test
+  def testPlus() {
+      val i = 0.06d
+    val j = 0.54d
+    println(i)
+    println(j)
+    println("%.2f".format(i + j).toDouble)
+  }
+  @Test
   def testFinally() {
     try {
       println("try")

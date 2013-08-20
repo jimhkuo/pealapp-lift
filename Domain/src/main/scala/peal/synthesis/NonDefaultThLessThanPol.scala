@@ -9,7 +9,7 @@ import scala.collection.mutable.ListBuffer
 import _root_.z3.scala.{Z3AST, Z3Context}
 
 class NonDefaultThLessThanPol(pol: Pol, th: Double) extends NonDefaultSet {
-  def synthesis(z3:Z3Context, consts: Map[String, Z3AST]): Z3AST = pol.operator match {
+  def synthesis(z3: Z3Context, consts: Map[String, Z3AST]): Z3AST = pol.operator match {
     case Plus => {
       val m1 = enumOneForPlus()
 
@@ -18,13 +18,13 @@ class NonDefaultThLessThanPol(pol: Pol, th: Double) extends NonDefaultSet {
           s =>
             s.size match {
               case 1 => consts(s(0).q.name) //s.map(_.q.name).mkString(" ")
-              case _ => z3.mkAnd(s.map(r => consts(r.q.name)).toSeq:_*)//s.map(_.q.name).mkString("(and ", " ", ")")
+              case _ => z3.mkAnd(s.map(r => consts(r.q.name)).toSeq: _*) //s.map(_.q.name).mkString("(and ", " ", ")")
             }
         }
 
         m1Sets.size match {
-          case 1 => m1Sets(0)//m1Sets.mkString(" ")
-          case _ => z3.mkOr(m1Sets.toSeq:_*)//m1Sets.mkString("(or ", " ", ")")
+          case 1 => m1Sets(0) //m1Sets.mkString(" ")
+          case _ => z3.mkOr(m1Sets.toSeq: _*) //m1Sets.mkString("(or ", " ", ")")
         }
       }
       else {
@@ -34,9 +34,9 @@ class NonDefaultThLessThanPol(pol: Pol, th: Double) extends NonDefaultSet {
     case Max => {
       val rules = pol.rules.filter(th < _.score)
       rules.size match {
-        case 0 => z3.mkFalse()        // "false"
+        case 0 => z3.mkFalse() // "false"
         case 1 => consts(rules(0).q.name) //rules.map(_.q.name).mkString("")
-        case _ => z3.mkOr(rules.map(r => consts(r.q.name)): _*)//rules.map(_.q.name).mkString("(or ", " ", ")")
+        case _ => z3.mkOr(rules.map(r => consts(r.q.name)): _*) //rules.map(_.q.name).mkString("(or ", " ", ")")
       }
     }
     case Min | Mul => new NonDefaultPolLessThanTh(pol, th).notPhi(z3, consts)
@@ -45,7 +45,7 @@ class NonDefaultThLessThanPol(pol: Pol, th: Double) extends NonDefaultSet {
 
   def enumOneForPlus(): ListBuffer[List[Rule]] = {
     val sortedRulesByScore = pol.rules.sortBy(_.score)
-    val t = sortedRulesByScore.map(_.score).scanLeft(0.0)((remaining, score) => remaining + score).drop(1)
+    val t = sortedRulesByScore.map(_.score).scanLeft(0.00)((remaining, score) => "%.2f".format(remaining + score).toDouble).drop(1)
     var m1 = ListBuffer[List[Rule]]()
 
     def enumOne(x: List[Rule], sum: Double, index: Integer) {
