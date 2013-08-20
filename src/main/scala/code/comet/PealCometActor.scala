@@ -180,7 +180,7 @@ class PealCometActor extends CometActor with Loggable {
       this ! Message("")
       inputPolicies = "b1 = + (" +
         (for (i <- 0 until majorityVotingCount) yield "(q" + i + " " + "%.3f".format(1.0 / majorityVotingCount) + ")").mkString("") +
-        " ) default 0\npSet = b1\ncond = 0.5 < pSet\n"
+        " ) default 0\npSet = b1\ncond = 0.5 < pSet\nANALYSES\nanalysis = always_true? cond\n"
       partialUpdate(JqId("policies") ~> JqVal(inputPolicies))
     case Reset =>
       this ! Message("")
@@ -348,7 +348,7 @@ class PealCometActor extends CometActor with Loggable {
   private def onCallLazyZ3(z3SMTInput : String) {
     val tmp = File.createTempFile("z3file", "")
     (Seq("echo", z3SMTInput) #> tmp).!!
-    println(tmp.getAbsolutePath)
+//    println(tmp.getAbsolutePath)
     resultList.clear()
     Process(Seq("bash", "-c", "z3 -nw -smt2 " + tmp.getAbsolutePath)) ! processLogger
     tmp.delete()
