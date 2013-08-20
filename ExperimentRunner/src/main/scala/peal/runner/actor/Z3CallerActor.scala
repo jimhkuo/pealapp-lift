@@ -4,6 +4,7 @@ import akka.actor.Actor
 import scala.sys.process._
 import java.io.{FileWriter, File}
 import scala.collection.mutable.ListBuffer
+import util.FileUtil
 
 
 class Z3CallerActor(z3Path: String) extends Actor {
@@ -13,21 +14,11 @@ class Z3CallerActor(z3Path: String) extends Actor {
     (e: String) => resultList.append(e + "\n")
   )
 
-  def writeToFile(fileName: String, content: String) {
-    val writer = new FileWriter(fileName)
-    try {
-      writer.write(content)
-    } finally {
-      writer.flush()
-      writer.close()
-    }
-  }
-
   def receive = {
     //TODO this is not advisable, google for solution on dealing with huge messages
     case input: String =>
       val tmp = File.createTempFile("z3file", "")
-      writeToFile(tmp.getAbsolutePath, input)
+      FileUtil.writeToFile(tmp.getAbsolutePath, input)
       Process(Seq("bash", "-c", "z3 -nw -smt2 " + tmp.getAbsolutePath), None, "PATH" -> z3Path) ! processLogger
       tmp.delete()
 
