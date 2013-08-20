@@ -15,7 +15,7 @@ unmanagedJars in Compile <++= baseDirectory map { base =>
 
 name := "PealApp-lift"
 
-version := "0.8"
+version := "0.9"
 
 scalaVersion := "2.10.1"
 

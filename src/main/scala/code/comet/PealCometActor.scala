@@ -150,7 +150,7 @@ class PealCometActor extends CometActor with Loggable {
       onCallZ3ViaCommandLine(constsMap, conds,  pSets, analyses, domainSpecific)
     case LazySynthesisAndCallZ3 =>
       val input = new LazySynthesiser(MyZ3Context.get, inputPolicies).generate()
-      onCallZ3(input)
+      onCallLazyZ3(input)
     case LazyDisplay =>
       this ! Result(<pre>{new LazySynthesiser(MyZ3Context.get, inputPolicies).generate()}</pre>)
     case Display =>
@@ -329,7 +329,7 @@ class PealCometActor extends CometActor with Loggable {
     val z3SMTInput = declarations.mkString("") +declarations1.mkString("") + body.mkString("") + domainSpecifics.mkString("", "\n","\n") + generatedAnalyses.mkString("")
     val tmp = File.createTempFile("z3file", "")
     (Seq("echo", z3SMTInput) #> tmp).!!
-    println(tmp.getAbsolutePath)
+//    println(tmp.getAbsolutePath)
     resultList.clear()
 //    Process(Seq("bash", "-c", "z3 -nw -smt2 " + tmp.getAbsolutePath), None, "PATH" -> Props.get("z3.location").get ) ! processLogger
     Process(Seq("bash", "-c", "z3 -nw -smt2 " + tmp.getAbsolutePath)) ! processLogger
@@ -345,7 +345,7 @@ class PealCometActor extends CometActor with Loggable {
     }
   }
 
-  private def onCallZ3(z3SMTInput : String) {
+  private def onCallLazyZ3(z3SMTInput : String) {
     val tmp = File.createTempFile("z3file", "")
     (Seq("echo", z3SMTInput) #> tmp).!!
     println(tmp.getAbsolutePath)
