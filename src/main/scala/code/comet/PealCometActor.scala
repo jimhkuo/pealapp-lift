@@ -11,11 +11,10 @@ import peal.antlr.{Z3OutputParser, Z3OutputLexer, PealProgramParser, PealProgram
 import net.liftweb.common.Loggable
 import scala.collection.JavaConversions._
 import z3.scala.Z3AST
-import peal.synthesis.{Condition}
+import peal.synthesis.Condition
 import scala.Predef._
 import z3.ModelGetter
 import scala.sys.process._
-import net.liftweb.util.Props
 import java.io.File
 import peal.synthesis.analysis._
 import scala.collection.mutable.ListBuffer
@@ -106,7 +105,9 @@ class PealCometActor extends CometActor with Loggable {
         }) ++ SHtml.ajaxButton("Eager synthesise and call z3", () => {
           this ! SynthesisAndCallZ3
           _Noop
-        }) ++ SHtml.ajaxButton("Eager synthesise (and download)", () => {
+        })}
+          <span>||</span>
+          {SHtml.ajaxButton("Eager synthesise (and download)", () => {
           this ! Prepare
           _Noop
         }) }
@@ -230,9 +231,6 @@ class PealCometActor extends CometActor with Loggable {
         e1.printStackTrace()
         dealWithIt(e1)
     }
-    //    finally {
-    //      z3.delete()
-    //    }
   }
 
   private def onAnalysis1(constsMap: Map[String, Z3AST], conds: Map[String, Condition], pSets: Map[String, PolicySet]) {
@@ -330,10 +328,7 @@ class PealCometActor extends CometActor with Loggable {
     val z3SMTInput = declarations.mkString("") +declarations1.mkString("") + body.mkString("") + domainSpecifics.mkString("", "\n","\n") + generatedAnalyses.mkString("")
     val tmp = File.createTempFile("z3file", "")
     FileUtil.writeToFile(tmp.getAbsolutePath, z3SMTInput)
-    //    (Seq("echo", z3SMTInput) #> tmp).!!
-//    println(tmp.getAbsolutePath)
     resultList.clear()
-//    Process(Seq("bash", "-c", "z3 -nw -smt2 " + tmp.getAbsolutePath), None, "PATH" -> Props.get("z3.location").get ) ! processLogger
     Process(Seq("bash", "-c", "z3 -nw -smt2 " + tmp.getAbsolutePath)) ! processLogger
     tmp.delete()
     try {
@@ -350,8 +345,6 @@ class PealCometActor extends CometActor with Loggable {
   private def onCallLazyZ3(z3SMTInput : String) {
     val tmp = File.createTempFile("z3file", "")
     FileUtil.writeToFile(tmp.getAbsolutePath, z3SMTInput)
-//    (Seq("echo", z3SMTInput) #> tmp).!!
-//    println(tmp.getAbsolutePath)
     resultList.clear()
     Process(Seq("bash", "-c", "z3 -nw -smt2 " + tmp.getAbsolutePath)) ! processLogger
     tmp.delete()
@@ -363,7 +356,6 @@ class PealCometActor extends CometActor with Loggable {
   }
 
   private def dealWithIt(e: Throwable) = {
-//    test.P.print
     println("error: " + e.getMessage)
     this ! Message("error: " + e.getMessage)
     throw e
