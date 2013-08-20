@@ -166,4 +166,11 @@ class PealProgramParserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
     pealProgrmParser.program()
     pealProgrmParser.conds("cond2").synthesis(z3, consts) should beZ3Model ("(or (and (or (not q4) false) (and q4 (not q4))) (and (and (or q5 q3) false) (or (not q2) (not false))))")
   }
+  @Test
+  def testM2HandleEdgeCaseCorrectly() {
+    val input = "POLICIES\nb0 = max ((q4 0.41)) default 0.67\nb1 = * ((q4 1.0) (q3 0.6)) default 0.06\nb2 = + ((q5 0.54) (q3 0.06)) default 0.44\nb3 = min ((q2 0.69)) default 0.62\nPOLICY_SETS\np0_1 = min(b0,b1)\np2_3 = min(b2,b3)\np0_3 = max(p0_1,p2_3)\nCONDITIONS\ncond2 = 0.60 < p0_3\nANALYSES\nanalysis2 = always_false? cond2"
+    val pealProgrmParser = getParser(input)
+    pealProgrmParser.program()
+    pealProgrmParser.conds("cond2").synthesis(z3, consts) should beZ3Model ("(or (and (or (not q4) false) (and (or q4 q3) (not q3))) (and (and (or q5 q3) false) (or (not q2) (not false))))")
+  }
 }
