@@ -179,7 +179,7 @@ class PealCometActor extends CometActor with Loggable {
     case MajorityVoting =>
       this ! Message("")
       inputPolicies = "b1 = + (" +
-        (for (i <- 0 until majorityVotingCount) yield "(q" + i + " " + "%.3f".format(1.0 / majorityVotingCount) + ")").mkString("") +
+        (for (i <- 0 until majorityVotingCount) yield "(q" + i + " " + BigDecimal.valueOf(1.0 / majorityVotingCount) + ")").mkString("") +
         " ) default 0\npSet = b1\ncond = 0.5 < pSet\nANALYSES\nanalysis = always_true? cond\n"
       partialUpdate(JqId("policies") ~> JqVal(inputPolicies))
     case Reset =>
