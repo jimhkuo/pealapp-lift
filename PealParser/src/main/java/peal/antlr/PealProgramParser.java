@@ -1,9 +1,9 @@
-// $ANTLR 3.4 /Users/jkuo/PealApp-lift/antlr/PealProgram.g 2013-08-20 15:23:08
+// $ANTLR 3.4 /Users/jkuo/PealApp-lift/antlr/PealProgram.g 2013-08-20 20:05:04
 
 package peal.antlr;
 import java.util.*;
 import peal.domain.*;
-import peal.domain.util.*;
+import peal.antlr.util.*;
 import peal.*;
 import org.antlr.runtime.BitSet;
 import peal.synthesis.*;

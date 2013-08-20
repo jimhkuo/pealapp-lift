@@ -7,6 +7,7 @@ import peal.domain.operator.Min
 import peal.domain.MinPolicySet
 import scala.collection.JavaConversions._
 import peal.domain.Pol
+import peal.antlr.util.PolicyResolver
 
 class PolicyResolverTest extends ShouldMatchersForJUnit{
 

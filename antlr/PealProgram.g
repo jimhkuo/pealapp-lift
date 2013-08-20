@@ -8,7 +8,7 @@ language = Java;
 package peal.antlr;
 import java.util.*;
 import peal.domain.*;
-import peal.domain.util.*;
+import peal.antlr.util.*;
 import peal.*;
 import org.antlr.runtime.BitSet;
 import peal.synthesis.*;

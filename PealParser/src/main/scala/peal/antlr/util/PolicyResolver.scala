@@ -1,4 +1,4 @@
-package peal.domain.util
+package peal.antlr.util
 
 import peal.domain.{PolicySet, BasicPolicySet, Pol}
 import java.util.Map
