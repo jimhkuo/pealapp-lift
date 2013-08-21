@@ -19,7 +19,9 @@ class Z3CallerActor(z3Path: String) extends Actor {
     case input: String =>
       val tmp = File.createTempFile("z3file", "")
       FileUtil.writeToFile(tmp.getAbsolutePath, input)
-      Process(Seq("bash", "-c", "z3 -nw -smt2 " + tmp.getAbsolutePath), None, "PATH" -> z3Path) ! processLogger
+//    println(tmp.getAbsolutePath)
+    //TODO restricting bash memory usage to 8G
+      Process(Seq("bash", "-c", "ulimit", "-v", "8000000", "|", "z3 -nw -smt2 " + tmp.getAbsolutePath), None, "PATH" -> z3Path) ! processLogger
       tmp.delete()
 
       sender ! resultList.mkString("\n")
