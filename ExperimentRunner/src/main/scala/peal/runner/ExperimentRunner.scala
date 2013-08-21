@@ -47,6 +47,7 @@ class ExperimentRunner(duration: Long, z3CallerMemoryBound: Long) {
       val input = Await.result(inputFuture1, timeout.duration)
       lapsedTime = System.nanoTime() - start
       output.eagerSynthesis = lapsedTime
+      //TODO a possible memory leak here when timeout occurs
       z3Eager.delete()
       print("e")
 
@@ -89,10 +90,10 @@ class ExperimentRunner(duration: Long, z3CallerMemoryBound: Long) {
       //      }
       output
     }
-    catch {
-      case e: TimeoutException => if (z3Eager != null) z3Eager.delete()
-        output
-    }
+//    catch {
+//      case e: TimeoutException => if (z3Eager != null) z3Eager.delete()
+//        output
+//    }
     finally {
       if (eagerSynthesiser != null) system.stop(eagerSynthesiser)
       if (eagerZ3Caller != null) system.stop(eagerZ3Caller)
