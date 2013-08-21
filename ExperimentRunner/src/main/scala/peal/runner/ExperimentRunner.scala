@@ -38,7 +38,7 @@ class ExperimentRunner(duration: Long) {
       print("m")
 
       val z3Eager = new Z3Context(new Z3Config("MODEL" -> true))
-      val z3InputGenerator = system.actorOf(Props(new Z3InputGeneratorActor(z3Eager)))
+      val z3InputGenerator = system.actorOf(Props(new EagerSynthesiserActor(z3Eager)))
       start = System.nanoTime()
       val inputFuture1 = z3InputGenerator ? model
       val input = Await.result(inputFuture1, timeout.duration)

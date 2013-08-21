@@ -7,7 +7,7 @@ import z3.scala.Z3Context
 import scala.collection.JavaConversions._
 
 
-class Z3InputGeneratorActor(z3: Z3Context) extends Actor {
+class EagerSynthesiserActor(z3: Z3Context) extends Actor {
 
   private def getPealProgramParser(input: String) = {
     val charStream = new ANTLRStringStream(input)

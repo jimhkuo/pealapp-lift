@@ -5,7 +5,7 @@ import z3.scala.Z3Context
 import peal.lazysynthesis.LazySynthesiser
 
 
-class Z3LazyInputGeneratorActor(z3: Z3Context) extends Actor {
+class LazySynthesiserActor(z3: Z3Context) extends Actor {
 
   def receive = {
     case input: String =>
