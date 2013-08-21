@@ -1,12 +1,11 @@
 package peal.runner
 
-import z3.scala.{Z3Config, Z3Context}
 import java.util.concurrent.TimeoutException
 
 
 object Main extends App {
 
-  private val z3MemoryBound = 2000000
+  private val z3MemoryBound = 3000000
   private val timeout = 300000
 
   println("Picking up z3 from $PATH")
@@ -42,7 +41,6 @@ object Main extends App {
   private def execute(n: Int, m0: Int, m1: Int, m2: Int, m3: Int, th: Double, delta: Double): Boolean = {
     val iterations: Int = 5
 
-    var z3: Z3Context = null
     var mt = 0l
     var et = 0l
     var ezt = 0l
@@ -51,7 +49,6 @@ object Main extends App {
 
     try {
       for (i <- 1 to iterations) {
-        z3 = new Z3Context(new Z3Config("MODEL" -> true))
         val output = new ExperimentRunner(timeout, z3MemoryBound).run(n, m0, m1, m2, m3, 3 * p, th, delta)
         mt += output.modelGeneration
         et += output.eagerSynthesis
@@ -64,8 +61,7 @@ object Main extends App {
         if (!output.isSameOutput) {
           println("eager and lazy produce different result," + n + "-" + m0 + "-" + m1 + "-" + m2 + "-" + m3 + "-" + th + "-" + delta + "," + timeout + "," + output.pealInput)
         }
-        z3.delete
-        z3 = null
+
       }
 
       println("," + n + "-" + m0 + "-" + m1 + "-" + m2 + "-" + m3 + "-" + th + "-" + delta + "," + timeout + "," + milliTime(mt / iterations) + "," + milliTime(et / iterations) + "," + milliTime(ezt / iterations) + "," + milliTime(lt / iterations) + "," + milliTime(lzt / iterations))
@@ -74,9 +70,9 @@ object Main extends App {
       case e: TimeoutException =>
         println("," + n + "-" + m0 + "-" + m1 + "-" + m2 + "-" + m3 + "-" + th + "-" + delta + "," + timeout + ",TIMEOUT,TIMEOUT,TIMEOUT,TIMEOUT,TIMEOUT")
         false
-    }
-    finally {
-      if (z3 != null) z3.delete
+      case e1: RuntimeException =>
+        println("," + n + "-" + m0 + "-" + m1 + "-" + m2 + "-" + m3 + "-" + th + "-" + delta + "," + timeout + ",OUTOFMEMORY,OUTOFMEMORY,OUTOFMEMORY,OUTOFMEMORY,OUTOFMEMORY")
+        false
     }
   }
 }
