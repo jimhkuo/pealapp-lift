@@ -18,33 +18,33 @@ object RandomModelGenerator {
     val minPolicies = for (j <- 0 until n) yield {
       predicates = Random.shuffle(predicates)
       val rules = for (i <- 0 until m0) yield {
-        new Rule(predicates(i), Random.nextDouble())
+        new Rule(predicates(i), BigDecimal.valueOf(Random.nextDouble()))
       }
-      new Pol(rules, Min, Random.nextDouble())
+      new Pol(rules, Min, BigDecimal.valueOf(Random.nextDouble()))
     }
 
     val maxPolicies = for (j <- 0 until n) yield {
       predicates = Random.shuffle(predicates)
       val rules = for (i <- 0 until m1) yield {
-        new Rule(predicates(i), Random.nextDouble())
+        new Rule(predicates(i), BigDecimal.valueOf(Random.nextDouble()))
       }
-      new Pol(rules, Max, Random.nextDouble())
+      new Pol(rules, Max, BigDecimal.valueOf(Random.nextDouble()))
     }
 
     val plusPolicies = for (j <- 0 until n) yield {
       predicates = Random.shuffle(predicates)
       val rules = for (i <- 0 until m2) yield {
-        new Rule(predicates(i), Random.nextDouble())
+        new Rule(predicates(i), BigDecimal.valueOf(Random.nextDouble()))
       }
-      new Pol(rules, Plus, Random.nextDouble())
+      new Pol(rules, Plus, BigDecimal.valueOf(Random.nextDouble()))
     }
 
     val mulPolicies = for (j <- 0 until n) yield {
       predicates = Random.shuffle(predicates)
       val rules = for (i <- 0 until m3) yield {
-        new Rule(predicates(i), Random.nextDouble())
+        new Rule(predicates(i), BigDecimal.valueOf(Random.nextDouble()))
       }
-      new Pol(rules, Mul, Random.nextDouble())
+      new Pol(rules, Mul, BigDecimal.valueOf(Random.nextDouble()))
     }
 
     val policyList = Random.shuffle(minPolicies ++ maxPolicies ++ plusPolicies ++ mulPolicies)
