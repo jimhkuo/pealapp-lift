@@ -19,7 +19,7 @@ class TimingOutput(var modelGeneration: Long = 0, var eagerSynthesis: Long = 0, 
   override def toString = milliTime(modelGeneration) + "," + milliTime(eagerSynthesis) + "," + milliTime(eagerZ3) + "," + milliTime(lazySynthesis) + "," + milliTime(lazyZ3) + "," + isSameOutput + "," + model1Result + "," + model2Result + "," + pealInput
 }
 
-class ExperimentRunner(duration: Long) {
+class ExperimentRunner(duration: Long, z3CallerMemoryBound: Long) {
   implicit val system = ActorSystem("exp-runner")
 
   def run(n: Int, min: Int, max: Int, plus: Int, mul: Int, k: Int, th: Double, delta: Double, z3Path: String): TimingOutput = {
@@ -47,7 +47,7 @@ class ExperimentRunner(duration: Long) {
       z3Eager.delete()
       print("e")
 
-      val eagerZ3Caller = system.actorOf(Props(new Z3CallerActor(z3Path)))
+      val eagerZ3Caller = system.actorOf(Props(new Z3CallerActor(z3Path, z3CallerMemoryBound)))
       start = System.nanoTime()
       val resultFuture1 = eagerZ3Caller ? input
       val result1 = Await.result(resultFuture1, timeout.duration)
@@ -67,7 +67,7 @@ class ExperimentRunner(duration: Long) {
 //      z3Lazy.delete()
 //      print("l")
 //
-//      val lazyZ3Caller = system.actorOf(Props(new Z3CallerActor(z3Path)))
+//      val lazyZ3Caller = system.actorOf(Props(new Z3CallerActor(z3Path, z3CallerMemoryBound)))
 //      start = System.nanoTime()
 //      val resultFuture = lazyZ3Caller ? lazyInput
 //      val result = Await.result(resultFuture, timeout.duration)
