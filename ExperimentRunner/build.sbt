@@ -19,7 +19,7 @@ excludedJars in assembly <<= (fullClasspath in assembly) map { cp =>
 
 name := "ExperimentRunner"
 
-version := "0.1-ez-plus"
+version := "0.2-ez-plus"
 
 scalaVersion := "2.10.1"
 

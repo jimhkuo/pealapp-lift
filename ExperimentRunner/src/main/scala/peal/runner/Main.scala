@@ -6,7 +6,8 @@ import java.util.concurrent.TimeoutException
 
 object Main extends App {
 
-  private val z3CallerMemoryBound = 1000000
+  private val z3CallerMemoryBound = 100000
+  private val timeout = 300000
 
   println("Picking up z3 from $PATH")
 
@@ -38,7 +39,7 @@ object Main extends App {
     "%.2f".format(timeInNano.toDouble / 1000000)
   }
 
-  private def execute(n: Int, m0: Int, m1: Int, m2: Int, m3: Int, th: Double, delta: Double, timeout: Long = 300000): Boolean = {
+  private def execute(n: Int, m0: Int, m1: Int, m2: Int, m3: Int, th: Double, delta: Double): Boolean = {
     val iterations: Int = 5
 
     var z3: Z3Context = null
