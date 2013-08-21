@@ -26,6 +26,7 @@ class ExperimentRunner(duration: Long, z3CallerMemoryBound: Long) {
     val output = new TimingOutput()
     var eagerSynthesiser : ActorRef = null
     var eagerZ3Caller : ActorRef = null
+    var z3Eager : Z3Context = null
     try {
       implicit val timeout = Timeout(duration, MILLISECONDS)
 
@@ -38,7 +39,7 @@ class ExperimentRunner(duration: Long, z3CallerMemoryBound: Long) {
 
       print("m")
 
-      val z3Eager = new Z3Context(new Z3Config("MODEL" -> true))
+      z3Eager = new Z3Context(new Z3Config("MODEL" -> true))
       eagerSynthesiser = system.actorOf(Props(new EagerSynthesiserActor(z3Eager)))
       start = System.nanoTime()
       val inputFuture1 = eagerSynthesiser ? model
@@ -88,6 +89,7 @@ class ExperimentRunner(duration: Long, z3CallerMemoryBound: Long) {
       output
     }
     finally {
+      if (z3Eager != null) z3Eager.delete()
       if (eagerSynthesiser != null) system.stop(eagerSynthesiser)
       if (eagerZ3Caller != null) system.stop(eagerZ3Caller)
       system.shutdown()
