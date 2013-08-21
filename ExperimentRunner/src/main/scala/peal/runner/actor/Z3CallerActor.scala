@@ -21,6 +21,7 @@ class Z3CallerActor(memoryLimit: Long) extends Actor {
       FileUtil.writeToFile(tmp.getAbsolutePath, input)
 //      example to set path
 //      Process(Seq("bash", "-c", "ulimit", "-v", memoryLimit.toString)) #&& Process(Seq("z3", "-nw", "-smt2", tmp.getAbsolutePath), None, "PATH" -> z3Path) ! processLogger
+    //TODO generate a shell script the execute it in a process
       Process(Seq("bash", "-c", "ulimit", "-v", memoryLimit.toString)) #&& Process(Seq("z3", "-nw", "-smt2", tmp.getAbsolutePath)) ! processLogger
       tmp.delete()
 
