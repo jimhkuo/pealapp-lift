@@ -22,7 +22,7 @@ class TimingOutput(var modelGeneration: Long = 0, var eagerSynthesis: Long = 0, 
 class ExperimentRunner(duration: Long, z3CallerMemoryBound: Long) {
   implicit val system = ActorSystem("exp-runner")
 
-  def run(n: Int, min: Int, max: Int, plus: Int, mul: Int, k: Int, th: Double, delta: Double, z3Path: String): TimingOutput = {
+  def run(n: Int, min: Int, max: Int, plus: Int, mul: Int, k: Int, th: Double, delta: Double): TimingOutput = {
     val output = new TimingOutput()
 
     try {
@@ -47,7 +47,7 @@ class ExperimentRunner(duration: Long, z3CallerMemoryBound: Long) {
       z3Eager.delete()
       print("e")
 
-      val eagerZ3Caller = system.actorOf(Props(new Z3CallerActor(z3Path, z3CallerMemoryBound)))
+      val eagerZ3Caller = system.actorOf(Props(new Z3CallerActor(z3CallerMemoryBound)))
       start = System.nanoTime()
       val resultFuture1 = eagerZ3Caller ? input
       val result1 = Await.result(resultFuture1, timeout.duration)

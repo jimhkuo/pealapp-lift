@@ -7,7 +7,7 @@ class RuleTest extends ShouldMatchersForJUnit {
 
   @Test
   def testCanOutputRules() {
-    new Rule(new Predicate("q1"), 0.5).toString should be ("(q1 0.50)")
+    new Rule(new Predicate("q1"), 0.5).toString should be ("(q1 0.5)")
   }
 
 }

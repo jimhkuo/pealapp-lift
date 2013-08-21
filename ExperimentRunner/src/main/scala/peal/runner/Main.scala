@@ -6,13 +6,9 @@ import java.util.concurrent.TimeoutException
 
 object Main extends App {
 
-  private val defaultZ3Path = "/Users/jkuo/tools/z3/bin"
   private val z3CallerMemoryBound = 1000000
 
-
-  if (args.size == 0) {
-    println("Warning: z3 path is not specified, default to " + defaultZ3Path)
-  }
+  println("Picking up z3 from $PATH")
 
   var lastSuccess = 0
   var lastFailure = 0
@@ -46,7 +42,6 @@ object Main extends App {
     val iterations: Int = 5
 
     var z3: Z3Context = null
-    val z3Path: String = if (args.size == 0) defaultZ3Path else args(0)
     var mt = 0l
     var et = 0l
     var ezt = 0l
@@ -56,7 +51,7 @@ object Main extends App {
     try {
       for (i <- 1 to iterations) {
         z3 = new Z3Context(new Z3Config("MODEL" -> true))
-        val output = new ExperimentRunner(timeout, z3CallerMemoryBound).run(n, m0, m1, m2, m3, 3 * p, th, delta, z3Path)
+        val output = new ExperimentRunner(timeout, z3CallerMemoryBound).run(n, m0, m1, m2, m3, 3 * p, th, delta)
         mt += output.modelGeneration
         et += output.eagerSynthesis
         ezt += output.eagerZ3
