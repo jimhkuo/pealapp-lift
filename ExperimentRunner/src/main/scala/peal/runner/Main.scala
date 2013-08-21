@@ -6,7 +6,7 @@ import java.util.concurrent.TimeoutException
 
 object Main extends App {
 
-  private val z3CallerMemoryBound = 100000
+  private val z3MemoryBound = 2000000
   private val timeout = 300000
 
   println("Picking up z3 from $PATH")
@@ -52,7 +52,7 @@ object Main extends App {
     try {
       for (i <- 1 to iterations) {
         z3 = new Z3Context(new Z3Config("MODEL" -> true))
-        val output = new ExperimentRunner(timeout, z3CallerMemoryBound).run(n, m0, m1, m2, m3, 3 * p, th, delta)
+        val output = new ExperimentRunner(timeout, z3MemoryBound).run(n, m0, m1, m2, m3, 3 * p, th, delta)
         mt += output.modelGeneration
         et += output.eagerSynthesis
         ezt += output.eagerZ3
