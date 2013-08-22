@@ -1,4 +1,4 @@
-import akka.actor.{Props, ActorSystem, Actor}
+import akka.actor.{ReceiveTimeout, Props, ActorSystem, Actor}
 import akka.util.Timeout
 import java.util.concurrent.TimeoutException
 import org.junit.Test
@@ -15,7 +15,7 @@ class TestActor extends Actor {
         print(".")
       }
       sender ! "reply"
-    case CLEANUP =>
+    case ReceiveTimeout =>
       println("\nclean up")
   }
 }
@@ -35,7 +35,7 @@ class ScalaTest {
     } catch {
       case e: TimeoutException =>
         e.printStackTrace()
-        myActor ! CLEANUP
+        myActor ! ReceiveTimeout
     }
   }
 }
