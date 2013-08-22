@@ -11,6 +11,6 @@ or
 java -Xmx4192m -XX:+UseConcMarkSweepGC -jar ExperimentRunner-assembly-0.2-ez-plus.jar
 
 //This one seems to work
-java -Xmx4192m -XX:-UseGCOverheadLimit -jar ExperimentRunner-assembly-0.2-ez-plus.jar
+java -Xmx5120m -XX:-UseGCOverheadLimit -jar ExperimentRunner-assembly-0.2-ez-plus.jar
 
 java -Xmx4192m -XX:+UseParallelGC -jar ExperimentRunner-assembly-0.2-ez-plus.jar
