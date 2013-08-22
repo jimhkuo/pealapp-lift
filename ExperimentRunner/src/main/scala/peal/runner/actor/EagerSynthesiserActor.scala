@@ -44,6 +44,6 @@ class EagerSynthesiserActor extends Actor {
     case TimedOut =>
       if (pealProgramParser != null) pealProgramParser = null
       z3.delete()
-//      z3 = null    //this seems to cause GC error
+      z3 = null    //this seems to cause GC error
   }
 }
