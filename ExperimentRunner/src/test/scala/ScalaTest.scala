@@ -1,13 +1,12 @@
-import akka.actor.{Props, ActorSystem, ReceiveTimeout, Actor}
+import akka.actor.{Props, ActorSystem, Actor}
 import akka.util.Timeout
 import java.util.concurrent.TimeoutException
-import scala.concurrent.ExecutionContext.Implicits.global
 import org.junit.Test
 import scala.concurrent.Await
 import scala.concurrent.duration._
 import akka.pattern.ask
 
-object TO
+object CLEANUP
 
 class TestActor extends Actor {
   def receive = {
@@ -16,11 +15,10 @@ class TestActor extends Actor {
         print(".")
       }
       sender ! "reply"
-    case TO =>
-      println("timeout")
+    case CLEANUP =>
+      println("\nclean up")
   }
 }
-
 
 class ScalaTest {
   implicit val system = ActorSystem("exp-runner")
@@ -37,10 +35,7 @@ class ScalaTest {
     } catch {
       case e: TimeoutException =>
         e.printStackTrace()
-        myActor ! TO
+        myActor ! CLEANUP
     }
-
-
   }
-
 }
