@@ -7,7 +7,7 @@ import z3.scala.{Z3Config, Z3Context}
 import scala.collection.JavaConversions._
 
 
-class EagerSynthesiserActor() extends Actor {
+class EagerSynthesiserActor extends Actor {
 
   val z3 = new Z3Context(new Z3Config("MODEL" -> true))
 

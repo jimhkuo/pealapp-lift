@@ -10,21 +10,23 @@ import java.io.File
 
 class ScalaTest extends ShouldMatchersForJUnit {
 
+
   @Test
   def testPlus() {
-      val i = 0.06d
+    val i = 0.06d
     val j = 0.54d
     println(i)
     println(j)
     println("%.2f".format(i + j).toDouble)
   }
+
   @Test
   def testFinally() {
     try {
       println("try")
-//      System.exit(-1)
+      //      System.exit(-1)
       return
-//      throw new RuntimeException("error")
+      //      throw new RuntimeException("error")
     }
     finally {
       println("finally")

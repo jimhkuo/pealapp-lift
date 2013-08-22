@@ -6,7 +6,6 @@ import akka.pattern.ask
 import akka.util.Timeout
 import akka.actor.{Props, ActorSystem}
 import peal.runner.actor._
-import z3.scala.{Z3Config, Z3Context}
 
 class TimingOutput(var modelGeneration: Long = 0, var eagerSynthesis: Long = 0, var eagerZ3: Long = 0, var lazySynthesis: Long = 0, var lazyZ3: Long = 0, var isSameOutput: Boolean = false, var model1Result: Map[String, String] = Map(), var model2Result: Map[String, String] = Map(), var pealInput: String = "")
 
