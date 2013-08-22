@@ -4,4 +4,13 @@ setting ulimit -v seems to help
 
 use custom built shell script
 
-java -Xmx4048m -XX:-UseConcMarkSweepGC -jar ExperimentRunner-assembly-0.2-ez-plus.jar
+java -Xmx4192m -XX:-UseConcMarkSweepGC -jar ExperimentRunner-assembly-0.2-ez-plus.jar // doesn't return one step after timeout
+
+or
+
+java -Xmx4192m -XX:+UseConcMarkSweepGC -jar ExperimentRunner-assembly-0.2-ez-plus.jar
+
+//This one seems to work
+java -Xmx4192m -XX:-UseGCOverheadLimit -jar ExperimentRunner-assembly-0.2-ez-plus.jar
+
+java -Xmx4192m -XX:+UseParallelGC -jar ExperimentRunner-assembly-0.2-ez-plus.jar
