@@ -8,24 +8,14 @@ import akka.actor.{Props, ActorSystem}
 import peal.runner.actor._
 import z3.scala.{Z3Config, Z3Context}
 
-class TimingOutput(var modelGeneration: Long = 0, var eagerSynthesis: Long = 0, var eagerZ3: Long = 0, var lazySynthesis: Long = 0, var lazyZ3: Long = 0, var isSameOutput: Boolean = false, var model1Result: Map[String, String] = Map(), var model2Result: Map[String, String] = Map(), var pealInput: String = "") {
-
-  private def milliTime(timeInNano: Long) = timeInNano match {
-    case -1 => "TimeOut"
-    case -2 => "NotRun"
-    case _ => "%.2f".format(timeInNano.toDouble / 1000000)
-  }
-
-  override def toString = milliTime(modelGeneration) + "," + milliTime(eagerSynthesis) + "," + milliTime(eagerZ3) + "," + milliTime(lazySynthesis) + "," + milliTime(lazyZ3) + "," + isSameOutput + "," + model1Result + "," + model2Result + "," + pealInput
-}
+class TimingOutput(var modelGeneration: Long = 0, var eagerSynthesis: Long = 0, var eagerZ3: Long = 0, var lazySynthesis: Long = 0, var lazyZ3: Long = 0, var isSameOutput: Boolean = false, var model1Result: Map[String, String] = Map(), var model2Result: Map[String, String] = Map(), var pealInput: String = "")
 
 class ExperimentRunner(duration: Long, z3CallerMemoryBound: Long) {
   implicit val system = ActorSystem("exp-runner")
 
   def run(n: Int, min: Int, max: Int, plus: Int, mul: Int, k: Int, th: Double, delta: Double): TimingOutput = {
     val output = new TimingOutput()
-    val z3Eager = new Z3Context(new Z3Config("MODEL" -> true))
-    val eagerSynthesiser = system.actorOf(Props(new EagerSynthesiserActor(z3Eager)))
+    val eagerSynthesiser = system.actorOf(Props[EagerSynthesiserActor])
     val eagerZ3Caller = system.actorOf(Props(new Z3CallerActor(z3CallerMemoryBound)))
     try {
       implicit val timeout = Timeout(duration, MILLISECONDS)
@@ -84,7 +74,7 @@ class ExperimentRunner(duration: Long, z3CallerMemoryBound: Long) {
       output
     }
     finally {
-      if (z3Eager != null) z3Eager.delete()
+//      if (z3Eager != null) z3Eager.delete()
       if (eagerSynthesiser != null) system.stop(eagerSynthesiser)
       if (eagerZ3Caller != null) system.stop(eagerZ3Caller)
       system.shutdown()
