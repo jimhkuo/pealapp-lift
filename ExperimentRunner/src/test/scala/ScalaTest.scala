@@ -31,7 +31,7 @@ class ScalaTest {
     try {
     val resultFuture = myActor ? "hi"
     val result = Await.result(resultFuture, timeout.duration)
-    println(result)
+    println("\n" + result)
     } catch {
       case e: TimeoutException =>
         e.printStackTrace()
