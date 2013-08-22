@@ -1,3 +1,7 @@
 bash -> ulimit -v 45000000
 to restrict z3 memory usage
 setting ulimit -v seems to help
+
+use custom built shell script
+
+java -Xmx4048m -XX:-UseConcMarkSweepGC -jar ExperimentRunner-assembly-0.2-ez-plus.jar

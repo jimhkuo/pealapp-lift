@@ -5,7 +5,7 @@ import java.util.concurrent.TimeoutException
 
 object Main extends App {
 
-  private val z3MemoryBound = 3000000
+  private val z3MemoryBound = 4000000
   private val timeout = 300000
 
   println("Picking up z3 from environment PATH: " + System.getenv("PATH"))
