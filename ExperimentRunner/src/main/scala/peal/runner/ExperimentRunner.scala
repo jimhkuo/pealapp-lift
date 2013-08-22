@@ -79,7 +79,7 @@ class ExperimentRunner(duration: Long, z3CallerMemoryBound: Long) {
       output
     }
     finally {
-      system.stop(eagerSynthesiser)
+//      system.stop(eagerSynthesiser)
       system.stop(eagerZ3Caller)
       system.shutdown()
     }
