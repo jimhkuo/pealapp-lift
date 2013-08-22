@@ -12,7 +12,7 @@ object Main extends App {
 
   var lastSuccess = 0
   var lastFailure = 0
-  var p = 2
+  var p = 256
 
   while (execute(1, 1, 1, p, 1, 0.5, 0.1)) {
     lastSuccess = p

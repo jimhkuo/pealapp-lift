@@ -4,10 +4,9 @@ import scala.concurrent.Await
 import scala.concurrent.duration._
 import akka.pattern.ask
 import akka.util.Timeout
-import akka.actor.{ActorRef, Props, ActorSystem}
+import akka.actor.{Props, ActorSystem}
 import peal.runner.actor._
 import z3.scala.{Z3Config, Z3Context}
-import java.util.concurrent.TimeoutException
 
 class TimingOutput(var modelGeneration: Long = 0, var eagerSynthesis: Long = 0, var eagerZ3: Long = 0, var lazySynthesis: Long = 0, var lazyZ3: Long = 0, var isSameOutput: Boolean = false, var model1Result: Map[String, String] = Map(), var model2Result: Map[String, String] = Map(), var pealInput: String = "") {
 
@@ -25,9 +24,9 @@ class ExperimentRunner(duration: Long, z3CallerMemoryBound: Long) {
 
   def run(n: Int, min: Int, max: Int, plus: Int, mul: Int, k: Int, th: Double, delta: Double): TimingOutput = {
     val output = new TimingOutput()
-    var eagerSynthesiser: ActorRef = null
-    var eagerZ3Caller: ActorRef = null
-    var z3Eager: Z3Context = null
+    val z3Eager = new Z3Context(new Z3Config("MODEL" -> true))
+    val eagerSynthesiser = system.actorOf(Props(new EagerSynthesiserActor(z3Eager)))
+    val eagerZ3Caller = system.actorOf(Props(new Z3CallerActor(z3CallerMemoryBound)))
     try {
       implicit val timeout = Timeout(duration, MILLISECONDS)
 
@@ -37,21 +36,15 @@ class ExperimentRunner(duration: Long, z3CallerMemoryBound: Long) {
       val model = Await.result(modelFuture, timeout.duration).asInstanceOf[String]
       var lapsedTime = System.nanoTime() - start
       output.modelGeneration = lapsedTime
-
       print("m")
 
-      z3Eager = new Z3Context(new Z3Config("MODEL" -> true))
-      eagerSynthesiser = system.actorOf(Props(new EagerSynthesiserActor(z3Eager)))
       start = System.nanoTime()
       val inputFuture1 = eagerSynthesiser ? model
       val input = Await.result(inputFuture1, timeout.duration)
       lapsedTime = System.nanoTime() - start
       output.eagerSynthesis = lapsedTime
-      //TODO a possible memory leak here when timeout occurs
-      z3Eager.delete()
       print("e")
 
-      eagerZ3Caller = system.actorOf(Props(new Z3CallerActor(z3CallerMemoryBound)))
       start = System.nanoTime()
       val resultFuture1 = eagerZ3Caller ? input
       val result1 = Await.result(resultFuture1, timeout.duration)
@@ -90,11 +83,8 @@ class ExperimentRunner(duration: Long, z3CallerMemoryBound: Long) {
       //      }
       output
     }
-//    catch {
-//      case e: TimeoutException => if (z3Eager != null) z3Eager.delete()
-//        output
-//    }
     finally {
+      if (z3Eager != null) z3Eager.delete()
       if (eagerSynthesiser != null) system.stop(eagerSynthesiser)
       if (eagerZ3Caller != null) system.stop(eagerZ3Caller)
       system.shutdown()
