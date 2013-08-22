@@ -9,7 +9,6 @@ import peal.runner.TimedOut
 
 
 class EagerSynthesiserActor extends Actor {
-
   var z3 = new Z3Context(new Z3Config("MODEL" -> true))
   var pealProgramParser: PealProgramParser = null
 
@@ -22,7 +21,6 @@ class EagerSynthesiserActor extends Actor {
 
   def receive = {
     case input: String =>
-
       pealProgramParser = getPealProgramParser(input)
       pealProgramParser.program()
 
