@@ -1,13 +1,17 @@
 package peal.runner
 
-import scala.concurrent.Await
+import scala.concurrent.{ExecutionContext, Await}
 import scala.concurrent.duration._
 import akka.pattern.ask
 import akka.util.Timeout
 import akka.actor.{Props, ActorSystem}
 import peal.runner.actor._
+import java.util.concurrent.TimeoutException
+import ExecutionContext.Implicits.global
 
 class TimingOutput(var modelGeneration: Long = 0, var eagerSynthesis: Long = 0, var eagerZ3: Long = 0, var lazySynthesis: Long = 0, var lazyZ3: Long = 0, var isSameOutput: Boolean = false, var model1Result: Map[String, String] = Map(), var model2Result: Map[String, String] = Map(), var pealInput: String = "")
+
+object TimedOut
 
 class ExperimentRunner(duration: Long, z3CallerMemoryBound: Long) {
   implicit val system = ActorSystem("exp-runner")
@@ -28,7 +32,9 @@ class ExperimentRunner(duration: Long, z3CallerMemoryBound: Long) {
       print("m")
 
       start = System.nanoTime()
-      val inputFuture1 = eagerSynthesiser ? model
+      val inputFuture1 = ask(eagerSynthesiser, model) recover {
+        case e: TimeoutException => eagerSynthesiser ! TimedOut
+      }
       val input = Await.result(inputFuture1, timeout.duration)
       lapsedTime = System.nanoTime() - start
       output.eagerSynthesis = lapsedTime
@@ -73,9 +79,8 @@ class ExperimentRunner(duration: Long, z3CallerMemoryBound: Long) {
       output
     }
     finally {
-//      if (z3Eager != null) z3Eager.delete()
-      if (eagerSynthesiser != null) system.stop(eagerSynthesiser)
-      if (eagerZ3Caller != null) system.stop(eagerZ3Caller)
+      system.stop(eagerSynthesiser)
+      system.stop(eagerZ3Caller)
       system.shutdown()
     }
   }

@@ -8,7 +8,7 @@ object Main extends App {
   private val z3MemoryBound = 3000000
   private val timeout = 300000
 
-  println("Picking up z3 from $PATH")
+  println("Picking up z3 from environment PATH: " + System.getenv("PATH"))
 
   var lastSuccess = 0
   var lastFailure = 0

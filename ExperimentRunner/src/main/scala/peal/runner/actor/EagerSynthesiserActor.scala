@@ -5,6 +5,7 @@ import org.antlr.runtime.{CommonTokenStream, ANTLRStringStream}
 import peal.antlr.{PealProgramParser, PealProgramLexer}
 import z3.scala.{Z3Config, Z3Context}
 import scala.collection.JavaConversions._
+import peal.runner.TimedOut
 
 
 class EagerSynthesiserActor extends Actor {
@@ -44,6 +45,6 @@ class EagerSynthesiserActor extends Actor {
       val z3SMTInput = predicateDeclarations.mkString("") + condDeclarations.mkString("") + body.mkString("") + domainSpecifics.mkString("", "\n", "\n") + generatedAnalyses.mkString("")
       sender ! z3SMTInput
 
-    case ReceiveTimeout => z3.delete()
+    case TimedOut => z3.delete()
   }
 }
