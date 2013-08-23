@@ -10,7 +10,7 @@ import peal.domain.MaxPolicySet
 import peal.domain.MinPolicySet
 import peal.domain.Pol
 import peal.synthesis.{GreaterThanThCondition, LessThanThCondition}
-import peal.domain.z3.wrapper.Term
+import peal.domain.z3.Term
 
 class LazySynthesiser(input: String) {
 

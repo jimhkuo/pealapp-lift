@@ -1,5 +1,5 @@
 package peal.synthesis
-import peal.domain.z3.wrapper.{Not, PealAst}
+import peal.domain.z3.{PealAst, Not}
 
 
 trait NonDefaultSet {

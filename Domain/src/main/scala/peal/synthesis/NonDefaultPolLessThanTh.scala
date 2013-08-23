@@ -3,7 +3,7 @@ package peal.synthesis
 import peal.domain.{Rule, Pol}
 import scala.collection.JavaConversions._
 import peal.domain.operator.{Mul, Max, Plus, Min}
-import peal.domain.z3.wrapper.{And, Or, False, PealAst}
+import peal.domain.z3.{PealAst, Or, False, And}
 
 class NonDefaultPolLessThanTh(pol: Pol, th: BigDecimal) extends NonDefaultSet {
   def synthesis(consts: Map[String, PealAst]): PealAst = pol.operator match {

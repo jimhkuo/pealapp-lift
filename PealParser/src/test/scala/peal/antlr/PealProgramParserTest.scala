@@ -6,7 +6,7 @@ import org.scalatest.junit.ShouldMatchersForJUnit
 import scala.collection.JavaConversions._
 import peal.synthesis.analysis.AlwaysTrue
 import peal.util.Z3ModelMatcher
-import peal.domain.z3.wrapper.{Term, PealAst}
+import peal.domain.z3.{PealAst, Term}
 
 
 class PealProgramParserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {

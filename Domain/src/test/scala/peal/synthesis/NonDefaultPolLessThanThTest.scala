@@ -6,7 +6,7 @@ import peal.domain.{Rule, Predicate, Pol}
 import scala.collection.JavaConversions._
 import peal.domain.operator.{Mul, Max, Min, Plus}
 import peal.util.Z3ModelMatcher
-import peal.domain.z3.wrapper.{Term, PealAst}
+import peal.domain.z3.{PealAst, Term}
 
 class NonDefaultPolLessThanThTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
 

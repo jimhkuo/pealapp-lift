@@ -1,4 +1,5 @@
-package peal.domain.z3.wrapper
+package peal.domain.z3
+
 
 object Or {
    def apply(args: PealAst *) : PealAst = new Or(args:_*)

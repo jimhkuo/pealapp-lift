@@ -4,9 +4,8 @@ import org.junit.{After, Test}
 import org.antlr.runtime.{CommonTokenStream, ANTLRStringStream}
 import org.scalatest.junit.ShouldMatchersForJUnit
 import scala.collection.JavaConversions._
-import peal.domain.z3.{Sat, Unsat}
+import peal.domain.z3.{PealAst, Term, Sat, Unsat}
 import peal.util.Z3ModelMatcher
-import peal.domain.z3.wrapper.{Term, PealAst}
 
 
 class Z3OutputParserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {

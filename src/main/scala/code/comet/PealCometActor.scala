@@ -24,7 +24,7 @@ import code.lib.SaveFile
 import peal.model.RandomModelGenerator
 import peal.domain.PolicySet
 import peal.lazysynthesis.LazySynthesiser
-import peal.domain.z3.wrapper.{Term, PealAst}
+import peal.domain.z3.{PealAst, Term}
 
 
 class PealCometActor extends CometActor with Loggable {

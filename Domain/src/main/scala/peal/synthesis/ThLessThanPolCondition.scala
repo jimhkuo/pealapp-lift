@@ -2,7 +2,7 @@ package peal.synthesis
 
 import peal.domain.Pol
 import scala.collection.JavaConversions._
-import peal.domain.z3.wrapper._
+import peal.domain.z3.{PealAst, Or, Not, And}
 
 
 class ThLessThanPolCondition(pol: Pol, th: BigDecimal) extends Condition {

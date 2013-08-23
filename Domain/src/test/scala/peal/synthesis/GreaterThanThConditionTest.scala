@@ -8,7 +8,7 @@ import peal.domain.operator.{Plus, Max, Min}
 import peal.util.Z3ModelMatcher
 import peal.domain.MinPolicySet
 import peal.domain.Pol
-import peal.domain.z3.wrapper.{Term, PealAst}
+import peal.domain.z3.{PealAst, Term}
 
 class GreaterThanThConditionTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
   val consts = Map[String, PealAst]("q0" -> Term("q0"), "q1" -> Term("q1"), "q2" -> Term("q2"), "q3" -> Term("q3"), "q4" -> Term("q4"), "q5" -> Term("q5"), "q6" -> Term("q6"))

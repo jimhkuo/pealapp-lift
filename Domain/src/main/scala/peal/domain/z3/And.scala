@@ -1,4 +1,5 @@
-package peal.domain.z3.wrapper
+package peal.domain.z3
+
 
 object And {
   def apply(args: PealAst *) : PealAst = new And(args:_*)

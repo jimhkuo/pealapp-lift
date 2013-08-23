@@ -2,7 +2,7 @@ package peal.synthesis
 
 import peal.domain._
 import peal.domain.Pol
-import peal.domain.z3.wrapper.{Or, And, PealAst}
+import peal.domain.z3.{PealAst, Or, And}
 
 case class GreaterThanThCondition(phi: PolicySet, th: BigDecimal) extends Condition {
   def synthesis(consts: Map[String, PealAst]): PealAst = phi match {

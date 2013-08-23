@@ -1,4 +1,5 @@
-package peal.domain.z3.wrapper
+package peal.domain.z3
+
 
 object Not {
    def apply(arg : PealAst) : PealAst = new Not(arg)

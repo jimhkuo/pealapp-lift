@@ -7,7 +7,7 @@ import scala.collection.JavaConversions._
 import peal.domain.operator.{Mul, Min, Max, Plus}
 import scala.collection.mutable.ListBuffer
 import peal.util.Z3ModelMatcher
-import peal.domain.z3.wrapper.{Term, PealAst}
+import peal.domain.z3.{PealAst, Term}
 
 
 class NonDefaultThLessThanPolTest extends ShouldMatchersForJUnit with Z3ModelMatcher {

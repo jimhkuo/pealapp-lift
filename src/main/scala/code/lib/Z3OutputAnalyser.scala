@@ -1,14 +1,13 @@
 package code.lib
 
 import peal.synthesis.analysis._
-import peal.domain.z3.{Define, Unsat, Model}
+import peal.domain.z3.{PealAst, Define, Unsat, Model}
 import peal.synthesis.analysis.AlwaysFalse
 import peal.synthesis.analysis.AlwaysTrue
 import peal.synthesis.analysis.Different
 import peal.synthesis.analysis.Satisfiable
 import scala.collection.mutable.ListBuffer
 import scala.collection.JavaConversions._
-import peal.domain.z3.wrapper.PealAst
 
 object Z3OutputAnalyser {
   def execute(analyses: Map[String, AnalysisGenerator], results: Map[String, Model], constsMap: Map[String, PealAst]): String = {

@@ -1,4 +1,5 @@
-package peal.domain.z3.wrapper
+package peal.domain.z3
+
 
 object Term {
    def apply(term: String) : PealAst = new Term(term)
