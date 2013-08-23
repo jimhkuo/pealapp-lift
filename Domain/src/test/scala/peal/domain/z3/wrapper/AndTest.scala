@@ -6,9 +6,10 @@ import org.junit.Test
 class AndTest extends ShouldMatchersForJUnit {
 
   @Test
-  def testApplyEmptyTerm() {
+  def testApplySingleTerm() {
     And().toString should be ("")
-
+    And("a").toString should be ("a")
+    And(And("a")).toString should be ("a")
   }
 
 }
