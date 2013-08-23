@@ -9,9 +9,10 @@ import peal.synthesis.analysis.Different
 import peal.synthesis.analysis.Satisfiable
 import scala.collection.mutable.ListBuffer
 import scala.collection.JavaConversions._
+import peal.domain.z3.wrapper.PealAst
 
 object Z3OutputAnalyser {
-  def execute(analyses: Map[String, AnalysisGenerator], results: Map[String, Model], constsMap: Map[String, Z3AST]): String = {
+  def execute(analyses: Map[String, AnalysisGenerator], results: Map[String, Model], constsMap: Map[String, PealAst]): String = {
     val out = ListBuffer[String]()
 
     analyses.keys.toSeq.sortWith(_ < _).foreach {
@@ -65,7 +66,7 @@ object Z3OutputAnalyser {
   }
 
 
-  private def getReasons(model: Model, includeNames: Set[String], excludeNames: Set[String], constsMap: Map[String, Z3AST]) = {
+  private def getReasons(model: Model, includeNames: Set[String], excludeNames: Set[String], constsMap: Map[String, PealAst]) = {
     val predicates = for (define: Define <- model.defines if constsMap.contains(define.name)) yield {
       define.name + " is " + define.value
     }

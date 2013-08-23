@@ -27,6 +27,7 @@ import code.lib.SaveFile
 import peal.model.RandomModelGenerator
 import peal.domain.PolicySet
 import peal.lazysynthesis.LazySynthesiser
+import peal.domain.z3.wrapper.{Term, PealAst}
 
 
 class PealCometActor extends CometActor with Loggable {
@@ -121,15 +122,6 @@ class PealCometActor extends CometActor with Loggable {
           _Noop
         })}
         </div>
-        <div style="display: none;">
-          {SHtml.ajaxButton("Analysis1 (!cond)", () => {
-          this ! Analysis1
-          _Noop
-        }) ++ SHtml.ajaxButton("Analysis2 (cond)", () => {
-          this ! Analysis2
-          _Noop
-        })}
-        </div>
         <br/>
         <div>
           <h3>Result:</h3>
@@ -141,12 +133,6 @@ class PealCometActor extends CometActor with Loggable {
 
   override def lowPriority = {
     case Init =>
-    case Analysis1 =>
-      val (constsMap, conds, pSets, analyses, domainSpecific) = onCompute(inputPolicies)
-      onAnalysis1(constsMap, conds, pSets)
-    case Analysis2 =>
-      val (constsMap,  conds, pSets, analyses, domainSpecific) = onCompute(inputPolicies)
-      onAnalysis2(constsMap, conds, pSets)
     case SynthesisAndCallZ3 =>
       val (constsMap,  conds, pSets, analyses, domainSpecific) = onCompute(inputPolicies)
       onCallZ3ViaCommandLine(constsMap, conds,  pSets, analyses, domainSpecific)
@@ -208,7 +194,7 @@ class PealCometActor extends CometActor with Loggable {
     new PealProgramParser(tokenStream)
   }
 
-  private def onCompute(input: String): (Map[String, Z3AST], Map[String, Condition], Map[String, PolicySet], Map[String, AnalysisGenerator], Array[String]) = {
+  private def onCompute(input: String): (Map[String, PealAst], Map[String, Condition], Map[String, PolicySet], Map[String, AnalysisGenerator], Array[String]) = {
     val pealProgramParser = getPealProgramParser(input)
 
     try {
@@ -216,7 +202,7 @@ class PealCometActor extends CometActor with Loggable {
 
       pealProgramParser.program()
       val predicateNames: Seq[String] = pealProgramParser.pols.values().flatMap(pol => pol.rules).map(r => r.q.name).toSeq.distinct
-      val constsMap = predicateNames.toSeq.distinct.map(t => (t, z3.mkBoolConst(t))).toMap
+      val constsMap = predicateNames.toSeq.distinct.map(t => (t, Term(t))).toMap
       val domainSpecifics = input.split("\n").dropWhile(!_.startsWith("DOMAIN_SPECIFICS")).takeWhile(!_.startsWith("ANALYSES")).drop(1)
 
       (constsMap, pealProgramParser.conds.toMap, pealProgramParser.pSets.toMap, pealProgramParser.analyses.toMap, domainSpecifics)
@@ -233,50 +219,7 @@ class PealCometActor extends CometActor with Loggable {
     }
   }
 
-  private def onAnalysis1(constsMap: Map[String, Z3AST], conds: Map[String, Condition], pSets: Map[String, PolicySet]) {
-    val sortedKeys = conds.keys.toSeq.sortWith(_ < _)
-    val solver = MyZ3Context.get.mkSolver()
-    val results = for (name <- sortedKeys) yield {
-      solver.reset()
-      val cond = MyZ3Context.get.mkBoolConst(name)
-      solver.assertCnstr(MyZ3Context.get.mkEq(cond, conds(name).synthesis(MyZ3Context.get, constsMap)))
-      solver.assertCnstr(MyZ3Context.get.mkNot(cond))
-      val (sol, model) = ModelGetter.get(solver)
-
-      val result = sol match {
-        case Some(x) if x && model.toString().trim == name + " -> false" => <p>!{name} is {sol.get} and model is empty<br/>So {name} is always false<pre>{model}</pre><br/></p>
-        case Some(x) if x => <p>!{name} is {sol.get}<br/>So {name} is NOT always true<pre>{model}</pre><br/></p>
-        case Some(x) if !x => <p>!{name} is {sol.get}<br/>So {name} is always true<pre>{model}</pre><br/></p>
-        case None => <p>Nothing is returned by Z3</p>
-      }
-      model.delete
-
-      result
-    }
-    this ! Result(results)
-  }
-
-  private def onAnalysis2(constsMap: Map[String, Z3AST], conds: Map[String, Condition], pSets: Map[String, PolicySet]) {
-    val sortedKeys = conds.keys.toSeq.sortWith(_ < _)
-    val solver = MyZ3Context.get.mkSolver()
-    val results = for (name <- sortedKeys) yield {
-      solver.reset()
-      val cond = MyZ3Context.get.mkBoolConst(name)
-      solver.assertCnstr(MyZ3Context.get.mkEq(cond, conds(name).synthesis(MyZ3Context.get, constsMap)))
-      val (sol, model) = ModelGetter.get(solver)
-
-      val result = sol match {
-        case Some(x) => <p>{name} is {sol.get}, model is:<pre>{model}</pre><br/></p>
-        case None => <p>Nothing is returned by Z3</p>
-      }
-      model.delete
-
-      result
-    }
-    this ! Result(results)
-  }
-
-  private def onDisplay(constsMap: Map[String, Z3AST], conds: Map[String, Condition], pSets: Map[String, PolicySet], analyses: Map[String, AnalysisGenerator], domainSpecifics: Array[String]) {
+  private def onDisplay(constsMap: Map[String, PealAst], conds: Map[String, Condition], pSets: Map[String, PolicySet], analyses: Map[String, AnalysisGenerator], domainSpecifics: Array[String]) {
     val declarations = for (name <- constsMap.keys) yield <p>
       {"(declare-const " + name + " Bool)"}
     </p>
@@ -304,7 +247,7 @@ class PealCometActor extends CometActor with Loggable {
     this ! Result(result)
   }
 
-  private def onDownload(constsMap: Map[String, Z3AST], conds: Map[String, Condition], pSets: Map[String, PolicySet], analyses: Map[String, AnalysisGenerator], domainSpecifics: Array[String]) {
+  private def onDownload(constsMap: Map[String, PealAst], conds: Map[String, Condition], pSets: Map[String, PolicySet], analyses: Map[String, AnalysisGenerator], domainSpecifics: Array[String]) {
     val declarations = for (name <- constsMap.keys) yield "(declare-const " + name + " Bool)\n"
     val declarations1 = for (name <- conds.keys) yield "(declare-const " + name + " Bool)\n"
     val sortedKeys = conds.keys.toSeq.sortWith(_ < _)
@@ -317,7 +260,7 @@ class PealCometActor extends CometActor with Loggable {
     this ! SaveFile(z3SMTInput, lapseTime)
   }
 
-  private def onCallZ3ViaCommandLine(constsMap: Map[String, Z3AST], conds: Map[String, Condition], pSets: Map[String, PolicySet], analyses: Map[String, AnalysisGenerator], domainSpecifics: Array[String]) {
+  private def onCallZ3ViaCommandLine(constsMap: Map[String, PealAst], conds: Map[String, Condition], pSets: Map[String, PolicySet], analyses: Map[String, AnalysisGenerator], domainSpecifics: Array[String]) {
     val declarations = for (name <- constsMap.keys) yield "(declare-const " + name + " Bool)\n"
     val declarations1 = for (name <- conds.keys) yield "(declare-const " + name + " Bool)\n"
     val sortedKeys = conds.keys.toSeq.sortWith(_ < _)

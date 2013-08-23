@@ -7,9 +7,10 @@ import peal.domain.operator.{Mul, Min, Max, Plus}
 import scala.collection.mutable.ListBuffer
 
 import _root_.z3.scala.{Z3AST, Z3Context}
+import peal.domain.z3.wrapper.{False, Or, And, PealAst}
 
 class NonDefaultThLessThanPol(pol: Pol, th: BigDecimal) extends NonDefaultSet {
-  def synthesis(z3: Z3Context, consts: Map[String, Z3AST]): Z3AST = pol.operator match {
+  def synthesis(z3: Z3Context, consts: Map[String, PealAst]): PealAst = pol.operator match {
     case Plus => {
       val m1 = enumOneForPlus()
 
@@ -18,25 +19,25 @@ class NonDefaultThLessThanPol(pol: Pol, th: BigDecimal) extends NonDefaultSet {
           s =>
             s.size match {
               case 1 => consts(s(0).q.name) //s.map(_.q.name).mkString(" ")
-              case _ => z3.mkAnd(s.map(r => consts(r.q.name)).toSeq: _*) //s.map(_.q.name).mkString("(and ", " ", ")")
+              case _ => And(s.map(r => consts(r.q.name)).toSeq: _*) //s.map(_.q.name).mkString("(and ", " ", ")")
             }
         }
 
         m1Sets.size match {
           case 1 => m1Sets(0) //m1Sets.mkString(" ")
-          case _ => z3.mkOr(m1Sets.toSeq: _*) //m1Sets.mkString("(or ", " ", ")")
+          case _ => Or(m1Sets.toSeq: _*) //m1Sets.mkString("(or ", " ", ")")
         }
       }
       else {
-        z3.mkFalse()
+        False()
       }
     }
     case Max => {
       val rules = pol.rules.filter(th < _.score)
       rules.size match {
-        case 0 => z3.mkFalse() // "false"
+        case 0 => False() // "false"
         case 1 => consts(rules(0).q.name) //rules.map(_.q.name).mkString("")
-        case _ => z3.mkOr(rules.map(r => consts(r.q.name)): _*) //rules.map(_.q.name).mkString("(or ", " ", ")")
+        case _ => Or(rules.map(r => consts(r.q.name)): _*) //rules.map(_.q.name).mkString("(or ", " ", ")")
       }
     }
     case Min | Mul => new NonDefaultPolLessThanTh(pol, th).notPhi(z3, consts)

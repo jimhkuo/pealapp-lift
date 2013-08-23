@@ -3,16 +3,17 @@ package peal.synthesis
 import peal.domain.{Rule, Pol}
 import scala.collection.JavaConversions._
 import peal.domain.operator.{Mul, Max, Plus, Min}
-import _root_.z3.scala.{Z3AST, Z3Context}
+import _root_.z3.scala.Z3Context
+import peal.domain.z3.wrapper.{And, Or, False, PealAst}
 
 class NonDefaultPolLessThanTh(pol: Pol, th: BigDecimal) extends NonDefaultSet {
-  def synthesis(z3: Z3Context, consts: Map[String, Z3AST]): Z3AST = pol.operator match {
+  def synthesis(z3: Z3Context, consts: Map[String, PealAst]): PealAst = pol.operator match {
     case Min => {
       val rules = pol.rules.filter(th >= _.score)
       rules.size match {
-        case 0 => z3.mkFalse()
+        case 0 => False()
 //        case 1 => consts(rules(0).q.name)//z3.mkBoolConst(rules(0).q.name) //rules.map(_.q.name).mkString("")
-        case _ => z3.mkOr(rules.map(r => consts(r.q.name)): _*)//z3.mkOr(rules.map(r => z3.mkBoolConst(r.q.name)): _*) //rules.map(_.q.name).mkString("(or ", " ", ")")
+        case _ => Or(rules.map(r => consts(r.q.name)): _*)//z3.mkOr(rules.map(r => z3.mkBoolConst(r.q.name)): _*) //rules.map(_.q.name).mkString("(or ", " ", ")")
       }
     }
     case Plus | Max => new NonDefaultThLessThanPol(pol, th).notPhi(z3, consts)
@@ -24,17 +25,17 @@ class NonDefaultPolLessThanTh(pol: Pol, th: BigDecimal) extends NonDefaultSet {
           s =>
             s.size match {
               case 1 => consts(s.toSeq(0).q.name) //z3.mkBoolConst(s.toSeq(0).q.name) //s.map(_.q.name).mkString(" ")
-              case _ => z3.mkAnd(s.map(r => consts(r.q.name)).toSeq: _*) //s.map(_.q.name).mkString("(and ", " ", ")")
+              case _ => And(s.map(r => consts(r.q.name)).toSeq: _*) //s.map(_.q.name).mkString("(and ", " ", ")")
             }
         }
 
         m2Sets.size match {
           case 1 => m2Sets.toSeq(0)
-          case _ => z3.mkOr(m2Sets.toSeq: _*) //m2Sets.mkString("(or ", " ", ")")
+          case _ => Or(m2Sets.toSeq: _*) //m2Sets.mkString("(or ", " ", ")")
         }
       }
       else {
-        z3.mkFalse()
+        False()
       }
     }
     case s => throw new RuntimeException("trying to synthesise with unsupported operator " + s + " in NonDefaultPolLessThanTh")
