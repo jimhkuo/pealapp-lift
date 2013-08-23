@@ -20,6 +20,8 @@ class ExperimentRunner(duration: Long, z3CallerMemoryBound: Long) {
     val output = new TimingOutput()
     val eagerSynthesiser = system.actorOf(Props[EagerSynthesiserActor])
     val eagerZ3Caller = system.actorOf(Props(new Z3CallerActor(z3CallerMemoryBound)))
+    val lazySynthesiser = system.actorOf(Props[LazySynthesiserActor])
+    val lazyZ3Caller = system.actorOf(Props(new Z3CallerActor(z3CallerMemoryBound)))
     try {
       implicit val timeout = Timeout(duration, MILLISECONDS)
 
@@ -49,38 +51,36 @@ class ExperimentRunner(duration: Long, z3CallerMemoryBound: Long) {
       val results1 = ResultAnalyser.execute(result1.toString)
       output.model1Result = results1
 
-      //      val z3Lazy = new Z3Context(new Z3Config("MODEL" -> true))
-      //      val z3LazyInputGenerator = system.actorOf(Props(new Z3LazyInputGeneratorActor(z3Lazy)))
-      //      start = System.nanoTime()
-      //      val inputFuture = z3LazyInputGenerator ? model
-      //      val lazyInput = Await.result(inputFuture, timeout.duration)
-      //      lapsedTime = System.nanoTime() - start
-      //      output.lazySynthesis = lapsedTime
-      //      z3Lazy.delete()
-      //      print("l")
-      //
-      //      val lazyZ3Caller = system.actorOf(Props(new Z3CallerActor(z3Path, z3CallerMemoryBound)))
-      //      start = System.nanoTime()
-      //      val resultFuture = lazyZ3Caller ? lazyInput
-      //      val result = Await.result(resultFuture, timeout.duration)
-      //      lapsedTime = System.nanoTime() - start
-      //      output.lazyZ3 = lapsedTime
-      //      print("z")
-      //      val results2 = ResultAnalyser.execute(result.toString)
-      //      output.model2Result = results2
+      start = System.nanoTime()
+      val inputFuture = lazySynthesiser ? model
+      val lazyInput = Await.result(inputFuture, timeout.duration)
+      lapsedTime = System.nanoTime() - start
+      output.lazySynthesis = lapsedTime
+      print("l")
 
-      output.isSameOutput = true
-      //      if (!output.model1Result.isEmpty && output.model1Result == output.model2Result) {
-      //        output.isSameOutput = true
-      //      }
-      //      else {
-      //        output.pealInput = model
-      //      }
+      start = System.nanoTime()
+      val resultFuture = lazyZ3Caller ? lazyInput
+      val result = Await.result(resultFuture, timeout.duration)
+      lapsedTime = System.nanoTime() - start
+      output.lazyZ3 = lapsedTime
+      print("z")
+      val results2 = ResultAnalyser.execute(result.toString)
+      output.model2Result = results2
+
+      //      output.isSameOutput = true
+      if (!output.model1Result.isEmpty && output.model1Result == output.model2Result) {
+        output.isSameOutput = true
+      }
+      else {
+        output.pealInput = model
+      }
       output
     }
     finally {
-//      system.stop(eagerSynthesiser)
+      system.stop(eagerSynthesiser)
       system.stop(eagerZ3Caller)
+      system.stop(lazySynthesiser)
+      system.stop(lazyZ3Caller)
       system.shutdown()
     }
   }
