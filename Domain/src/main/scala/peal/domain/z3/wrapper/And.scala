@@ -1,11 +1,11 @@
 package peal.domain.z3.wrapper
 
 object And {
-  def apply(args: Z3AST *) : Z3AST = new And(args:_*)
-  def apply(term: String) : Z3AST = Term(term)
+  def apply(args: PealAst *) : PealAst = new And(args:_*)
+  def apply(term: String) : PealAst = Term(term)
 }
 
-class And(args: Z3AST *) extends Z3AST {
+class And(args: PealAst *) extends PealAst {
 
   override def toString = args.size match {
     case 0 => "true"

@@ -1,5 +1,5 @@
 package peal.domain.z3.wrapper
 
-trait Z3AST {
+trait PealAst {
   def toString : String
 }
