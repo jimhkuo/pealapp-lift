@@ -6,11 +6,11 @@ import scala.collection.JavaConversions._
 import peal.domain.operator.{Mul, Min, Max, Plus}
 import scala.collection.mutable.ListBuffer
 
-import _root_.z3.scala.{Z3AST, Z3Context}
+import _root_.z3.scala.Z3Context
 import peal.domain.z3.wrapper.{False, Or, And, PealAst}
 
 class NonDefaultThLessThanPol(pol: Pol, th: BigDecimal) extends NonDefaultSet {
-  def synthesis(z3: Z3Context, consts: Map[String, PealAst]): PealAst = pol.operator match {
+  def synthesis(consts: Map[String, PealAst]): PealAst = pol.operator match {
     case Plus => {
       val m1 = enumOneForPlus()
 
@@ -40,7 +40,7 @@ class NonDefaultThLessThanPol(pol: Pol, th: BigDecimal) extends NonDefaultSet {
         case _ => Or(rules.map(r => consts(r.q.name)): _*) //rules.map(_.q.name).mkString("(or ", " ", ")")
       }
     }
-    case Min | Mul => new NonDefaultPolLessThanTh(pol, th).notPhi(z3, consts)
+    case Min | Mul => new NonDefaultPolLessThanTh(pol, th).notPhi(consts)
     case s => throw new RuntimeException("trying to synthesise with unsupported operator " + s + " in NonDefaultThLessThanPol")
   }
 

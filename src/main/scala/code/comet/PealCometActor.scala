@@ -10,10 +10,8 @@ import org.antlr.runtime.{CommonTokenStream, ANTLRStringStream}
 import peal.antlr.{Z3OutputParser, Z3OutputLexer, PealProgramParser, PealProgramLexer}
 import net.liftweb.common.Loggable
 import scala.collection.JavaConversions._
-import z3.scala.Z3AST
 import peal.synthesis.Condition
 import scala.Predef._
-import z3.ModelGetter
 import scala.sys.process._
 import java.io.File
 import peal.synthesis.analysis._
@@ -21,7 +19,6 @@ import scala.collection.mutable.ListBuffer
 import code.lib._
 import net.liftweb.http.js.jquery.JqJE.JqId
 import code.lib.Message
-import scala.Some
 import code.lib.Result
 import code.lib.SaveFile
 import peal.model.RandomModelGenerator
@@ -137,10 +134,10 @@ class PealCometActor extends CometActor with Loggable {
       val (constsMap,  conds, pSets, analyses, domainSpecific) = onCompute(inputPolicies)
       onCallZ3ViaCommandLine(constsMap, conds,  pSets, analyses, domainSpecific)
     case LazySynthesisAndCallZ3 =>
-      val input = new LazySynthesiser(MyZ3Context.get, inputPolicies).generate()
+      val input = new LazySynthesiser(inputPolicies).generate()
       onCallLazyZ3(input)
     case LazyDisplay =>
-      this ! Result(<pre>{new LazySynthesiser(MyZ3Context.get, inputPolicies).generate()}</pre>)
+      this ! Result(<pre>{new LazySynthesiser(inputPolicies).generate()}</pre>)
     case Display =>
       val (constsMap, conds,  pSets, analyses, domainSpecific) = onCompute(inputPolicies)
       onDisplay(constsMap, conds,  pSets, analyses, domainSpecific)
@@ -198,8 +195,6 @@ class PealCometActor extends CometActor with Loggable {
     val pealProgramParser = getPealProgramParser(input)
 
     try {
-      val z3 = MyZ3Context.get
-
       pealProgramParser.program()
       val predicateNames: Seq[String] = pealProgramParser.pols.values().flatMap(pol => pol.rules).map(r => r.q.name).toSeq.distinct
       val constsMap = predicateNames.toSeq.distinct.map(t => (t, Term(t))).toMap
@@ -229,7 +224,7 @@ class PealCometActor extends CometActor with Loggable {
 
     val sortedConds = conds.keys.toSeq.sortWith(_ < _)
     val conditions = for (cond <- sortedConds) yield {<p>
-      {"(assert (= " + cond + " " + conds(cond).synthesis(MyZ3Context.get, constsMap) + "))"}
+      {"(assert (= " + cond + " " + conds(cond).synthesis(constsMap) + "))"}
     </p>}
 
     val sortedAnalyses = analyses.keys.toSeq.sortWith(_ < _)
@@ -252,7 +247,7 @@ class PealCometActor extends CometActor with Loggable {
     val declarations1 = for (name <- conds.keys) yield "(declare-const " + name + " Bool)\n"
     val sortedKeys = conds.keys.toSeq.sortWith(_ < _)
     val start = System.nanoTime()
-    val body = for (cond <- sortedKeys) yield {"(assert (= " + cond + " " + conds(cond).synthesis(MyZ3Context.get, constsMap) + "))\n"}
+    val body = for (cond <- sortedKeys) yield {"(assert (= " + cond + " " + conds(cond).synthesis(constsMap) + "))\n"}
     val lapseTime = System.nanoTime() - start
     val sortedAnalyses = analyses.keys.toSeq.sortWith(_ < _)
     val generatedAnalyses = for (analysis <- sortedAnalyses) yield {analyses(analysis).z3SMTInput}
@@ -264,7 +259,7 @@ class PealCometActor extends CometActor with Loggable {
     val declarations = for (name <- constsMap.keys) yield "(declare-const " + name + " Bool)\n"
     val declarations1 = for (name <- conds.keys) yield "(declare-const " + name + " Bool)\n"
     val sortedKeys = conds.keys.toSeq.sortWith(_ < _)
-    val body = for (cond <- sortedKeys) yield {"(assert (= " + cond + " " + conds(cond).synthesis(MyZ3Context.get, constsMap) + "))\n"}
+    val body = for (cond <- sortedKeys) yield {"(assert (= " + cond + " " + conds(cond).synthesis(constsMap) + "))\n"}
     val sortedAnalyses = analyses.keys.toSeq.sortWith(_ < _)
     val generatedAnalyses = for (analysis <- sortedAnalyses) yield {"(echo \"Result of analysis [" + analyses(analysis).analysisName + "]:\")\n" + analyses(analysis).z3SMTInput}
 

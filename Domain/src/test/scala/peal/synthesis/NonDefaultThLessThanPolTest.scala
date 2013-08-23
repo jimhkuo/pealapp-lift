@@ -13,19 +13,14 @@ import peal.domain.z3.wrapper.{Term, PealAst}
 
 class NonDefaultThLessThanPolTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
 
-  val z3: Z3Context = new Z3Context(new Z3Config("MODEL" -> true))
   val consts = Map[String, PealAst]("q0" -> Term("q0"), "q1" -> Term("q1"), "q2" -> Term("q2"), "q3" -> Term("q3"), "q4" -> Term("q4"), "q5" -> Term("q5"), "q6" -> Term("q6"))
-
-  @After def tearDown() {
-    z3.delete()
-  }
 
   @Test
   def testSimpleCaseM1IsEmptyBecauseSumLessTh() {
     val p = new Pol(List(new Rule(new Predicate("q1"), 0.4)), Plus, 1)
     val pSet = new NonDefaultThLessThanPol(p, 0.5)
     //M1 is empty
-    pSet.synthesis(z3, consts) should beZ3Model("false")
+    pSet.synthesis(consts) should beZ3Model("false")
   }
 
   @Test
@@ -33,7 +28,7 @@ class NonDefaultThLessThanPolTest extends ShouldMatchersForJUnit with Z3ModelMat
     val p = new Pol(List(new Rule(new Predicate("q1"), 0.5)), Plus, 1)
     val pSet = new NonDefaultThLessThanPol(p, 0.5)
     //M1 is empty
-    pSet.synthesis(z3, consts) should beZ3Model("false")
+    pSet.synthesis(consts) should beZ3Model("false")
   }
 
   @Test
@@ -41,7 +36,7 @@ class NonDefaultThLessThanPolTest extends ShouldMatchersForJUnit with Z3ModelMat
     val p = new Pol(List(new Rule(new Predicate("q1"), 0.6)), Plus, 1)
     val pSet = new NonDefaultThLessThanPol(p, 0.5)
     //M1 is the whole set
-    pSet.synthesis(z3, consts) should beZ3Model("q1")
+    pSet.synthesis(consts) should beZ3Model("q1")
   }
 
   @Test
@@ -49,7 +44,7 @@ class NonDefaultThLessThanPolTest extends ShouldMatchersForJUnit with Z3ModelMat
     val p = new Pol(List(new Rule(new Predicate("q1"), 0.6)), Plus, 1)
     val pSet = new NonDefaultThLessThanPol(p, 0.5)
     //M1 is the whole set
-    pSet.notPhi(z3, consts) should beZ3Model("(not q1)")
+    pSet.notPhi( consts) should beZ3Model("(not q1)")
   }
 
   @Test
@@ -62,7 +57,7 @@ class NonDefaultThLessThanPolTest extends ShouldMatchersForJUnit with Z3ModelMat
     val p = new Pol(List(rule5, rule3, rule4, rule2, rule1), Plus, 1)
     val pSet = new NonDefaultThLessThanPol(p, 0.5)
 
-    pSet.synthesis(z3, consts) should beZ3Model("(or (and q5 q4) (and q5 q2) (and q5 q3) (and q5 q1) (and q4 q2 q3) (and q4 q2 q1) (and q4 q3 q1))")
+    pSet.synthesis(consts) should beZ3Model("(or (and q5 q4) (and q5 q2) (and q5 q3) (and q5 q1) (and q4 q2 q3) (and q4 q2 q1) (and q4 q3 q1))")
   }
 
   @Test
@@ -75,7 +70,7 @@ class NonDefaultThLessThanPolTest extends ShouldMatchersForJUnit with Z3ModelMat
     val p = new Pol(List(rule5, rule3, rule4, rule2, rule1), Plus, 1)
     val pSet = new NonDefaultThLessThanPol(p, 0.5)
 
-    pSet.notPhi(z3, consts) should beZ3Model("(not (or (and q5 q4) (and q5 q2) (and q5 q3) (and q5 q1) (and q4 q2 q3) (and q4 q2 q1) (and q4 q3 q1)))")
+    pSet.notPhi( consts) should beZ3Model("(not (or (and q5 q4) (and q5 q2) (and q5 q3) (and q5 q1) (and q4 q2 q3) (and q4 q2 q1) (and q4 q3 q1)))")
   }
 
   @Test
@@ -124,21 +119,21 @@ class NonDefaultThLessThanPolTest extends ShouldMatchersForJUnit with Z3ModelMat
   def testNoScoreGreaterThanThMax() {
     val p = new Pol(List(new Rule(new Predicate("q1"), 0.4)), Max, 1)
     val pSet = new NonDefaultThLessThanPol(p, 0.5)
-    pSet.synthesis(z3, consts) should beZ3Model("false")
+    pSet.synthesis(consts) should beZ3Model("false")
   }
 
   @Test
   def testOneScoreGreaterThanThMax() {
     val p = new Pol(List(new Rule(new Predicate("q1"), 0.6)), Max, 1)
     val pSet = new NonDefaultThLessThanPol(p, 0.5)
-    pSet.synthesis(z3, consts) should beZ3Model("q1")
+    pSet.synthesis(consts) should beZ3Model("q1")
   }
 
   @Test
   def testMultipleScoresGreaterThanThMax() {
     val p = new Pol(List(new Rule(new Predicate("q1"), 0.6), new Rule(new Predicate("q2"), 0.6)), Max, 1)
     val pSet = new NonDefaultThLessThanPol(p, 0.5)
-    pSet.synthesis(z3, consts) should beZ3Model("(or q1 q2)")
+    pSet.synthesis(consts) should beZ3Model("(or q1 q2)")
   }
 
   // phi^ndf_min[th < pol] = phi^ndf_antitone[th < pol] = !phi^ndf_min[pol <= th]
@@ -146,21 +141,21 @@ class NonDefaultThLessThanPolTest extends ShouldMatchersForJUnit with Z3ModelMat
   def testSimpleMin() {
     val p = new Pol(List(new Rule(new Predicate("q1"), 0.7)), Min, 1)
     val pSet = new NonDefaultThLessThanPol(p, 0.6)
-    pSet.synthesis(z3, consts) should beZ3Model("(not false)")
+    pSet.synthesis(consts) should beZ3Model("(not false)")
   }
 
   @Test
   def testSimpleCaseScoreLessThanThDifferentDefaultMin() {
     val p = new Pol(List(new Rule(new Predicate("q1"), 0.5)), Min, 0)
     val pSet = new NonDefaultThLessThanPol(p, 0.6)
-    pSet.synthesis(z3, consts) should beZ3Model("(not q1)")
+    pSet.synthesis(consts) should beZ3Model("(not q1)")
   }
 
   @Test
   def testMultipleScoresMin() {
     val p = new Pol(List(new Rule(new Predicate("q1"), 0.5), new Rule(new Predicate("q2"), 0.2), new Rule(new Predicate("q3"), 0.4)), Min, 1)
     val pSet = new NonDefaultThLessThanPol(p, 0.6)
-    pSet.synthesis(z3, consts) should beZ3Model("(not (or q1 q2 q3))")
+    pSet.synthesis(consts) should beZ3Model("(not (or q1 q2 q3))")
   }
 
   @Test
@@ -173,7 +168,7 @@ class NonDefaultThLessThanPolTest extends ShouldMatchersForJUnit with Z3ModelMat
     val p = new Pol(List(rule5, rule3, rule4, rule2, rule1), Mul, 1)
     val pSet = new NonDefaultThLessThanPol(p, 0.25)
 
-    pSet.synthesis(z3, consts) should beZ3Model("(not (or q5 q4 q3 (and q2 q1)))")
+    pSet.synthesis(consts) should beZ3Model("(not (or q5 q4 q3 (and q2 q1)))")
 
   }
 }

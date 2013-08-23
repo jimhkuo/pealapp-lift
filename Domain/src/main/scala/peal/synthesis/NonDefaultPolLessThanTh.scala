@@ -7,7 +7,7 @@ import _root_.z3.scala.Z3Context
 import peal.domain.z3.wrapper.{And, Or, False, PealAst}
 
 class NonDefaultPolLessThanTh(pol: Pol, th: BigDecimal) extends NonDefaultSet {
-  def synthesis(z3: Z3Context, consts: Map[String, PealAst]): PealAst = pol.operator match {
+  def synthesis(consts: Map[String, PealAst]): PealAst = pol.operator match {
     case Min => {
       val rules = pol.rules.filter(th >= _.score)
       rules.size match {
@@ -16,7 +16,7 @@ class NonDefaultPolLessThanTh(pol: Pol, th: BigDecimal) extends NonDefaultSet {
         case _ => Or(rules.map(r => consts(r.q.name)): _*)//z3.mkOr(rules.map(r => z3.mkBoolConst(r.q.name)): _*) //rules.map(_.q.name).mkString("(or ", " ", ")")
       }
     }
-    case Plus | Max => new NonDefaultThLessThanPol(pol, th).notPhi(z3, consts)
+    case Plus | Max => new NonDefaultThLessThanPol(pol, th).notPhi(consts)
     case Mul => {
       val m2 = enumTwoForMul()
 

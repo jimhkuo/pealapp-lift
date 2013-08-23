@@ -12,12 +12,7 @@ import peal.domain.Pol
 import peal.domain.z3.wrapper.{Term, PealAst}
 
 class LessThanThConditionTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
-  val z3: Z3Context = new Z3Context(new Z3Config("MODEL" -> true))
   val consts = Map[String, PealAst]("q0" -> Term("q0"), "q1" -> Term("q1"), "q2" -> Term("q2"), "q3" -> Term("q3"), "q4" -> Term("q4"), "q5" -> Term("q5"), "q6" -> Term("q6"))
-
-  @After def tearDown() {
-    z3.delete()
-  }
 
   @Test
   def testSimpleMinCase() {
@@ -26,7 +21,7 @@ class LessThanThConditionTest extends ShouldMatchersForJUnit with Z3ModelMatcher
     val pSet = new MinPolicySet(new BasicPolicySet(p1), new BasicPolicySet(p2))
     val phi = new LessThanThCondition(pSet, 0.6)
 
-    phi.synthesis(z3,consts) should beZ3Model("(or (and q1 q1) (or (not q2) q2))")
+    phi.synthesis(consts)should beZ3Model("(or (and q1 q1) (or (not q2) q2))")
   }
 
   @Test
@@ -37,7 +32,7 @@ class LessThanThConditionTest extends ShouldMatchersForJUnit with Z3ModelMatcher
     val pSet2 = new MinPolicySet(new BasicPolicySet(p1), pSet1)
     val phi = new LessThanThCondition(pSet2, 0.6)
 
-    phi.synthesis(z3,consts) should beZ3Model("(or (and q1 q1) (or (and q1 q1) (or (not q2) q2)))")
+    phi.synthesis(consts)should beZ3Model("(or (and q1 q1) (or (and q1 q1) (or (not q2) q2)))")
   }
 
   @Test
@@ -47,6 +42,6 @@ class LessThanThConditionTest extends ShouldMatchersForJUnit with Z3ModelMatcher
     val pSet1 = new MaxPolicySet(new BasicPolicySet(p1), new BasicPolicySet(p2))
     val pSet2 = new MaxPolicySet(new BasicPolicySet(p1), pSet1)
     val phi = new LessThanThCondition(pSet2, 0.6)
-    phi.synthesis(z3, consts) should beZ3Model("(and (and q1 q1) (and (and q1 q1) (or (not q2) q2)))")
+    phi.synthesis( consts) should beZ3Model("(and (and q1 q1) (and (and q1 q1) (or (not q2) q2)))")
   }
 }

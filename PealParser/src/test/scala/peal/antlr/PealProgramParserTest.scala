@@ -11,12 +11,7 @@ import peal.domain.z3.wrapper.{Term, PealAst}
 
 
 class PealProgramParserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
-  val z3: Z3Context = new Z3Context(new Z3Config("MODEL" -> true))
   val consts = Map[String, PealAst]("q0" -> Term("q0"), "q1" -> Term("q1"), "q2" -> Term("q2"), "q3" -> Term("q3"), "q4" -> Term("q4"), "q5" -> Term("q5"), "q6" -> Term("q6"))
-
-  @After def tearDown() {
-    z3.delete()
-  }
 
   private def getParser(input: String) = {
     val charStream = new ANTLRStringStream(input)
@@ -56,7 +51,7 @@ class PealProgramParserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
     val pealProgrmParser = getParser(input)
     pealProgrmParser.program()
 
-    pealProgrmParser.conds("cond1").synthesis(z3, consts) should beZ3Model("(and (and (or q1 q2 q3) (or q1 q2)) (or (and (not q4) (not q5) (not q6)) (not false))) ")
+    pealProgrmParser.conds("cond1").synthesis(consts) should beZ3Model("(and (and (or q1 q2 q3) (or q1 q2)) (or (and (not q4) (not q5) (not q6)) (not false))) ")
     pealProgrmParser.analyses("name1") should be(new AlwaysTrue("name1", "cond1"))
   }
 
@@ -75,7 +70,7 @@ class PealProgramParserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
     pols("b1").rules.size should be(3)
     pols("b2").rules.size should be(3)
 
-    pealProgrmParser.conds.values().head.synthesis(z3, consts) should beZ3Model("(and (and (or q1 q2 q3) (or q1 q2)) (or (and (not q4) (not q5) (not q6)) (not false)))")
+    pealProgrmParser.conds.values().head.synthesis(consts) should beZ3Model("(and (and (or q1 q2 q3) (or q1 q2)) (or (and (not q4) (not q5) (not q6)) (not false)))")
   }
 
   @Test
@@ -93,7 +88,7 @@ class PealProgramParserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
     pols("b1").rules.size should be(3)
     pols("b2").rules.size should be(3)
 
-    pealProgrmParser.conds.values().head.synthesis(z3, consts) should beZ3Model("(or (and (or q1 q2 q3) (or q1 q2)) (or (and (not q4) (not q5) (not q6)) (not false)))")
+    pealProgrmParser.conds.values().head.synthesis(consts) should beZ3Model("(or (and (or q1 q2 q3) (or q1 q2)) (or (and (not q4) (not q5) (not q6)) (not false)))")
   }
 
   @Test
@@ -111,7 +106,7 @@ class PealProgramParserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
     pols("b1").rules.size should be(3)
     pols("b2").rules.size should be(3)
 
-    pealProgrmParser.conds.values().head.synthesis(z3, consts) should beZ3Model("(and (or (and (not q1) (not q2) (not q3)) (not (or q1 q2))) (and (or q4 q5 q6) false))")
+    pealProgrmParser.conds.values().head.synthesis(consts) should beZ3Model("(and (or (and (not q1) (not q2) (not q3)) (not (or q1 q2))) (and (or q4 q5 q6) false))")
   }
 
   @Test
@@ -126,8 +121,8 @@ class PealProgramParserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
     val pealProgrmParser = getParser(input)
     pealProgrmParser.program()
 
-    pealProgrmParser.conds("cond1").synthesis(z3, consts) should beZ3Model("(and (or (and (not q1) (not q2) (not q3)) (not (or q1 q2))) (and (or q4 q5 q6) false))")
-    pealProgrmParser.conds("cond2").synthesis(z3, consts) should beZ3Model("(or (and (or q1 q2 q3) (or q1 q2)) (or (and (not q4) (not q5) (not q6)) (not false)))")
+    pealProgrmParser.conds("cond1").synthesis(consts) should beZ3Model("(and (or (and (not q1) (not q2) (not q3)) (not (or q1 q2))) (and (or q4 q5 q6) false))")
+    pealProgrmParser.conds("cond2").synthesis(consts) should beZ3Model("(or (and (or q1 q2 q3) (or q1 q2)) (or (and (not q4) (not q5) (not q6)) (not false)))")
   }
 
   @Test
@@ -139,7 +134,7 @@ class PealProgramParserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
 
     val pealProgrmParser = getParser(input)
     pealProgrmParser.program()
-    pealProgrmParser.conds.values().head.synthesis(z3, consts) should beZ3Model("(and (or q4 q5 q6) (not false))")
+    pealProgrmParser.conds.values().head.synthesis(consts) should beZ3Model("(and (or q4 q5 q6) (not false))")
   }
 
   @Test
@@ -148,7 +143,7 @@ class PealProgramParserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
 
     val pealProgrmParser = getParser(input)
     pealProgrmParser.program()
-    pealProgrmParser.conds.values().head.synthesis(z3, consts) should beZ3Model("(or (and (not q4) (not q5) (not q6)) (not (and q6 q5 q4)))")
+    pealProgrmParser.conds.values().head.synthesis(consts) should beZ3Model("(or (and (not q4) (not q5) (not q6)) (not (and q6 q5 q4)))")
   }
 
   @Test
@@ -157,7 +152,7 @@ class PealProgramParserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
 
     val pealProgrmParser = getParser(input)
     pealProgrmParser.program()
-    pealProgrmParser.conds.values().head.synthesis(z3, consts) should beZ3Model("(or (and (not q4) (not q5) (not q6)) (not (or q6 (and q5 q4))))")
+    pealProgrmParser.conds.values().head.synthesis(consts) should beZ3Model("(or (and (not q4) (not q5) (not q6)) (not (or q6 (and q5 q4))))")
   }
 
   @Test
@@ -165,13 +160,13 @@ class PealProgramParserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
     val input = "POLICIES\nb0 = max ((q4 0.41)) default 0.67\nb1 = * ((q4 0.02)) default 0.58\nb2 = + ((q5 0.54) (q3 0.06)) default 0.44\nb3 = min ((q2 0.69)) default 0.62\nPOLICY_SETS\np0_1 = min(b0,b1)\np2_3 = min(b2,b3)\np0_3 = max(p0_1,p2_3)\nCONDITIONS\ncond2 = 0.60 < p0_3\nANALYSES\nanalysis2 = always_false? cond2"
     val pealProgrmParser = getParser(input)
     pealProgrmParser.program()
-    pealProgrmParser.conds("cond2").synthesis(z3, consts) should beZ3Model ("(or (and (or (not q4) false) (and q4 (not q4))) (and (and (or q5 q3) false) (or (not q2) (not false))))")
+    pealProgrmParser.conds("cond2").synthesis(consts) should beZ3Model ("(or (and (or (not q4) false) (and q4 (not q4))) (and (and (or q5 q3) false) (or (not q2) (not false))))")
   }
   @Test
   def testM2HandleEdgeCaseCorrectly() {
     val input = "POLICIES\nb0 = max ((q4 0.41)) default 0.67\nb1 = * ((q4 1.0) (q3 0.6)) default 0.06\nb2 = + ((q5 0.54) (q3 0.06)) default 0.44\nb3 = min ((q2 0.69)) default 0.62\nPOLICY_SETS\np0_1 = min(b0,b1)\np2_3 = min(b2,b3)\np0_3 = max(p0_1,p2_3)\nCONDITIONS\ncond2 = 0.60 < p0_3\nANALYSES\nanalysis2 = always_false? cond2"
     val pealProgrmParser = getParser(input)
     pealProgrmParser.program()
-    pealProgrmParser.conds("cond2").synthesis(z3, consts) should beZ3Model ("(or (and (or (not q4) false) (and (or q4 q3) (not q3))) (and (and (or q5 q3) false) (or (not q2) (not false))))")
+    pealProgrmParser.conds("cond2").synthesis(consts) should beZ3Model ("(or (and (or (not q4) false) (and (or q4 q3) (not q3))) (and (and (or q5 q3) false) (or (not q2) (not false))))")
   }
 }

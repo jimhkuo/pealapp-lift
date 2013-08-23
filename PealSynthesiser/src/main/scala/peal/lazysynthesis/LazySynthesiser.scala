@@ -11,8 +11,9 @@ import peal.domain.MaxPolicySet
 import peal.domain.MinPolicySet
 import peal.domain.Pol
 import peal.synthesis.{GreaterThanThCondition, LessThanThCondition}
+import peal.domain.z3.wrapper.Term
 
-class LazySynthesiser(z3: Z3Context, input: String) {
+class LazySynthesiser(input: String) {
 
   private def getParser(input: String) = {
     val charStream = new ANTLRStringStream(input)
@@ -28,7 +29,7 @@ class LazySynthesiser(z3: Z3Context, input: String) {
   val conds = pealProgramParser.conds
   val pSets = pealProgramParser.pSets
   val predicateNames: Seq[String] = pealProgramParser.pols.values().flatMap(pol => pol.rules).map(r => r.q.name).toSeq.distinct
-  val constsMap = predicateNames.toSeq.distinct.map(t => (t, z3.mkBoolConst(t))).toMap
+  val constsMap = predicateNames.toSeq.distinct.map(t => (t, Term(t))).toMap
   val analyses = pealProgramParser.analyses.toMap
 
 
