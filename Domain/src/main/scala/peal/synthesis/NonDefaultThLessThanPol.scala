@@ -6,7 +6,6 @@ import scala.collection.JavaConversions._
 import peal.domain.operator.{Mul, Min, Max, Plus}
 import scala.collection.mutable.ListBuffer
 
-import _root_.z3.scala.Z3Context
 import peal.domain.z3.wrapper.{False, Or, And, PealAst}
 
 class NonDefaultThLessThanPol(pol: Pol, th: BigDecimal) extends NonDefaultSet {

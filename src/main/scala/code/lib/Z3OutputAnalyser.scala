@@ -2,7 +2,6 @@ package code.lib
 
 import peal.synthesis.analysis._
 import peal.domain.z3.{Define, Unsat, Model}
-import z3.scala.Z3AST
 import peal.synthesis.analysis.AlwaysFalse
 import peal.synthesis.analysis.AlwaysTrue
 import peal.synthesis.analysis.Different

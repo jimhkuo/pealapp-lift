@@ -1,7 +1,6 @@
 package peal.synthesis
 
-import _root_.z3.scala.{Z3AST, Z3Config, Z3Context}
-import org.junit.{After, Test}
+import org.junit.Test
 import org.scalatest.junit.ShouldMatchersForJUnit
 import peal.domain._
 import scala.collection.JavaConversions._

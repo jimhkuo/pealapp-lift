@@ -1,10 +1,9 @@
 package peal.antlr
 
-import org.junit.{After, Before, Ignore, Test}
+import org.junit.Test
 import org.antlr.runtime.{CommonTokenStream, ANTLRStringStream}
 import org.scalatest.junit.ShouldMatchersForJUnit
 import scala.collection.JavaConversions._
-import z3.scala.{Z3AST, Z3Config, Z3Context}
 import peal.synthesis.analysis.AlwaysTrue
 import peal.util.Z3ModelMatcher
 import peal.domain.z3.wrapper.{Term, PealAst}

@@ -1,6 +1,5 @@
 package peal.lazysynthesis
 
-import z3.scala.{Z3Config, Z3Context}
 import org.scalatest.junit.ShouldMatchersForJUnit
 import org.junit.Test
 

@@ -1,6 +1,5 @@
 package peal.lazysynthesis
 
-import _root_.z3.scala.Z3Context
 import scala.collection.JavaConversions._
 import org.antlr.runtime.{CommonTokenStream, ANTLRStringStream}
 import peal.antlr.{PealProgramParser, PealProgramLexer}

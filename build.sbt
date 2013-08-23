@@ -6,13 +6,6 @@ test in assembly := {}
 
 mainClass in assembly := Some("bootstrap.liftweb.Start")
 
-//use linux jar in assembly
-unmanagedJars in Compile <++= baseDirectory map { base =>
-	val baseDirectories = (base / "lib_linux")
-	val customJars = (baseDirectories ** "*.jar")
-	customJars.classpath
-}
-
 name := "PealApp-lift"
 
 version := "0.9"
@@ -47,10 +40,6 @@ resourceGenerators in Compile <+= (resourceManaged, baseDirectory) map
     Sync.copy(from, to)
     to
   }
-}
-
-excludedJars in assembly <<= (fullClasspath in assembly) map { cp =>
-  cp filter {_.data.getName.endsWith("-mac.jar")}
 }
 
 mergeStrategy in assembly <<= (mergeStrategy in assembly) { (old) =>

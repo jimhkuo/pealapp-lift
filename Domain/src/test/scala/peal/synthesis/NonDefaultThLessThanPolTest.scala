@@ -1,8 +1,7 @@
 package peal.synthesis
 
-import _root_.z3.scala.{Z3AST, Z3Config, Z3Context}
 import org.scalatest.junit.ShouldMatchersForJUnit
-import org.junit.{After, Test}
+import org.junit.Test
 import peal.domain.{Rule, Predicate, Pol}
 import scala.collection.JavaConversions._
 import peal.domain.operator.{Mul, Min, Max, Plus}

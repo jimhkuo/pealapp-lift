@@ -4,19 +4,13 @@ import org.junit.{After, Test}
 import org.antlr.runtime.{CommonTokenStream, ANTLRStringStream}
 import org.scalatest.junit.ShouldMatchersForJUnit
 import scala.collection.JavaConversions._
-import z3.scala.{Z3AST, Z3Config, Z3Context}
-import peal.domain.z3.{Define, Sat, Unsat, Model}
+import peal.domain.z3.{Sat, Unsat}
 import peal.util.Z3ModelMatcher
 import peal.domain.z3.wrapper.{Term, PealAst}
 
 
 class Z3OutputParserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
-  val z3: Z3Context = new Z3Context(new Z3Config("MODEL" -> true))
   val consts = Map[String, PealAst]("q0" -> Term("q0"), "q1" -> Term("q1"), "q2" -> Term("q2"), "q3" -> Term("q3"), "q4" -> Term("q4"), "q5" -> Term("q5"), "q6" -> Term("q6"))
-
-  @After def tearDown() {
-    z3.delete()
-  }
 
   private def getParser(input: String) = {
     val charStream = new ANTLRStringStream(input)
