@@ -1,15 +1,14 @@
 package peal.runner.actor
 
 import akka.actor.Actor
-import z3.scala.Z3Context
 import peal.lazysynthesis.LazySynthesiser
 
 
-class LazySynthesiserActor(z3: Z3Context) extends Actor {
+class LazySynthesiserActor() extends Actor {
 
   def receive = {
     case input: String =>
-      val z3Input: String = new LazySynthesiser(z3, input).generate()
+      val z3Input: String = new LazySynthesiser(input).generate()
       sender ! z3Input
   }
 }

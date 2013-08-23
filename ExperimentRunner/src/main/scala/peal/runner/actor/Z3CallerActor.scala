@@ -2,7 +2,7 @@ package peal.runner.actor
 
 import akka.actor.Actor
 import scala.sys.process._
-import java.io.{FileWriter, File}
+import java.io.File
 import scala.collection.mutable.ListBuffer
 import util.FileUtil
 
