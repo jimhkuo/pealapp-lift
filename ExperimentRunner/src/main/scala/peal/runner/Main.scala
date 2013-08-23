@@ -7,6 +7,8 @@ object Main extends App {
 
   private val z3MemoryBound = 4000000
   private val timeout = 300000
+  val execute: (Int) => Boolean = (p) => executeRunner(1, p, 1, 1, 1, 0.5, 0.1)
+
 
   println("Picking up z3 from environment PATH: " + System.getenv("PATH"))
 
@@ -14,7 +16,7 @@ object Main extends App {
   var lastFailure = 0
   var p = 2
 
-  while (execute(1, 1, 1, p, 1, 0.5, 0.1)) {
+  while (execute(p)) {
     lastSuccess = p
     p = p * 2
   }
@@ -24,7 +26,7 @@ object Main extends App {
   lastFailure = p
   while (lastFailure - lastSuccess > 10) {
     p = (lastSuccess + lastFailure) / 2
-    if (execute(1, 1, 1, p, 1, 0.5, 0.1)) {
+    if (execute(p)) {
       lastSuccess = p
     }
     else {
@@ -38,7 +40,7 @@ object Main extends App {
     "%.2f".format(timeInNano.toDouble / 1000000)
   }
 
-  private def execute(n: Int, m0: Int, m1: Int, m2: Int, m3: Int, th: Double, delta: Double): Boolean = {
+  private def executeRunner(n: Int, m0: Int, m1: Int, m2: Int, m3: Int, th: Double, delta: Double): Boolean = {
     val iterations: Int = 5
 
     var mt = 0l
