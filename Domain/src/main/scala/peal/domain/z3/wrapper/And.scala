@@ -6,7 +6,7 @@ object And {
 }
 
 class And(args: Z3AST *) extends Z3AST {
-  var t = ""
+  var t = "true"
   def this(term: String) = {
     this()
     t = term
