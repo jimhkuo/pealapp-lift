@@ -6,5 +6,5 @@ object True {
  }
 
 class True extends PealAst {
-  override def toString = "false"
+  override def toString = "true"
 }
