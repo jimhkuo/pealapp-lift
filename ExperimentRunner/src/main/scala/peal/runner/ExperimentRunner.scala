@@ -1,42 +1,46 @@
 package peal.runner
 
-import scala.concurrent.{ExecutionContext, Await}
+import scala.concurrent.Await
 import scala.concurrent.duration._
 import akka.pattern.ask
 import akka.util.Timeout
 import akka.actor.{Props, ActorSystem}
 import peal.runner.actor._
-import java.util.concurrent.TimeoutException
-import ExecutionContext.Implicits.global
 
 class TimingOutput(var modelGeneration: Long = 0, var eagerSynthesis: Long = 0, var eagerZ3: Long = 0, var lazySynthesis: Long = 0, var lazyZ3: Long = 0, var isSameOutput: Boolean = false, var model1Result: Map[String, String] = Map(), var model2Result: Map[String, String] = Map(), var pealInput: String = "")
 
-object TimedOut
-
 class ExperimentRunner(duration: Long, z3CallerMemoryBound: Long) {
-  implicit val system = ActorSystem("exp-runner")
 
   def run(n: Int, min: Int, max: Int, plus: Int, mul: Int, k: Int, th: Double, delta: Double): TimingOutput = {
+    print("0")
+    implicit val system = ActorSystem()
+    print("1")
+    implicit val timeout = Timeout(duration, MILLISECONDS)
     val output = new TimingOutput()
+    print("2")
+    val generatorRunner = system.actorOf(Props(new ModelGeneratorActor(n, min, max, plus, mul, k, th, delta)))
     val eagerSynthesiser = system.actorOf(Props[EagerSynthesiserActor])
     val eagerZ3Caller = system.actorOf(Props(new Z3CallerActor(z3CallerMemoryBound)))
     val lazySynthesiser = system.actorOf(Props[LazySynthesiserActor])
     val lazyZ3Caller = system.actorOf(Props(new Z3CallerActor(z3CallerMemoryBound)))
-    try {
-      implicit val timeout = Timeout(duration, MILLISECONDS)
+    print("3")
 
-      val generatorRunner = system.actorOf(Props(new ModelGeneratorActor(n, min, max, plus, mul, k, th, delta)))
+    try {
       var start = System.nanoTime()
+      print("4")
+
       val modelFuture = generatorRunner ? Run
+      print("5")
+
       val model = Await.result(modelFuture, timeout.duration).asInstanceOf[String]
+      print("6")
+
       var lapsedTime = System.nanoTime() - start
       output.modelGeneration = lapsedTime
       print("m")
 
       start = System.nanoTime()
-      val eagerInputFuture = ask(eagerSynthesiser, model) recover {
-        case e: TimeoutException => eagerSynthesiser ! TimedOut
-      }
+      val eagerInputFuture = ask(eagerSynthesiser, model)
       val eagerInput = Await.result(eagerInputFuture, timeout.duration)
       lapsedTime = System.nanoTime() - start
       output.eagerSynthesis = lapsedTime
@@ -77,10 +81,11 @@ class ExperimentRunner(duration: Long, z3CallerMemoryBound: Long) {
       output
     }
     finally {
-      system.stop(eagerSynthesiser)
-      system.stop(eagerZ3Caller)
-      system.stop(lazySynthesiser)
-      system.stop(lazyZ3Caller)
+//      system.stop(generatorRunner)
+//      system.stop(eagerSynthesiser)
+//      system.stop(eagerZ3Caller)
+//      system.stop(lazySynthesiser)
+//      system.stop(lazyZ3Caller)
       system.shutdown()
     }
   }

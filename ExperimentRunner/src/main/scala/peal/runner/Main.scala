@@ -25,7 +25,6 @@ object Main extends App {
   lastFailure = p
   while (lastFailure - lastSuccess > 10) {
     p = (lastSuccess + lastFailure) / 2
-    println("f: " + lastFailure + " s:" + lastSuccess + " p:" + p)
     if (execute(p)) {
       lastSuccess = p
     }

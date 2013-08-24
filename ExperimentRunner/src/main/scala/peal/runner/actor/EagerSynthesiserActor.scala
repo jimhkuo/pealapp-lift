@@ -4,9 +4,7 @@ import akka.actor.Actor
 import org.antlr.runtime.{CommonTokenStream, ANTLRStringStream}
 import peal.antlr.{PealProgramParser, PealProgramLexer}
 import scala.collection.JavaConversions._
-import peal.runner.TimedOut
 import peal.domain.z3.Term
-
 
 class EagerSynthesiserActor extends Actor {
   var pealProgramParser: PealProgramParser = null
@@ -39,8 +37,5 @@ class EagerSynthesiserActor extends Actor {
 
       val z3SMTInput = predicateDeclarations.mkString("") + condDeclarations.mkString("") + body.mkString("") + domainSpecifics.mkString("", "\n", "\n") + generatedAnalyses.mkString("")
       sender ! z3SMTInput
-
-    case TimedOut =>
-      if (pealProgramParser != null) pealProgramParser = null
   }
 }
