@@ -34,26 +34,26 @@ class ExperimentRunner(duration: Long, z3CallerMemoryBound: Long) {
       print("m")
 
       start = System.nanoTime()
-      val inputFuture1 = ask(eagerSynthesiser, model) recover {
+      val eagerInputFuture = ask(eagerSynthesiser, model) recover {
         case e: TimeoutException => eagerSynthesiser ! TimedOut
       }
-      val input = Await.result(inputFuture1, timeout.duration)
+      val eagerInput = Await.result(eagerInputFuture, timeout.duration)
       lapsedTime = System.nanoTime() - start
       output.eagerSynthesis = lapsedTime
       print("e")
 
       start = System.nanoTime()
-      val resultFuture1 = eagerZ3Caller ? input
-      val result1 = Await.result(resultFuture1, timeout.duration)
+      val eagerFuture = eagerZ3Caller ? eagerInput
+      val eagerResult = Await.result(eagerFuture, timeout.duration)
       lapsedTime = System.nanoTime() - start
       output.eagerZ3 = lapsedTime
       print("z")
-      val results1 = ResultAnalyser.execute(result1.toString)
+      val results1 = ResultAnalyser.execute(eagerResult.toString)
       output.model1Result = results1
 
       start = System.nanoTime()
-      val inputFuture = lazySynthesiser ? model
-      val lazyInput = Await.result(inputFuture, timeout.duration)
+      val lazyInputFuture = lazySynthesiser ? model
+      val lazyInput = Await.result(lazyInputFuture, timeout.duration)
       lapsedTime = System.nanoTime() - start
       output.lazySynthesis = lapsedTime
       print("l")

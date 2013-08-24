@@ -7,7 +7,7 @@ object Main extends App {
 
   private val z3MemoryBound = 4000000
   private val timeout = 300000
-  private val execute: (Int) => Boolean = (p) => executeRunner(1, 1, 1, 1, p, 0.5, 0.1)
+  private val execute: (Int) => Boolean = (p) => executeRunner(1, p, 1, 1, 1, 0.5, 0.1)
 
   println("Picking up z3 from environment PATH: " + System.getenv("PATH"))
 
