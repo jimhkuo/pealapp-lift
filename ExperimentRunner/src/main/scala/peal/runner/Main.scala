@@ -7,7 +7,7 @@ object Main extends App {
 
   private val z3MemoryBound = 4000000
   private val timeout = 300000
-  private val execute: (Int) => Boolean = (p) => executeRunner(1, 1, 1, p, 1, 0.5, 0.1)
+  private val execute: (Int) => Boolean = (p) => executeRunner(1, p, 1, 1, 1, 0.5, 0.1)
 
   println("Picking up z3 from environment PATH: " + System.getenv("PATH"))
 
@@ -70,10 +70,10 @@ object Main extends App {
       true
     } catch {
       case e: TimeoutException =>
-        println("," + n + "-" + m0 + "-" + m1 + "-" + m2 + "-" + m3 + "-" + th + "-" + delta + "," + timeout + ",TIMEOUT,TIMEOUT,TIMEOUT,TIMEOUT,TIMEOUT")
+        println(",TIMEOUT,TIMEOUT,TIMEOUT,TIMEOUT,TIMEOUT")
         false
       case e1: RuntimeException =>
-        println("," + n + "-" + m0 + "-" + m1 + "-" + m2 + "-" + m3 + "-" + th + "-" + delta + "," + timeout + ",OUTOFMEMORY,OUTOFMEMORY,OUTOFMEMORY,OUTOFMEMORY,OUTOFMEMORY")
+        println(",OUTOFMEMORY,OUTOFMEMORY,OUTOFMEMORY,OUTOFMEMORY,OUTOFMEMORY")
         false
     }
   }
