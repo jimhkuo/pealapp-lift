@@ -7,7 +7,7 @@ object Main extends App {
 
   private val z3MemoryBound = 4000000
   private val timeout = 300000
-  private val execute: (Int) => Boolean = (p) => executeRunner(1, p, 1, 1, 1, 0.5, 0.1)
+  private val execute: (Int) => Boolean = (p) => executeRunner(1, 1, 1, p, 1, 0.5, 0.1)
 
   println("Picking up z3 from environment PATH: " + System.getenv("PATH"))
 
@@ -49,6 +49,8 @@ object Main extends App {
     var lzt = 0l
 
     try {
+      print(n + "-" + m0 + "-" + m1 + "-" + m2 + "-" + m3 + "-" + th + "-" + delta + "," + timeout + ",")
+
       for (i <- 1 to iterations) {
         val output = new ExperimentRunner(timeout, z3MemoryBound).run(n, m0, m1, m2, m3, 3 * p, th, delta)
         mt += output.modelGeneration
@@ -62,10 +64,9 @@ object Main extends App {
         if (!output.isSameOutput) {
           println("eager and lazy produce different result," + n + "-" + m0 + "-" + m1 + "-" + m2 + "-" + m3 + "-" + th + "-" + delta + "," + timeout + "," + output.pealInput)
         }
-
       }
 
-      println("," + n + "-" + m0 + "-" + m1 + "-" + m2 + "-" + m3 + "-" + th + "-" + delta + "," + timeout + "," + milliTime(mt / iterations) + "," + milliTime(et / iterations) + "," + milliTime(ezt / iterations) + "," + milliTime(lt / iterations) + "," + milliTime(lzt / iterations))
+      println("," + milliTime(mt / iterations) + "," + milliTime(et / iterations) + "," + milliTime(ezt / iterations) + "," + milliTime(lt / iterations) + "," + milliTime(lzt / iterations))
       true
     } catch {
       case e: TimeoutException =>
