@@ -7,7 +7,7 @@ object Main extends App {
 
   private val z3MemoryBound = 4000000
   private val timeout = 300000
-  private val execute: (Int) => Boolean = (p) => executeRunner(1, p, 1, 1, 1, 0.5, 0.1)
+  private val execute: (Int) => Boolean = (x) => executeRunner(1, 1, 1, x, 1, 3 * x, 0.5, 0.1)
 
   println("Picking up z3 from environment PATH: " + System.getenv("PATH"))
 
@@ -25,6 +25,7 @@ object Main extends App {
   lastFailure = p
   while (lastFailure - lastSuccess > 10) {
     p = (lastSuccess + lastFailure) / 2
+    println("f: " + lastFailure + " s:" + lastSuccess + " p:" + p)
     if (execute(p)) {
       lastSuccess = p
     }
@@ -39,7 +40,7 @@ object Main extends App {
     "%.2f".format(timeInNano.toDouble / 1000000)
   }
 
-  private def executeRunner(n: Int, m0: Int, m1: Int, m2: Int, m3: Int, th: Double, delta: Double): Boolean = {
+  private def executeRunner(n: Int, m0: Int, m1: Int, m2: Int, m3: Int, k: Int, th: Double, delta: Double): Boolean = {
     val iterations: Int = 5
 
     var mt = 0l
@@ -52,7 +53,7 @@ object Main extends App {
       print(n + "-" + m0 + "-" + m1 + "-" + m2 + "-" + m3 + "-" + th + "-" + delta + "," + timeout + ",")
 
       for (i <- 1 to iterations) {
-        val output = new ExperimentRunner(timeout, z3MemoryBound).run(n, m0, m1, m2, m3, 3 * p, th, delta)
+        val output = new ExperimentRunner(timeout, z3MemoryBound).run(n, m0, m1, m2, m3, k, th, delta)
         mt += output.modelGeneration
         et += output.eagerSynthesis
         ezt += output.eagerZ3
