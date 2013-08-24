@@ -12,29 +12,24 @@ class TimingOutput(var modelGeneration: Long = 0, var eagerSynthesis: Long = 0, 
 class ExperimentRunner(duration: Long, z3CallerMemoryBound: Long) {
 
   def run(n: Int, min: Int, max: Int, plus: Int, mul: Int, k: Int, th: Double, delta: Double): TimingOutput = {
-    print("0")
-    implicit val system = ActorSystem()
-    print("1")
     implicit val timeout = Timeout(duration, MILLISECONDS)
+//    println("0")
+    val system = ActorSystem()
+//    println("1")
     val output = new TimingOutput()
-    print("2")
     val generatorRunner = system.actorOf(Props(new ModelGeneratorActor(n, min, max, plus, mul, k, th, delta)))
     val eagerSynthesiser = system.actorOf(Props[EagerSynthesiserActor])
     val eagerZ3Caller = system.actorOf(Props(new Z3CallerActor(z3CallerMemoryBound)))
     val lazySynthesiser = system.actorOf(Props[LazySynthesiserActor])
     val lazyZ3Caller = system.actorOf(Props(new Z3CallerActor(z3CallerMemoryBound)))
-    print("3")
+//    println("2")
 
     try {
       var start = System.nanoTime()
-      print("4")
-
       val modelFuture = generatorRunner ? Run
-      print("5")
-
+//      println("3")
       val model = Await.result(modelFuture, timeout.duration).asInstanceOf[String]
-      print("6")
-
+//      println("4")
       var lapsedTime = System.nanoTime() - start
       output.modelGeneration = lapsedTime
       print("m")
