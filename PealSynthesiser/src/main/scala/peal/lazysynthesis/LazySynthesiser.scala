@@ -31,7 +31,6 @@ class LazySynthesiser(input: String) {
   val constsMap = predicateNames.toSeq.distinct.map(t => (t, Term(t))).toMap
   val analyses = pealProgramParser.analyses.toMap
 
-
   private def findAllPolicySets(policySet: PolicySet): Set[String] = policySet match {
     case s: BasicPolicySet => Set(s.pol.asInstanceOf[Pol].name)
     case s: MaxPolicySet => findAllPolicySets(s.lhs) ++ findAllPolicySets(s.rhs)
@@ -50,7 +49,6 @@ class LazySynthesiser(input: String) {
                 "(or " + filtered.map(_.q.name).mkString(" ") + ")))"
             }
             else {
-//              "(or (and (<= " + pols(bName).defaultScore + " " + cond.getTh + ") (not (or " + pols(bName).rules.map(_.q.name).mkString(" ") + ")))))"
               "(or (and (<= " + pols(bName).defaultScore + " " + cond.getTh + ") (not (or " + pols(bName).rules.map(_.q.name).mkString(" ") + ")))\n" +
                 "false))"
 
@@ -62,10 +60,8 @@ class LazySynthesiser(input: String) {
                 "(and (or " + pols(bName).rules.map(_.q.name).mkString(" ") + ") " + "(not (or " + filtered.map(_.q.name).mkString(" ") + ")))))"
             }
             else {
-//              "(or (and (< " + cond.getTh + " " + pols(bName).defaultScore + ") (not (or " + pols(bName).rules.map(_.q.name).mkString(" ") + ")))))"
               "(or (and (< " + cond.getTh + " " + pols(bName).defaultScore + ") (not (or " + pols(bName).rules.map(_.q.name).mkString(" ") + ")))\n" +
                 "(and (or " + pols(bName).rules.map(_.q.name).mkString(" ") + ") " + "(not false))))"
-
             }
         }
         buffer.append("(assert (= " + condName + "_" + bName + " " + genFormula + ")\n")
@@ -78,10 +74,8 @@ class LazySynthesiser(input: String) {
                 "(and (or " + pols(bName).rules.map(_.q.name).mkString(" ") + ") " + "(not (or " + pols(bName).rules.filter(_.score <= cond.getTh).map(_.q.name).mkString(" ") + ")))))"
             }
             else {
-//              "(or (and (<= " + pols(bName).defaultScore + " " + cond.getTh + ") (not (or " + pols(bName).rules.map(_.q.name).mkString(" ") + ")))))"
               "(or (and (<= " + pols(bName).defaultScore + " " + cond.getTh + ") (not (or " + pols(bName).rules.map(_.q.name).mkString(" ") + ")))\n" +
                 "(and (or " + pols(bName).rules.map(_.q.name).mkString(" ") + ") " + "(not false))))"
-
             }
           case cond: GreaterThanThCondition =>
             val filtered = pols(bName).rules.filter(cond.getTh < _.score)
@@ -90,7 +84,6 @@ class LazySynthesiser(input: String) {
                 "(or " + filtered.map(_.q.name).mkString(" ") + ")))"
             }
             else {
-//              "(or (and (< " + cond.getTh + " " + pols(bName).defaultScore + ") (not (or " + pols(bName).rules.map(_.q.name).mkString(" ") + ")))))"
               "(or (and (< " + cond.getTh + " " + pols(bName).defaultScore + ") (not (or " + pols(bName).rules.map(_.q.name).mkString(" ") + ")))\n" +
                 "false))"
             }
@@ -144,24 +137,13 @@ class LazySynthesiser(input: String) {
 
     val buffer = new StringBuilder
 
-    //generateEffectDeclarations()
     val usedB = for
     (c <- conds;
      b <- findAllPolicySets(conds(c._1).getPol)
     ) yield (b)
 
-
     val declarations = for (name <- constsMap.keys) yield "(declare-const " + name + " Bool)\n"
-
-//    pols.filter(p => usedB.toSet.contains(p._1)).foreach {
-//      case (bName, b) =>
-//        b.rules.foreach {
-//          predicate =>
-//            buffer.append("(declare-const " + predicate.q.name + " Bool)\n")
-//        }
-//    }
-
-    val declarations1 = for (name <- conds.keys) yield "(declare-const " + name + " Bool)\n"
+    val condDeclarations = for (name <- conds.keys) yield "(declare-const " + name + " Bool)\n"
 
     pols.filter(p => usedB.toSet.contains(p._1)).filter(p => p._2.operator == Plus || p._2.operator == Mul).foreach {
       case (bName, b) =>
@@ -174,7 +156,6 @@ class LazySynthesiser(input: String) {
         }
     }
 
-    //generateConditionDeclarations()
     conds.foreach {
       case (name, c) =>
         findAllPolicySets(conds(name).getPol).foreach {
@@ -183,7 +164,6 @@ class LazySynthesiser(input: String) {
             buffer.append(generateConditionEnforcement(name, b))
         }
 
-        //generatePolicySetAssertions(cop, pSet)
         buffer.append(generatePolicySetAssertions(name))
     }
 
@@ -192,6 +172,6 @@ class LazySynthesiser(input: String) {
       "(echo \"Result of analysis [" + analyses(analysis).analysisName + "]:\")\n" + analyses(analysis).z3SMTInput
     }
 
-    declarations.mkString("") + declarations1.mkString("") + buffer.toString() + generatedAnalyses.mkString("")
+    declarations.mkString("") + condDeclarations.mkString("") + buffer.toString() + generatedAnalyses.mkString("")
   }
 }
