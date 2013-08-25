@@ -24,15 +24,15 @@ class Z3CallerActor(memoryLimit: Long) extends Actor {
       val script = "#!/bin/sh\nulimit -v " + memoryLimit + "\nz3 -nw -smt2 " + tmp.getAbsolutePath + "\n"
       FileUtil.writeToFile(execTmp.getAbsolutePath, script)
       val returnCode = Seq(execTmp.getAbsolutePath) ! processLogger
-      if (returnCode == 137 || returnCode == 139  || returnCode == 127) {
+      val resultsMap = ResultAnalyser.execute(resultList.mkString("\n"))
+      tmp.delete()
+      execTmp.delete()
+
+      if (resultsMap.isEmpty) {
         println(resultList.mkString("\n"))
         println(returnCode)
         throw new RuntimeException("Killed due to memory restriction")
       }
-
-      tmp.delete()
-      execTmp.delete()
-      val resultsMap = ResultAnalyser.execute(resultList.mkString("\n"))
 
       sender ! resultsMap
   }
