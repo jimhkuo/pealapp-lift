@@ -23,7 +23,7 @@ resolvers += "Typesafe Repository" at "http://repo.typesafe.com/typesafe/release
 
 libraryDependencies += "com.typesafe.akka" %% "akka-actor" % "2.2.0"
 
-//libraryDependencies += "com.typesafe.akka" %% "kka-testkit" % "2.1.2"
+libraryDependencies += "com.typesafe.akka" %% "akka-testkit" % "2.2.0"
 
 //libraryDependencies += "ch.qos.logback" % "logback-classic" % "1.0.7"
 

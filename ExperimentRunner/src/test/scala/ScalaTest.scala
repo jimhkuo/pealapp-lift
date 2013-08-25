@@ -1,12 +1,9 @@
 import akka.actor._
+import akka.testkit.{TestKit, TestActorRef}
 import akka.util.Timeout
 import java.util.concurrent.TimeoutException
-import org.junit.Test
-import peal.model.RandomModelGenerator
-import peal.runner.actor.{EagerSynthesiserActor, Z3CallerActor, Run, ModelGeneratorActor}
-import peal.runner.ExperimentRunner
+import org.junit.{After, Test}
 import scala.concurrent.Await
-//import akka.testkit.TestActorRef
 import scala.concurrent.duration._
 import akka.pattern.ask
 
@@ -25,13 +22,19 @@ class TestActor extends Actor {
 }
 
 class ScalaTest {
-  implicit val system = ActorSystem("exp-runner")
+
+  implicit lazy val system = ActorSystem()
+
+  @After
+  def shutdown() {
+    system.shutdown()
+  }
 
   @Test
   def testActor() {
     implicit val timeout = Timeout(10 milliseconds)
 
-    val myActor = system.actorOf(Props[TestActor])
+    val myActor = TestActorRef(new TestActor)
     try {
       val resultFuture = myActor ? "hi"
       val result = Await.result(resultFuture, timeout.duration)
@@ -42,20 +45,7 @@ class ScalaTest {
         myActor ! ReceiveTimeout
     }
   }
-
-  @Test
-  def testToString() {
-//    implicit val timeout = Timeout(300000, MILLISECONDS)
-//    val model = RandomModelGenerator.generate(1, 1, 1, 160, 1, 3 * 160, 0.5, 0.1)
-//println(model)
-//    val eagerSynthesiser = system.actorOf(Props[EagerSynthesiserActor])
-//    val eagerInputFuture = eagerSynthesiser ? model
-//    val eagerInput = Await.result(eagerInputFuture, timeout.duration)
-////println(eagerInput)
-//    println("input done")
-//    val eagerZ3Caller = system.actorOf(Props(new Z3CallerActor(10)))
-//    val eagerFuture = eagerZ3Caller ? eagerInput
-//    val eagerResult = Await.result(eagerFuture, timeout.duration)
-//    println(eagerResult)
-  }
 }
+
+
+
