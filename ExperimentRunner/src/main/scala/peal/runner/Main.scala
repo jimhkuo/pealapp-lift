@@ -8,35 +8,33 @@ object Main extends App {
   implicit val system = ActorSystem("system")
   private val z3MemoryBound = 6000000
   private val timeout = 300000
-  private val execute: (Int) => Boolean = (x) => executeRunner(1, 1, 1, x, 1, 3 * x, 0.5, 0.1)
+  private val execute: (Int) => Boolean = (x) => executeRunner(1, x, 1, 1, 1, 3 * x, 0.5, 0.1)
 
   println("Picking up z3 from environment PATH: " + System.getenv("PATH"))
 
-  List(128, 256, 192, 160, 136, 144).foreach(execute(_))
+  //  List(128, 256, 192, 160, 136, 144).foreach(execute(_))
 
+  var lastSuccess = 0
+  var lastFailure = 0
+  var p = 2
 
+  while (execute(p)) {
+    lastSuccess = p
+    p = p * 2
+  }
 
-  //  var lastSuccess = 128
-  //  var lastFailure = 0
-  //  var p = 256
-  //
-  //  while (execute(p)) {
-  //    lastSuccess = p
-  //    p = p * 2
-  //  }
-  //
-  //  println("############################")
-  //
-  //  lastFailure = p
-  //  while (lastFailure - lastSuccess > 10) {
-  //    p = (lastSuccess + lastFailure) / 2
-  //    if (execute(p)) {
-  //      lastSuccess = p
-  //    }
-  //    else {
-  //      lastFailure = p
-  //    }
-  //  }
+  println("############################")
+
+  lastFailure = p
+  while (lastFailure - lastSuccess > 10) {
+    p = (lastSuccess + lastFailure) / 2
+    if (execute(p)) {
+      lastSuccess = p
+    }
+    else {
+      lastFailure = p
+    }
+  }
 
   System.exit(0)
 

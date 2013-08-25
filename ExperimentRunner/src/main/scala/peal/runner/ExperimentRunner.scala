@@ -6,6 +6,7 @@ import akka.pattern.ask
 import akka.util.Timeout
 import akka.actor.{ActorRef, Props, ActorSystem}
 import peal.runner.actor._
+import peal.model.RandomModelGenerator
 
 class TimingOutput(var modelGeneration: Long = 0, var eagerSynthesis: Long = 0, var eagerZ3: Long = 0, var lazySynthesis: Long = 0, var lazyZ3: Long = 0, var isSameOutput: Boolean = false, var model1Result: Map[String, String] = Map(), var model2Result: Map[String, String] = Map(), var pealInput: String = "")
 
@@ -13,26 +14,21 @@ class ExperimentRunner(system: ActorSystem, duration: Long, z3CallerMemoryBound:
 
   def run(n: Int, min: Int, max: Int, plus: Int, mul: Int, k: Int, th: Double, delta: Double): TimingOutput = {
 //    print("0")
-//    implicit val system = ActorSystem("system-" + System.nanoTime())
-    print("0")
     implicit val timeout = Timeout(duration, MILLISECONDS)
-    print("1")
+//    print("1")
     val output = new TimingOutput()
-    var generatorRunner: ActorRef = null
     var eagerSynthesiser: ActorRef = null
     var eagerZ3Caller: ActorRef = null
     var lazySynthesiser: ActorRef = null
     var lazyZ3Caller: ActorRef = null
-    print("2")
+//    print("2")
 
     try {
-      generatorRunner = system.actorOf(Props(new ModelGeneratorActor(n, min, max, plus, mul, k, th, delta)))
       var start = System.nanoTime()
-      val modelFuture = generatorRunner ? Run
-      print("3")
-      val model = Await.result(modelFuture, timeout.duration).asInstanceOf[String]
+      val model = RandomModelGenerator.generate(n, min, max, plus, mul, k, th, delta)
       var lapsedTime = System.nanoTime() - start
       output.modelGeneration = lapsedTime
+
       print("m")
 
       eagerSynthesiser = system.actorOf(Props[EagerSynthesiserActor])
@@ -69,7 +65,7 @@ class ExperimentRunner(system: ActorSystem, duration: Long, z3CallerMemoryBound:
       print("z")
       output.model2Result = result.asInstanceOf[Map[String, String]]
 
-//      output.isSameOutput = true
+      //      output.isSameOutput = true
       if (!output.model1Result.isEmpty && output.model1Result == output.model2Result) {
         output.isSameOutput = true
       }
@@ -79,12 +75,11 @@ class ExperimentRunner(system: ActorSystem, duration: Long, z3CallerMemoryBound:
       output
     }
     finally {
-      //      if (generatorRunner != null) system.stop(generatorRunner)
-      //      if (eagerSynthesiser != null) system.stop(eagerSynthesiser)
-      //      if (eagerZ3Caller != null) system.stop(eagerZ3Caller)
-      //      if (lazySynthesiser != null) system.stop(lazySynthesiser)
-      //      if (lazyZ3Caller != null) system.stop(lazyZ3Caller)
-//      system.shutdown()
+      if (eagerSynthesiser != null) system.stop(eagerSynthesiser)
+      if (eagerZ3Caller != null) system.stop(eagerZ3Caller)
+      if (lazySynthesiser != null) system.stop(lazySynthesiser)
+      if (lazyZ3Caller != null) system.stop(lazyZ3Caller)
+      //      system.shutdown()
     }
   }
 }
