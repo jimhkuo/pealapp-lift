@@ -3,6 +3,7 @@ import akka.testkit.{TestKit, TestActorRef}
 import akka.util.Timeout
 import java.util.concurrent.TimeoutException
 import org.junit.{After, Test}
+import peal.model.RandomModelGenerator
 import scala.concurrent.Await
 import scala.concurrent.duration._
 import akka.pattern.ask
@@ -44,6 +45,11 @@ class ScalaTest {
         e.printStackTrace()
         myActor ! ReceiveTimeout
     }
+  }
+
+  @Test
+  def testModel() {
+    println(RandomModelGenerator.generate(1, 1, 1, 136, 1, 3 * 136, 0.5, 0.1))
   }
 }
 
