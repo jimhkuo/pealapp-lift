@@ -15,7 +15,6 @@ class Z3CallerActor(memoryLimit: Long) extends Actor {
   )
 
   def receive = {
-    //TODO this is not advisable, google for solution on dealing with huge messages
     case input: String =>
       val tmp = File.createTempFile("z3file", "")
       val execTmp = File.createTempFile("callz3", "")
@@ -23,9 +22,7 @@ class Z3CallerActor(memoryLimit: Long) extends Actor {
       FileUtil.writeToFile(tmp.getAbsolutePath, input)
       val script = "#!/bin/sh\nulimit -v " + memoryLimit + "\nz3 -nw -smt2 " + tmp.getAbsolutePath + "\n"
       FileUtil.writeToFile(execTmp.getAbsolutePath, script)
-      //      Process(Seq("bash", "-c", "ulimit", "-v", memoryLimit.toString)) #&& Process(Seq("z3", "-nw", "-smt2", tmp.getAbsolutePath)) ! processLogger
       val returnCode = Seq(execTmp.getAbsolutePath) ! processLogger
-      //      println(execTmp.getAbsolutePath + " " + returnCode)
 
       if (returnCode != 0 && returnCode != 1) {
         throw new RuntimeException("Kill due to memory restriction")

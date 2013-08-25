@@ -2,6 +2,7 @@ import akka.actor.{ReceiveTimeout, Props, ActorSystem, Actor}
 import akka.util.Timeout
 import java.util.concurrent.TimeoutException
 import org.junit.Test
+import peal.runner.ExperimentRunner
 import scala.concurrent.Await
 import scala.concurrent.duration._
 import akka.pattern.ask
@@ -38,4 +39,10 @@ class ScalaTest {
         myActor ! ReceiveTimeout
     }
   }
+
+  @Test
+  def testToString() {
+    println(new ExperimentRunner(system, 200, 200).toString)
+  }
+
 }

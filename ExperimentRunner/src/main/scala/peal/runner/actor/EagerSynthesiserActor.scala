@@ -7,7 +7,6 @@ import scala.collection.JavaConversions._
 import peal.domain.z3.Term
 
 class EagerSynthesiserActor extends Actor {
-  var pealProgramParser: PealProgramParser = null
 
   private def getPealProgramParser(input: String) = {
     val charStream = new ANTLRStringStream(input)
@@ -18,7 +17,7 @@ class EagerSynthesiserActor extends Actor {
 
   def receive = {
     case input: String =>
-      pealProgramParser = getPealProgramParser(input)
+      val pealProgramParser = getPealProgramParser(input)
       pealProgramParser.program()
 
       val predicateNames: Seq[String] = pealProgramParser.pols.values().flatMap(pol => pol.rules).map(r => r.q.name).toSeq.distinct
