@@ -4,6 +4,7 @@ import akka.util.Timeout
 import java.util.concurrent.TimeoutException
 import org.junit.{After, Test}
 import peal.model.RandomModelGenerator
+import peal.runner.actor.{Run, ModelGeneratorActor}
 import scala.concurrent.Await
 import scala.concurrent.duration._
 import akka.pattern.ask
@@ -25,6 +26,7 @@ class TestActor extends Actor {
 class ScalaTest {
 
   implicit lazy val system = ActorSystem()
+  implicit val timeout = Timeout(100000 milliseconds)
 
   @After
   def shutdown() {
@@ -33,7 +35,6 @@ class ScalaTest {
 
   @Test
   def testActor() {
-    implicit val timeout = Timeout(10 milliseconds)
 
     val myActor = TestActorRef(new TestActor)
     try {
@@ -49,7 +50,12 @@ class ScalaTest {
 
   @Test
   def testModel() {
-    println(RandomModelGenerator.generate(1, 1, 1, 136, 1, 3 * 136, 0.5, 0.1))
+    val myActor = TestActorRef(new ModelGeneratorActor(1, 1, 1, 136, 1, 3 * 136, 0.5, 0.1))
+
+    val modelFuture = myActor ? Run
+    val model = Await.result(modelFuture, timeout.duration).asInstanceOf[String]
+
+    println(model)
   }
 }
 
