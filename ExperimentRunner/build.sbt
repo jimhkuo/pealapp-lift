@@ -10,7 +10,7 @@ name := "ExperimentRunner"
 
 version := "0.2-plus"
 
-scalaVersion := "2.10.1"
+scalaVersion := "2.10.2"
 
 libraryDependencies += "com.novocode" % "junit-interface" % "0.8" % "test->default"
 
@@ -21,8 +21,10 @@ fork in Test := true
 
 resolvers += "Typesafe Repository" at "http://repo.typesafe.com/typesafe/releases/"
 
-libraryDependencies += "com.typesafe.akka" %% "akka-actor" % "2.1.2"
+libraryDependencies += "com.typesafe.akka" %% "akka-actor" % "2.2.0"
 
-libraryDependencies += "ch.qos.logback" % "logback-classic" % "1.0.7"
+//libraryDependencies += "com.typesafe.akka" %% "kka-testkit" % "2.1.2"
+
+//libraryDependencies += "ch.qos.logback" % "logback-classic" % "1.0.7"
 
 

@@ -6,6 +6,7 @@ import peal.model.RandomModelGenerator
 import peal.runner.actor.{EagerSynthesiserActor, Z3CallerActor, Run, ModelGeneratorActor}
 import peal.runner.ExperimentRunner
 import scala.concurrent.Await
+//import akka.testkit.TestActorRef
 import scala.concurrent.duration._
 import akka.pattern.ask
 
