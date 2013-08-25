@@ -8,7 +8,7 @@ object Main extends App {
   implicit val system = ActorSystem("system")
   private val z3MemoryBound = 6000000
   private val timeout = 300000
-  private val execute: (Int) => Boolean = (x) => executeRunner(1, x, 1, 1, 1, 3 * x, 0.5, 0.1)
+  private val execute: (Int) => Boolean = (x) => executeRunner(1, 1, 1, 1, x, 3 * x, 0.5, 0.1)
 
   println("Picking up z3 from environment PATH: " + System.getenv("PATH"))
 

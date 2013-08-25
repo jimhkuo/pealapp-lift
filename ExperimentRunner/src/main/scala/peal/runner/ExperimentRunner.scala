@@ -28,7 +28,6 @@ class ExperimentRunner(system: ActorSystem, duration: Long, z3CallerMemoryBound:
       val model = RandomModelGenerator.generate(n, min, max, plus, mul, k, th, delta)
       var lapsedTime = System.nanoTime() - start
       output.modelGeneration = lapsedTime
-
       print("m")
 
       eagerSynthesiser = system.actorOf(Props[EagerSynthesiserActor])
