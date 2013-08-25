@@ -5,6 +5,7 @@ import scala.sys.process._
 import java.io.File
 import scala.collection.mutable.ListBuffer
 import util.FileUtil
+import peal.runner.ResultAnalyser
 
 
 class Z3CallerActor(memoryLimit: Long) extends Actor {
@@ -23,14 +24,16 @@ class Z3CallerActor(memoryLimit: Long) extends Actor {
       val script = "#!/bin/sh\nulimit -v " + memoryLimit + "\nz3 -nw -smt2 " + tmp.getAbsolutePath + "\n"
       FileUtil.writeToFile(execTmp.getAbsolutePath, script)
       val returnCode = Seq(execTmp.getAbsolutePath) ! processLogger
-
-      if (returnCode != 0 && returnCode != 1) {
-        throw new RuntimeException("Kill due to memory restriction")
+      if (returnCode == 137 || returnCode == 139  || returnCode == 127) {
+        println(resultList.mkString("\n"))
+        println(returnCode)
+        throw new RuntimeException("Killed due to memory restriction")
       }
 
       tmp.delete()
       execTmp.delete()
+      val resultsMap = ResultAnalyser.execute(resultList.mkString("\n"))
 
-      sender ! resultList.mkString("\n")
+      sender ! resultsMap
   }
 }

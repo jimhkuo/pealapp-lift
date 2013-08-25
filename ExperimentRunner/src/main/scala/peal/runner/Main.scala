@@ -5,34 +5,38 @@ import akka.actor.ActorSystem
 
 
 object Main extends App {
-
-  private val z3MemoryBound = 4000000
+  implicit val system = ActorSystem("system")
+  private val z3MemoryBound = 6000000
   private val timeout = 300000
   private val execute: (Int) => Boolean = (x) => executeRunner(1, 1, 1, x, 1, 3 * x, 0.5, 0.1)
 
   println("Picking up z3 from environment PATH: " + System.getenv("PATH"))
 
-  var lastSuccess = 0
-  var lastFailure = 0
-  var p = 2
+  List(128, 256, 192, 160, 136, 144).foreach(execute(_))
 
-  while (execute(p)) {
-    lastSuccess = p
-    p = p * 2
-  }
 
-  println("############################")
 
-  lastFailure = p
-  while (lastFailure - lastSuccess > 10) {
-    p = (lastSuccess + lastFailure) / 2
-    if (execute(p)) {
-      lastSuccess = p
-    }
-    else {
-      lastFailure = p
-    }
-  }
+  //  var lastSuccess = 128
+  //  var lastFailure = 0
+  //  var p = 256
+  //
+  //  while (execute(p)) {
+  //    lastSuccess = p
+  //    p = p * 2
+  //  }
+  //
+  //  println("############################")
+  //
+  //  lastFailure = p
+  //  while (lastFailure - lastSuccess > 10) {
+  //    p = (lastSuccess + lastFailure) / 2
+  //    if (execute(p)) {
+  //      lastSuccess = p
+  //    }
+  //    else {
+  //      lastFailure = p
+  //    }
+  //  }
 
   System.exit(0)
 
@@ -53,7 +57,7 @@ object Main extends App {
       print(n + "-" + m0 + "-" + m1 + "-" + m2 + "-" + m3 + "-" + th + "-" + delta + "," + timeout + ",")
 
       for (i <- 1 to iterations) {
-        val output = new ExperimentRunner(timeout, z3MemoryBound).run(n, m0, m1, m2, m3, k, th, delta)
+        val output = new ExperimentRunner(system, timeout, z3MemoryBound).run(n, m0, m1, m2, m3, k, th, delta)
         mt += output.modelGeneration
         et += output.eagerSynthesis
         ezt += output.eagerZ3
@@ -61,6 +65,9 @@ object Main extends App {
         lzt += output.lazyZ3
         if (output.model1Result.size == 0) {
           println("model1 is empty")
+        }
+        if (output.model2Result.size == 0) {
+          println("model2 is empty")
         }
         if (!output.isSameOutput) {
           println("eager and lazy produce different result," + n + "-" + m0 + "-" + m1 + "-" + m2 + "-" + m3 + "-" + th + "-" + delta + "," + timeout + "," + output.pealInput)

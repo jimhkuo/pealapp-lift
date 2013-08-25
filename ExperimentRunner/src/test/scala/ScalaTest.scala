@@ -1,7 +1,9 @@
-import akka.actor.{ReceiveTimeout, Props, ActorSystem, Actor}
+import akka.actor._
 import akka.util.Timeout
 import java.util.concurrent.TimeoutException
 import org.junit.Test
+import peal.model.RandomModelGenerator
+import peal.runner.actor.{EagerSynthesiserActor, Z3CallerActor, Run, ModelGeneratorActor}
 import peal.runner.ExperimentRunner
 import scala.concurrent.Await
 import scala.concurrent.duration._
@@ -30,9 +32,9 @@ class ScalaTest {
 
     val myActor = system.actorOf(Props[TestActor])
     try {
-    val resultFuture = myActor ? "hi"
-    val result = Await.result(resultFuture, timeout.duration)
-    println("\n" + result)
+      val resultFuture = myActor ? "hi"
+      val result = Await.result(resultFuture, timeout.duration)
+      println("\n" + result)
     } catch {
       case e: TimeoutException =>
         e.printStackTrace()
@@ -42,7 +44,17 @@ class ScalaTest {
 
   @Test
   def testToString() {
-    println(new ExperimentRunner(system, 200, 200).toString)
+//    implicit val timeout = Timeout(300000, MILLISECONDS)
+//    val model = RandomModelGenerator.generate(1, 1, 1, 160, 1, 3 * 160, 0.5, 0.1)
+//println(model)
+//    val eagerSynthesiser = system.actorOf(Props[EagerSynthesiserActor])
+//    val eagerInputFuture = eagerSynthesiser ? model
+//    val eagerInput = Await.result(eagerInputFuture, timeout.duration)
+////println(eagerInput)
+//    println("input done")
+//    val eagerZ3Caller = system.actorOf(Props(new Z3CallerActor(10)))
+//    val eagerFuture = eagerZ3Caller ? eagerInput
+//    val eagerResult = Await.result(eagerFuture, timeout.duration)
+//    println(eagerResult)
   }
-
 }
