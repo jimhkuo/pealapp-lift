@@ -30,22 +30,22 @@ class ExperimentRunner(system: ActorSystem, duration: Long, z3CallerMemoryBound:
       output.modelGeneration = lapsedTime
       print("m")
 
-      eagerSynthesiser = system.actorOf(Props[EagerSynthesiserActor])
-      start = System.nanoTime()
-      val eagerInputFuture = ask(eagerSynthesiser, model)
-      val eagerInput = Await.result(eagerInputFuture, timeout.duration)
-      lapsedTime = System.nanoTime() - start
-      output.eagerSynthesis = lapsedTime
-      print("e")
-
-      eagerZ3Caller = system.actorOf(Props(new Z3CallerActor(z3CallerMemoryBound)))
-      start = System.nanoTime()
-      val eagerFuture = eagerZ3Caller ? eagerInput
-      val eagerResult = Await.result(eagerFuture, timeout.duration)
-      lapsedTime = System.nanoTime() - start
-      output.eagerZ3 = lapsedTime
-      print("z")
-      output.model1Result = eagerResult.asInstanceOf[Map[String, String]]
+//      eagerSynthesiser = system.actorOf(Props[EagerSynthesiserActor])
+//      start = System.nanoTime()
+//      val eagerInputFuture = ask(eagerSynthesiser, model)
+//      val eagerInput = Await.result(eagerInputFuture, timeout.duration)
+//      lapsedTime = System.nanoTime() - start
+//      output.eagerSynthesis = lapsedTime
+//      print("e")
+//
+//      eagerZ3Caller = system.actorOf(Props(new Z3CallerActor(z3CallerMemoryBound)))
+//      start = System.nanoTime()
+//      val eagerFuture = eagerZ3Caller ? eagerInput
+//      val eagerResult = Await.result(eagerFuture, timeout.duration)
+//      lapsedTime = System.nanoTime() - start
+//      output.eagerZ3 = lapsedTime
+//      print("z")
+//      output.model1Result = eagerResult.asInstanceOf[Map[String, String]]
 
       lazySynthesiser = system.actorOf(Props[LazySynthesiserActor])
       start = System.nanoTime()
@@ -64,13 +64,13 @@ class ExperimentRunner(system: ActorSystem, duration: Long, z3CallerMemoryBound:
       print("z")
       output.model2Result = result.asInstanceOf[Map[String, String]]
 
-      //      output.isSameOutput = true
-      if (!output.model1Result.isEmpty && output.model1Result == output.model2Result) {
-        output.isSameOutput = true
-      }
-      else {
-        output.pealInput = model
-      }
+            output.isSameOutput = true
+//      if (!output.model1Result.isEmpty && output.model1Result == output.model2Result) {
+//        output.isSameOutput = true
+//      }
+//      else {
+//        output.pealInput = model
+//      }
       output
     }
     finally {
