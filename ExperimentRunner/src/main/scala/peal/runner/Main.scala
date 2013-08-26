@@ -61,13 +61,13 @@ object Main extends App {
         ezt += output.eagerZ3
         lt += output.lazySynthesis
         lzt += output.lazyZ3
-        if (output.model1Result.size == 0) {
-          println("model1 is empty")
-        }
-        if (output.model2Result.size == 0) {
-          println("model2 is empty")
-        }
         if (!output.isSameOutput) {
+          if (output.model1Result.size == 0) {
+            println("model1 is empty")
+          }
+          if (output.model2Result.size == 0) {
+            println("model2 is empty")
+          }
           println("eager and lazy produce different result," + n + "-" + m0 + "-" + m1 + "-" + m2 + "-" + m3 + "-" + th + "-" + delta + "," + timeout + "," + output.pealInput)
         }
       }

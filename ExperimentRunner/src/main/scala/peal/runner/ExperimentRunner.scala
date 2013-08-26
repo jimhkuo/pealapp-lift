@@ -30,39 +30,39 @@ class ExperimentRunner(system: ActorSystem, duration: Long, z3CallerMemoryBound:
       output.modelGeneration = lapsedTime
       print("m")
 
-//      eagerSynthesiser = system.actorOf(Props[EagerSynthesiserActor])
-//      start = System.nanoTime()
-//      val eagerInputFuture = ask(eagerSynthesiser, model)
-//      val eagerInput = Await.result(eagerInputFuture, timeout.duration)
-//      lapsedTime = System.nanoTime() - start
-//      output.eagerSynthesis = lapsedTime
-//      print("e")
-//
-//      eagerZ3Caller = system.actorOf(Props(new Z3CallerActor(z3CallerMemoryBound)))
-//      start = System.nanoTime()
-//      val eagerFuture = eagerZ3Caller ? eagerInput
-//      val eagerResult = Await.result(eagerFuture, timeout.duration)
-//      lapsedTime = System.nanoTime() - start
-//      output.eagerZ3 = lapsedTime
-//      print("z")
-//      output.model1Result = eagerResult.asInstanceOf[Map[String, String]]
-
-      lazySynthesiser = system.actorOf(Props[LazySynthesiserActor])
+      eagerSynthesiser = system.actorOf(Props[EagerSynthesiserActor])
       start = System.nanoTime()
-      val lazyInputFuture = lazySynthesiser ? model
-      val lazyInput = Await.result(lazyInputFuture, timeout.duration)
+      val eagerInputFuture = ask(eagerSynthesiser, model)
+      val eagerInput = Await.result(eagerInputFuture, timeout.duration)
       lapsedTime = System.nanoTime() - start
-      output.lazySynthesis = lapsedTime
-      print("l")
+      output.eagerSynthesis = lapsedTime
+      print("e")
 
-      lazyZ3Caller = system.actorOf(Props(new Z3CallerActor(z3CallerMemoryBound)))
+      eagerZ3Caller = system.actorOf(Props(new Z3CallerActor(z3CallerMemoryBound)))
       start = System.nanoTime()
-      val resultFuture = lazyZ3Caller ? lazyInput
-      val result = Await.result(resultFuture, timeout.duration)
+      val eagerFuture = eagerZ3Caller ? eagerInput
+      val eagerResult = Await.result(eagerFuture, timeout.duration)
       lapsedTime = System.nanoTime() - start
-      output.lazyZ3 = lapsedTime
+      output.eagerZ3 = lapsedTime
       print("z")
-      output.model2Result = result.asInstanceOf[Map[String, String]]
+      output.model1Result = eagerResult.asInstanceOf[Map[String, String]]
+
+//      lazySynthesiser = system.actorOf(Props[LazySynthesiserActor])
+//      start = System.nanoTime()
+//      val lazyInputFuture = lazySynthesiser ? model
+//      val lazyInput = Await.result(lazyInputFuture, timeout.duration)
+//      lapsedTime = System.nanoTime() - start
+//      output.lazySynthesis = lapsedTime
+//      print("l")
+//
+//      lazyZ3Caller = system.actorOf(Props(new Z3CallerActor(z3CallerMemoryBound)))
+//      start = System.nanoTime()
+//      val resultFuture = lazyZ3Caller ? lazyInput
+//      val result = Await.result(resultFuture, timeout.duration)
+//      lapsedTime = System.nanoTime() - start
+//      output.lazyZ3 = lapsedTime
+//      print("z")
+//      output.model2Result = result.asInstanceOf[Map[String, String]]
 
             output.isSameOutput = true
 //      if (!output.model1Result.isEmpty && output.model1Result == output.model2Result) {
