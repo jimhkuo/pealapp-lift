@@ -11,9 +11,35 @@ object Main extends App {
 
   println("Picking up z3 from environment PATH: " + System.getenv("PATH"))
 
-  binarySearchOnRuleSize()
+  binarySearchOnPolicySize()
 
   System.exit(0)
+
+  private def binarySearchOnPolicySize() {
+    val execute: (Int) => Boolean = (x) => executeRunner(x, 2064640/2, 1, 1, 1, 3 * (2064640/2), 0.5, 0.1)
+
+    var lastSuccess = 0
+    var lastFailure = 0
+    var p = 2
+
+    while (execute(p)) {
+      lastSuccess = p
+      p = p * 2
+    }
+
+    println("############################")
+
+    lastFailure = p
+    while (lastFailure - lastSuccess > 10) {
+      p = (lastSuccess + lastFailure) / 2
+      if (execute(p)) {
+        lastSuccess = p
+      }
+      else {
+        lastFailure = p
+      }
+    }
+  }
 
   private def binarySearchOnRuleSize() {
     val execute: (Int) => Boolean = (x) => executeRunner(1, 1, 1, 1, x, 3 * x, 0.5, 0.1)
@@ -39,9 +65,7 @@ object Main extends App {
         lastFailure = p
       }
     }
-
   }
-
 
   private def milliTime(timeInNano: Long) = {
     "%.2f".format(timeInNano.toDouble / 1000000)
