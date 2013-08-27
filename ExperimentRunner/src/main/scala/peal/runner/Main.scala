@@ -8,35 +8,40 @@ object Main extends App {
   implicit val system = ActorSystem("system")
   private val z3MemoryBound = 6000000
   private val timeout = 300000
-  private val execute: (Int) => Boolean = (x) => executeRunner(1, 1, 1, 1, x, 3 * x, 0.5, 0.1)
 
   println("Picking up z3 from environment PATH: " + System.getenv("PATH"))
 
-  //  List(128, 256, 192, 160, 136, 144).foreach(execute(_))
-
-  var lastSuccess = 0
-  var lastFailure = 0
-  var p = 2
-
-  while (execute(p)) {
-    lastSuccess = p
-    p = p * 2
-  }
-
-  println("############################")
-
-  lastFailure = p
-  while (lastFailure - lastSuccess > 10) {
-    p = (lastSuccess + lastFailure) / 2
-    if (execute(p)) {
-      lastSuccess = p
-    }
-    else {
-      lastFailure = p
-    }
-  }
+  binarySearchOnRuleSize()
 
   System.exit(0)
+
+  private def binarySearchOnRuleSize() {
+    val execute: (Int) => Boolean = (x) => executeRunner(1, 1, 1, 1, x, 3 * x, 0.5, 0.1)
+
+    var lastSuccess = 0
+    var lastFailure = 0
+    var p = 2
+
+    while (execute(p)) {
+      lastSuccess = p
+      p = p * 2
+    }
+
+    println("############################")
+
+    lastFailure = p
+    while (lastFailure - lastSuccess > 10) {
+      p = (lastSuccess + lastFailure) / 2
+      if (execute(p)) {
+        lastSuccess = p
+      }
+      else {
+        lastFailure = p
+      }
+    }
+
+  }
+
 
   private def milliTime(timeInNano: Long) = {
     "%.2f".format(timeInNano.toDouble / 1000000)
