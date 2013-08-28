@@ -11,12 +11,12 @@ object Main extends App {
 
   println("Picking up z3 from environment PATH: " + System.getenv("PATH"))
 
-  binarySearchOnPolicySize()
+  binarySearchOnRuleSize(EagerOnly)
 
   System.exit(0)
 
-  private def binarySearchOnPolicySize() {
-    val execute: (Int) => Boolean = (x) => executeRunner(x, 2064640/2, 1, 1, 1, 3 * (2064640/2), 0.5, 0.1)
+  private def binarySearchOnPolicySize(runMode: RunMode) {
+    val execute: (Int) => Boolean = (x) => executeRunner(runMode, x, 2064640/2, 1, 1, 1, 3 * (2064640/2), 0.5, 0.1)
 
     var lastSuccess = 0
     var lastFailure = 0
@@ -41,8 +41,8 @@ object Main extends App {
     }
   }
 
-  private def binarySearchOnRuleSize() {
-    val execute: (Int) => Boolean = (x) => executeRunner(1, 1, 1, 1, x, 3 * x, 0.5, 0.1)
+  private def binarySearchOnRuleSize(runMode: RunMode) {
+    val execute: (Int) => Boolean = (x) => executeRunner(runMode, 1, x, 1, 1, 1, 3 * x, 0.5, 0.1)
 
     var lastSuccess = 0
     var lastFailure = 0
@@ -71,7 +71,7 @@ object Main extends App {
     "%.2f".format(timeInNano.toDouble / 1000000)
   }
 
-  private def executeRunner(n: Int, m0: Int, m1: Int, m2: Int, m3: Int, k: Int, th: Double, delta: Double): Boolean = {
+  private def executeRunner(runMode: RunMode, n: Int, m0: Int, m1: Int, m2: Int, m3: Int, k: Int, th: Double, delta: Double): Boolean = {
     val iterations: Int = 5
 
     var mt = 0l
@@ -84,7 +84,7 @@ object Main extends App {
       print(n + "-" + m0 + "-" + m1 + "-" + m2 + "-" + m3 + "-" + th + "-" + delta + "," + timeout + ",")
 
       for (i <- 1 to iterations) {
-        val output = new ExperimentRunner(system, timeout, z3MemoryBound).run(n, m0, m1, m2, m3, k, th, delta)
+        val output = new ExperimentRunner(runMode,system, timeout, z3MemoryBound).run(n, m0, m1, m2, m3, k, th, delta)
         mt += output.modelGeneration
         et += output.eagerSynthesis
         ezt += output.eagerZ3
