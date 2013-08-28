@@ -16,7 +16,7 @@ object Main extends App {
   System.exit(0)
 
   private def binarySearchOnPolicySize(runMode: RunMode) {
-    val execute: (Int) => Boolean = (x) => executeRunner(runMode, x, 1802224/2, 1, 1, 1, 3 * (1802224/2), 0.5, 0.1)
+    val execute: (Int) => Boolean = (x) => executeRunner(runMode, x, 1, 2162688/10, 1, 1, 3 * (2162688/10), 0.5, 0.1)
 
     var lastSuccess = 0
     var lastFailure = 0
