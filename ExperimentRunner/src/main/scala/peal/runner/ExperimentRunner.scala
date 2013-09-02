@@ -15,6 +15,7 @@ class ExperimentRunner(runMode: RunMode, system: ActorSystem, duration: Long, z3
   def run(n: Int, min: Int, max: Int, plus: Int, mul: Int, k: Int, th: Double, delta: Double): TimingOutput = {
     implicit val timeout = Timeout(duration, MILLISECONDS)
     val output = new TimingOutput()
+
     var eagerSynthesiser: ActorRef = null
     var eagerZ3Caller: ActorRef = null
     var lazySynthesiser: ActorRef = null
@@ -79,6 +80,8 @@ class ExperimentRunner(runMode: RunMode, system: ActorSystem, duration: Long, z3
       output
     }
     finally {
+      //TODO
+      //send kill message to actor here
       if (eagerSynthesiser != null) system.stop(eagerSynthesiser)
       if (eagerZ3Caller != null) system.stop(eagerZ3Caller)
       if (lazySynthesiser != null) system.stop(lazySynthesiser)

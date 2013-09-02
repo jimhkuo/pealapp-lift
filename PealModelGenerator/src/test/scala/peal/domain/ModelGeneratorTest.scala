@@ -7,7 +7,8 @@ class ModelGeneratorTest {
 
   @Test
   def test() {
-    println(RandomModelGenerator.generate(1, 1, 1, 160, 1, 3*160, 0.5, 0.1))
+//    3072-3072-1-1-1-0.5-0.1
+//    println(RandomModelGenerator.generate(3072, 3072, 1, 1, 1, 3*3072, 0.5, 0.1))
   }
 
   @Test
