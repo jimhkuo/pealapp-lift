@@ -18,8 +18,7 @@ class EagerSynthesiserActor extends Actor {
       val tmp = File.createTempFile("z3file", "")
       FileUtil.writeToFile(tmp.getAbsolutePath, input)
 
-    //TODO pass in the input file name as an argument
-      sender ! new EagerSynthesiser(input).generate()
+      sender ! new EagerSynthesiser(tmp.getAbsolutePath).generate()
 
     //case Kill =>
     //   use this perl script to get process id or simply kill it
