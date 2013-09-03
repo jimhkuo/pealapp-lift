@@ -23,7 +23,6 @@ class ExperimentRunner(runMode: RunMode, system: ActorSystem, duration: Long, z3
 
     try {
       var start = System.nanoTime()
-      print("1")
 
       val model = RandomModelGenerator.generate(n, min, max, plus, mul, k, th, delta)
       var lapsedTime = System.nanoTime() - start
