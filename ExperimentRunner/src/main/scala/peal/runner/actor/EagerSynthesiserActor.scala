@@ -11,6 +11,7 @@ class EagerSynthesiserActor extends Actor {
 
   def receive = {
     case tmp: File =>
+      //TODO skip this class, go into EFS directly
       val synthesisedOutput = Seq("java", "-Xmx10240m", "-Xss32m", "-cp", "./Peal.jar", "peal.eagersynthesis.EagerFileSynthesiser", tmp.getAbsolutePath).!!
       sender ! synthesisedOutput
   }

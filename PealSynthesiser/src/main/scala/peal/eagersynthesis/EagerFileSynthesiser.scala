@@ -1,5 +1,8 @@
 package peal.eagersynthesis
 
+import scala.concurrent._
+import scala.concurrent.duration._
+import ExecutionContext.Implicits.global
 
 object EagerFileSynthesiser extends App {
 
@@ -7,12 +10,22 @@ object EagerFileSynthesiser extends App {
   println(generate())
 
   def generate(): String = {
-    val input = scala.io.Source.fromFile(inputFileName).mkString
-    val start = System.nanoTime()
-    //TODO use straight future to exit use future
-    val output = new EagerSynthesiser().generate(input)
-    val lapseTime = System.nanoTime() - start
+    try {
+      val input = scala.io.Source.fromFile(inputFileName).mkString
+      val start = System.nanoTime()
 
-    lapseTime.toString + "\n" + output
+      //TODO use straight future to exit use future
+      val outputFuture = future {
+        new EagerSynthesiser().generate(input)
+      }
+
+      val output = Await.result(outputFuture, 300000 millis)
+      val lapseTime = System.nanoTime() - start
+
+      lapseTime.toString + "\n" + output
+    } catch {
+      case e: TimeoutException =>
+        "TIMEOUT"
+    }
   }
 }

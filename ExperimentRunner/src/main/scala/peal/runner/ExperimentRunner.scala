@@ -10,12 +10,17 @@ import peal.model.RandomModelGenerator
 import java.util.concurrent.TimeoutException
 import java.io.File
 import util.FileUtil
+import scala.sys.process._
+
 
 class TimingOutput(var modelGeneration: Long = 0, var eagerSynthesis: Long = 0, var eagerZ3: Long = 0, var lazySynthesis: Long = 0, var lazyZ3: Long = 0, var isSameOutput: Boolean = false, var model1Result: Map[String, String] = Map(), var model2Result: Map[String, String] = Map(), var pealInput: String = "")
 
 class ExperimentRunner(runMode: RunMode, system: ActorSystem, duration: Long, z3CallerMemoryBound: Long) {
   //TODO rip out akka actor stuff
   //read http://docs.scala-lang.org/overviews/core/futures.html
+  //execute each step sequentially
+  //return true if completes successfully
+  //return false otherwise
 
   def run(n: Int, min: Int, max: Int, plus: Int, mul: Int, k: Int, th: Double, delta: Double): TimingOutput = {
     implicit val timeout = Timeout(duration, MILLISECONDS)
@@ -38,10 +43,10 @@ class ExperimentRunner(runMode: RunMode, system: ActorSystem, duration: Long, z3
       FileUtil.writeToFile(tmp.getAbsolutePath, model)
 
       if (runMode != LazyOnly) {
-        eagerSynthesiser = system.actorOf(Props[EagerSynthesiserActor])
-        val eagerInputFuture = ask(eagerSynthesiser, tmp)
-        val eagerInput = Await.result(eagerInputFuture, timeout.duration)
-        output.eagerSynthesis = eagerInput.toString.split("\n")(0).toLong
+        //TODO modify all calls to the following
+        val eagerInput = Seq("java", "-Xmx1024m", "-Xss32m", "-cp", "./Peal.jar", "peal.eagersynthesis.EagerFileSynthesiser", tmp.getAbsolutePath).!!
+        if (eagerInput == "TIMEOUT") throw new RuntimeException("TO")
+        output.eagerSynthesis = eagerInput.split("\n")(0).toLong
         print("e")
 
         eagerZ3Caller = system.actorOf(Props(new Z3CallerActor(z3CallerMemoryBound)))
