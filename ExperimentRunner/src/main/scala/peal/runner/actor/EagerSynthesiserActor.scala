@@ -18,12 +18,5 @@ class EagerSynthesiserActor extends Actor {
       FileUtil.writeToFile(tmp.getAbsolutePath, input)
       val synthesisedOutput = Seq("java", "-Xmx10240m", "-Xss1m", "-cp", "Peal.jar", "peal.eagersynthesis.EagerFileSynthesiser", tmp.getAbsolutePath).!!
       sender ! synthesisedOutput
-
-    case KillSynthesiser =>
-      val execTmp = File.createTempFile("kill", "")
-      execTmp.setExecutable(true)
-      val script = "foreach (`ps -A -f | grep " + tmp.getAbsoluteFile + "`)  {\n@a = split;\n$pid = $a[1];\n`kill -9 $pid`;}"
-      FileUtil.writeToFile(execTmp.getAbsolutePath, script)
-      Seq("perl", execTmp.getAbsolutePath).!!
   }
 }

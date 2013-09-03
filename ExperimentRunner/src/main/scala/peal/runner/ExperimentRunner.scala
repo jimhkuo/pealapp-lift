@@ -17,6 +17,8 @@ class ExperimentRunner(runMode: RunMode, system: ActorSystem, duration: Long, z3
     implicit val timeout = Timeout(duration, MILLISECONDS)
     val output = new TimingOutput()
 
+    val processKiller = system.actorOf(Props[ProcessKillerActor])
+
     var eagerSynthesiser: ActorRef = null
     var eagerZ3Caller: ActorRef = null
     var lazySynthesiser: ActorRef = null
@@ -81,7 +83,6 @@ class ExperimentRunner(runMode: RunMode, system: ActorSystem, duration: Long, z3
     catch {
       case e: TimeoutException =>
         if (eagerSynthesiser != null) {
-          eagerSynthesiser ! KillSynthesiser
           system.stop(eagerSynthesiser)
         }
         if (eagerZ3Caller != null) system.stop(eagerZ3Caller)
