@@ -11,7 +11,7 @@ object Main extends App {
 
   println("Picking up z3 from environment PATH: " + System.getenv("PATH"))
 
-  binarySearchOnPolicySize(LazyOnly)
+  binarySearchOnPolicySize(Both)
 
   System.exit(0)
 
