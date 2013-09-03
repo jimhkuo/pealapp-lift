@@ -8,6 +8,8 @@ import akka.actor.{Kill, ActorRef, Props, ActorSystem}
 import peal.runner.actor._
 import peal.model.RandomModelGenerator
 import java.util.concurrent.TimeoutException
+import java.io.File
+import util.FileUtil
 
 class TimingOutput(var modelGeneration: Long = 0, var eagerSynthesis: Long = 0, var eagerZ3: Long = 0, var lazySynthesis: Long = 0, var lazyZ3: Long = 0, var isSameOutput: Boolean = false, var model1Result: Map[String, String] = Map(), var model2Result: Map[String, String] = Map(), var pealInput: String = "")
 
@@ -23,6 +25,7 @@ class ExperimentRunner(runMode: RunMode, system: ActorSystem, duration: Long, z3
     var eagerZ3Caller: ActorRef = null
     var lazySynthesiser: ActorRef = null
     var lazyZ3Caller: ActorRef = null
+    val tmp = File.createTempFile("pealInput", "")
 
     try {
       var start = System.nanoTime()
@@ -30,10 +33,11 @@ class ExperimentRunner(runMode: RunMode, system: ActorSystem, duration: Long, z3
       var lapsedTime = System.nanoTime() - start
       output.modelGeneration = lapsedTime
       print("m")
+      FileUtil.writeToFile(tmp.getAbsolutePath, model)
 
       if (runMode != LazyOnly) {
         eagerSynthesiser = system.actorOf(Props[EagerSynthesiserActor])
-        val eagerInputFuture = ask(eagerSynthesiser, model)
+        val eagerInputFuture = ask(eagerSynthesiser, tmp)
         val eagerInput = Await.result(eagerInputFuture, timeout.duration)
         output.eagerSynthesis = eagerInput.toString.split("\n")(0).toLong
         print("e")
@@ -81,6 +85,7 @@ class ExperimentRunner(runMode: RunMode, system: ActorSystem, duration: Long, z3
     catch {
       case e: TimeoutException =>
         if (eagerSynthesiser != null) {
+          processKiller ! tmp
           system.stop(eagerSynthesiser)
         }
         if (eagerZ3Caller != null) system.stop(eagerZ3Caller)

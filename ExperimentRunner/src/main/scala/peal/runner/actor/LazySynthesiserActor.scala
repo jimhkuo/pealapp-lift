@@ -12,7 +12,7 @@ class LazySynthesiserActor() extends Actor {
     case input: String =>
       val tmp = File.createTempFile("lazyPealInput", "")
       FileUtil.writeToFile(tmp.getAbsolutePath, input)
-      val synthesisedOutput = Seq("java", "-Xmx10240m", "-Xss1m", "-cp", "./Peal.jar", "peal.lazysynthesis.LazyFileSynthesiser", tmp.getAbsolutePath).!!
+      val synthesisedOutput = Seq("java", "-Xmx10240m", "-Xss32m", "-cp", "./Peal.jar", "peal.lazysynthesis.LazyFileSynthesiser", tmp.getAbsolutePath).!!
       sender ! synthesisedOutput
   }
 }
