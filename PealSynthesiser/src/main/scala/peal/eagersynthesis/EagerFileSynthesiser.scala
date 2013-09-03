@@ -21,6 +21,7 @@ object EagerFileSynthesiser extends App{
   def generate(): String = {
     val input = scala.io.Source.fromFile(inputFileName).mkString
 
+    val start = System.nanoTime()
     val pealProgramParser = getPealProgramParser(input)
     pealProgramParser.program()
 
@@ -38,6 +39,10 @@ object EagerFileSynthesiser extends App{
       "(echo \"Result of analysis [" + pealProgramParser.analyses(analysis).analysisName + "]:\")\n" + pealProgramParser.analyses(analysis).z3SMTInput
     }
 
-    predicateDeclarations.mkString("") + condDeclarations.mkString("") + body.mkString("") + domainSpecifics.mkString("", "\n", "\n") + generatedAnalyses.mkString("")
+    val output = predicateDeclarations.mkString("") + condDeclarations.mkString("") + body.mkString("") + domainSpecifics.mkString("", "\n", "\n") + generatedAnalyses.mkString("")
+
+    val lapseTime = System.nanoTime() - start
+
+    lapseTime.toString + "\n" + output
   }
 }

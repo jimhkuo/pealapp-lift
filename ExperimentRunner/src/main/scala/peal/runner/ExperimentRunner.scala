@@ -31,11 +31,9 @@ class ExperimentRunner(runMode: RunMode, system: ActorSystem, duration: Long, z3
 
       if (runMode != LazyOnly) {
         eagerSynthesiser = system.actorOf(Props[EagerSynthesiserActor])
-        start = System.nanoTime()
         val eagerInputFuture = ask(eagerSynthesiser, model)
         val eagerInput = Await.result(eagerInputFuture, timeout.duration)
-        lapsedTime = System.nanoTime() - start
-        output.eagerSynthesis = lapsedTime
+        output.eagerSynthesis = eagerInput.toString.split("\n")(0).toLong
         print("e")
 
         eagerZ3Caller = system.actorOf(Props(new Z3CallerActor(z3CallerMemoryBound)))

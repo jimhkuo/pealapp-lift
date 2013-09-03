@@ -13,7 +13,6 @@ class EagerSynthesiserActor extends Actor {
   def receive = {
     case input: String =>
 
-      //TODO launch individual process
       val tmp = File.createTempFile("z3file", "")
       FileUtil.writeToFile(tmp.getAbsolutePath, input)
       val synthesisedOutput = Seq("java", "-Xmx1024m", "-cp", "/Users/jkuo/Peal.jar", "peal.eagersynthesis.EagerFileSynthesiser", tmp.getAbsolutePath).!!
@@ -37,11 +36,5 @@ class EagerSynthesiserActor extends Actor {
     //      `kill -9 $pid`;
     //      }
     // kill the process started above, use killall -u hk2109 -c procname
-  }
-
-  override def postStop() {
-    synthesiser.cleanup()
-    synthesiser = null
-    System.gc()
   }
 }
