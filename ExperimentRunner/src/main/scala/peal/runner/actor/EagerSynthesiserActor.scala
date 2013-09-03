@@ -13,23 +13,23 @@ class EagerSynthesiserActor extends Actor {
   def receive = {
     case input: String =>
 
-      val tmp = File.createTempFile("z3file", "")
+      val tmp = File.createTempFile("pealInput", "")
       FileUtil.writeToFile(tmp.getAbsolutePath, input)
-      val synthesisedOutput = Seq("java", "-Xmx1024m", "-cp", "/Users/jkuo/Peal.jar", "peal.eagersynthesis.EagerFileSynthesiser", tmp.getAbsolutePath).!!
+      val synthesisedOutput = Seq("java", "-Xmx10240m", "-cp", "Peal.jar", "peal.eagersynthesis.EagerFileSynthesiser", tmp.getAbsolutePath).!!
       sender ! synthesisedOutput
 
     //      sender ! synthesiser.generate(input)
 
     //case Kill =>
     //   use this perl script to get process id or simply kill it
-    //      foreach (`ps -A -f | grep BatchExperimentRunner`)  {
+    //      foreach (`ps -A -f | grep EagerFileSynthesiser`)  {
     //        @a = split;
     //        $pid = $a[1];
     //        print $pid;
     //      `kill -9 $pid`;
     //      }
     //    on mac
-    //      foreach (`ps aux | grep java`) {
+    //      foreach (`ps aux | grep EagerFileSynthesiser`) {
     //        @a = split;
     //        $pid = $a[1];
     //        print $pid;
