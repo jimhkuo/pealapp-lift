@@ -87,11 +87,7 @@ class ExperimentRunner(runMode: RunMode, system: ActorSystem, duration: Long, z3
         if (eagerZ3Caller != null) system.stop(eagerZ3Caller)
         if (lazySynthesiser != null) system.stop(lazySynthesiser)
         if (lazyZ3Caller != null) system.stop(lazyZ3Caller)
-        output
-    }
-    finally {
-      //send kill message to actor here
-      //      system.shutdown()
+        throw e
     }
   }
 }

@@ -18,9 +18,9 @@ object Main extends App {
   private def binarySearchOnPolicySize(runMode: RunMode) {
     val execute: (Int) => Boolean = (x) => executeRunner(runMode, x, x, 1, 1, 1, 3 * x, 0.5, 0.1)
 
-    var lastSuccess = 0
+    var lastSuccess = 2048
     var lastFailure = 0
-    var p = 2
+    var p = 4096
 
     while (execute(p)) {
       lastSuccess = p
