@@ -12,29 +12,16 @@ class EagerSynthesiserActor extends Actor {
 
   def receive = {
     case input: String =>
-
       val tmp = File.createTempFile("pealInput", "")
       FileUtil.writeToFile(tmp.getAbsolutePath, input)
       val synthesisedOutput = Seq("java", "-Xmx10240m", "-cp", "Peal.jar", "peal.eagersynthesis.EagerFileSynthesiser", tmp.getAbsolutePath).!!
       sender ! synthesisedOutput
 
-    //      sender ! synthesiser.generate(input)
-
-    //case Kill =>
-    //   use this perl script to get process id or simply kill it
-    //      foreach (`ps -A -f | grep EagerFileSynthesiser`)  {
-    //        @a = split;
-    //        $pid = $a[1];
-    //        print $pid;
-    //      `kill -9 $pid`;
-    //      }
-    //    on mac
-    //      foreach (`ps aux | grep EagerFileSynthesiser`) {
-    //        @a = split;
-    //        $pid = $a[1];
-    //        print $pid;
-    //      `kill -9 $pid`;
-    //      }
-    // kill the process started above, use killall -u hk2109 -c procname
+    case KillSynthesiser =>
+      val execTmp = File.createTempFile("kill", "")
+      execTmp.setExecutable(true)
+      val script = "foreach (`ps -A -f | grep EagerFileSynthesiser`)  {\n@a = split;\n$pid = $a[1];\n`kill -9 $pid`;}"
+      FileUtil.writeToFile(execTmp.getAbsolutePath, script)
+      Seq("perl", execTmp.getAbsolutePath).!!
   }
 }

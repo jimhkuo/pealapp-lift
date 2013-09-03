@@ -7,6 +7,7 @@ import akka.util.Timeout
 import akka.actor.{Kill, ActorRef, Props, ActorSystem}
 import peal.runner.actor._
 import peal.model.RandomModelGenerator
+import java.util.concurrent.TimeoutException
 
 class TimingOutput(var modelGeneration: Long = 0, var eagerSynthesis: Long = 0, var eagerZ3: Long = 0, var lazySynthesis: Long = 0, var lazyZ3: Long = 0, var isSameOutput: Boolean = false, var model1Result: Map[String, String] = Map(), var model2Result: Map[String, String] = Map(), var pealInput: String = "")
 
@@ -23,7 +24,6 @@ class ExperimentRunner(runMode: RunMode, system: ActorSystem, duration: Long, z3
 
     try {
       var start = System.nanoTime()
-
       val model = RandomModelGenerator.generate(n, min, max, plus, mul, k, th, delta)
       var lapsedTime = System.nanoTime() - start
       output.modelGeneration = lapsedTime
@@ -78,16 +78,19 @@ class ExperimentRunner(runMode: RunMode, system: ActorSystem, duration: Long, z3
       }
       output
     }
+    catch {
+      case e: TimeoutException =>
+        if (eagerSynthesiser != null) {
+          eagerSynthesiser ! KillSynthesiser
+          system.stop(eagerSynthesiser)
+        }
+        if (eagerZ3Caller != null) system.stop(eagerZ3Caller)
+        if (lazySynthesiser != null) system.stop(lazySynthesiser)
+        if (lazyZ3Caller != null) system.stop(lazyZ3Caller)
+        output
+    }
     finally {
-      //TODO
       //send kill message to actor here
-      if (eagerSynthesiser != null) {
-        eagerSynthesiser ! Kill
-        system.stop(eagerSynthesiser)
-      }
-      if (eagerZ3Caller != null) system.stop(eagerZ3Caller)
-      if (lazySynthesiser != null) system.stop(lazySynthesiser)
-      if (lazyZ3Caller != null) system.stop(lazyZ3Caller)
       //      system.shutdown()
     }
   }

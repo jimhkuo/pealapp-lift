@@ -25,13 +25,15 @@ class ChildActor extends Actor {
 class TestActor extends Actor {
   var child: ActorRef = null
 
+  implicit val timeout = Timeout(10 milliseconds)
   def receive = {
+
     case "done" =>
       context.stop(child)
       println("########################################## reply")
     case "hi" =>
       child = context.actorOf(Props[ChildActor])
-      child ! "hi"
+      val ans = child ? "hi"
 //      sender ! "asked"
   }
 }
@@ -42,22 +44,22 @@ class ScalaTest {
   implicit val timeout = Timeout(10 milliseconds)
 
 //  @Test
-//  def testActor() {
-//
-//    val myActor = system.actorOf(Props[TestActor])
-//    try {
-//      val resultFuture = myActor ? "hi"
-//      val result = Await.result(resultFuture, timeout.duration)
-//      println(result)
-//    } catch {
-//      case e: Exception =>
-//        myActor ! "done"
-//        e.printStackTrace()
-//        system.stop(myActor)
-//        system.shutdown()
-//    }
-//    Thread.sleep(500)
-//  }
+  def testActor() {
+
+    val myActor = system.actorOf(Props[TestActor])
+    try {
+      val resultFuture = myActor ? "hi"
+      val result = Await.result(resultFuture, timeout.duration)
+      println(result)
+    } catch {
+      case e: Exception =>
+        myActor ! "done"
+        e.printStackTrace()
+        system.stop(myActor)
+        system.shutdown()
+    }
+    Thread.sleep(500)
+  }
 
   @Test
   def testModel() {
