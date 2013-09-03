@@ -13,42 +13,53 @@ object RandomModelGenerator {
   }
 
   def generate(n: Int, m0: Int, m1: Int, m2: Int, m3: Int, k: Int, th: Double, delta: Double): String = {
-    var predicates = for (i <- 0 until k) yield (new Predicate("q" + i))
+    print("2")
 
-    val minPolicies = for (j <- 0 until n) yield {
-      predicates = Random.shuffle(predicates)
-      val rules = for (i <- 0 until m0) yield {
-        new Rule(predicates(i), BigDecimal.valueOf(Random.nextDouble()))
-      }
-      new Pol(rules, Min, BigDecimal.valueOf(Random.nextDouble()))
+    var predicates = (0 until k).map(i => new Predicate("q" + i))
+
+    print("3")
+    val minPolicies = (0 until n).map {
+      j =>
+        predicates = Random.shuffle(predicates)
+        val rules = (0 until m0).map {
+          i =>
+            new Rule(predicates(i), BigDecimal.valueOf(Random.nextDouble()))
+        }
+        new Pol(rules, Min, BigDecimal.valueOf(Random.nextDouble()))
     }
-
-    val maxPolicies = for (j <- 0 until n) yield {
-      predicates = Random.shuffle(predicates)
-      val rules = for (i <- 0 until m1) yield {
-        new Rule(predicates(i), BigDecimal.valueOf(Random.nextDouble()))
-      }
-      new Pol(rules, Max, BigDecimal.valueOf(Random.nextDouble()))
+    print("4")
+    val maxPolicies = (0 until n).map {
+      j =>
+        predicates = Random.shuffle(predicates)
+        val rules = (0 until m1).map {
+          i =>
+            new Rule(predicates(i), BigDecimal.valueOf(Random.nextDouble()))
+        }
+        new Pol(rules, Max, BigDecimal.valueOf(Random.nextDouble()))
     }
-
-    val plusPolicies = for (j <- 0 until n) yield {
-      predicates = Random.shuffle(predicates)
-      val rules = for (i <- 0 until m2) yield {
-        new Rule(predicates(i), BigDecimal.valueOf(Random.nextDouble()))
-      }
-      new Pol(rules, Plus, BigDecimal.valueOf(Random.nextDouble()))
+    print("5")
+    val plusPolicies = (0 until n).map {
+      j =>
+        predicates = Random.shuffle(predicates)
+        val rules = (0 until m2).map {
+          i =>
+            new Rule(predicates(i), BigDecimal.valueOf(Random.nextDouble()))
+        }
+        new Pol(rules, Plus, BigDecimal.valueOf(Random.nextDouble()))
     }
-
-    val mulPolicies = for (j <- 0 until n) yield {
-      predicates = Random.shuffle(predicates)
-      val rules = for (i <- 0 until m3) yield {
-        new Rule(predicates(i), BigDecimal.valueOf(Random.nextDouble()))
-      }
-      new Pol(rules, Mul, BigDecimal.valueOf(Random.nextDouble()))
+    print("6")
+    val mulPolicies = (0 until n).map {
+      j =>
+        predicates = Random.shuffle(predicates)
+        val rules = (0 until m3).map {
+          i =>
+            new Rule(predicates(i), BigDecimal.valueOf(Random.nextDouble()))
+        }
+        new Pol(rules, Mul, BigDecimal.valueOf(Random.nextDouble()))
     }
-
+    print("7")
     val policyList = Random.shuffle(minPolicies ++ maxPolicies ++ plusPolicies ++ mulPolicies)
-
+    print("8")
     var i = -1
     val policyMap = policyList.map {
       b =>
@@ -60,22 +71,24 @@ object RandomModelGenerator {
       "b" + s + " = " + policyMap(s).toString
     }
 
+    print("9")
     val x = n * 4
     val l = (math.log(x) / math.log(2)).floor.toInt
     var m = math.pow(2, l).toInt
     var layer = 0
     val lattice = ListBuffer[Seq[(Int, Int)]]()
+    print("0")
     while (m != 1) {
       if (layer == 0) {
         val lhs = for (i <- 0 until m by 2) yield (i)
-        val rhs = for (i <- 0 until m by 2) yield (i+1)
+        val rhs = for (i <- 0 until m by 2) yield (i + 1)
         val pairs = lhs.zip(rhs)
         lattice.append(pairs)
         m = pairs.size
       }
       else {
-        val lhs = for (i <- 0 until m by 2) yield (lattice(layer-1)(i)._1)
-        val rhs = for (i <- 0 until m by 2) yield (lattice(layer-1)(i+1)._2)
+        val lhs = for (i <- 0 until m by 2) yield (lattice(layer - 1)(i)._1)
+        val rhs = for (i <- 0 until m by 2) yield (lattice(layer - 1)(i + 1)._2)
         val pairs = lhs.zip(rhs)
         lattice.append(pairs)
         m = pairs.size
@@ -83,7 +96,7 @@ object RandomModelGenerator {
 
       layer += 1
     }
-
+    print("1")
     val pSets = for (i <- 0 until lattice.size) yield {
       val pSet = for (j <- 0 until lattice(i).size) yield {
         if (i == 0) {
@@ -94,19 +107,19 @@ object RandomModelGenerator {
             case 0 => "min"
             case 1 => "max"
           }
-          ("p" + lattice(i)(j)._1 + "_" + lattice(i)(j)._2, operator + "(p" + lattice(i)(j)._1 + "_" + lattice(i-1)(j*2)._2 + ",p" + lattice(i-1)(j*2+1)._1 + "_" + lattice(i)(j)._2 + ")")
+          ("p" + lattice(i)(j)._1 + "_" + lattice(i)(j)._2, operator + "(p" + lattice(i)(j)._1 + "_" + lattice(i - 1)(j * 2)._2 + ",p" + lattice(i - 1)(j * 2 + 1)._1 + "_" + lattice(i)(j)._2 + ")")
         }
       }
 
       pSet
     }
-
+    print("2")
     val end = math.pow(2, l).toInt
 
     val reminder = for (i <- end until x by 2) yield {
-      ("p" + i + "_" + (i+1), "min(b" + i + ", b" + (i+1) + ")")
+      ("p" + i + "_" + (i + 1), "min(b" + i + ", b" + (i + 1) + ")")
     }
-
+    print("3")
     val top = pSets.flatten.toSeq.last._1
     var finalPolicySet = top
     var ii = -1
@@ -121,11 +134,11 @@ object RandomModelGenerator {
       lastBit += out
       finalPolicySet = top + "_" + ii
     }
-
+    print("4")
     if (!lastBit.isEmpty) {
       lastBit = "\n\n" + lastBit
     }
-
+    print("5")
     val cond1 = "cond1 = " + "%.2f".format(th) + " < " + finalPolicySet
     val cond2 = "cond2 = " + "%.2f".format(th + delta) + " < " + finalPolicySet
 

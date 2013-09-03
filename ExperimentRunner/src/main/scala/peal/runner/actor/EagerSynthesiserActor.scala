@@ -8,6 +8,8 @@ import util.FileUtil
 
 class EagerSynthesiserActor extends Actor {
 
+  var synthesiser = new EagerSynthesiser()
+
   def receive = {
     case input: String =>
 
@@ -17,7 +19,7 @@ class EagerSynthesiserActor extends Actor {
       //      val synthesisedOutput = Seq("java", "-Xmx1024m", "-cp", "/Users/jkuo/Peal.jar", "peal.eagersynthesis.EagerSynthesiser", tmp.getAbsolutePath).!!
       //      sender ! synthesisedOutput
 
-      sender ! new EagerSynthesiser(input).generate()
+      sender ! synthesiser.generate(input)
 
     //case Kill =>
     //   use this perl script to get process id or simply kill it
@@ -35,5 +37,11 @@ class EagerSynthesiserActor extends Actor {
     //      `kill -9 $pid`;
     //      }
     // kill the process started above, use killall -u hk2109 -c procname
+  }
+
+  override def postStop() {
+    synthesiser.cleanup()
+    synthesiser = null
+    System.gc()
   }
 }

@@ -5,7 +5,9 @@ import peal.antlr.{PealProgramParser, PealProgramLexer}
 import scala.collection.JavaConversions._
 import peal.domain.z3.Term
 
-class EagerSynthesiser(input:String) {
+class EagerSynthesiser() {
+
+  var pealProgramParser: PealProgramParser = null
 
   private def getPealProgramParser(input: String) = {
     val charStream = new ANTLRStringStream(input)
@@ -14,9 +16,9 @@ class EagerSynthesiser(input:String) {
     new PealProgramParser(tokenStream)
   }
 
-  def generate(): String = {
+  def generate(input:String): String = {
 
-    val pealProgramParser = getPealProgramParser(input)
+    pealProgramParser = getPealProgramParser(input)
     pealProgramParser.program()
 
     val predicateNames: Seq[String] = pealProgramParser.pols.values().flatMap(pol => pol.rules).map(r => r.q.name).toSeq.distinct
@@ -34,5 +36,9 @@ class EagerSynthesiser(input:String) {
     }
 
     predicateDeclarations.mkString("") + condDeclarations.mkString("") + body.mkString("") + domainSpecifics.mkString("", "\n", "\n") + generatedAnalyses.mkString("")
+  }
+
+  def cleanup() {
+    pealProgramParser = null
   }
 }
