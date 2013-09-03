@@ -25,7 +25,7 @@ object RandomModelGenerator {
           i =>
             new Rule(predicates(i), Random.nextDouble())
         }
-        new Pol(rules, Min, BigDecimal.valueOf(Random.nextDouble()))
+        new Pol(rules, Min, Random.nextDouble())
     }
     print("4")
     val maxPolicies = (0 until n).map {
@@ -33,9 +33,9 @@ object RandomModelGenerator {
         predicates = Random.shuffle(predicates)
         val rules = (0 until m1).map {
           i =>
-            new Rule(predicates(i), BigDecimal.valueOf(Random.nextDouble()))
+            new Rule(predicates(i), Random.nextDouble())
         }
-        new Pol(rules, Max, BigDecimal.valueOf(Random.nextDouble()))
+        new Pol(rules, Max, Random.nextDouble())
     }
     print("5")
     val plusPolicies = (0 until n).map {
@@ -43,9 +43,9 @@ object RandomModelGenerator {
         predicates = Random.shuffle(predicates)
         val rules = (0 until m2).map {
           i =>
-            new Rule(predicates(i), BigDecimal.valueOf(Random.nextDouble()))
+            new Rule(predicates(i), Random.nextDouble())
         }
-        new Pol(rules, Plus, BigDecimal.valueOf(Random.nextDouble()))
+        new Pol(rules, Plus, Random.nextDouble())
     }
     print("6")
     val mulPolicies = (0 until n).map {
@@ -53,9 +53,9 @@ object RandomModelGenerator {
         predicates = Random.shuffle(predicates)
         val rules = (0 until m3).map {
           i =>
-            new Rule(predicates(i), BigDecimal.valueOf(Random.nextDouble()))
+            new Rule(predicates(i), Random.nextDouble())
         }
-        new Pol(rules, Mul, BigDecimal.valueOf(Random.nextDouble()))
+        new Pol(rules, Mul, Random.nextDouble())
     }
     print("7")
     val policyList = Random.shuffle(minPolicies ++ maxPolicies ++ plusPolicies ++ mulPolicies)
