@@ -96,5 +96,8 @@ class ExperimentRunner(runMode: RunMode, system: ActorSystem, duration: Long, z3
         if (lazyZ3Caller != null) system.stop(lazyZ3Caller)
         throw e
     }
+    finally {
+      tmp.delete()
+    }
   }
 }

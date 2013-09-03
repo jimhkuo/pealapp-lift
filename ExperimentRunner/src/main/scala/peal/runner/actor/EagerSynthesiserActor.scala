@@ -4,7 +4,6 @@ import akka.actor.Actor
 import peal.eagersynthesis.EagerSynthesiser
 import java.io.File
 import scala.sys.process._
-import util.FileUtil
 
 class EagerSynthesiserActor extends Actor {
 
