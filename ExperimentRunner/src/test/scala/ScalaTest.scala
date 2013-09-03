@@ -1,9 +1,7 @@
 import akka.actor._
-import akka.testkit.{TestKit, TestActorRef}
+import akka.testkit.TestActorRef
 import akka.util.Timeout
-import java.util.concurrent.TimeoutException
-import org.junit.{After, Test}
-import peal.model.RandomModelGenerator
+import org.junit.Test
 import peal.runner.actor.{Run, ModelGeneratorActor}
 import scala.concurrent.Await
 import scala.concurrent.duration._
@@ -11,42 +9,55 @@ import akka.pattern.ask
 
 object CLEANUP
 
-class TestActor extends Actor {
+class ChildActor extends Actor {
   def receive = {
-    case input: String => println("received " + input)
-      for (i <- 0 to 1000) {
-        print(".")
+    case input: String =>
+      println("received " + input)
+      var i = 0
+      while (true) {
+        println(i)
+        i += 1
       }
-      sender ! "reply"
-    case ReceiveTimeout =>
-      println("\nclean up")
+      sender ! "done"
+  }
+}
+
+class TestActor extends Actor {
+  var child: ActorRef = null
+
+  def receive = {
+    case "done" =>
+      context.stop(child)
+      println("########################################## reply")
+    case "hi" =>
+      child = context.actorOf(Props[ChildActor])
+      child ! "hi"
+//      sender ! "asked"
   }
 }
 
 class ScalaTest {
 
   implicit lazy val system = ActorSystem()
-  implicit val timeout = Timeout(100000 milliseconds)
+  implicit val timeout = Timeout(10 milliseconds)
 
-  @After
-  def shutdown() {
-    system.shutdown()
-  }
-
-  @Test
-  def testActor() {
-
-    val myActor = TestActorRef(new TestActor)
-    try {
-      val resultFuture = myActor ? "hi"
-      val result = Await.result(resultFuture, timeout.duration)
-      println("\n" + result)
-    } catch {
-      case e: TimeoutException =>
-        e.printStackTrace()
-        myActor ! ReceiveTimeout
-    }
-  }
+//  @Test
+//  def testActor() {
+//
+//    val myActor = system.actorOf(Props[TestActor])
+//    try {
+//      val resultFuture = myActor ? "hi"
+//      val result = Await.result(resultFuture, timeout.duration)
+//      println(result)
+//    } catch {
+//      case e: Exception =>
+//        myActor ! "done"
+//        e.printStackTrace()
+//        system.stop(myActor)
+//        system.shutdown()
+//    }
+//    Thread.sleep(500)
+//  }
 
   @Test
   def testModel() {

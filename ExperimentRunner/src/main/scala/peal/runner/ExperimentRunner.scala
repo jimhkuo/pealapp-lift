@@ -4,7 +4,7 @@ import scala.concurrent.Await
 import scala.concurrent.duration._
 import akka.pattern.ask
 import akka.util.Timeout
-import akka.actor.{ActorRef, Props, ActorSystem}
+import akka.actor.{Kill, ActorRef, Props, ActorSystem}
 import peal.runner.actor._
 import peal.model.RandomModelGenerator
 
@@ -84,7 +84,10 @@ class ExperimentRunner(runMode: RunMode, system: ActorSystem, duration: Long, z3
     finally {
       //TODO
       //send kill message to actor here
-      if (eagerSynthesiser != null) system.stop(eagerSynthesiser)
+      if (eagerSynthesiser != null) {
+        eagerSynthesiser ! Kill
+        system.stop(eagerSynthesiser)
+      }
       if (eagerZ3Caller != null) system.stop(eagerZ3Caller)
       if (lazySynthesiser != null) system.stop(lazySynthesiser)
       if (lazyZ3Caller != null) system.stop(lazyZ3Caller)
