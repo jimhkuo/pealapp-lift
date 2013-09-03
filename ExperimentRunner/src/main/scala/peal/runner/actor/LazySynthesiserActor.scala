@@ -8,7 +8,6 @@ class LazySynthesiserActor() extends Actor {
 
   def receive = {
     case input: String =>
-      val z3Input: String = new LazySynthesiser(input).generate()
-      sender ! z3Input
+      sender ! new LazySynthesiser(input).generate()
   }
 }
