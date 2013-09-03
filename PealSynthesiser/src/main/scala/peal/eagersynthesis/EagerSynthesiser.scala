@@ -5,7 +5,11 @@ import peal.antlr.{PealProgramParser, PealProgramLexer}
 import scala.collection.JavaConversions._
 import peal.domain.z3.Term
 
-class EagerSynthesiser(inputFileName: String) {
+object EagerSynthesiser extends App{
+
+  val inputFileName: String = args(0)
+
+  println(generate())
 
   private def getPealProgramParser(input: String) = {
     val charStream = new ANTLRStringStream(input)

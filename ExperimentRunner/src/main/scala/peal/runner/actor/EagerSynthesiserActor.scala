@@ -3,6 +3,7 @@ package peal.runner.actor
 import akka.actor.Actor
 import peal.eagersynthesis.EagerSynthesiser
 import java.io.File
+import scala.sys.process._
 import util.FileUtil
 
 class EagerSynthesiserActor extends Actor {
@@ -18,7 +19,10 @@ class EagerSynthesiserActor extends Actor {
       val tmp = File.createTempFile("z3file", "")
       FileUtil.writeToFile(tmp.getAbsolutePath, input)
 
-      sender ! new EagerSynthesiser(tmp.getAbsolutePath).generate()
+
+    val synthesisedOutput = Seq("java", "-Xmx1024m","-cp","/Users/jkuo/Peal.jar", "peal.eagersynthesis.EagerSynthesiser", tmp.getAbsolutePath).!!
+    sender ! synthesisedOutput
+//      sender ! new EagerSynthesiser(tmp.getAbsolutePath).generate()
 
     //case Kill =>
     //   use this perl script to get process id or simply kill it
