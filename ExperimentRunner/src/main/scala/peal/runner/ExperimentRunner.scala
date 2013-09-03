@@ -54,7 +54,7 @@ class ExperimentRunner(runMode: RunMode, system: ActorSystem, duration: Long, z3
 
       if (runMode != EagerOnly) {
         lazySynthesiser = system.actorOf(Props[LazySynthesiserActor])
-        val lazyInputFuture = lazySynthesiser ? model
+        val lazyInputFuture = lazySynthesiser ? tmp
         val lazyInput = Await.result(lazyInputFuture, timeout.duration)
         output.lazySynthesis = lazyInput.toString.split("\n")(0).toLong
         print("l")
@@ -85,11 +85,14 @@ class ExperimentRunner(runMode: RunMode, system: ActorSystem, duration: Long, z3
     catch {
       case e: TimeoutException =>
         if (eagerSynthesiser != null) {
-          processKiller ! tmp
           system.stop(eagerSynthesiser)
+          processKiller ! tmp
         }
         if (eagerZ3Caller != null) system.stop(eagerZ3Caller)
-        if (lazySynthesiser != null) system.stop(lazySynthesiser)
+        if (lazySynthesiser != null) {
+          system.stop(lazySynthesiser)
+          processKiller ! tmp
+        }
         if (lazyZ3Caller != null) system.stop(lazyZ3Caller)
         throw e
     }
