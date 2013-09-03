@@ -2,6 +2,8 @@ package peal.runner.actor
 
 import akka.actor.Actor
 import peal.eagersynthesis.EagerSynthesiser
+import java.io.File
+import util.FileUtil
 
 class EagerSynthesiserActor extends Actor {
 
@@ -13,8 +15,10 @@ class EagerSynthesiserActor extends Actor {
       // need to output the process id to a file
       //      solverProcess.!!
 
-      //TODO
-      //put the following in a class
+      val tmp = File.createTempFile("z3file", "")
+      FileUtil.writeToFile(tmp.getAbsolutePath, input)
+
+    //TODO pass in the input file name as an argument
       sender ! new EagerSynthesiser(input).generate()
 
     //case Kill =>

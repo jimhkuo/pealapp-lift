@@ -5,7 +5,7 @@ import peal.antlr.{PealProgramParser, PealProgramLexer}
 import scala.collection.JavaConversions._
 import peal.domain.z3.Term
 
-class EagerSynthesiser(input: String) {
+class EagerSynthesiser(inputFileName: String) {
 
   private def getPealProgramParser(input: String) = {
     val charStream = new ANTLRStringStream(input)
@@ -15,6 +15,8 @@ class EagerSynthesiser(input: String) {
   }
 
   def generate(): String = {
+    val input = scala.io.Source.fromFile(inputFileName).mkString
+
     val pealProgramParser = getPealProgramParser(input)
     pealProgramParser.program()
 
