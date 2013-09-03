@@ -16,7 +16,7 @@ class EagerSynthesiserActor extends Actor {
     case input: String =>
       tmp = File.createTempFile("pealInput", "")
       FileUtil.writeToFile(tmp.getAbsolutePath, input)
-      val synthesisedOutput = Seq("java", "-Xmx10240m", "-Xss1m", "-cp", "Peal.jar", "peal.eagersynthesis.EagerFileSynthesiser", tmp.getAbsolutePath).!!
+      val synthesisedOutput = Seq("java", "-Xmx10240m", "-Xss1m", "-cp", "./Peal.jar", "peal.eagersynthesis.EagerFileSynthesiser", tmp.getAbsolutePath).!!
       sender ! synthesisedOutput
   }
 }
