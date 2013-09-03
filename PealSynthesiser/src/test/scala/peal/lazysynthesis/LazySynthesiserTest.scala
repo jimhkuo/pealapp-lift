@@ -22,7 +22,7 @@ class LazySynthesiserTest extends ShouldMatchersForJUnit {
       //    "cond4 = 0.4 < pSet2\n" +
       "ANALYSES\nname1 = always_true? cond1\n"
 
-    val generator = new LazySynthesiser( input)
+    val generator = new LazySynthesiser(input)
     println("output:\n" + generator.generate())
   }
 
