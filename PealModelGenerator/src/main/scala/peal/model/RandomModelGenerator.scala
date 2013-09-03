@@ -23,7 +23,7 @@ object RandomModelGenerator {
         predicates = Random.shuffle(predicates)
         val rules = (0 until m0).map {
           i =>
-            new Rule(predicates(i), BigDecimal.valueOf(Random.nextDouble()))
+            new Rule(predicates(i), Random.nextDouble())
         }
         new Pol(rules, Min, BigDecimal.valueOf(Random.nextDouble()))
     }
