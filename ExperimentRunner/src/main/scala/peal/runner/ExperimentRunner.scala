@@ -15,6 +15,7 @@ class TimingOutput(var modelGeneration: Long = 0, var eagerSynthesis: Long = 0, 
 
 class ExperimentRunner(runMode: RunMode, system: ActorSystem, duration: Long, z3CallerMemoryBound: Long) {
   //TODO rip out akka actor stuff
+  //read http://docs.scala-lang.org/overviews/core/futures.html
 
   def run(n: Int, min: Int, max: Int, plus: Int, mul: Int, k: Int, th: Double, delta: Double): TimingOutput = {
     implicit val timeout = Timeout(duration, MILLISECONDS)
