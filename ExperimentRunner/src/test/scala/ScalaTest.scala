@@ -1,6 +1,7 @@
 import akka.actor._
 import akka.testkit.TestActorRef
 import akka.util.Timeout
+import java.util.concurrent.TimeoutException
 import org.junit.Test
 import scala.concurrent.Await
 import scala.concurrent.duration._
@@ -25,6 +26,7 @@ class TestActor extends Actor {
   var child: ActorRef = null
 
   implicit val timeout = Timeout(10 milliseconds)
+
   def receive = {
 
     case "done" =>
@@ -33,7 +35,7 @@ class TestActor extends Actor {
     case "hi" =>
       child = context.actorOf(Props[ChildActor])
       val ans = child ? "hi"
-//      sender ! "asked"
+    //      sender ! "asked"
   }
 }
 
@@ -42,7 +44,7 @@ class ScalaTest {
   implicit lazy val system = ActorSystem()
   implicit val timeout = Timeout(10 milliseconds)
 
-//  @Test
+  //  @Test
   def testActor() {
 
     val myActor = system.actorOf(Props[TestActor])
@@ -58,6 +60,24 @@ class ScalaTest {
         system.shutdown()
     }
     Thread.sleep(500)
+  }
+
+  @Test
+  def testException() {
+    val eagerInput = "TIMEOUT"
+    try {
+      try {
+        if (eagerInput == "TIMEOUT") throw new TimeoutException("Timeout in Eager Synthesis")
+      }
+      catch {
+        case e: Exception => throw e
+      }
+    } catch {
+      case e: TimeoutException =>
+        println(",TIMEOUT,TIMEOUT,TIMEOUT,TIMEOUT,TIMEOUT")
+      case e1: RuntimeException =>
+        println(",OUTOFMEMORY,OUTOFMEMORY,OUTOFMEMORY,OUTOFMEMORY,OUTOFMEMORY")
+    }
   }
 }
 

@@ -103,10 +103,10 @@ object Main extends App {
       true
     } catch {
       case e: TimeoutException =>
-        println(",TIMEOUT,TIMEOUT,TIMEOUT,TIMEOUT,TIMEOUT")
+        println(",TIMEOUT,TIMEOUT,TIMEOUT,TIMEOUT,TIMEOUT," + e.getMessage)
         false
       case e1: RuntimeException =>
-        println(",OUTOFMEMORY,OUTOFMEMORY,OUTOFMEMORY,OUTOFMEMORY,OUTOFMEMORY")
+        println(",OUTOFMEMORY,OUTOFMEMORY,OUTOFMEMORY,OUTOFMEMORY,OUTOFMEMORY," + e1.getMessage)
         false
     }
   }

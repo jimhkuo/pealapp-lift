@@ -35,7 +35,9 @@ class ExperimentRunner(runMode: RunMode, system: ActorSystem, duration: Long, z3
 
       if (runMode != LazyOnly) {
         val eagerInput = Seq("java", "-Xmx10240m", "-Xss32m", "-cp", "./Peal.jar", "peal.eagersynthesis.EagerFileSynthesiser", tempPealInputFile.getAbsolutePath).!!
-        if (eagerInput == "TIMEOUT") throw new TimeoutException("Timeout in Eager Synthesis")
+        if (eagerInput.trim == "TIMEOUT") {
+          throw new TimeoutException("Timeout in Eager Synthesis")
+        }
         output.eagerSynthesis = eagerInput.split("\n")(0).toLong
         print("e")
 
@@ -51,7 +53,9 @@ class ExperimentRunner(runMode: RunMode, system: ActorSystem, duration: Long, z3
 
       if (runMode != EagerOnly) {
         val lazyInput = Seq("java", "-Xmx10240m", "-Xss32m", "-cp", "./Peal.jar", "peal.lazysynthesis.LazyFileSynthesiser", tempPealInputFile.getAbsolutePath).!!
-        if (lazyInput == "TIMEOUT") throw new TimeoutException("Timeout in Lazy Synthesis")
+        if (lazyInput.trim == "TIMEOUT") {
+          throw new TimeoutException("Timeout in Lazy Synthesis")
+        }
         output.lazySynthesis = lazyInput.split("\n")(0).toLong
         print("1")
 
