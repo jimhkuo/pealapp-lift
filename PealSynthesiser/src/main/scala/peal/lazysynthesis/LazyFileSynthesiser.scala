@@ -1,16 +1,29 @@
 package peal.lazysynthesis
 
+import scala.concurrent._
+import scala.concurrent.duration._
+import ExecutionContext.Implicits.global
+
 object LazyFileSynthesiser extends App {
 
   val inputFileName: String = args(0)
   println(generate())
 
   def generate(): String = {
-    val input = scala.io.Source.fromFile(inputFileName).mkString
-    val start = System.nanoTime()
-    val output = new LazySynthesiser(input).generate()
-    val lapseTime = System.nanoTime() - start
+    try {
+      val input = scala.io.Source.fromFile(inputFileName).mkString
 
-    lapseTime.toString + "\n" + output
+      val start = System.nanoTime()
+      val outputFuture = future {
+        new LazySynthesiser(input).generate()
+      }
+      val output = Await.result(outputFuture, 300000 millis)
+      val lapseTime = System.nanoTime() - start
+
+      lapseTime.toString + "\n" + output
+    } catch {
+      case e: TimeoutException =>
+        "TIMEOUT"
+    }
   }
 }

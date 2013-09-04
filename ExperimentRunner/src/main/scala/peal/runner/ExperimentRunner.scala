@@ -40,7 +40,6 @@ class ExperimentRunner(runMode: RunMode, system: ActorSystem, duration: Long, z3
       FileUtil.writeToFile(tempPealInputFile.getAbsolutePath, model)
 
       if (runMode != LazyOnly) {
-        //TODO modify all calls to the following
         val eagerInput = Seq("java", "-Xmx10240m", "-Xss32m", "-cp", "./Peal.jar", "peal.eagersynthesis.EagerFileSynthesiser", tempPealInputFile.getAbsolutePath).!!
         if (eagerInput == "TIMEOUT") throw new RuntimeException("TO")
         output.eagerSynthesis = eagerInput.split("\n")(0).toLong
@@ -57,11 +56,10 @@ class ExperimentRunner(runMode: RunMode, system: ActorSystem, duration: Long, z3
       }
 
       if (runMode != EagerOnly) {
-        lazySynthesiser = system.actorOf(Props[LazySynthesiserActor])
-        val lazyInputFuture = lazySynthesiser ? tempPealInputFile
-        val lazyInput = Await.result(lazyInputFuture, timeout.duration)
-        output.lazySynthesis = lazyInput.toString.split("\n")(0).toLong
-        print("l")
+        val lazyInput = Seq("java", "-Xmx10240m", "-Xss32m", "-cp", "./Peal.jar", "peal.lazysynthesis.LazyFileSynthesiser", tempPealInputFile.getAbsolutePath).!!
+        if (lazyInput == "TIMEOUT") throw new RuntimeException("TO")
+        output.lazySynthesis = lazyInput.split("\n")(0).toLong
+        print("1")
 
         lazyZ3Caller = system.actorOf(Props(new Z3CallerActor(z3CallerMemoryBound)))
         start = System.nanoTime()
