@@ -16,16 +16,14 @@ class Z3CallerActor(memoryLimit: Long) extends Actor {
   )
 
   def receive = {
-    case input: String =>
-      val tmp = File.createTempFile("z3file", "")
+    case inputFile: File =>
       val execTmp = File.createTempFile("callz3", "")
       execTmp.setExecutable(true)
-      FileUtil.writeToFile(tmp.getAbsolutePath, input)
-      val script = "#!/bin/sh\nulimit -v " + memoryLimit + "\nz3 -nw -smt2 " + tmp.getAbsolutePath + "\n"
+      val script = "#!/bin/sh\nulimit -v " + memoryLimit + "\nz3 -nw -smt2 " + inputFile.getAbsolutePath + "\n"
       FileUtil.writeToFile(execTmp.getAbsolutePath, script)
       val returnCode = Seq(execTmp.getAbsolutePath) ! processLogger
       val resultsMap = ResultAnalyser.execute(resultList.mkString("\n"))
-      tmp.delete()
+      inputFile.delete()
       execTmp.delete()
 
       if (resultsMap.isEmpty) {
