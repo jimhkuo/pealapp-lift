@@ -7,8 +7,6 @@ import peal.domain.z3.Term
 
 class EagerSynthesiser() {
 
-  var pealProgramParser: PealProgramParser = null
-
   private def getPealProgramParser(input: String) = {
     val charStream = new ANTLRStringStream(input)
     val lexer = new PealProgramLexer(charStream)
@@ -17,8 +15,7 @@ class EagerSynthesiser() {
   }
 
   def generate(input:String): String = {
-
-    pealProgramParser = getPealProgramParser(input)
+    val pealProgramParser = getPealProgramParser(input)
     pealProgramParser.program()
 
     val predicateNames: Seq[String] = pealProgramParser.pols.values().flatMap(pol => pol.rules).map(r => r.q.name).toSeq.distinct
@@ -36,9 +33,5 @@ class EagerSynthesiser() {
     }
 
     predicateDeclarations.mkString("") + condDeclarations.mkString("") + body.mkString("") + domainSpecifics.mkString("", "\n", "\n") + generatedAnalyses.mkString("")
-  }
-
-  def cleanup() {
-    pealProgramParser = null
   }
 }

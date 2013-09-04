@@ -13,14 +13,14 @@ object EagerFileSynthesiser extends App {
     try {
       val input = scala.io.Source.fromFile(inputFileName).mkString
 
-      val start = System.nanoTime()
       val outputFuture = future {
-        new EagerSynthesiser().generate(input)
+        val start = System.nanoTime()
+        val out = new EagerSynthesiser().generate(input)
+        val lapseTime = System.nanoTime() - start
+        lapseTime.toString + "\n" + out
       }
-      val output = Await.result(outputFuture, 300000 millis)
-      val lapseTime = System.nanoTime() - start
 
-      lapseTime.toString + "\n" + output
+      Await.result(outputFuture, 300000 millis)
     } catch {
       case e: TimeoutException =>
         "TIMEOUT"
