@@ -58,6 +58,9 @@ class ExperimentRunner(runMode: RunMode, system: ActorSystem, duration: Long, z3
           case e: TimeoutException => processKiller ! tmpInput
             throw e
         }
+        finally {
+          tmpInput.delete()
+        }
       }
 
       if (runMode != EagerOnly) {
@@ -83,6 +86,9 @@ class ExperimentRunner(runMode: RunMode, system: ActorSystem, duration: Long, z3
         } catch {
           case e: TimeoutException => processKiller ! tmpInput
             throw e
+        }
+        finally {
+          tmpInput.delete()
         }
 
       }
