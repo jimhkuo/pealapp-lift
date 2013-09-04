@@ -26,13 +26,10 @@ class ExperimentRunner(runMode: RunMode, system: ActorSystem, duration: Long, z3
     implicit val timeout = Timeout(duration, MILLISECONDS)
     val output = new TimingOutput()
 
-    val processKiller = system.actorOf(Props[ProcessKillerActor])
-
-    var eagerSynthesiser: ActorRef = null
     var eagerZ3Caller: ActorRef = null
     var lazySynthesiser: ActorRef = null
     var lazyZ3Caller: ActorRef = null
-    val tmp = File.createTempFile("pealInput", "")
+    val tempPealInputFile = File.createTempFile("pealInput", "")
 
     try {
       var start = System.nanoTime()
@@ -40,11 +37,11 @@ class ExperimentRunner(runMode: RunMode, system: ActorSystem, duration: Long, z3
       var lapsedTime = System.nanoTime() - start
       output.modelGeneration = lapsedTime
       print("m")
-      FileUtil.writeToFile(tmp.getAbsolutePath, model)
+      FileUtil.writeToFile(tempPealInputFile.getAbsolutePath, model)
 
       if (runMode != LazyOnly) {
         //TODO modify all calls to the following
-        val eagerInput = Seq("java", "-Xmx1024m", "-Xss32m", "-cp", "./Peal.jar", "peal.eagersynthesis.EagerFileSynthesiser", tmp.getAbsolutePath).!!
+        val eagerInput = Seq("java", "-Xmx10240m", "-Xss32m", "-cp", "./Peal.jar", "peal.eagersynthesis.EagerFileSynthesiser", tempPealInputFile.getAbsolutePath).!!
         if (eagerInput == "TIMEOUT") throw new RuntimeException("TO")
         output.eagerSynthesis = eagerInput.split("\n")(0).toLong
         print("e")
@@ -61,7 +58,7 @@ class ExperimentRunner(runMode: RunMode, system: ActorSystem, duration: Long, z3
 
       if (runMode != EagerOnly) {
         lazySynthesiser = system.actorOf(Props[LazySynthesiserActor])
-        val lazyInputFuture = lazySynthesiser ? tmp
+        val lazyInputFuture = lazySynthesiser ? tempPealInputFile
         val lazyInput = Await.result(lazyInputFuture, timeout.duration)
         output.lazySynthesis = lazyInput.toString.split("\n")(0).toLong
         print("l")
@@ -90,21 +87,16 @@ class ExperimentRunner(runMode: RunMode, system: ActorSystem, duration: Long, z3
       output
     }
     catch {
-      case e: TimeoutException =>
-        if (eagerSynthesiser != null) {
-          system.stop(eagerSynthesiser)
-          processKiller ! tmp
-        }
+      case e: Exception =>
         if (eagerZ3Caller != null) system.stop(eagerZ3Caller)
         if (lazySynthesiser != null) {
           system.stop(lazySynthesiser)
-          processKiller ! tmp
         }
         if (lazyZ3Caller != null) system.stop(lazyZ3Caller)
         throw e
     }
     finally {
-      tmp.delete()
+      tempPealInputFile.delete()
     }
   }
 }

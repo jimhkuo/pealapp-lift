@@ -12,13 +12,11 @@ object EagerFileSynthesiser extends App {
   def generate(): String = {
     try {
       val input = scala.io.Source.fromFile(inputFileName).mkString
-      val start = System.nanoTime()
 
-      //TODO use straight future to exit use future
+      val start = System.nanoTime()
       val outputFuture = future {
         new EagerSynthesiser().generate(input)
       }
-
       val output = Await.result(outputFuture, 300000 millis)
       val lapseTime = System.nanoTime() - start
 
