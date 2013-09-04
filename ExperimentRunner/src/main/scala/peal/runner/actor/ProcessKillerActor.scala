@@ -11,7 +11,7 @@ class ProcessKillerActor extends Actor {
     case file: File =>
       val execTmp = File.createTempFile("kill", "")
       execTmp.setExecutable(true)
-      val script = "foreach (`ps -A -f | grep " + file.getAbsoluteFile + " | grep nw`)  {\n@a = split;\n$pid = $a[1];\n`kill -9 $pid`;}"
+      val script = "foreach (`ps -A -f | grep " + file.getAbsoluteFile + " | grep nw`)  {\n@a = split;\n$pid = $a[1];\n$exists = kill 0, $pid;\n`kill -9 $pid` if ($exists);}"
       FileUtil.writeToFile(execTmp.getAbsolutePath, script)
       Seq("perl", execTmp.getAbsolutePath).!!
   }
