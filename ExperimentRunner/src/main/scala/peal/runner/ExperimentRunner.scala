@@ -4,10 +4,9 @@ import scala.concurrent.Await
 import scala.concurrent.duration._
 import akka.pattern.ask
 import akka.util.Timeout
-import akka.actor.{Kill, ActorRef, Props, ActorSystem}
+import akka.actor.{ActorRef, Props, ActorSystem}
 import peal.runner.actor._
 import peal.model.RandomModelGenerator
-import java.util.concurrent.TimeoutException
 import java.io.File
 import util.FileUtil
 import scala.sys.process._
@@ -16,18 +15,12 @@ import scala.sys.process._
 class TimingOutput(var modelGeneration: Long = 0, var eagerSynthesis: Long = 0, var eagerZ3: Long = 0, var lazySynthesis: Long = 0, var lazyZ3: Long = 0, var isSameOutput: Boolean = false, var model1Result: Map[String, String] = Map(), var model2Result: Map[String, String] = Map(), var pealInput: String = "")
 
 class ExperimentRunner(runMode: RunMode, system: ActorSystem, duration: Long, z3CallerMemoryBound: Long) {
-  //TODO rip out akka actor stuff
-  //read http://docs.scala-lang.org/overviews/core/futures.html
-  //execute each step sequentially
-  //return true if completes successfully
-  //return false otherwise
 
   def run(n: Int, min: Int, max: Int, plus: Int, mul: Int, k: Int, th: Double, delta: Double): TimingOutput = {
     implicit val timeout = Timeout(duration, MILLISECONDS)
     val output = new TimingOutput()
 
     var eagerZ3Caller: ActorRef = null
-    var lazySynthesiser: ActorRef = null
     var lazyZ3Caller: ActorRef = null
     val tempPealInputFile = File.createTempFile("pealInput", "")
 
@@ -87,9 +80,6 @@ class ExperimentRunner(runMode: RunMode, system: ActorSystem, duration: Long, z3
     catch {
       case e: Exception =>
         if (eagerZ3Caller != null) system.stop(eagerZ3Caller)
-        if (lazySynthesiser != null) {
-          system.stop(lazySynthesiser)
-        }
         if (lazyZ3Caller != null) system.stop(lazyZ3Caller)
         throw e
     }
