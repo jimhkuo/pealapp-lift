@@ -10,9 +10,7 @@ object Main extends App {
   private val timeout = 300000
 
   println("Picking up z3 from environment PATH: " + System.getenv("PATH"))
-
   binarySearchOnPolicySize(EagerOnly)
-
   System.exit(0)
 
   private def binarySearchOnPolicySize(runMode: RunMode) {
