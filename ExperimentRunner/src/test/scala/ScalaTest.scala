@@ -2,7 +2,6 @@ import akka.actor._
 import akka.testkit.TestActorRef
 import akka.util.Timeout
 import org.junit.Test
-import peal.runner.actor.{Run, ModelGeneratorActor}
 import scala.concurrent.Await
 import scala.concurrent.duration._
 import akka.pattern.ask
@@ -59,16 +58,6 @@ class ScalaTest {
         system.shutdown()
     }
     Thread.sleep(500)
-  }
-
-  @Test
-  def testModel() {
-    val myActor = TestActorRef(new ModelGeneratorActor(1, 1, 1, 136, 1, 3 * 136, 0.5, 0.1))
-
-    val modelFuture = myActor ? Run
-    val model = Await.result(modelFuture, timeout.duration).asInstanceOf[String]
-
-    println(model)
   }
 }
 
