@@ -10,6 +10,7 @@ import peal.model.RandomModelGenerator
 import java.io.File
 import util.FileUtil
 import scala.sys.process._
+import java.util.concurrent.TimeoutException
 
 
 class TimingOutput(var modelGeneration: Long = 0, var eagerSynthesis: Long = 0, var eagerZ3: Long = 0, var lazySynthesis: Long = 0, var lazyZ3: Long = 0, var isSameOutput: Boolean = false, var model1Result: Map[String, String] = Map(), var model2Result: Map[String, String] = Map(), var pealInput: String = "")
@@ -34,7 +35,7 @@ class ExperimentRunner(runMode: RunMode, system: ActorSystem, duration: Long, z3
 
       if (runMode != LazyOnly) {
         val eagerInput = Seq("java", "-Xmx10240m", "-Xss32m", "-cp", "./Peal.jar", "peal.eagersynthesis.EagerFileSynthesiser", tempPealInputFile.getAbsolutePath).!!
-        if (eagerInput == "TIMEOUT") throw new RuntimeException("TO")
+        if (eagerInput == "TIMEOUT") throw new TimeoutException("Timeout in Eager Synthesis")
         output.eagerSynthesis = eagerInput.split("\n")(0).toLong
         print("e")
 
@@ -50,7 +51,7 @@ class ExperimentRunner(runMode: RunMode, system: ActorSystem, duration: Long, z3
 
       if (runMode != EagerOnly) {
         val lazyInput = Seq("java", "-Xmx10240m", "-Xss32m", "-cp", "./Peal.jar", "peal.lazysynthesis.LazyFileSynthesiser", tempPealInputFile.getAbsolutePath).!!
-        if (lazyInput == "TIMEOUT") throw new RuntimeException("TO")
+        if (lazyInput == "TIMEOUT") throw new TimeoutException("Timeout in Lazy Synthesis")
         output.lazySynthesis = lazyInput.split("\n")(0).toLong
         print("1")
 
