@@ -6,7 +6,7 @@ import akka.actor.ActorSystem
 
 object Main extends App {
   implicit val system = ActorSystem("system")
-  private val z3MemoryBound = 6000000
+  private val z3MemoryBound = 8000000
   private val timeout = 300000
 
   println("Picking up z3 from environment PATH: " + System.getenv("PATH"))

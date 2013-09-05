@@ -17,7 +17,7 @@ class Z3CallerActor(memoryLimit: Long) extends Actor {
 
   def receive = {
     case inputFile: File =>
-      val execTmp = File.createTempFile("executeZ3", "")
+      val execTmp = File.createTempFile("runZ3-", "")
       execTmp.setExecutable(true)
       val script = "#!/bin/sh\nulimit -v " + memoryLimit + "\nz3 -nw -smt2 " + inputFile.getAbsolutePath + "\n"
       FileUtil.writeToFile(execTmp.getAbsolutePath, script)
