@@ -8,13 +8,13 @@ import util.FileUtil
 class ProcessKillerActor extends Actor {
 
   def receive = {
-    case file: File =>
-      val execTmp = File.createTempFile("kill", "")
-      execTmp.setExecutable(true)
-      val script = "foreach (`ps -A -f | grep " + file.getAbsoluteFile + " | grep nw`)  {\n@a = split;\n$pid = $a[1];\n$exists = kill 0, $pid;\n`kill -9 $pid` if ($exists);}"
-      FileUtil.writeToFile(execTmp.getAbsolutePath, script)
-      Seq("perl", execTmp.getAbsolutePath).!!
-      execTmp.delete()
-      file.delete()
+    case inputFile: File =>
+      val killScript = File.createTempFile("killZ3Script", "")
+      killScript.setExecutable(true)
+      val script = "foreach (`ps -A -f | grep " + inputFile.getAbsoluteFile + " | grep nw`)  {\n@a = split;\n$pid = $a[1];\n$exists = kill 0, $pid;\n`kill -9 $pid` if ($exists);}"
+      FileUtil.writeToFile(killScript.getAbsolutePath, script)
+      Seq("perl", killScript.getAbsolutePath).!!
+      killScript.delete()
+      inputFile.delete()
   }
 }
