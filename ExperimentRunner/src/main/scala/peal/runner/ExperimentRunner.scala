@@ -99,7 +99,6 @@ class ExperimentRunner(runMode: RunMode, system: ActorSystem, duration: Long, z3
       }
       output
     }
-
     catch {
       case e: Exception =>
         if (eagerZ3Caller != null) system.stop(eagerZ3Caller)
