@@ -19,3 +19,6 @@ java -Xmx4192m -XX:+UseParallelGC -jar ExperimentRunner-assembly-0.2-ez-plus.jar
 still issues in freeing up ScalaZ3 objects
 
 nohup java -Xmx4096m -XX:-UseGCOverheadLimit -jar ExperimentRunner-assembly-0.2-min.jar > peal_results/300000-min-2.out &
+
+2013/09/05
+nohup java -Xmx18360m -jar ExperimentRunner-assembly-0.2-exp1-ez-min.jar > peal_results/300000-exp1-ez-min-2.out &
