@@ -24,7 +24,7 @@ class ExperimentRunner(runMode: RunMode, system: ActorSystem, duration: Long, z3
     val processKiller = system.actorOf(Props[ProcessKillerActor])
     var eagerZ3Caller: ActorRef = null
     var lazyZ3Caller: ActorRef = null
-    val tempPealInputFile = File.createTempFile("pealInput", "")
+    val tempPealInputFile = File.createTempFile("randomModel", "")
 
     try {
       var start = System.nanoTime()
@@ -42,24 +42,21 @@ class ExperimentRunner(runMode: RunMode, system: ActorSystem, duration: Long, z3
         output.eagerSynthesis = eagerInput.split("\n")(0).toLong
         print("e")
 
-        val tmpInput = File.createTempFile("z3file", "")
-        FileUtil.writeToFile(tmpInput.getAbsolutePath, eagerInput)
+        val z3InputFile = File.createTempFile("eagerZ3File", "")
+        FileUtil.writeToFile(z3InputFile.getAbsolutePath, eagerInput)
 
         try {
           eagerZ3Caller = system.actorOf(Props(new Z3CallerActor(z3CallerMemoryBound)))
           start = System.nanoTime()
-          val eagerFuture = eagerZ3Caller ? tmpInput
+          val eagerFuture = eagerZ3Caller ? z3InputFile
           val eagerResult = Await.result(eagerFuture, timeout.duration)
           lapsedTime = System.nanoTime() - start
           output.eagerZ3 = lapsedTime
           print("z")
           output.model1Result = eagerResult.asInstanceOf[Map[String, String]]
         } catch {
-          case e: TimeoutException => processKiller ! tmpInput
+          case e: TimeoutException => processKiller ! z3InputFile
             throw e
-        }
-        finally {
-          tmpInput.delete()
         }
       }
 
@@ -71,26 +68,22 @@ class ExperimentRunner(runMode: RunMode, system: ActorSystem, duration: Long, z3
         output.lazySynthesis = lazyInput.split("\n")(0).toLong
         print("1")
 
-        val tmpInput = File.createTempFile("z3file", "")
-        FileUtil.writeToFile(tmpInput.getAbsolutePath, lazyInput)
+        val z3InputFile = File.createTempFile("lazyZ3File", "")
+        FileUtil.writeToFile(z3InputFile.getAbsolutePath, lazyInput)
 
         try {
           lazyZ3Caller = system.actorOf(Props(new Z3CallerActor(z3CallerMemoryBound)))
           start = System.nanoTime()
-          val resultFuture = lazyZ3Caller ? tmpInput
+          val resultFuture = lazyZ3Caller ? z3InputFile
           val result = Await.result(resultFuture, timeout.duration)
           lapsedTime = System.nanoTime() - start
           output.lazyZ3 = lapsedTime
           print("z")
           output.model2Result = result.asInstanceOf[Map[String, String]]
         } catch {
-          case e: TimeoutException => processKiller ! tmpInput
+          case e: TimeoutException => processKiller ! z3InputFile
             throw e
         }
-        finally {
-          tmpInput.delete()
-        }
-
       }
 
       if (runMode != Both) {
