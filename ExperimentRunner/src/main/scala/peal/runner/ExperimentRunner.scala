@@ -24,7 +24,7 @@ class ExperimentRunner(runMode: RunMode, system: ActorSystem, duration: Long, z3
     val processKiller = system.actorOf(Props[ProcessKillerActor])
     var eagerZ3Caller: ActorRef = null
     var lazyZ3Caller: ActorRef = null
-    val pealInputFile = File.createTempFile("randomModel", "")
+    val randomModelFile = File.createTempFile("randomModel", "")
 
     try {
       var start = System.nanoTime()
@@ -32,10 +32,10 @@ class ExperimentRunner(runMode: RunMode, system: ActorSystem, duration: Long, z3
       var lapsedTime = System.nanoTime() - start
       output.modelGeneration = lapsedTime
       print("m")
-      FileUtil.writeToFile(pealInputFile.getAbsolutePath, model)
+      FileUtil.writeToFile(randomModelFile.getAbsolutePath, model)
 
       if (runMode != LazyOnly) {
-        val eagerInput = Seq("java", "-Xmx15240m", "-Xss32m", "-cp", "./Peal.jar", "peal.eagersynthesis.EagerFileSynthesiser", pealInputFile.getAbsolutePath).!!
+        val eagerInput = Seq("java", "-Xmx15240m", "-Xss32m", "-cp", "./Peal.jar", "peal.eagersynthesis.EagerFileSynthesiser", randomModelFile.getAbsolutePath).!!
         if (eagerInput.trim == "TIMEOUT") {
           throw new TimeoutException("Timeout in Eager Synthesis")
         }
@@ -61,7 +61,7 @@ class ExperimentRunner(runMode: RunMode, system: ActorSystem, duration: Long, z3
       }
 
       if (runMode != EagerOnly) {
-        val lazyInput = Seq("java", "-Xmx15240m", "-Xss32m", "-cp", "./Peal.jar", "peal.lazysynthesis.LazyFileSynthesiser", pealInputFile.getAbsolutePath).!!
+        val lazyInput = Seq("java", "-Xmx15240m", "-Xss32m", "-cp", "./Peal.jar", "peal.lazysynthesis.LazyFileSynthesiser", randomModelFile.getAbsolutePath).!!
         if (lazyInput.trim == "TIMEOUT") {
           throw new TimeoutException("Timeout in Lazy Synthesis")
         }
@@ -106,7 +106,7 @@ class ExperimentRunner(runMode: RunMode, system: ActorSystem, duration: Long, z3
         throw e
     }
     finally {
-      pealInputFile.delete()
+      randomModelFile.delete()
     }
   }
 
