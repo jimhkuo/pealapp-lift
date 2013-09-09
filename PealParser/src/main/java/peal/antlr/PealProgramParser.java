@@ -1,4 +1,4 @@
-// $ANTLR 3.4 /Users/jkuo/PealApp-lift/antlr/PealProgram.g 2013-08-20 20:05:04
+// $ANTLR 3.4 /Users/jkuo/PealApp-lift/antlr/PealProgram.g 2013-09-09 11:55:36
 
 package peal.antlr;
 import java.util.*;
@@ -87,7 +87,7 @@ public class PealProgramParser extends Parser {
 
 
     // $ANTLR start "program"
-    // /Users/jkuo/PealApp-lift/antlr/PealProgram.g:45:1: program : ( 'POLICIES' )? ( pol )* ( 'POLICY_SETS' )? (id2= IDENT '=' pSet )+ ( 'CONDITIONS' )? (id0= IDENT '=' id2= IDENT '<=' num= NUMBER |id0= IDENT '=' num= NUMBER '<' id2= IDENT )+ ( 'DOMAIN_SPECIFICS' ( IDENT | NUMBER | '+' | '=' | '(' | ')' | '<' | '<=' )* )? ( 'ANALYSES' (id0= IDENT '=' 'always_true?' id1= IDENT |id0= IDENT '=' 'always_false?' id1= IDENT |id0= IDENT '=' 'satisfiable?' id1= IDENT |id0= IDENT '=' 'equivalent?' id1= IDENT id2= IDENT |id0= IDENT '=' 'different?' id1= IDENT id2= IDENT )+ )? ;
+    // /Users/jkuo/PealApp-lift/antlr/PealProgram.g:45:1: program : ( 'POLICIES' )? ( pol )* ( 'POLICY_SETS' )? (id2= IDENT '=' pSet )+ ( 'CONDITIONS' )? (id0= IDENT '=' id2= IDENT '<=' num= NUMBER |id0= IDENT '=' num= NUMBER '<' id2= IDENT )+ ( 'DOMAIN_SPECIFICS' ( IDENT | NUMBER | '+' | '*' | '=' | '(' | ')' | '<' | '<=' )* )? ( 'ANALYSES' (id0= IDENT '=' 'always_true?' id1= IDENT |id0= IDENT '=' 'always_false?' id1= IDENT |id0= IDENT '=' 'satisfiable?' id1= IDENT |id0= IDENT '=' 'equivalent?' id1= IDENT id2= IDENT |id0= IDENT '=' 'different?' id1= IDENT id2= IDENT )+ )? ;
     public final void program() throws RecognitionException {
         Token id2=null;
         Token id0=null;
@@ -99,8 +99,8 @@ public class PealProgramParser extends Parser {
 
 
         try {
-            // /Users/jkuo/PealApp-lift/antlr/PealProgram.g:46:2: ( ( 'POLICIES' )? ( pol )* ( 'POLICY_SETS' )? (id2= IDENT '=' pSet )+ ( 'CONDITIONS' )? (id0= IDENT '=' id2= IDENT '<=' num= NUMBER |id0= IDENT '=' num= NUMBER '<' id2= IDENT )+ ( 'DOMAIN_SPECIFICS' ( IDENT | NUMBER | '+' | '=' | '(' | ')' | '<' | '<=' )* )? ( 'ANALYSES' (id0= IDENT '=' 'always_true?' id1= IDENT |id0= IDENT '=' 'always_false?' id1= IDENT |id0= IDENT '=' 'satisfiable?' id1= IDENT |id0= IDENT '=' 'equivalent?' id1= IDENT id2= IDENT |id0= IDENT '=' 'different?' id1= IDENT id2= IDENT )+ )? )
-            // /Users/jkuo/PealApp-lift/antlr/PealProgram.g:47:2: ( 'POLICIES' )? ( pol )* ( 'POLICY_SETS' )? (id2= IDENT '=' pSet )+ ( 'CONDITIONS' )? (id0= IDENT '=' id2= IDENT '<=' num= NUMBER |id0= IDENT '=' num= NUMBER '<' id2= IDENT )+ ( 'DOMAIN_SPECIFICS' ( IDENT | NUMBER | '+' | '=' | '(' | ')' | '<' | '<=' )* )? ( 'ANALYSES' (id0= IDENT '=' 'always_true?' id1= IDENT |id0= IDENT '=' 'always_false?' id1= IDENT |id0= IDENT '=' 'satisfiable?' id1= IDENT |id0= IDENT '=' 'equivalent?' id1= IDENT id2= IDENT |id0= IDENT '=' 'different?' id1= IDENT id2= IDENT )+ )?
+            // /Users/jkuo/PealApp-lift/antlr/PealProgram.g:46:2: ( ( 'POLICIES' )? ( pol )* ( 'POLICY_SETS' )? (id2= IDENT '=' pSet )+ ( 'CONDITIONS' )? (id0= IDENT '=' id2= IDENT '<=' num= NUMBER |id0= IDENT '=' num= NUMBER '<' id2= IDENT )+ ( 'DOMAIN_SPECIFICS' ( IDENT | NUMBER | '+' | '*' | '=' | '(' | ')' | '<' | '<=' )* )? ( 'ANALYSES' (id0= IDENT '=' 'always_true?' id1= IDENT |id0= IDENT '=' 'always_false?' id1= IDENT |id0= IDENT '=' 'satisfiable?' id1= IDENT |id0= IDENT '=' 'equivalent?' id1= IDENT id2= IDENT |id0= IDENT '=' 'different?' id1= IDENT id2= IDENT )+ )? )
+            // /Users/jkuo/PealApp-lift/antlr/PealProgram.g:47:2: ( 'POLICIES' )? ( pol )* ( 'POLICY_SETS' )? (id2= IDENT '=' pSet )+ ( 'CONDITIONS' )? (id0= IDENT '=' id2= IDENT '<=' num= NUMBER |id0= IDENT '=' num= NUMBER '<' id2= IDENT )+ ( 'DOMAIN_SPECIFICS' ( IDENT | NUMBER | '+' | '*' | '=' | '(' | ')' | '<' | '<=' )* )? ( 'ANALYSES' (id0= IDENT '=' 'always_true?' id1= IDENT |id0= IDENT '=' 'always_false?' id1= IDENT |id0= IDENT '=' 'satisfiable?' id1= IDENT |id0= IDENT '=' 'equivalent?' id1= IDENT id2= IDENT |id0= IDENT '=' 'different?' id1= IDENT id2= IDENT )+ )?
             {
             // /Users/jkuo/PealApp-lift/antlr/PealProgram.g:47:2: ( 'POLICIES' )?
             int alt1=2;
@@ -375,7 +375,7 @@ public class PealProgramParser extends Parser {
             } while (true);
 
 
-            // /Users/jkuo/PealApp-lift/antlr/PealProgram.g:57:2: ( 'DOMAIN_SPECIFICS' ( IDENT | NUMBER | '+' | '=' | '(' | ')' | '<' | '<=' )* )?
+            // /Users/jkuo/PealApp-lift/antlr/PealProgram.g:57:2: ( 'DOMAIN_SPECIFICS' ( IDENT | NUMBER | '+' | '*' | '=' | '(' | ')' | '<' | '<=' )* )?
             int alt8=2;
             int LA8_0 = input.LA(1);
 
@@ -384,19 +384,19 @@ public class PealProgramParser extends Parser {
             }
             switch (alt8) {
                 case 1 :
-                    // /Users/jkuo/PealApp-lift/antlr/PealProgram.g:57:3: 'DOMAIN_SPECIFICS' ( IDENT | NUMBER | '+' | '=' | '(' | ')' | '<' | '<=' )*
+                    // /Users/jkuo/PealApp-lift/antlr/PealProgram.g:57:3: 'DOMAIN_SPECIFICS' ( IDENT | NUMBER | '+' | '*' | '=' | '(' | ')' | '<' | '<=' )*
                     {
                     match(input,18,FOLLOW_18_in_program149); 
 
                     ignore = true;
 
-                    // /Users/jkuo/PealApp-lift/antlr/PealProgram.g:58:2: ( IDENT | NUMBER | '+' | '=' | '(' | ')' | '<' | '<=' )*
+                    // /Users/jkuo/PealApp-lift/antlr/PealProgram.g:58:2: ( IDENT | NUMBER | '+' | '*' | '=' | '(' | ')' | '<' | '<=' )*
                     loop7:
                     do {
                         int alt7=2;
                         int LA7_0 = input.LA(1);
 
-                        if ( (LA7_0==IDENT||LA7_0==NUMBER||(LA7_0 >= 8 && LA7_0 <= 9)||LA7_0==11||(LA7_0 >= 13 && LA7_0 <= 15)) ) {
+                        if ( (LA7_0==IDENT||LA7_0==NUMBER||(LA7_0 >= 8 && LA7_0 <= 11)||(LA7_0 >= 13 && LA7_0 <= 15)) ) {
                             alt7=1;
                         }
 
@@ -405,7 +405,7 @@ public class PealProgramParser extends Parser {
                     	case 1 :
                     	    // /Users/jkuo/PealApp-lift/antlr/PealProgram.g:
                     	    {
-                    	    if ( input.LA(1)==IDENT||input.LA(1)==NUMBER||(input.LA(1) >= 8 && input.LA(1) <= 9)||input.LA(1)==11||(input.LA(1) >= 13 && input.LA(1) <= 15) ) {
+                    	    if ( input.LA(1)==IDENT||input.LA(1)==NUMBER||(input.LA(1) >= 8 && input.LA(1) <= 11)||(input.LA(1) >= 13 && input.LA(1) <= 15) ) {
                     	        input.consume();
                     	        state.errorRecovery=false;
                     	    }
@@ -441,7 +441,7 @@ public class PealProgramParser extends Parser {
                 case 1 :
                     // /Users/jkuo/PealApp-lift/antlr/PealProgram.g:59:3: 'ANALYSES' (id0= IDENT '=' 'always_true?' id1= IDENT |id0= IDENT '=' 'always_false?' id1= IDENT |id0= IDENT '=' 'satisfiable?' id1= IDENT |id0= IDENT '=' 'equivalent?' id1= IDENT id2= IDENT |id0= IDENT '=' 'different?' id1= IDENT id2= IDENT )+
                     {
-                    match(input,16,FOLLOW_16_in_program192); 
+                    match(input,16,FOLLOW_16_in_program196); 
 
                     ignore = false;
 
@@ -495,13 +495,13 @@ public class PealProgramParser extends Parser {
                     	case 1 :
                     	    // /Users/jkuo/PealApp-lift/antlr/PealProgram.g:60:3: id0= IDENT '=' 'always_true?' id1= IDENT
                     	    {
-                    	    id0=(Token)match(input,IDENT,FOLLOW_IDENT_in_program200); 
+                    	    id0=(Token)match(input,IDENT,FOLLOW_IDENT_in_program204); 
 
-                    	    match(input,15,FOLLOW_15_in_program202); 
+                    	    match(input,15,FOLLOW_15_in_program206); 
 
-                    	    match(input,22,FOLLOW_22_in_program204); 
+                    	    match(input,22,FOLLOW_22_in_program208); 
 
-                    	    id1=(Token)match(input,IDENT,FOLLOW_IDENT_in_program208); 
+                    	    id1=(Token)match(input,IDENT,FOLLOW_IDENT_in_program212); 
 
                     	    AnalysisGenerator analysis = new AlwaysTrue((id0!=null?id0.getText():null), (id1!=null?id1.getText():null)); analyses.put((id0!=null?id0.getText():null), analysis);
 
@@ -510,13 +510,13 @@ public class PealProgramParser extends Parser {
                     	case 2 :
                     	    // /Users/jkuo/PealApp-lift/antlr/PealProgram.g:61:3: id0= IDENT '=' 'always_false?' id1= IDENT
                     	    {
-                    	    id0=(Token)match(input,IDENT,FOLLOW_IDENT_in_program216); 
+                    	    id0=(Token)match(input,IDENT,FOLLOW_IDENT_in_program220); 
 
-                    	    match(input,15,FOLLOW_15_in_program218); 
+                    	    match(input,15,FOLLOW_15_in_program222); 
 
-                    	    match(input,21,FOLLOW_21_in_program220); 
+                    	    match(input,21,FOLLOW_21_in_program224); 
 
-                    	    id1=(Token)match(input,IDENT,FOLLOW_IDENT_in_program224); 
+                    	    id1=(Token)match(input,IDENT,FOLLOW_IDENT_in_program228); 
 
                     	    AnalysisGenerator analysis = new AlwaysFalse((id0!=null?id0.getText():null), (id1!=null?id1.getText():null)); analyses.put((id0!=null?id0.getText():null), analysis);
 
@@ -525,13 +525,13 @@ public class PealProgramParser extends Parser {
                     	case 3 :
                     	    // /Users/jkuo/PealApp-lift/antlr/PealProgram.g:62:3: id0= IDENT '=' 'satisfiable?' id1= IDENT
                     	    {
-                    	    id0=(Token)match(input,IDENT,FOLLOW_IDENT_in_program232); 
+                    	    id0=(Token)match(input,IDENT,FOLLOW_IDENT_in_program236); 
 
-                    	    match(input,15,FOLLOW_15_in_program234); 
+                    	    match(input,15,FOLLOW_15_in_program238); 
 
-                    	    match(input,28,FOLLOW_28_in_program236); 
+                    	    match(input,28,FOLLOW_28_in_program240); 
 
-                    	    id1=(Token)match(input,IDENT,FOLLOW_IDENT_in_program240); 
+                    	    id1=(Token)match(input,IDENT,FOLLOW_IDENT_in_program244); 
 
                     	    AnalysisGenerator analysis = new Satisfiable((id0!=null?id0.getText():null), (id1!=null?id1.getText():null)); analyses.put((id0!=null?id0.getText():null), analysis);
 
@@ -540,15 +540,15 @@ public class PealProgramParser extends Parser {
                     	case 4 :
                     	    // /Users/jkuo/PealApp-lift/antlr/PealProgram.g:63:3: id0= IDENT '=' 'equivalent?' id1= IDENT id2= IDENT
                     	    {
-                    	    id0=(Token)match(input,IDENT,FOLLOW_IDENT_in_program249); 
+                    	    id0=(Token)match(input,IDENT,FOLLOW_IDENT_in_program253); 
 
-                    	    match(input,15,FOLLOW_15_in_program251); 
+                    	    match(input,15,FOLLOW_15_in_program255); 
 
-                    	    match(input,25,FOLLOW_25_in_program253); 
+                    	    match(input,25,FOLLOW_25_in_program257); 
 
-                    	    id1=(Token)match(input,IDENT,FOLLOW_IDENT_in_program257); 
+                    	    id1=(Token)match(input,IDENT,FOLLOW_IDENT_in_program261); 
 
-                    	    id2=(Token)match(input,IDENT,FOLLOW_IDENT_in_program261); 
+                    	    id2=(Token)match(input,IDENT,FOLLOW_IDENT_in_program265); 
 
                     	    AnalysisGenerator analysis = new Equivalent((id0!=null?id0.getText():null), (id1!=null?id1.getText():null), (id2!=null?id2.getText():null)); analyses.put((id0!=null?id0.getText():null), analysis);
 
@@ -557,15 +557,15 @@ public class PealProgramParser extends Parser {
                     	case 5 :
                     	    // /Users/jkuo/PealApp-lift/antlr/PealProgram.g:64:3: id0= IDENT '=' 'different?' id1= IDENT id2= IDENT
                     	    {
-                    	    id0=(Token)match(input,IDENT,FOLLOW_IDENT_in_program270); 
+                    	    id0=(Token)match(input,IDENT,FOLLOW_IDENT_in_program274); 
 
-                    	    match(input,15,FOLLOW_15_in_program272); 
+                    	    match(input,15,FOLLOW_15_in_program276); 
 
-                    	    match(input,24,FOLLOW_24_in_program274); 
+                    	    match(input,24,FOLLOW_24_in_program278); 
 
-                    	    id1=(Token)match(input,IDENT,FOLLOW_IDENT_in_program278); 
+                    	    id1=(Token)match(input,IDENT,FOLLOW_IDENT_in_program282); 
 
-                    	    id2=(Token)match(input,IDENT,FOLLOW_IDENT_in_program282); 
+                    	    id2=(Token)match(input,IDENT,FOLLOW_IDENT_in_program286); 
 
                     	    AnalysisGenerator analysis = new Different((id0!=null?id0.getText():null), (id1!=null?id1.getText():null), (id2!=null?id2.getText():null)); analyses.put((id0!=null?id0.getText():null), analysis);
 
@@ -645,7 +645,7 @@ public class PealProgramParser extends Parser {
                 case 1 :
                     // /Users/jkuo/PealApp-lift/antlr/PealProgram.g:70:4: id1= IDENT
                     {
-                    id1=(Token)match(input,IDENT,FOLLOW_IDENT_in_pSet313); 
+                    id1=(Token)match(input,IDENT,FOLLOW_IDENT_in_pSet317); 
 
                     t = new BasicPolicySet(pols.get((id1!=null?id1.getText():null)));
 
@@ -654,17 +654,17 @@ public class PealProgramParser extends Parser {
                 case 2 :
                     // /Users/jkuo/PealApp-lift/antlr/PealProgram.g:71:4: 'max' '(' id1= IDENT ',' id2= IDENT ')'
                     {
-                    match(input,26,FOLLOW_26_in_pSet320); 
+                    match(input,26,FOLLOW_26_in_pSet324); 
 
-                    match(input,8,FOLLOW_8_in_pSet322); 
+                    match(input,8,FOLLOW_8_in_pSet326); 
 
-                    id1=(Token)match(input,IDENT,FOLLOW_IDENT_in_pSet326); 
+                    id1=(Token)match(input,IDENT,FOLLOW_IDENT_in_pSet330); 
 
-                    match(input,12,FOLLOW_12_in_pSet328); 
+                    match(input,12,FOLLOW_12_in_pSet332); 
 
-                    id2=(Token)match(input,IDENT,FOLLOW_IDENT_in_pSet332); 
+                    id2=(Token)match(input,IDENT,FOLLOW_IDENT_in_pSet336); 
 
-                    match(input,9,FOLLOW_9_in_pSet334); 
+                    match(input,9,FOLLOW_9_in_pSet338); 
 
                     t = new MaxPolicySet(PolicyResolver.getFromOr(pols, pSets, (id1!=null?id1.getText():null)), PolicyResolver.getFromOr(pols, pSets, (id2!=null?id2.getText():null)));
 
@@ -673,17 +673,17 @@ public class PealProgramParser extends Parser {
                 case 3 :
                     // /Users/jkuo/PealApp-lift/antlr/PealProgram.g:72:4: 'min' '(' id1= IDENT ',' id2= IDENT ')'
                     {
-                    match(input,27,FOLLOW_27_in_pSet341); 
+                    match(input,27,FOLLOW_27_in_pSet345); 
 
-                    match(input,8,FOLLOW_8_in_pSet343); 
+                    match(input,8,FOLLOW_8_in_pSet347); 
 
-                    id1=(Token)match(input,IDENT,FOLLOW_IDENT_in_pSet347); 
+                    id1=(Token)match(input,IDENT,FOLLOW_IDENT_in_pSet351); 
 
-                    match(input,12,FOLLOW_12_in_pSet349); 
+                    match(input,12,FOLLOW_12_in_pSet353); 
 
-                    id2=(Token)match(input,IDENT,FOLLOW_IDENT_in_pSet353); 
+                    id2=(Token)match(input,IDENT,FOLLOW_IDENT_in_pSet357); 
 
-                    match(input,9,FOLLOW_9_in_pSet355); 
+                    match(input,9,FOLLOW_9_in_pSet359); 
 
                     t = new MinPolicySet(PolicyResolver.getFromOr(pols, pSets, (id1!=null?id1.getText():null)), PolicyResolver.getFromOr(pols, pSets, (id2!=null?id2.getText():null)));
 
@@ -785,13 +785,13 @@ public class PealProgramParser extends Parser {
                 case 1 :
                     // /Users/jkuo/PealApp-lift/antlr/PealProgram.g:77:3: id1= IDENT '=' '+' '(' ( rule )* ')' 'default' NUMBER
                     {
-                    id1=(Token)match(input,IDENT,FOLLOW_IDENT_in_pol379); 
+                    id1=(Token)match(input,IDENT,FOLLOW_IDENT_in_pol383); 
 
-                    match(input,15,FOLLOW_15_in_pol381); 
+                    match(input,15,FOLLOW_15_in_pol385); 
 
-                    match(input,11,FOLLOW_11_in_pol385); 
+                    match(input,11,FOLLOW_11_in_pol389); 
 
-                    match(input,8,FOLLOW_8_in_pol387); 
+                    match(input,8,FOLLOW_8_in_pol391); 
 
                     // /Users/jkuo/PealApp-lift/antlr/PealProgram.g:77:27: ( rule )*
                     loop12:
@@ -808,7 +808,7 @@ public class PealProgramParser extends Parser {
                     	case 1 :
                     	    // /Users/jkuo/PealApp-lift/antlr/PealProgram.g:77:28: rule
                     	    {
-                    	    pushFollow(FOLLOW_rule_in_pol390);
+                    	    pushFollow(FOLLOW_rule_in_pol394);
                     	    rule3=rule();
 
                     	    state._fsp--;
@@ -825,11 +825,11 @@ public class PealProgramParser extends Parser {
                     } while (true);
 
 
-                    match(input,9,FOLLOW_9_in_pol396); 
+                    match(input,9,FOLLOW_9_in_pol400); 
 
-                    match(input,23,FOLLOW_23_in_pol398); 
+                    match(input,23,FOLLOW_23_in_pol402); 
 
-                    NUMBER4=(Token)match(input,NUMBER,FOLLOW_NUMBER_in_pol400); 
+                    NUMBER4=(Token)match(input,NUMBER,FOLLOW_NUMBER_in_pol404); 
 
                     p = new Pol(l, Plus$.MODULE$, BigDecimal.valueOf(Double.valueOf((NUMBER4!=null?NUMBER4.getText():null))), (id1!=null?id1.getText():null));
 
@@ -838,13 +838,13 @@ public class PealProgramParser extends Parser {
                 case 2 :
                     // /Users/jkuo/PealApp-lift/antlr/PealProgram.g:78:3: id1= IDENT '=' 'max' '(' ( rule )* ')' 'default' NUMBER
                     {
-                    id1=(Token)match(input,IDENT,FOLLOW_IDENT_in_pol408); 
+                    id1=(Token)match(input,IDENT,FOLLOW_IDENT_in_pol412); 
 
-                    match(input,15,FOLLOW_15_in_pol410); 
+                    match(input,15,FOLLOW_15_in_pol414); 
 
-                    match(input,26,FOLLOW_26_in_pol413); 
+                    match(input,26,FOLLOW_26_in_pol417); 
 
-                    match(input,8,FOLLOW_8_in_pol415); 
+                    match(input,8,FOLLOW_8_in_pol419); 
 
                     // /Users/jkuo/PealApp-lift/antlr/PealProgram.g:78:28: ( rule )*
                     loop13:
@@ -861,7 +861,7 @@ public class PealProgramParser extends Parser {
                     	case 1 :
                     	    // /Users/jkuo/PealApp-lift/antlr/PealProgram.g:78:29: rule
                     	    {
-                    	    pushFollow(FOLLOW_rule_in_pol418);
+                    	    pushFollow(FOLLOW_rule_in_pol422);
                     	    rule5=rule();
 
                     	    state._fsp--;
@@ -878,11 +878,11 @@ public class PealProgramParser extends Parser {
                     } while (true);
 
 
-                    match(input,9,FOLLOW_9_in_pol424); 
+                    match(input,9,FOLLOW_9_in_pol428); 
 
-                    match(input,23,FOLLOW_23_in_pol426); 
+                    match(input,23,FOLLOW_23_in_pol430); 
 
-                    NUMBER6=(Token)match(input,NUMBER,FOLLOW_NUMBER_in_pol428); 
+                    NUMBER6=(Token)match(input,NUMBER,FOLLOW_NUMBER_in_pol432); 
 
                     p = new Pol(l, Max$.MODULE$, BigDecimal.valueOf(Double.valueOf((NUMBER6!=null?NUMBER6.getText():null))),  (id1!=null?id1.getText():null));
 
@@ -891,13 +891,13 @@ public class PealProgramParser extends Parser {
                 case 3 :
                     // /Users/jkuo/PealApp-lift/antlr/PealProgram.g:79:3: id1= IDENT '=' 'min' '(' ( rule )* ')' 'default' NUMBER
                     {
-                    id1=(Token)match(input,IDENT,FOLLOW_IDENT_in_pol436); 
+                    id1=(Token)match(input,IDENT,FOLLOW_IDENT_in_pol440); 
 
-                    match(input,15,FOLLOW_15_in_pol438); 
+                    match(input,15,FOLLOW_15_in_pol442); 
 
-                    match(input,27,FOLLOW_27_in_pol441); 
+                    match(input,27,FOLLOW_27_in_pol445); 
 
-                    match(input,8,FOLLOW_8_in_pol443); 
+                    match(input,8,FOLLOW_8_in_pol447); 
 
                     // /Users/jkuo/PealApp-lift/antlr/PealProgram.g:79:28: ( rule )*
                     loop14:
@@ -914,7 +914,7 @@ public class PealProgramParser extends Parser {
                     	case 1 :
                     	    // /Users/jkuo/PealApp-lift/antlr/PealProgram.g:79:29: rule
                     	    {
-                    	    pushFollow(FOLLOW_rule_in_pol446);
+                    	    pushFollow(FOLLOW_rule_in_pol450);
                     	    rule7=rule();
 
                     	    state._fsp--;
@@ -931,11 +931,11 @@ public class PealProgramParser extends Parser {
                     } while (true);
 
 
-                    match(input,9,FOLLOW_9_in_pol452); 
+                    match(input,9,FOLLOW_9_in_pol456); 
 
-                    match(input,23,FOLLOW_23_in_pol454); 
+                    match(input,23,FOLLOW_23_in_pol458); 
 
-                    NUMBER8=(Token)match(input,NUMBER,FOLLOW_NUMBER_in_pol456); 
+                    NUMBER8=(Token)match(input,NUMBER,FOLLOW_NUMBER_in_pol460); 
 
                     p = new Pol(l, Min$.MODULE$, BigDecimal.valueOf(Double.valueOf((NUMBER8!=null?NUMBER8.getText():null))), (id1!=null?id1.getText():null));
 
@@ -944,13 +944,13 @@ public class PealProgramParser extends Parser {
                 case 4 :
                     // /Users/jkuo/PealApp-lift/antlr/PealProgram.g:80:3: id1= IDENT '=' '*' '(' ( rule )* ')' 'default' NUMBER
                     {
-                    id1=(Token)match(input,IDENT,FOLLOW_IDENT_in_pol465); 
+                    id1=(Token)match(input,IDENT,FOLLOW_IDENT_in_pol469); 
 
-                    match(input,15,FOLLOW_15_in_pol467); 
+                    match(input,15,FOLLOW_15_in_pol471); 
 
-                    match(input,10,FOLLOW_10_in_pol470); 
+                    match(input,10,FOLLOW_10_in_pol474); 
 
-                    match(input,8,FOLLOW_8_in_pol472); 
+                    match(input,8,FOLLOW_8_in_pol476); 
 
                     // /Users/jkuo/PealApp-lift/antlr/PealProgram.g:80:26: ( rule )*
                     loop15:
@@ -967,7 +967,7 @@ public class PealProgramParser extends Parser {
                     	case 1 :
                     	    // /Users/jkuo/PealApp-lift/antlr/PealProgram.g:80:27: rule
                     	    {
-                    	    pushFollow(FOLLOW_rule_in_pol475);
+                    	    pushFollow(FOLLOW_rule_in_pol479);
                     	    rule9=rule();
 
                     	    state._fsp--;
@@ -984,11 +984,11 @@ public class PealProgramParser extends Parser {
                     } while (true);
 
 
-                    match(input,9,FOLLOW_9_in_pol481); 
+                    match(input,9,FOLLOW_9_in_pol485); 
 
-                    match(input,23,FOLLOW_23_in_pol483); 
+                    match(input,23,FOLLOW_23_in_pol487); 
 
-                    NUMBER10=(Token)match(input,NUMBER,FOLLOW_NUMBER_in_pol485); 
+                    NUMBER10=(Token)match(input,NUMBER,FOLLOW_NUMBER_in_pol489); 
 
                     p = new Pol(l, Mul$.MODULE$, BigDecimal.valueOf(Double.valueOf((NUMBER10!=null?NUMBER10.getText():null))), (id1!=null?id1.getText():null));
 
@@ -1024,13 +1024,13 @@ public class PealProgramParser extends Parser {
             // /Users/jkuo/PealApp-lift/antlr/PealProgram.g:84:2: ( '(' IDENT NUMBER ')' )
             // /Users/jkuo/PealApp-lift/antlr/PealProgram.g:84:4: '(' IDENT NUMBER ')'
             {
-            match(input,8,FOLLOW_8_in_rule503); 
+            match(input,8,FOLLOW_8_in_rule507); 
 
-            IDENT11=(Token)match(input,IDENT,FOLLOW_IDENT_in_rule505); 
+            IDENT11=(Token)match(input,IDENT,FOLLOW_IDENT_in_rule509); 
 
-            NUMBER12=(Token)match(input,NUMBER,FOLLOW_NUMBER_in_rule507); 
+            NUMBER12=(Token)match(input,NUMBER,FOLLOW_NUMBER_in_rule511); 
 
-            match(input,9,FOLLOW_9_in_rule509); 
+            match(input,9,FOLLOW_9_in_rule513); 
 
             r = new Rule(new Predicate((IDENT11!=null?IDENT11.getText():null)),BigDecimal.valueOf(Double.valueOf((NUMBER12!=null?NUMBER12.getText():null))));
 
@@ -1071,78 +1071,78 @@ public class PealProgramParser extends Parser {
     public static final BitSet FOLLOW_NUMBER_in_program133 = new BitSet(new long[]{0x0000000000002000L});
     public static final BitSet FOLLOW_13_in_program135 = new BitSet(new long[]{0x0000000000000010L});
     public static final BitSet FOLLOW_IDENT_in_program139 = new BitSet(new long[]{0x0000000000050012L});
-    public static final BitSet FOLLOW_18_in_program149 = new BitSet(new long[]{0x000000000001EB52L});
-    public static final BitSet FOLLOW_16_in_program192 = new BitSet(new long[]{0x0000000000000010L});
-    public static final BitSet FOLLOW_IDENT_in_program200 = new BitSet(new long[]{0x0000000000008000L});
-    public static final BitSet FOLLOW_15_in_program202 = new BitSet(new long[]{0x0000000000400000L});
-    public static final BitSet FOLLOW_22_in_program204 = new BitSet(new long[]{0x0000000000000010L});
-    public static final BitSet FOLLOW_IDENT_in_program208 = new BitSet(new long[]{0x0000000000000012L});
-    public static final BitSet FOLLOW_IDENT_in_program216 = new BitSet(new long[]{0x0000000000008000L});
-    public static final BitSet FOLLOW_15_in_program218 = new BitSet(new long[]{0x0000000000200000L});
-    public static final BitSet FOLLOW_21_in_program220 = new BitSet(new long[]{0x0000000000000010L});
-    public static final BitSet FOLLOW_IDENT_in_program224 = new BitSet(new long[]{0x0000000000000012L});
-    public static final BitSet FOLLOW_IDENT_in_program232 = new BitSet(new long[]{0x0000000000008000L});
-    public static final BitSet FOLLOW_15_in_program234 = new BitSet(new long[]{0x0000000010000000L});
-    public static final BitSet FOLLOW_28_in_program236 = new BitSet(new long[]{0x0000000000000010L});
-    public static final BitSet FOLLOW_IDENT_in_program240 = new BitSet(new long[]{0x0000000000000012L});
-    public static final BitSet FOLLOW_IDENT_in_program249 = new BitSet(new long[]{0x0000000000008000L});
-    public static final BitSet FOLLOW_15_in_program251 = new BitSet(new long[]{0x0000000002000000L});
-    public static final BitSet FOLLOW_25_in_program253 = new BitSet(new long[]{0x0000000000000010L});
-    public static final BitSet FOLLOW_IDENT_in_program257 = new BitSet(new long[]{0x0000000000000010L});
-    public static final BitSet FOLLOW_IDENT_in_program261 = new BitSet(new long[]{0x0000000000000012L});
-    public static final BitSet FOLLOW_IDENT_in_program270 = new BitSet(new long[]{0x0000000000008000L});
-    public static final BitSet FOLLOW_15_in_program272 = new BitSet(new long[]{0x0000000001000000L});
-    public static final BitSet FOLLOW_24_in_program274 = new BitSet(new long[]{0x0000000000000010L});
-    public static final BitSet FOLLOW_IDENT_in_program278 = new BitSet(new long[]{0x0000000000000010L});
-    public static final BitSet FOLLOW_IDENT_in_program282 = new BitSet(new long[]{0x0000000000000012L});
-    public static final BitSet FOLLOW_IDENT_in_pSet313 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_26_in_pSet320 = new BitSet(new long[]{0x0000000000000100L});
-    public static final BitSet FOLLOW_8_in_pSet322 = new BitSet(new long[]{0x0000000000000010L});
-    public static final BitSet FOLLOW_IDENT_in_pSet326 = new BitSet(new long[]{0x0000000000001000L});
-    public static final BitSet FOLLOW_12_in_pSet328 = new BitSet(new long[]{0x0000000000000010L});
-    public static final BitSet FOLLOW_IDENT_in_pSet332 = new BitSet(new long[]{0x0000000000000200L});
-    public static final BitSet FOLLOW_9_in_pSet334 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_27_in_pSet341 = new BitSet(new long[]{0x0000000000000100L});
-    public static final BitSet FOLLOW_8_in_pSet343 = new BitSet(new long[]{0x0000000000000010L});
-    public static final BitSet FOLLOW_IDENT_in_pSet347 = new BitSet(new long[]{0x0000000000001000L});
-    public static final BitSet FOLLOW_12_in_pSet349 = new BitSet(new long[]{0x0000000000000010L});
-    public static final BitSet FOLLOW_IDENT_in_pSet353 = new BitSet(new long[]{0x0000000000000200L});
-    public static final BitSet FOLLOW_9_in_pSet355 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_IDENT_in_pol379 = new BitSet(new long[]{0x0000000000008000L});
-    public static final BitSet FOLLOW_15_in_pol381 = new BitSet(new long[]{0x0000000000000800L});
-    public static final BitSet FOLLOW_11_in_pol385 = new BitSet(new long[]{0x0000000000000100L});
-    public static final BitSet FOLLOW_8_in_pol387 = new BitSet(new long[]{0x0000000000000300L});
-    public static final BitSet FOLLOW_rule_in_pol390 = new BitSet(new long[]{0x0000000000000300L});
-    public static final BitSet FOLLOW_9_in_pol396 = new BitSet(new long[]{0x0000000000800000L});
-    public static final BitSet FOLLOW_23_in_pol398 = new BitSet(new long[]{0x0000000000000040L});
-    public static final BitSet FOLLOW_NUMBER_in_pol400 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_IDENT_in_pol408 = new BitSet(new long[]{0x0000000000008000L});
-    public static final BitSet FOLLOW_15_in_pol410 = new BitSet(new long[]{0x0000000004000000L});
-    public static final BitSet FOLLOW_26_in_pol413 = new BitSet(new long[]{0x0000000000000100L});
-    public static final BitSet FOLLOW_8_in_pol415 = new BitSet(new long[]{0x0000000000000300L});
-    public static final BitSet FOLLOW_rule_in_pol418 = new BitSet(new long[]{0x0000000000000300L});
-    public static final BitSet FOLLOW_9_in_pol424 = new BitSet(new long[]{0x0000000000800000L});
-    public static final BitSet FOLLOW_23_in_pol426 = new BitSet(new long[]{0x0000000000000040L});
-    public static final BitSet FOLLOW_NUMBER_in_pol428 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_IDENT_in_pol436 = new BitSet(new long[]{0x0000000000008000L});
-    public static final BitSet FOLLOW_15_in_pol438 = new BitSet(new long[]{0x0000000008000000L});
-    public static final BitSet FOLLOW_27_in_pol441 = new BitSet(new long[]{0x0000000000000100L});
-    public static final BitSet FOLLOW_8_in_pol443 = new BitSet(new long[]{0x0000000000000300L});
-    public static final BitSet FOLLOW_rule_in_pol446 = new BitSet(new long[]{0x0000000000000300L});
-    public static final BitSet FOLLOW_9_in_pol452 = new BitSet(new long[]{0x0000000000800000L});
-    public static final BitSet FOLLOW_23_in_pol454 = new BitSet(new long[]{0x0000000000000040L});
-    public static final BitSet FOLLOW_NUMBER_in_pol456 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_IDENT_in_pol465 = new BitSet(new long[]{0x0000000000008000L});
-    public static final BitSet FOLLOW_15_in_pol467 = new BitSet(new long[]{0x0000000000000400L});
-    public static final BitSet FOLLOW_10_in_pol470 = new BitSet(new long[]{0x0000000000000100L});
-    public static final BitSet FOLLOW_8_in_pol472 = new BitSet(new long[]{0x0000000000000300L});
-    public static final BitSet FOLLOW_rule_in_pol475 = new BitSet(new long[]{0x0000000000000300L});
-    public static final BitSet FOLLOW_9_in_pol481 = new BitSet(new long[]{0x0000000000800000L});
-    public static final BitSet FOLLOW_23_in_pol483 = new BitSet(new long[]{0x0000000000000040L});
-    public static final BitSet FOLLOW_NUMBER_in_pol485 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_8_in_rule503 = new BitSet(new long[]{0x0000000000000010L});
-    public static final BitSet FOLLOW_IDENT_in_rule505 = new BitSet(new long[]{0x0000000000000040L});
-    public static final BitSet FOLLOW_NUMBER_in_rule507 = new BitSet(new long[]{0x0000000000000200L});
-    public static final BitSet FOLLOW_9_in_rule509 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_18_in_program149 = new BitSet(new long[]{0x000000000001EF52L});
+    public static final BitSet FOLLOW_16_in_program196 = new BitSet(new long[]{0x0000000000000010L});
+    public static final BitSet FOLLOW_IDENT_in_program204 = new BitSet(new long[]{0x0000000000008000L});
+    public static final BitSet FOLLOW_15_in_program206 = new BitSet(new long[]{0x0000000000400000L});
+    public static final BitSet FOLLOW_22_in_program208 = new BitSet(new long[]{0x0000000000000010L});
+    public static final BitSet FOLLOW_IDENT_in_program212 = new BitSet(new long[]{0x0000000000000012L});
+    public static final BitSet FOLLOW_IDENT_in_program220 = new BitSet(new long[]{0x0000000000008000L});
+    public static final BitSet FOLLOW_15_in_program222 = new BitSet(new long[]{0x0000000000200000L});
+    public static final BitSet FOLLOW_21_in_program224 = new BitSet(new long[]{0x0000000000000010L});
+    public static final BitSet FOLLOW_IDENT_in_program228 = new BitSet(new long[]{0x0000000000000012L});
+    public static final BitSet FOLLOW_IDENT_in_program236 = new BitSet(new long[]{0x0000000000008000L});
+    public static final BitSet FOLLOW_15_in_program238 = new BitSet(new long[]{0x0000000010000000L});
+    public static final BitSet FOLLOW_28_in_program240 = new BitSet(new long[]{0x0000000000000010L});
+    public static final BitSet FOLLOW_IDENT_in_program244 = new BitSet(new long[]{0x0000000000000012L});
+    public static final BitSet FOLLOW_IDENT_in_program253 = new BitSet(new long[]{0x0000000000008000L});
+    public static final BitSet FOLLOW_15_in_program255 = new BitSet(new long[]{0x0000000002000000L});
+    public static final BitSet FOLLOW_25_in_program257 = new BitSet(new long[]{0x0000000000000010L});
+    public static final BitSet FOLLOW_IDENT_in_program261 = new BitSet(new long[]{0x0000000000000010L});
+    public static final BitSet FOLLOW_IDENT_in_program265 = new BitSet(new long[]{0x0000000000000012L});
+    public static final BitSet FOLLOW_IDENT_in_program274 = new BitSet(new long[]{0x0000000000008000L});
+    public static final BitSet FOLLOW_15_in_program276 = new BitSet(new long[]{0x0000000001000000L});
+    public static final BitSet FOLLOW_24_in_program278 = new BitSet(new long[]{0x0000000000000010L});
+    public static final BitSet FOLLOW_IDENT_in_program282 = new BitSet(new long[]{0x0000000000000010L});
+    public static final BitSet FOLLOW_IDENT_in_program286 = new BitSet(new long[]{0x0000000000000012L});
+    public static final BitSet FOLLOW_IDENT_in_pSet317 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_26_in_pSet324 = new BitSet(new long[]{0x0000000000000100L});
+    public static final BitSet FOLLOW_8_in_pSet326 = new BitSet(new long[]{0x0000000000000010L});
+    public static final BitSet FOLLOW_IDENT_in_pSet330 = new BitSet(new long[]{0x0000000000001000L});
+    public static final BitSet FOLLOW_12_in_pSet332 = new BitSet(new long[]{0x0000000000000010L});
+    public static final BitSet FOLLOW_IDENT_in_pSet336 = new BitSet(new long[]{0x0000000000000200L});
+    public static final BitSet FOLLOW_9_in_pSet338 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_27_in_pSet345 = new BitSet(new long[]{0x0000000000000100L});
+    public static final BitSet FOLLOW_8_in_pSet347 = new BitSet(new long[]{0x0000000000000010L});
+    public static final BitSet FOLLOW_IDENT_in_pSet351 = new BitSet(new long[]{0x0000000000001000L});
+    public static final BitSet FOLLOW_12_in_pSet353 = new BitSet(new long[]{0x0000000000000010L});
+    public static final BitSet FOLLOW_IDENT_in_pSet357 = new BitSet(new long[]{0x0000000000000200L});
+    public static final BitSet FOLLOW_9_in_pSet359 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_IDENT_in_pol383 = new BitSet(new long[]{0x0000000000008000L});
+    public static final BitSet FOLLOW_15_in_pol385 = new BitSet(new long[]{0x0000000000000800L});
+    public static final BitSet FOLLOW_11_in_pol389 = new BitSet(new long[]{0x0000000000000100L});
+    public static final BitSet FOLLOW_8_in_pol391 = new BitSet(new long[]{0x0000000000000300L});
+    public static final BitSet FOLLOW_rule_in_pol394 = new BitSet(new long[]{0x0000000000000300L});
+    public static final BitSet FOLLOW_9_in_pol400 = new BitSet(new long[]{0x0000000000800000L});
+    public static final BitSet FOLLOW_23_in_pol402 = new BitSet(new long[]{0x0000000000000040L});
+    public static final BitSet FOLLOW_NUMBER_in_pol404 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_IDENT_in_pol412 = new BitSet(new long[]{0x0000000000008000L});
+    public static final BitSet FOLLOW_15_in_pol414 = new BitSet(new long[]{0x0000000004000000L});
+    public static final BitSet FOLLOW_26_in_pol417 = new BitSet(new long[]{0x0000000000000100L});
+    public static final BitSet FOLLOW_8_in_pol419 = new BitSet(new long[]{0x0000000000000300L});
+    public static final BitSet FOLLOW_rule_in_pol422 = new BitSet(new long[]{0x0000000000000300L});
+    public static final BitSet FOLLOW_9_in_pol428 = new BitSet(new long[]{0x0000000000800000L});
+    public static final BitSet FOLLOW_23_in_pol430 = new BitSet(new long[]{0x0000000000000040L});
+    public static final BitSet FOLLOW_NUMBER_in_pol432 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_IDENT_in_pol440 = new BitSet(new long[]{0x0000000000008000L});
+    public static final BitSet FOLLOW_15_in_pol442 = new BitSet(new long[]{0x0000000008000000L});
+    public static final BitSet FOLLOW_27_in_pol445 = new BitSet(new long[]{0x0000000000000100L});
+    public static final BitSet FOLLOW_8_in_pol447 = new BitSet(new long[]{0x0000000000000300L});
+    public static final BitSet FOLLOW_rule_in_pol450 = new BitSet(new long[]{0x0000000000000300L});
+    public static final BitSet FOLLOW_9_in_pol456 = new BitSet(new long[]{0x0000000000800000L});
+    public static final BitSet FOLLOW_23_in_pol458 = new BitSet(new long[]{0x0000000000000040L});
+    public static final BitSet FOLLOW_NUMBER_in_pol460 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_IDENT_in_pol469 = new BitSet(new long[]{0x0000000000008000L});
+    public static final BitSet FOLLOW_15_in_pol471 = new BitSet(new long[]{0x0000000000000400L});
+    public static final BitSet FOLLOW_10_in_pol474 = new BitSet(new long[]{0x0000000000000100L});
+    public static final BitSet FOLLOW_8_in_pol476 = new BitSet(new long[]{0x0000000000000300L});
+    public static final BitSet FOLLOW_rule_in_pol479 = new BitSet(new long[]{0x0000000000000300L});
+    public static final BitSet FOLLOW_9_in_pol485 = new BitSet(new long[]{0x0000000000800000L});
+    public static final BitSet FOLLOW_23_in_pol487 = new BitSet(new long[]{0x0000000000000040L});
+    public static final BitSet FOLLOW_NUMBER_in_pol489 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_8_in_rule507 = new BitSet(new long[]{0x0000000000000010L});
+    public static final BitSet FOLLOW_IDENT_in_rule509 = new BitSet(new long[]{0x0000000000000040L});
+    public static final BitSet FOLLOW_NUMBER_in_rule511 = new BitSet(new long[]{0x0000000000000200L});
+    public static final BitSet FOLLOW_9_in_rule513 = new BitSet(new long[]{0x0000000000000002L});
 
 }

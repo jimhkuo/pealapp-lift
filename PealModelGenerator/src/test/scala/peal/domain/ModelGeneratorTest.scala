@@ -7,7 +7,7 @@ class ModelGeneratorTest {
 
   @Test
   def test() {
-    println(RandomModelGenerator.generate(true, 10, 10, 1, 1, 1, 3*10, 0.5, 0.1))
+    println(RandomModelGenerator.generate(true, 2, 2, 1, 1, 1, 3*2, 0.5, 0.1))
   }
 
   @Test
