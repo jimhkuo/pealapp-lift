@@ -145,8 +145,9 @@ object RandomModelGenerator {
     val methodNameDeclaration = for (i <- 0 until p) yield ("(declare-const n" + i + " MethodName)")
 
     val firstLevel = for (i <- 0 until p) yield ("(assert (= q" + i + " (calledBy n" + Random.nextInt(p) + ")))")
+    val secondLevel = for (i <- p+1 until 2*p) yield ("(assert (= q" + i + " (< a" + Random.nextInt(p) + " (+ a" + Random.nextInt(p) + " " + "%.4f".format(Random.nextDouble()) + "))))")
 
-    "DOMAIN_SPECIFICS\n" + realDeclaration.mkString("", "\n", "\n") + intDeclaration.mkString("", "\n", "\n") + methodName + methodNameDeclaration.mkString("", "\n", "\n") + firstLevel.mkString("", "\n", "\n")
+    "DOMAIN_SPECIFICS\n" + realDeclaration.mkString("", "\n", "\n") + intDeclaration.mkString("", "\n", "\n") + methodName + methodNameDeclaration.mkString("", "\n", "\n") + firstLevel.mkString("", "\n", "\n") + secondLevel.mkString("", "\n", "\n")
 
   }
 }
