@@ -8,7 +8,7 @@ mainClass in assembly := Some("bootstrap.liftweb.Start")
 
 name := "PealApp-lift"
 
-version := "0.9"
+version := "1.0"
 
 scalaVersion := "2.10.2"
 
@@ -45,6 +45,7 @@ resourceGenerators in Compile <+= (resourceManaged, baseDirectory) map
 mergeStrategy in assembly <<= (mergeStrategy in assembly) { (old) =>
   {
     case "about.html" => MergeStrategy.rename
+    case "rootdoc.txt" => MergeStrategy.rename
     case x => old(x)
   }
 }

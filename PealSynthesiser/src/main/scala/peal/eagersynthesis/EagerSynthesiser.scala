@@ -18,6 +18,7 @@ class EagerSynthesiser() {
     val pealProgramParser = getPealProgramParser(input)
     pealProgramParser.program()
 
+    //TODO should get all predicates
     val predicateNames: Seq[String] = pealProgramParser.pols.values().flatMap(pol => pol.rules).map(r => r.q.name).toSeq.distinct
     val constsMap = predicateNames.toSeq.distinct.map(t => (t, Term(t))).toMap
     val predicateDeclarations = for (name <- constsMap.keys) yield "(declare-const " + name + " Bool)\n"
