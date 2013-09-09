@@ -13,6 +13,10 @@ object RandomModelGenerator {
   }
 
   def generate(n: Int, m0: Int, m1: Int, m2: Int, m3: Int, k: Int, th: Double, delta: Double): String = {
+    generate(false, n, m0, m1, m2, m3, k, th, delta)
+  }
+
+  def generate(doDomainSpecific: Boolean, n: Int, m0: Int, m1: Int, m2: Int, m3: Int, k: Int, th: Double, delta: Double): String = {
 
     var predicates = (0 until k).map(i => new Predicate("q" + i))
 
@@ -128,9 +132,21 @@ object RandomModelGenerator {
     val cond1 = "cond1 = " + "%.2f".format(th) + " < " + finalPolicySet
     val cond2 = "cond2 = " + "%.2f".format(th + delta) + " < " + finalPolicySet
 
-    //TODO remove the first two analysis for experiment 5 described in experimental_plan_logical_synthesis.txt
     val analyses = "analysis1 = always_true? cond1\nanalysis2 = always_false? cond2\nanalysis3 = different? cond1 cond2\n"
+    val domainSpecifics = if (doDomainSpecific) generateDomainSpecifics(k/3) else ""
 
-    "POLICIES\n" + policies.toSeq.mkString("\n") + "\nPOLICY_SETS\n" + pSets.flatten.toSeq.map(c => c._1 + " = " + c._2).mkString("\n") + "\n\n" + reminder.toSeq.map(c => c._1 + " = " + c._2).mkString("\n") + lastBit + "CONDITIONS\n" + cond1 + "\n" + cond2 + "\nANALYSES\n" + analyses
+    "POLICIES\n" + policies.toSeq.mkString("\n") + "\nPOLICY_SETS\n" + pSets.flatten.toSeq.map(c => c._1 + " = " + c._2).mkString("\n") + "\n\n" + reminder.toSeq.map(c => c._1 + " = " + c._2).mkString("\n") + lastBit + "CONDITIONS\n" + cond1 + "\n" + cond2 + "\n" + domainSpecifics + "ANALYSES\n" + analyses
+  }
+
+  private def generateDomainSpecifics(p : Int): String = {
+
+
+    val realDeclaration = for (i <- 0 until p) yield("(declare-const x" + i + " Real)")
+    val intDeclaration = for (i <- 0 until p) yield("(declare-const a" + i + " Int)")
+    val methodName = "(declare-sort MethodName)\n(declare-fun calledBy (MethodName) Bool)\n(assert (forall ((n MethodName) (m MethodName)) (or (= m n) (implies (calledBy m) (not (calledBy n))))))\n"
+    val methodNameDeclaration = for (i <- 0 until p) yield("(declare-const n" + i + " MethodName)")
+
+    "DOMAIN_SPECIFICS\n" + realDeclaration.mkString("","\n","\n") + intDeclaration.mkString("","\n","\n") + methodName + methodNameDeclaration.mkString("","\n","\n")
+
   }
 }
