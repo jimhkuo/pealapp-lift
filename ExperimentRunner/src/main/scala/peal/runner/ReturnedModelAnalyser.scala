@@ -1,14 +1,11 @@
 package peal.runner
 
-object ResultAnalyser {
-
+object ReturnedModelAnalyser {
   val spec = """Result of analysis \[([-\w. =?]+)\]:""".r
   val status = """([-\w]+)""".r
 
   def execute(input: String): Map[String, String] = {
-
     var out = Map[String, String]()
-
     var n = ""
     input.split("\n").foreach {
       line =>
@@ -21,5 +18,4 @@ object ResultAnalyser {
 
     out
   }
-
 }
