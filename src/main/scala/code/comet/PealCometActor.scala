@@ -97,21 +97,21 @@ class PealCometActor extends CometActor with Loggable {
         }, "id" -> "r", "size" -> "30")}
         </div>
         <div>
-          {SHtml.ajaxButton("EXPLICIT synthesise", () => {
+          {SHtml.ajaxButton("EXPLICIT synthesis", () => {
           this ! Display
           _Noop
-        }) ++ SHtml.ajaxButton("EXPLICIT synthesise and call z3", () => {
+        }) ++ SHtml.ajaxButton("EXPLICIT synthesis and call z3", () => {
           this ! SynthesisAndCallZ3
           _Noop
         })}
           <span>||</span>
-          {SHtml.ajaxButton("EXPLICIT synthesise (and download)", () => {
+          {SHtml.ajaxButton("EXPLICIT synthesis (and download)", () => {
           this ! Prepare
           _Noop
         }) }
         </div>
         <div>
-          {SHtml.ajaxButton("SYMBOLIC synthesise", () => {
+          {SHtml.ajaxButton("SYMBOLIC synthesis", () => {
           this ! LazyDisplay
           _Noop
         })++ SHtml.ajaxButton("SYMBOLIC synthesis and call z3", () => {
