@@ -12,8 +12,6 @@ class Boot {
 
     val entries = List(
       Menu.i("Peal") / "index",
-      //      Menu.i("Home") / "peal",
-      //      Menu.i("Peal") / "peal",
       Menu.i("Debug info") / "debug",
       Menu.i("About us") / "aboutus"
       //      Menu.i("Download") / "download"
