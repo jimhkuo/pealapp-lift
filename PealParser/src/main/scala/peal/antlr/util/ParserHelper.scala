@@ -13,7 +13,8 @@ object ParserHelper {
   }
 
   def getZ3OutputParser(input: String) = {
-    val charStream = new ANTLRStringStream(input)
+    val cleanedInput = input.split("\n").filterNot(_.trim.startsWith(";;")).mkString("\n")
+    val charStream = new ANTLRStringStream(cleanedInput)
     val lexer = new Z3OutputLexer(charStream)
     val tokenStream = new CommonTokenStream(lexer)
     new Z3OutputParser(tokenStream)
