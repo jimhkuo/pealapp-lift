@@ -5,6 +5,8 @@ import scala.collection.JavaConversions._
 import scala.util.Random
 import peal.domain.operator.{Mul, Plus, Max, Min}
 import scala.collection.mutable.ListBuffer
+import peal.antlr.util.ParserHelper
+import peal.domain.z3.Term
 
 object RandomModelGenerator {
 
@@ -132,24 +134,27 @@ object RandomModelGenerator {
     val cond1 = "cond1 = " + "%.2f".format(th) + " < " + finalPolicySet
     val cond2 = "cond2 = " + "%.2f".format(th + delta) + " < " + finalPolicySet
 
+    val pealText = "POLICIES\n" + policies.toSeq.mkString("\n") + "\nPOLICY_SETS\n" + pSets.flatten.toSeq.map(c => c._1 + " = " + c._2).mkString("\n") + "\n\n" + reminder.toSeq.map(c => c._1 + " = " + c._2).mkString("\n") + lastBit + "CONDITIONS\n" + cond1 + "\n" + cond2 + "\n"
     val analyses = "analysis1 = always_true? cond1\nanalysis2 = always_false? cond2\nanalysis3 = different? cond1 cond2\n"
+    val domainSpecifics = if (doDomainSpecific) generateDomainSpecifics(k / 3, pealText) else ""
 
-    //TODO save the generated peal text and put it through the antlr parser
-    //pass the constsMap to the next step
-    val domainSpecifics = if (doDomainSpecific) generateDomainSpecifics(k / 3) else ""
-
-    "POLICIES\n" + policies.toSeq.mkString("\n") + "\nPOLICY_SETS\n" + pSets.flatten.toSeq.map(c => c._1 + " = " + c._2).mkString("\n") + "\n\n" + reminder.toSeq.map(c => c._1 + " = " + c._2).mkString("\n") + lastBit + "CONDITIONS\n" + cond1 + "\n" + cond2 + "\n" + domainSpecifics + "ANALYSES\n" + analyses
+    pealText + domainSpecifics + "ANALYSES\n" + analyses
   }
 
-  private def generateDomainSpecifics(p: Int): String = {
+  private def generateDomainSpecifics(p: Int, pealText: String): String = {
+
+    val parser = ParserHelper.getPealParser(pealText)
+    parser.program()
+    val predicates = parser.pols.values().flatMap(pol => pol.rules).map(r => r.q.name).toSet
+
     val realDeclaration = for (i <- 0 until p) yield ("(declare-const x" + i + " Real)")
     val intDeclaration = for (i <- 0 until p) yield ("(declare-const a" + i + " Int)")
     val methodName = "(declare-sort MethodName)\n(declare-fun calledBy (MethodName) Bool)\n(assert (forall ((n MethodName) (m MethodName)) (or (= m n) (implies (calledBy m) (not (calledBy n))))))\n"
     val methodNameDeclaration = for (i <- 0 until p) yield ("(declare-const n" + i + " MethodName)")
 
-    val firstLevel = for (i <- 0 until p) yield ("(assert (= q" + i + " (calledBy n" + Random.nextInt(p) + ")))")
-    val secondLevel = for (i <- p until 2*p) yield ("(assert (= q" + i + " (< a" + Random.nextInt(p) + " (+ a" + Random.nextInt(p) + " " + Random.nextDouble() + "))))")
-    val thirdLevel = for (i <- 2*p until 3*p) yield ("(assert (= q" + i + " (< x" + Random.nextInt(p) + " (* x" + Random.nextInt(p) + " " + Random.nextDouble() + "))))")
+    val firstLevel = for (i <- 0 until p if (predicates.contains("q" + i))) yield ("(assert (= q" + i + " (calledBy n" + Random.nextInt(p) + ")))")
+    val secondLevel = for (i <- p until 2 * p if (predicates.contains("q" + i))) yield ("(assert (= q" + i + " (< a" + Random.nextInt(p) + " (+ a" + Random.nextInt(p) + " " + Random.nextDouble() + "))))")
+    val thirdLevel = for (i <- 2 * p until 3 * p if (predicates.contains("q" + i))) yield ("(assert (= q" + i + " (< x" + Random.nextInt(p) + " (* x" + Random.nextInt(p) + " " + Random.nextDouble() + "))))")
 
     "DOMAIN_SPECIFICS\n" + realDeclaration.mkString("", "\n", "\n") + intDeclaration.mkString("", "\n", "\n") + methodName + methodNameDeclaration.mkString("", "\n", "\n") + firstLevel.mkString("", "\n", "\n") + secondLevel.mkString("", "\n", "\n") + thirdLevel.mkString("", "\n", "\n")
 
