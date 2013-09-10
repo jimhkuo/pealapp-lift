@@ -7,7 +7,7 @@ import peal.antlr.util.ParserHelper
 class EagerSynthesiser() {
 
   def generate(input:String): String = {
-    val pealProgramParser = ParserHelper.get(input)
+    val pealProgramParser = ParserHelper.getPealParser(input)
     pealProgramParser.program()
 
     val predicateNames: Seq[String] = pealProgramParser.pols.values().flatMap(pol => pol.rules).map(r => r.q.name).toSeq.distinct

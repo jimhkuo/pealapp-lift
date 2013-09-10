@@ -25,6 +25,7 @@ import peal.model.RandomModelGenerator
 import peal.domain.PolicySet
 import peal.lazysynthesis.LazySynthesiser
 import peal.domain.z3.{PealAst, Term}
+import peal.antlr.util.ParserHelper
 
 
 class PealCometActor extends CometActor with Loggable {
@@ -177,22 +178,8 @@ class PealCometActor extends CometActor with Loggable {
       partialUpdate(JqId("policies") ~> JqVal(inputPolicies))
   }
 
-  private def getZ3OutputParser(input: String) = {
-    val charStream = new ANTLRStringStream(input)
-    val lexer = new Z3OutputLexer(charStream)
-    val tokenStream = new CommonTokenStream(lexer)
-    new Z3OutputParser(tokenStream)
-  }
-
-  private def getPealProgramParser(input: String) = {
-    val charStream = new ANTLRStringStream(input)
-    val lexer = new PealProgramLexer(charStream)
-    val tokenStream = new CommonTokenStream(lexer)
-    new PealProgramParser(tokenStream)
-  }
-
   private def onCompute(input: String): (Map[String, PealAst], Map[String, Condition], Map[String, PolicySet], Map[String, AnalysisGenerator], Array[String]) = {
-    val pealProgramParser = getPealProgramParser(input)
+    val pealProgramParser = ParserHelper.getPealParser(input)
 
     try {
       pealProgramParser.program()
@@ -270,7 +257,7 @@ class PealCometActor extends CometActor with Loggable {
     Process(Seq("bash", "-c", "z3 -nw -smt2 " + tmp.getAbsolutePath)) ! processLogger
     tmp.delete()
     try {
-      val z3OutputParser = getZ3OutputParser(resultList.mkString(""))
+      val z3OutputParser = ParserHelper.getZ3OutputParser(resultList.mkString(""))
       val z3Models = z3OutputParser.results().toMap
       val analysedResults = Z3OutputAnalyser.execute(analyses, z3Models, constsMap)
 

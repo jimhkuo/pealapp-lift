@@ -15,7 +15,7 @@ import peal.antlr.util.ParserHelper
 
 class LazySynthesiser(input: String) {
 
-  val pealProgramParser = ParserHelper.get(input)
+  val pealProgramParser = ParserHelper.getPealParser(input)
   pealProgramParser.program()
 
   val pols = pealProgramParser.pols
