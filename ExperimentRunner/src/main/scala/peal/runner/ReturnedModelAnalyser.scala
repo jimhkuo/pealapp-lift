@@ -6,12 +6,12 @@ object ReturnedModelAnalyser {
 
   def execute(input: String): Map[String, String] = {
     var out = Map[String, String]()
-    var n = ""
+    var cachedName = ""
     input.split("\n").foreach {
       line =>
         line match {
-          case spec(name) => n = name
-          case status(s) => out += n -> s
+          case spec(analysisName) => cachedName = analysisName
+          case status(statusString) => out += cachedName -> statusString
           case _ =>
         }
     }
