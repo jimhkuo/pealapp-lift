@@ -1,24 +1,15 @@
 package peal.eagersynthesis
 
-import org.antlr.runtime.{CommonTokenStream, ANTLRStringStream}
-import peal.antlr.{PealProgramParser, PealProgramLexer}
 import scala.collection.JavaConversions._
 import peal.domain.z3.Term
+import peal.antlr.util.ParserHelper
 
 class EagerSynthesiser() {
 
-  private def getPealProgramParser(input: String) = {
-    val charStream = new ANTLRStringStream(input)
-    val lexer = new PealProgramLexer(charStream)
-    val tokenStream = new CommonTokenStream(lexer)
-    new PealProgramParser(tokenStream)
-  }
-
   def generate(input:String): String = {
-    val pealProgramParser = getPealProgramParser(input)
+    val pealProgramParser = ParserHelper.get(input)
     pealProgramParser.program()
 
-    //TODO should get all predicates
     val predicateNames: Seq[String] = pealProgramParser.pols.values().flatMap(pol => pol.rules).map(r => r.q.name).toSeq.distinct
     val constsMap = predicateNames.toSeq.distinct.map(t => (t, Term(t))).toMap
     val predicateDeclarations = for (name <- constsMap.keys) yield "(declare-const " + name + " Bool)\n"

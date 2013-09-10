@@ -11,17 +11,11 @@ import peal.domain.MinPolicySet
 import peal.domain.Pol
 import peal.synthesis.{GreaterThanThCondition, LessThanThCondition}
 import peal.domain.z3.Term
+import peal.antlr.util.ParserHelper
 
 class LazySynthesiser(input: String) {
 
-  private def getParser(input: String) = {
-    val charStream = new ANTLRStringStream(input)
-    val lexer = new PealProgramLexer(charStream)
-    val tokenStream = new CommonTokenStream(lexer)
-    new PealProgramParser(tokenStream)
-  }
-
-  val pealProgramParser = getParser(input)
+  val pealProgramParser = ParserHelper.get(input)
   pealProgramParser.program()
 
   val pols = pealProgramParser.pols
