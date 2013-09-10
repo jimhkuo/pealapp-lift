@@ -12,6 +12,7 @@ case object Init
 
 case object Clear
 case object Generate
+case object GenerateDomainSpecifics
 
 case object Download
 

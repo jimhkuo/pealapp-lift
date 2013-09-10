@@ -59,6 +59,7 @@ class PealCometActor extends CometActor with Loggable {
   var inputPolicies = defaultInput
   var majorityVotingCount = 10
   var randomModelParam = "5, 5, 4, 3, 2, 7, 0.5, 0.1"
+  var randomModelParamWithDomain = "2, 3, 1, 1, 1, 9, 0.5, 0.1"
 
   def render = {
     this ! Init
@@ -98,6 +99,15 @@ class PealCometActor extends CometActor with Loggable {
         }, "id" -> "r", "size" -> "30")}
         </div>
         <div>
+          {SHtml.ajaxButton("Generate random model with DOMAIN_SPECIFICS", () => {
+          this ! GenerateDomainSpecifics
+          _Noop
+        }) }{SHtml.ajaxText(randomModelParamWithDomain, s => {
+          randomModelParamWithDomain = s
+          _Noop
+        }, "id" -> "r", "size" -> "30")}
+        </div>
+        <div>
           {SHtml.ajaxButton("EXPLICIT synthesis", () => {
           this ! Display
           _Noop
@@ -133,7 +143,7 @@ class PealCometActor extends CometActor with Loggable {
     case Init =>
     case SynthesisAndCallZ3 =>
       val (constsMap,  conds, pSets, analyses, domainSpecific) = onCompute(inputPolicies)
-      onCallZ3ViaCommandLine(constsMap, conds,  pSets, analyses, domainSpecific)
+      onCallEagerZ3(constsMap, conds,  pSets, analyses, domainSpecific)
     case LazySynthesisAndCallZ3 =>
       val input = new LazySynthesiser(inputPolicies).generate()
       onCallLazyZ3(input)
@@ -175,6 +185,10 @@ class PealCometActor extends CometActor with Loggable {
     case Generate =>
       this ! Message("")
       inputPolicies = RandomModelGenerator.generate(randomModelParam.split(Array(' ', ',')).filterNot(_ == ""):_*)
+      partialUpdate(JqId("policies") ~> JqVal(inputPolicies))
+    case GenerateDomainSpecifics =>
+      this ! Message("")
+      inputPolicies = RandomModelGenerator.generate(true, randomModelParamWithDomain.split(Array(' ', ',')).filterNot(_ == ""):_*)
       partialUpdate(JqId("policies") ~> JqVal(inputPolicies))
   }
 
@@ -242,7 +256,7 @@ class PealCometActor extends CometActor with Loggable {
     this ! SaveFile(z3SMTInput, lapseTime)
   }
 
-  private def onCallZ3ViaCommandLine(constsMap: Map[String, PealAst], conds: Map[String, Condition], pSets: Map[String, PolicySet], analyses: Map[String, AnalysisGenerator], domainSpecifics: Array[String]) {
+  private def onCallEagerZ3(constsMap: Map[String, PealAst], conds: Map[String, Condition], pSets: Map[String, PolicySet], analyses: Map[String, AnalysisGenerator], domainSpecifics: Array[String]) {
     val declarations = for (name <- constsMap.keys) yield "(declare-const " + name + " Bool)\n"
     val declarations1 = for (name <- conds.keys) yield "(declare-const " + name + " Bool)\n"
     val sortedKeys = conds.keys.toSeq.sortWith(_ < _)
@@ -256,6 +270,7 @@ class PealCometActor extends CometActor with Loggable {
     resultList.clear()
     Process(Seq("bash", "-c", "z3 -nw -smt2 " + tmp.getAbsolutePath)) ! processLogger
     tmp.delete()
+
     try {
       val z3OutputParser = ParserHelper.getZ3OutputParser(resultList.mkString(""))
       val z3Models = z3OutputParser.results().toMap
@@ -263,7 +278,8 @@ class PealCometActor extends CometActor with Loggable {
 
       this ! Result(<pre>{z3SMTInput}</pre> <pre>Analysed results:<br/>{analysedResults}<br/><br/>Z3 Raw Output:<br/>{resultList.mkString("")}</pre>)
     } catch {
-      case e: Exception =>  dealWithIt(e)
+      case e: Exception =>     this ! Result(<pre>{z3SMTInput}</pre> <pre>Z3 Raw Output:<br/>{resultList.mkString("")}</pre>)
+//        dealWithIt(e)
     }
   }
 

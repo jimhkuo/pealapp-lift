@@ -6,12 +6,15 @@ import scala.util.Random
 import peal.domain.operator.{Mul, Plus, Max, Min}
 import scala.collection.mutable.ListBuffer
 import peal.antlr.util.ParserHelper
-import peal.domain.z3.Term
 
 object RandomModelGenerator {
 
   def generate(n: String*): String = {
     generate(n(0).toInt, n(1).toInt, n(2).toInt, n(3).toInt, n(4).toInt, n(5).toInt, n(6).toDouble, n(7).toDouble)
+  }
+
+  def generate(doDomainSpecific: Boolean, n: String*): String = {
+    generate(doDomainSpecific, n(0).toInt, n(1).toInt, n(2).toInt, n(3).toInt, n(4).toInt, n(5).toInt, n(6).toDouble, n(7).toDouble)
   }
 
   def generate(n: Int, m0: Int, m1: Int, m2: Int, m3: Int, k: Int, th: Double, delta: Double): String = {
