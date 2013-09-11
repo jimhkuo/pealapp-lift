@@ -23,16 +23,16 @@ class Z3CallerActor(memoryLimit: Long) extends Actor {
       FileUtil.writeToFile(execTmp.getAbsolutePath, script)
       val returnCode = Seq(execTmp.getAbsolutePath) ! processLogger
       val resultsMap = ReturnedModelAnalyser.execute(resultList.mkString("\n"))
-//      inputFile.delete()
       execTmp.delete()
 
       if (resultsMap.isEmpty) {
-
         println(resultList.mkString("\n"))
         println(returnCode)
         println(inputFile.getAbsolutePath)
-//        print("K")
         throw new RuntimeException("Killed due to memory restriction")
+      }
+      else {
+        inputFile.delete()
       }
 
       sender ! resultsMap
