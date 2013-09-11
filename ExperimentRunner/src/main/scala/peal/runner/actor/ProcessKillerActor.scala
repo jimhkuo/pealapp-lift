@@ -15,6 +15,6 @@ class ProcessKillerActor extends Actor {
       FileUtil.writeToFile(killScript.getAbsolutePath, script)
       Seq("perl", killScript.getAbsolutePath).!!
       killScript.delete()
-      inputFile.delete()
+//      inputFile.delete()
   }
 }

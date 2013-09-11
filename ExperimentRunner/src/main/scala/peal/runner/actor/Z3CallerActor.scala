@@ -26,10 +26,12 @@ class Z3CallerActor(memoryLimit: Long) extends Actor {
       execTmp.delete()
 
       if (resultsMap.isEmpty) {
-        println(resultList.mkString("\n"))
-        println(returnCode)
-        println(inputFile.getAbsolutePath)
-        throw new RuntimeException("Killed due to memory restriction")
+//        println(resultList.mkString("\n"))
+//        println(returnCode)
+//        println(inputFile.getAbsolutePath)
+        //this doesn't work
+//        throw new RuntimeException("Killed due to memory restriction")
+        sender ! FailedExecution
       }
       else {
         inputFile.delete()

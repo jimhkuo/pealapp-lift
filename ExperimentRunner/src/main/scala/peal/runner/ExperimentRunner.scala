@@ -52,8 +52,12 @@ class ExperimentRunner(runMode: RunMode, doDomainSpecifics: Boolean, system: Act
           val eagerResult = Await.result(eagerFuture, timeout.duration)
           lapsedTime = System.nanoTime() - start
           output.eagerZ3 = lapsedTime
+
+          eagerResult match {
+            case FailedExecution => throw new RuntimeException()
+            case _ => output.model1Result = eagerResult.asInstanceOf[Map[String, String]]
+          }
           print("z")
-          output.model1Result = eagerResult.asInstanceOf[Map[String, String]]
         } catch {
           case e: TimeoutException => processKiller ! z3InputFile
             throw e
@@ -78,6 +82,10 @@ class ExperimentRunner(runMode: RunMode, doDomainSpecifics: Boolean, system: Act
           val result = Await.result(resultFuture, timeout.duration)
           lapsedTime = System.nanoTime() - start
           output.lazyZ3 = lapsedTime
+          result match {
+            case FailedExecution => throw new RuntimeException()
+            case _ => output.model1Result = result.asInstanceOf[Map[String, String]]
+          }
           print("z")
           output.model2Result = result.asInstanceOf[Map[String, String]]
         } catch {
