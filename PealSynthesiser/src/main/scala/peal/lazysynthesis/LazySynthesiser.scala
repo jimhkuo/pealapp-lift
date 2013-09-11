@@ -100,7 +100,7 @@ class LazySynthesiser(input: String) {
     buffer.toString()
   }
 
-  private  def generatePolicySetAssertions(condName: String) : String = {
+  private def generatePolicySetAssertions(condName: String): String = {
     val buffer = new StringBuilder
     conds(condName) match {
       case s: GreaterThanThCondition => // <
@@ -161,11 +161,13 @@ class LazySynthesiser(input: String) {
         buffer.append(generatePolicySetAssertions(name))
     }
 
+    val domainSpecifics = input.split("\n").dropWhile(!_.startsWith("DOMAIN_SPECIFICS")).takeWhile(!_.startsWith("ANALYSES")).drop(1)
+
     val sortedAnalyses = analyses.keys.toSeq.sortWith(_ < _)
     val generatedAnalyses = for (analysis <- sortedAnalyses) yield {
       "(echo \"Result of analysis [" + analyses(analysis).analysisName + "]:\")\n" + analyses(analysis).z3SMTInput
     }
 
-    declarations.mkString("") + condDeclarations.mkString("") + buffer.toString() + generatedAnalyses.mkString("")
+    declarations.mkString("") + condDeclarations.mkString("") + buffer.toString() + domainSpecifics.mkString("", "\n", "\n") + generatedAnalyses.mkString("")
   }
 }

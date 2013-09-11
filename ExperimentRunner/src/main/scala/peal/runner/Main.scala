@@ -6,15 +6,16 @@ import akka.actor.ActorSystem
 
 object Main extends App {
   implicit val system = ActorSystem("system")
-  private val z3MemoryBound = 8000000
+  private val z3MemoryBound = 10000000
   private val timeout = 300000
+  private val doDomainSpecifics = true
 
   println("Picking up z3 from environment PATH: " + System.getenv("PATH"))
-  binarySearchOnRuleSize(LazyOnly)
+  binarySearchOnRuleSize(Both)
   System.exit(0)
 
   private def binarySearchOnRuleSize(runMode: RunMode) {
-    val execute: (Int) => Boolean = (x) => executeRunner(runMode, x, x, 1, 1, 2, 3 * x, 0.5, 0.1)
+    val execute: (Int) => Boolean = (x) => executeRunner(runMode, 1, x, 1, 1, 1, 3 * x, 0.5, 0.1)
 
     var lastSuccess = 0
     var lastFailure = 0
@@ -82,7 +83,7 @@ object Main extends App {
       print(n + "-" + m0 + "-" + m1 + "-" + m2 + "-" + m3 + "-" + th + "-" + delta + "," + timeout + ",")
 
       for (i <- 1 to iterations) {
-        val output = new ExperimentRunner(runMode,system, timeout, z3MemoryBound).run(n, m0, m1, m2, m3, k, th, delta)
+        val output = new ExperimentRunner(runMode, doDomainSpecifics, system, timeout, z3MemoryBound).run(n, m0, m1, m2, m3, k, th, delta)
         mt += output.modelGeneration
         et += output.eagerSynthesis
         ezt += output.eagerZ3
