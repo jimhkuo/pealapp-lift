@@ -55,7 +55,7 @@ class ExperimentRunner(runMode: RunMode, doDomainSpecifics: Boolean, system: Act
           print("z")
           output.model1Result = eagerResult.asInstanceOf[Map[String, String]]
         } catch {
-          case e: TimeoutException => processKiller ! z3InputFile
+          case e: Exception => processKiller ! z3InputFile
             throw e
         }
       }
@@ -81,7 +81,7 @@ class ExperimentRunner(runMode: RunMode, doDomainSpecifics: Boolean, system: Act
           print("z")
           output.model2Result = result.asInstanceOf[Map[String, String]]
         } catch {
-          case e: TimeoutException => processKiller ! z3InputFile
+          case e: Exception => processKiller ! z3InputFile
             throw e
         }
       }
