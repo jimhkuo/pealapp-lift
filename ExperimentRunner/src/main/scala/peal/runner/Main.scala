@@ -6,7 +6,7 @@ import akka.actor.ActorSystem
 
 object Main extends App {
   implicit val system = ActorSystem("system")
-  private val z3MemoryBound = 10000000
+  private val z3MemoryBound = 20000000
   private val timeout = 300000
   private val doDomainSpecifics = true
 
@@ -15,7 +15,7 @@ object Main extends App {
   System.exit(0)
 
   private def binarySearchOnRuleSize(runMode: RunMode) {
-    val execute: (Int) => Boolean = (x) => executeRunner(runMode, 1, x, 1, 1, 1, 3 * x, 0.5, 0.1)
+    val execute: (Int) => Boolean = (x) => executeRunner(runMode, 1, 1, x, 1, 1, 3 * x, 0.5, 0.1)
 
     var lastSuccess = 0
     var lastFailure = 0
