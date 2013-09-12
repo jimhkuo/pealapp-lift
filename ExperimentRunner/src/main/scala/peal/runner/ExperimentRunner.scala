@@ -54,7 +54,7 @@ class ExperimentRunner(runMode: RunMode, doDomainSpecifics: Boolean, system: Act
           output.eagerZ3 = lapsedTime
 
           eagerResult match {
-            case FailedExecution => throw new RuntimeException()
+            case FailedExecution => throw new RuntimeException("Z3 caller aborted")
             case _ => output.model1Result = eagerResult.asInstanceOf[Map[String, String]]
           }
           print("z")
@@ -83,7 +83,7 @@ class ExperimentRunner(runMode: RunMode, doDomainSpecifics: Boolean, system: Act
           lapsedTime = System.nanoTime() - start
           output.lazyZ3 = lapsedTime
           lazyResult match {
-            case FailedExecution => throw new RuntimeException()
+            case FailedExecution => throw new RuntimeException("Z3 caller aborted")
             case _ => output.model1Result = lazyResult.asInstanceOf[Map[String, String]]
           }
           print("z")
