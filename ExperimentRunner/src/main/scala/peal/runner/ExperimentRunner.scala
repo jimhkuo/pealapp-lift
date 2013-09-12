@@ -79,15 +79,15 @@ class ExperimentRunner(runMode: RunMode, doDomainSpecifics: Boolean, system: Act
           lazyZ3Caller = system.actorOf(Props(new Z3CallerActor(z3CallerMemoryBound)))
           start = System.nanoTime()
           val resultFuture = lazyZ3Caller ? z3InputFile
-          val result = Await.result(resultFuture, timeout.duration)
+          val lazyResult = Await.result(resultFuture, timeout.duration)
           lapsedTime = System.nanoTime() - start
           output.lazyZ3 = lapsedTime
-          result match {
+          lazyResult match {
             case FailedExecution => throw new RuntimeException()
-            case _ => output.model1Result = result.asInstanceOf[Map[String, String]]
+            case _ => output.model1Result = lazyResult.asInstanceOf[Map[String, String]]
           }
           print("z")
-          output.model2Result = result.asInstanceOf[Map[String, String]]
+          output.model2Result = lazyResult.asInstanceOf[Map[String, String]]
         } catch {
           case e: TimeoutException => processKiller ! z3InputFile
             throw e
