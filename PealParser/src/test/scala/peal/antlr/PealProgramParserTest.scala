@@ -13,6 +13,22 @@ import peal.antlr.util.ParserHelper
 class PealProgramParserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
   val consts = Map[String, PealAst]("q0" -> Term("q0"), "q1" -> Term("q1"), "q2" -> Term("q2"), "q3" -> Term("q3"), "q4" -> Term("q4"), "q5" -> Term("q5"), "q6" -> Term("q6"))
 
+  @Test
+  def testCanHandleNegativeScores() {
+    val input =
+      "b1 = min ((q1 -0.2) (q2 -0.4) (q3 -0.9)) default 1\n" +
+        "pSet = b1\n" +
+        "cond = pSet <= 0.5"
+
+    val pealProgrmParser = ParserHelper.getPealParser(input)
+    pealProgrmParser.program()
+
+    val pols = pealProgrmParser.pols
+    pols("b1").rules(0).score should be (BigDecimal.valueOf(-0.2))
+    pols("b1").rules(1).score should be (BigDecimal.valueOf(-0.4))
+    pols("b1").rules(2).score should be (BigDecimal.valueOf(-0.9))
+  }
+
   @Test(expected = classOf[RuntimeException])
   def testInValidInput() {
     val input = "co" +
