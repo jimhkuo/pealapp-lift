@@ -1,6 +1,6 @@
 package peal.antlr
 
-import org.junit.Test
+import org.junit.{Ignore, Test}
 import org.antlr.runtime.{CommonTokenStream, ANTLRStringStream}
 import org.scalatest.junit.ShouldMatchersForJUnit
 import scala.collection.JavaConversions._
@@ -12,6 +12,21 @@ import peal.antlr.util.ParserHelper
 
 class PealProgramParserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
   val consts = Map[String, PealAst]("q0" -> Term("q0"), "q1" -> Term("q1"), "q2" -> Term("q2"), "q3" -> Term("q3"), "q4" -> Term("q4"), "q5" -> Term("q5"), "q6" -> Term("q6"))
+
+  @Ignore("wip")
+  @Test
+  def testCanHandleNonConstantScores() {
+    val input =
+      "b1 = min ((q1 x)) default 1\n" +
+        "pSet = b1\n" +
+        "cond = pSet <= 0.5"
+
+    val pealProgrmParser = ParserHelper.getPealParser(input)
+    pealProgrmParser.program()
+
+    val pols = pealProgrmParser.pols
+    pols("b1").rules(0).score should be (BigDecimal.valueOf(-0.2))
+  }
 
   @Test
   def testCanHandleNegativeScores() {
