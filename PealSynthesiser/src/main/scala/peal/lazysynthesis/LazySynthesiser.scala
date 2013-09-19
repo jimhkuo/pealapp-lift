@@ -149,7 +149,8 @@ class LazySynthesiser(input: String) {
         b.rules.foreach {
           predicate =>
             buffer.append("(declare-const " + bName + "_score_" + predicate.q.name + " Real)\n")
-            buffer.append("(assert (implies " + predicate.q.name + " (= " + predicate.score + " " + bName + "_score_" + predicate.q.name + ")))\n")
+            val scoreOrVariable = if (predicate.variable != "") predicate.variable else predicate.score
+            buffer.append("(assert (implies " + predicate.q.name + " (= " + scoreOrVariable + " " + bName + "_score_" + predicate.q.name + ")))\n")
             buffer.append("(assert (implies (not (= " + unit + " " + bName + "_score_" + predicate.q.name + ")) " + predicate.q.name + "))\n")
         }
     }
