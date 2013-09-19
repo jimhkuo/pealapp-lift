@@ -31,4 +31,18 @@ class LazySynthesiserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
     val generator = new LazySynthesiser(input)
     generator.generate() should beZ3Model ("(declare-const q4 Bool)\n(declare-const q1 Bool)\n(declare-const cond2 Bool)\n(declare-const cond1 Bool)\n(declare-const b0_score_q4 Real)\n(assert (implies q4 (= 0.17 b0_score_q4)))\n(assert (implies (not (= 1.0 b0_score_q4)) q4))\n(declare-const b2_score_q4 Real)\n(assert (implies q4 (= 0.86 b2_score_q4)))\n(assert (implies (not (= 0.0 b2_score_q4)) q4))\n(declare-const cond2_b0 Bool)\n(assert (= cond2_b0 (or (and (< 0.6 0.95) (not (or q4)))  (and (or q4)  (< 0.6 (* b0_score_q4))))))\n(declare-const cond2_b1 Bool)\n(assert (= cond2_b1 (or (and (< 0.6 0.51) (not (or q1)))\n(or q1))))\n(declare-const cond2_b2 Bool)\n(assert (= cond2_b2 (or (and (< 0.6 0.99) (not (or q4)))  (and (or q4)  (< 0.6 (+ b2_score_q4))))))\n(declare-const cond2_b3 Bool)\n(assert (= cond2_b3 (or (and (< 0.6 0.83) (not (or q4 q1)))\n(and (or q4 q1) (not false)))))\n(assert (= cond2 (or (and cond2_b0 cond2_b1) (and cond2_b2 cond2_b3))))\n(declare-const cond1_b0 Bool)\n(assert (= cond1_b0 (or (and (< 0.5 0.95) (not (or q4)))  (and (or q4)  (< 0.5 (* b0_score_q4))))))\n(declare-const cond1_b1 Bool)\n(assert (= cond1_b1 (or (and (< 0.5 0.51) (not (or q1)))\n(or q1))))\n(declare-const cond1_b2 Bool)\n(assert (= cond1_b2 (or (and (< 0.5 0.99) (not (or q4)))  (and (or q4)  (< 0.5 (+ b2_score_q4))))))\n(declare-const cond1_b3 Bool)\n(assert (= cond1_b3 (or (and (< 0.5 0.83) (not (or q4 q1)))\n(and (or q4 q1) (not false)))))\n(assert (= cond1 (or (and cond1_b0 cond1_b1) (and cond1_b2 cond1_b3))))\n\n(echo \"Result of analysis [analysis1 = always_true? cond1]:\")\n(push)\n(declare-const always_true_analysis1 Bool)\n(assert (= always_true_analysis1 cond1))\n(assert (not always_true_analysis1))\n(check-sat)\n(get-model)\n(pop)")
   }
+
+  @Test
+  def testGenerateWithNonConstant() {
+    val input = "POLICIES\n" +
+      "b1 = min ((q1 x) (q2 y) (q4 y)) default 1\n" +
+      "POLICY_SETS\n" +
+      "pSet1 = b1\n" +
+      "CONDITIONS\n" +
+      "cond1 = pSet1 <= 0.5\n" +
+      "ANALYSES\nname1 = always_true? cond1\n"
+
+    val generator = new LazySynthesiser(input)
+    generator.generate() should beZ3Model ("(declare-const y Bool)\n(declare-const q4 Bool)\n(declare-const q2 Bool)\n(declare-const x Bool)\n(declare-const q1 Bool)\n(declare-const cond1 Bool)\n(declare-const cond1_b1 Bool)\n(assert (= cond1_b1 (or (and (<= 1.0 0.5) (not (or q1 q2 q4)))\n(or q1 q2 q4))))\n(assert (= cond1 cond1_b1))\n\n(echo \"Result of analysis [name1 = always_true? cond1]:\")\n(push)\n(declare-const always_true_name1 Bool)\n(assert (= always_true_name1 cond1))\n(assert (not always_true_name1))\n(check-sat)\n(get-model)\n(pop)")
+  }
 }
