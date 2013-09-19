@@ -82,7 +82,7 @@ pol	returns [Pol p]
 
 rule 	returns [Rule r]
 	: '(' IDENT NUMBER ')' {$r = new Rule(new Predicate($IDENT.text),BigDecimal.valueOf(Double.valueOf($NUMBER.text)), "");}
-	| '(' id0=IDENT id1=IDENT')' {$r = new Rule(new Predicate($id0.text),BigDecimal.valueOf(Double.valueOf(-1.0)), $id1.text);}
+	| '(' id0=IDENT id1=IDENT')' {$r = new Rule(new Predicate($id0.text),BigDecimal.valueOf(Double.valueOf(-9999.0)), $id1.text);}
 	;
 
 NUMBER : ('.'|'0'..'9'|'-'|'E')+ {if(ignore) skip();};
