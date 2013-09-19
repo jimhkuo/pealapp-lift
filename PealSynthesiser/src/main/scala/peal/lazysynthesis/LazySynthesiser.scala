@@ -84,6 +84,7 @@ class LazySynthesiser(input: String) {
         }
         buffer.append("(assert (= " + condName + "_" + bName + " " + genFormula + ")\n")
       case o =>
+        //non-constant score only works here
         conds(condName) match {
           case s: GreaterThanThCondition =>
             buffer.append("(assert (= " + condName + "_" + bName +

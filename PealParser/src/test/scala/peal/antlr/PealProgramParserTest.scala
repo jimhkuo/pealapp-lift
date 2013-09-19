@@ -16,8 +16,9 @@ class PealProgramParserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
   @Ignore("wip")
   @Test
   def testCanHandleNonConstantScores() {
+    //only works for + and *
     val input =
-      "b1 = min ((q1 x)) default 1\n" +
+      "b1 = + ((q1 x)) default 1\n" +
         "pSet = b1\n" +
         "cond = pSet <= 0.5"
 
