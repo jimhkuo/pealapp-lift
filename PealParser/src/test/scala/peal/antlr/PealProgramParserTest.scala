@@ -8,10 +8,27 @@ import peal.synthesis.analysis.AlwaysTrue
 import peal.util.Z3ModelMatcher
 import peal.domain.z3.{PealAst, Term}
 import peal.antlr.util.ParserHelper
+import peal.domain.Rule
 
 
 class PealProgramParserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
   val consts = Map[String, PealAst]("q0" -> Term("q0"), "q1" -> Term("q1"), "q2" -> Term("q2"), "q3" -> Term("q3"), "q4" -> Term("q4"), "q5" -> Term("q5"), "q6" -> Term("q6"))
+
+  @Test
+  def testCanNonConstantFromRules() {
+    val input =
+      "b1 = + ((q1 x) (q2 0.5) (q3 0.4)) default 1\n" +
+        "pSet = b1\n" +
+        "cond = pSet <= 0.5"
+
+    val pealProgramParser = ParserHelper.getPealParser(input)
+    pealProgramParser.program()
+
+    val allRules = pealProgramParser.pols.values().flatMap(pol => pol.rules)
+    val allNames = allRules.map(r => r.q.name).toSet
+    val allVariables = allRules.map(r => r.variable).toSet.filter(_ != "")
+    allNames ++ allVariables should be(Set("x", "q1", "q2", "q3"))
+  }
 
   @Ignore("wip")
   @Test
@@ -41,9 +58,9 @@ class PealProgramParserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
     pealProgrmParser.program()
 
     val pols = pealProgrmParser.pols
-    pols("b1").rules(0).score should be (BigDecimal.valueOf(-0.2))
-    pols("b1").rules(1).score should be (BigDecimal.valueOf(-0.4))
-    pols("b1").rules(2).score should be (BigDecimal.valueOf(-0.9))
+    pols("b1").rules(0).score should be(BigDecimal.valueOf(-0.2))
+    pols("b1").rules(1).score should be(BigDecimal.valueOf(-0.4))
+    pols("b1").rules(2).score should be(BigDecimal.valueOf(-0.9))
   }
 
   @Test(expected = classOf[RuntimeException])
@@ -186,13 +203,14 @@ class PealProgramParserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
     val input = "POLICIES\nb0 = max ((q4 0.41)) default 0.67\nb1 = * ((q4 0.02)) default 0.58\nb2 = + ((q5 0.54) (q3 0.06)) default 0.44\nb3 = min ((q2 0.69)) default 0.62\nPOLICY_SETS\np0_1 = min(b0,b1)\np2_3 = min(b2,b3)\np0_3 = max(p0_1,p2_3)\nCONDITIONS\ncond2 = 0.60 < p0_3\nANALYSES\nanalysis2 = always_false? cond2"
     val pealProgrmParser = ParserHelper.getPealParser(input)
     pealProgrmParser.program()
-    pealProgrmParser.conds("cond2").synthesis(consts) should beZ3Model ("(or (and (or (not q4) false) (and q4 (not q4))) (and (and (or q5 q3) false) (or (not q2) (not false))))")
+    pealProgrmParser.conds("cond2").synthesis(consts) should beZ3Model("(or (and (or (not q4) false) (and q4 (not q4))) (and (and (or q5 q3) false) (or (not q2) (not false))))")
   }
+
   @Test
   def testM2HandleEdgeCaseCorrectly() {
     val input = "POLICIES\nb0 = max ((q4 0.41)) default 0.67\nb1 = * ((q4 1.0) (q3 0.6)) default 0.06\nb2 = + ((q5 0.54) (q3 0.06)) default 0.44\nb3 = min ((q2 0.69)) default 0.62\nPOLICY_SETS\np0_1 = min(b0,b1)\np2_3 = min(b2,b3)\np0_3 = max(p0_1,p2_3)\nCONDITIONS\ncond2 = 0.60 < p0_3\nANALYSES\nanalysis2 = always_false? cond2"
     val pealProgrmParser = ParserHelper.getPealParser(input)
     pealProgrmParser.program()
-    pealProgrmParser.conds("cond2").synthesis(consts) should beZ3Model ("(or (and (or (not q4) false) (and (or q4 q3) (not q3))) (and (and (or q5 q3) false) (or (not q2) (not false))))")
+    pealProgrmParser.conds("cond2").synthesis(consts) should beZ3Model("(or (and (or (not q4) false) (and (or q4 q3) (not q3))) (and (and (or q5 q3) false) (or (not q2) (not false))))")
   }
 }
