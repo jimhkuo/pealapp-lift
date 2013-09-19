@@ -1,4 +1,4 @@
-// $ANTLR 3.4 /Users/jkuo/PealApp-lift/antlr/PealProgram.g 2013-09-09 11:55:36
+// $ANTLR 3.4 /Users/jkuo/PealApp-lift/antlr/PealProgram.g 2013-09-19 10:20:12
 
 package peal.antlr;
 import java.util.*;
@@ -1012,30 +1012,89 @@ public class PealProgramParser extends Parser {
 
 
     // $ANTLR start "rule"
-    // /Users/jkuo/PealApp-lift/antlr/PealProgram.g:83:1: rule returns [Rule r] : '(' IDENT NUMBER ')' ;
+    // /Users/jkuo/PealApp-lift/antlr/PealProgram.g:83:1: rule returns [Rule r] : ( '(' IDENT NUMBER ')' | '(' id0= IDENT id1= IDENT ')' );
     public final Rule rule() throws RecognitionException {
         Rule r = null;
 
 
+        Token id0=null;
+        Token id1=null;
         Token IDENT11=null;
         Token NUMBER12=null;
 
         try {
-            // /Users/jkuo/PealApp-lift/antlr/PealProgram.g:84:2: ( '(' IDENT NUMBER ')' )
-            // /Users/jkuo/PealApp-lift/antlr/PealProgram.g:84:4: '(' IDENT NUMBER ')'
-            {
-            match(input,8,FOLLOW_8_in_rule507); 
+            // /Users/jkuo/PealApp-lift/antlr/PealProgram.g:84:2: ( '(' IDENT NUMBER ')' | '(' id0= IDENT id1= IDENT ')' )
+            int alt17=2;
+            int LA17_0 = input.LA(1);
 
-            IDENT11=(Token)match(input,IDENT,FOLLOW_IDENT_in_rule509); 
+            if ( (LA17_0==8) ) {
+                int LA17_1 = input.LA(2);
 
-            NUMBER12=(Token)match(input,NUMBER,FOLLOW_NUMBER_in_rule511); 
+                if ( (LA17_1==IDENT) ) {
+                    int LA17_2 = input.LA(3);
 
-            match(input,9,FOLLOW_9_in_rule513); 
+                    if ( (LA17_2==NUMBER) ) {
+                        alt17=1;
+                    }
+                    else if ( (LA17_2==IDENT) ) {
+                        alt17=2;
+                    }
+                    else {
+                        NoViableAltException nvae =
+                            new NoViableAltException("", 17, 2, input);
 
-            r = new Rule(new Predicate((IDENT11!=null?IDENT11.getText():null)),BigDecimal.valueOf(Double.valueOf((NUMBER12!=null?NUMBER12.getText():null))));
+                        throw nvae;
+
+                    }
+                }
+                else {
+                    NoViableAltException nvae =
+                        new NoViableAltException("", 17, 1, input);
+
+                    throw nvae;
+
+                }
+            }
+            else {
+                NoViableAltException nvae =
+                    new NoViableAltException("", 17, 0, input);
+
+                throw nvae;
 
             }
+            switch (alt17) {
+                case 1 :
+                    // /Users/jkuo/PealApp-lift/antlr/PealProgram.g:84:4: '(' IDENT NUMBER ')'
+                    {
+                    match(input,8,FOLLOW_8_in_rule507); 
 
+                    IDENT11=(Token)match(input,IDENT,FOLLOW_IDENT_in_rule509); 
+
+                    NUMBER12=(Token)match(input,NUMBER,FOLLOW_NUMBER_in_rule511); 
+
+                    match(input,9,FOLLOW_9_in_rule513); 
+
+                    r = new Rule(new Predicate((IDENT11!=null?IDENT11.getText():null)),BigDecimal.valueOf(Double.valueOf((NUMBER12!=null?NUMBER12.getText():null))), "");
+
+                    }
+                    break;
+                case 2 :
+                    // /Users/jkuo/PealApp-lift/antlr/PealProgram.g:85:4: '(' id0= IDENT id1= IDENT ')'
+                    {
+                    match(input,8,FOLLOW_8_in_rule520); 
+
+                    id0=(Token)match(input,IDENT,FOLLOW_IDENT_in_rule524); 
+
+                    id1=(Token)match(input,IDENT,FOLLOW_IDENT_in_rule528); 
+
+                    match(input,9,FOLLOW_9_in_rule529); 
+
+                    r = new Rule(new Predicate((id0!=null?id0.getText():null)),BigDecimal.valueOf(Double.valueOf(-1.0)), (id1!=null?id1.getText():null));
+
+                    }
+                    break;
+
+            }
         }
         catch (RecognitionException re) {
             reportError(re);
@@ -1144,5 +1203,9 @@ public class PealProgramParser extends Parser {
     public static final BitSet FOLLOW_IDENT_in_rule509 = new BitSet(new long[]{0x0000000000000040L});
     public static final BitSet FOLLOW_NUMBER_in_rule511 = new BitSet(new long[]{0x0000000000000200L});
     public static final BitSet FOLLOW_9_in_rule513 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_8_in_rule520 = new BitSet(new long[]{0x0000000000000010L});
+    public static final BitSet FOLLOW_IDENT_in_rule524 = new BitSet(new long[]{0x0000000000000010L});
+    public static final BitSet FOLLOW_IDENT_in_rule528 = new BitSet(new long[]{0x0000000000000200L});
+    public static final BitSet FOLLOW_9_in_rule529 = new BitSet(new long[]{0x0000000000000002L});
 
 }
