@@ -1,14 +1,12 @@
 package peal.antlr
 
-import org.junit.{Ignore, Test}
-import org.antlr.runtime.{CommonTokenStream, ANTLRStringStream}
+import org.junit.Test
 import org.scalatest.junit.ShouldMatchersForJUnit
 import scala.collection.JavaConversions._
 import peal.synthesis.analysis.AlwaysTrue
 import peal.util.Z3ModelMatcher
 import peal.domain.z3.{PealAst, Term}
 import peal.antlr.util.ParserHelper
-import peal.domain.Rule
 
 
 class PealProgramParserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
@@ -28,23 +26,6 @@ class PealProgramParserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
     val allNames = allRules.map(r => r.q.name).toSet
     val allVariables = allRules.map(r => r.variable).toSet.filter(_ != "")
     allNames ++ allVariables should be(Set("x", "q1", "q2", "q3"))
-  }
-
-  @Ignore("wip")
-  @Test
-  def testNonConstantScoresCreateDeclarations() {
-    //only works for + and *
-    val input =
-      "b1 = + ((q1 x)) default 1\n" +
-        "pSet = b1\n" +
-        "cond = pSet <= 0.5"
-
-    val pealProgramParser = ParserHelper.getPealParser(input)
-    pealProgramParser.program()
-
-    val predicateNames = pealProgramParser.pols.values().flatMap(pol => pol.rules).map(r => r.q.name).toSet
-    predicateNames should have size (2)
-
   }
 
   @Test
