@@ -21,8 +21,8 @@ class LazySynthesiser(input: String) {
   val pols = pealProgramParser.pols
   val conds = pealProgramParser.conds
   val pSets = pealProgramParser.pSets
-  val predicateNames: Seq[String] = pealProgramParser.pols.values().flatMap(pol => pol.rules).map(r => r.q.name).toSeq.distinct
-  val constsMap = predicateNames.toSeq.distinct.map(t => (t, Term(t))).toMap
+  val predicateNames = pealProgramParser.pols.values().flatMap(pol => pol.rules).map(r => r.q.name).toSet
+  val constsMap = predicateNames.map(t => (t, Term(t))).toMap
   val analyses = pealProgramParser.analyses.toMap
 
   private def findAllPolicySets(policySet: PolicySet): Set[String] = policySet match {
@@ -86,16 +86,16 @@ class LazySynthesiser(input: String) {
       case o =>
         //non-constant score only works here
         conds(condName) match {
-          case s: GreaterThanThCondition =>
+          case cond: GreaterThanThCondition =>
             buffer.append("(assert (= " + condName + "_" + bName +
-              " (or (and (< " + s.th + " " + pols(bName).defaultScore + ") (not (or " + pols(bName).rules.map(_.q.name).mkString(" ") + "))) " +
+              " (or (and (< " + cond.th + " " + pols(bName).defaultScore + ") (not (or " + pols(bName).rules.map(_.q.name).mkString(" ") + "))) " +
               " (and (or " + pols(bName).rules.map(_.q.name).mkString(" ") + ") " +
-              " (< " + s.th + " (" + o + " " + pols(bName).rules.map(bName + "_score_" + _.q.name).mkString(" ") + "))))))\n")
-          case s: LessThanThCondition =>
+              " (< " + cond.th + " (" + o + " " + pols(bName).rules.map(bName + "_score_" + _.q.name).mkString(" ") + "))))))\n")
+          case cond: LessThanThCondition =>
             buffer.append("(assert (= " + condName + "_" + bName +
-              " (or (and (<= " + " " + pols(bName).defaultScore + " " + s.th + ") (not (or " + pols(bName).rules.map(_.q.name).mkString(" ") + "))) " +
+              " (or (and (<= " + " " + pols(bName).defaultScore + " " + cond.th + ") (not (or " + pols(bName).rules.map(_.q.name).mkString(" ") + "))) " +
               " (and (or " + pols(bName).rules.map(_.q.name).mkString(" ") + ") " +
-              " (<= " + " (" + o + " " + pols(bName).rules.map(bName + "_score_" + _.q.name).mkString(" ") + ") " + s.th + ")))))\n")
+              " (<= " + " (" + o + " " + pols(bName).rules.map(bName + "_score_" + _.q.name).mkString(" ") + ") " + cond.th + ")))))\n")
         }
     }
     buffer.toString()

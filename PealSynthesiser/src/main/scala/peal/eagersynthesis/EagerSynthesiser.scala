@@ -10,8 +10,8 @@ class EagerSynthesiser() {
     val pealProgramParser = ParserHelper.getPealParser(input)
     pealProgramParser.program()
 
-    val predicateNames: Seq[String] = pealProgramParser.pols.values().flatMap(pol => pol.rules).map(r => r.q.name).toSeq.distinct
-    val constsMap = predicateNames.toSeq.distinct.map(t => (t, Term(t))).toMap
+    val predicateNames = pealProgramParser.pols.values().flatMap(pol => pol.rules).map(r => r.q.name).toSet
+    val constsMap = predicateNames.map(t => (t, Term(t))).toMap
     val predicateDeclarations = for (name <- constsMap.keys) yield "(declare-const " + name + " Bool)\n"
     val condDeclarations = for (name <- pealProgramParser.conds.keys) yield "(declare-const " + name + " Bool)\n"
     val sortedKeys = pealProgramParser.conds.keys.toSeq.sortWith(_ < _)

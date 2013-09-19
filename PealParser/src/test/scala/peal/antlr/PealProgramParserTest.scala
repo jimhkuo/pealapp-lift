@@ -15,18 +15,19 @@ class PealProgramParserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
 
   @Ignore("wip")
   @Test
-  def testCanHandleNonConstantScores() {
+  def testNonConstantScoresCreateDeclarations() {
     //only works for + and *
     val input =
       "b1 = + ((q1 x)) default 1\n" +
         "pSet = b1\n" +
         "cond = pSet <= 0.5"
 
-    val pealProgrmParser = ParserHelper.getPealParser(input)
-    pealProgrmParser.program()
+    val pealProgramParser = ParserHelper.getPealParser(input)
+    pealProgramParser.program()
 
-    val pols = pealProgrmParser.pols
-    pols("b1").rules(0).score should be (BigDecimal.valueOf(-0.2))
+    val predicateNames = pealProgramParser.pols.values().flatMap(pol => pol.rules).map(r => r.q.name).toSet
+    predicateNames should have size (2)
+
   }
 
   @Test
