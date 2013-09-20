@@ -11,7 +11,6 @@ class NonDefaultPolLessThanTh(pol: Pol, th: BigDecimal) extends NonDefaultSet {
       val rules = pol.rules.filter(th >= _.score)
       rules.size match {
         case 0 => False()
-//        case 1 => consts(rules(0).q.name)//z3.mkBoolConst(rules(0).q.name) //rules.map(_.q.name).mkString("")
         case _ => Or(rules.map(r => consts(r.q.name)): _*)//z3.mkOr(rules.map(r => z3.mkBoolConst(r.q.name)): _*) //rules.map(_.q.name).mkString("(or ", " ", ")")
       }
     }

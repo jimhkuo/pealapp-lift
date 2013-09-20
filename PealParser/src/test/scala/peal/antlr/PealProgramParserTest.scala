@@ -24,7 +24,7 @@ class PealProgramParserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
 
     val allRules = pealProgramParser.pols.values().flatMap(pol => pol.rules)
     val allNames = allRules.map(r => r.q.name).toSet
-    val allVariables = allRules.map(r => r.variable).toSet.filter(_ != "")
+    val allVariables = allRules.filter(_.attribute.isRight).map(r => r.variable).toSet.filter(_ != "")
     allNames ++ allVariables should be(Set("x", "q1", "q2", "q3"))
   }
 
