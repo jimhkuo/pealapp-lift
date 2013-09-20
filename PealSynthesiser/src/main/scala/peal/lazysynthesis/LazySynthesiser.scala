@@ -21,7 +21,7 @@ class LazySynthesiser(input: String) {
   val pSets = pealProgramParser.pSets
   val allRules = pealProgramParser.pols.values().flatMap(pol => pol.rules)
   val predicateNames = allRules.foldLeft(Set[String]())((acc, rule) => {
-    def addVariables(set: Set[String]) = rule.attribute.fold(score => set, variable => set + variable)
+    def addVariables(set: Set[String]) = rule.attribute.fold(score => set, variable => set + variable.name)
     addVariables(acc + rule.q.name)
   })
   val constsMap = predicateNames.map(t => (t, Term(t))).toMap
@@ -146,7 +146,7 @@ class LazySynthesiser(input: String) {
         b.rules.foreach {
           predicate =>
             buffer.append("(declare-const " + bName + "_score_" + predicate.q.name + " Real)\n")
-            buffer.append("(assert (implies " + predicate.q.name + " (= " + predicate.attribute.fold(score => score.toString(), variable => variable) + " " + bName + "_score_" + predicate.q.name + ")))\n")
+            buffer.append("(assert (implies " + predicate.q.name + " (= " + predicate.attribute.fold(score => score.toString(), variable => variable.name) + " " + bName + "_score_" + predicate.q.name + ")))\n")
             buffer.append("(assert (implies (not (= " + unit + " " + bName + "_score_" + predicate.q.name + ")) " + predicate.q.name + "))\n")
         }
     }

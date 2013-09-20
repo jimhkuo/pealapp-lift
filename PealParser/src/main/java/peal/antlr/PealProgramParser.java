@@ -1,4 +1,4 @@
-// $ANTLR 3.4 /Users/jkuo/PealApp-lift/antlr/PealProgram.g 2013-09-20 11:02:55
+// $ANTLR 3.4 /Users/jkuo/PealApp-lift/antlr/PealProgram.g 2013-09-20 14:51:51
 
 package peal.antlr;
 import java.util.*;
@@ -1075,7 +1075,7 @@ public class PealProgramParser extends Parser {
 
                     match(input,9,FOLLOW_9_in_rule513); 
 
-                    r = new Rule(new Predicate((IDENT11!=null?IDENT11.getText():null)),new Left<BigDecimal,String>(BigDecimal.valueOf(Double.valueOf((NUMBER12!=null?NUMBER12.getText():null)))));
+                    r = new Rule(new Predicate((IDENT11!=null?IDENT11.getText():null)),new Left<BigDecimal,Variable>(BigDecimal.valueOf(Double.valueOf((NUMBER12!=null?NUMBER12.getText():null)))));
 
                     }
                     break;
@@ -1090,7 +1090,7 @@ public class PealProgramParser extends Parser {
 
                     match(input,9,FOLLOW_9_in_rule529); 
 
-                    r = new Rule(new Predicate((id0!=null?id0.getText():null)),new Right<BigDecimal,String>((id1!=null?id1.getText():null)));
+                    r = new Rule(new Predicate((id0!=null?id0.getText():null)),new Right<BigDecimal,Variable>(new Variable(1, (id1!=null?id1.getText():null))));
 
                     }
                     break;
