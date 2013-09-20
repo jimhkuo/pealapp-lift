@@ -20,9 +20,9 @@ class LazySynthesiser(input: String) {
   val conds = pealProgramParser.conds
   val pSets = pealProgramParser.pSets
   val allRules = pealProgramParser.pols.values().flatMap(pol => pol.rules)
-  val predicateNames = allRules.foldLeft(List[String]())((acc, rule) => {
-    def addVariables(list: List[String]) = rule.attr.fold(left => list, right => list :+ right)
-    addVariables(acc :+ rule.q.name)
+  val predicateNames = allRules.foldLeft(Set[String]())((acc, rule) => {
+    def addVariables(set: Set[String]) = rule.attr.fold(score => set, variable => set + variable)
+    addVariables(acc + rule.q.name)
   })
   val constsMap = predicateNames.map(t => (t, Term(t))).toMap
   val analyses = pealProgramParser.analyses.toMap
