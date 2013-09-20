@@ -20,11 +20,11 @@ class LazySynthesiser(input: String) {
   val conds = pealProgramParser.conds
   val pSets = pealProgramParser.pSets
   val allRules = pealProgramParser.pols.values().flatMap(pol => pol.rules)
-  val predicateNames = allRules.foldLeft(Set[String]())((acc, rule) => {
+  val predicateNames = allRules.map(r => r.q.name).toSet
+  val variableNames = allRules.foldLeft(Set[String]())((acc, rule) => {
     def addVariables(set: Set[String]) = rule.attribute.fold(score => set, variable => set + variable.name)
-    addVariables(acc + rule.q.name)
+    addVariables(acc)
   })
-  val constsMap = predicateNames.map(t => (t, Term(t))).toMap
   val analyses = pealProgramParser.analyses.toMap
 
   private def findAllPolicySets(policySet: PolicySet): Set[String] = policySet match {
@@ -137,7 +137,8 @@ class LazySynthesiser(input: String) {
      b <- findAllPolicySets(conds(c._1).getPol)
     ) yield (b)
 
-    val declarations = for (name <- constsMap.keys) yield "(declare-const " + name + " Bool)\n"
+    val declarations = for (name <- predicateNames) yield "(declare-const " + name + " Bool)\n"
+    val variableDeclarations = for (name <- variableNames) yield "(declare-const " + name + " Real)\n"
     val condDeclarations = for (name <- conds.keys) yield "(declare-const " + name + " Bool)\n"
 
     pols.filter(p => usedB.toSet.contains(p._1)).filter(p => p._2.operator == Plus || p._2.operator == Mul).foreach {
@@ -169,6 +170,6 @@ class LazySynthesiser(input: String) {
       "(echo \"Result of analysis [" + analyses(analysis).analysisName + "]:\")\n" + analyses(analysis).z3SMTInput
     }
 
-    declarations.mkString("") + condDeclarations.mkString("") + buffer.toString() + domainSpecifics.mkString("", "\n", "\n") + generatedAnalyses.mkString("")
+    declarations.mkString("") + variableDeclarations.mkString("") + condDeclarations.mkString("") + buffer.toString() + domainSpecifics.mkString("", "\n", "\n") + generatedAnalyses.mkString("")
   }
 }
