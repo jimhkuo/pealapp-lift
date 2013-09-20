@@ -1,3 +1,3 @@
 package peal.domain
 
-class Variable(val multiplier: Int, val name: String)
+class Variable(val multiplier: BigDecimal, val name: String)

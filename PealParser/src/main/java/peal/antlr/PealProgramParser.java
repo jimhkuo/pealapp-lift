@@ -1,4 +1,4 @@
-// $ANTLR 3.4 /Users/jkuo/PealApp-lift/antlr/PealProgram.g 2013-09-20 14:58:30
+// $ANTLR 3.4 /Users/jkuo/PealApp-lift/antlr/PealProgram.g 2013-09-20 16:03:37
 
 package peal.antlr;
 import java.util.*;
@@ -1119,7 +1119,7 @@ public class PealProgramParser extends Parser {
 
                     match(input,9,FOLLOW_9_in_rule529); 
 
-                    r = new Rule(new Predicate((id0!=null?id0.getText():null)),new Right<BigDecimal,Variable>(new Variable(1, (id1!=null?id1.getText():null))));
+                    r = new Rule(new Predicate((id0!=null?id0.getText():null)),new Right<BigDecimal,Variable>(new Variable(BigDecimal.valueOf(1), (id1!=null?id1.getText():null))));
 
                     }
                     break;
@@ -1138,7 +1138,7 @@ public class PealProgramParser extends Parser {
 
                     match(input,9,FOLLOW_9_in_rule551); 
 
-                    r = new Rule(new Predicate((id0!=null?id0.getText():null)),new Right<BigDecimal,Variable>(new Variable(Integer.valueOf((n!=null?n.getText():null)), (id1!=null?id1.getText():null))));
+                    r = new Rule(new Predicate((id0!=null?id0.getText():null)),new Right<BigDecimal,Variable>(new Variable(BigDecimal.valueOf(Double.valueOf((n!=null?n.getText():null))), (id1!=null?id1.getText():null))));
 
                     }
                     break;
@@ -1157,7 +1157,7 @@ public class PealProgramParser extends Parser {
 
                     match(input,9,FOLLOW_9_in_rule574); 
 
-                    r = new Rule(new Predicate((id0!=null?id0.getText():null)),new Right<BigDecimal,Variable>(new Variable(Integer.valueOf((n!=null?n.getText():null)), (id1!=null?id1.getText():null))));
+                    r = new Rule(new Predicate((id0!=null?id0.getText():null)),new Right<BigDecimal,Variable>(new Variable(BigDecimal.valueOf(Double.valueOf((n!=null?n.getText():null))), (id1!=null?id1.getText():null))));
 
                     }
                     break;
