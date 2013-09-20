@@ -6,8 +6,6 @@ import http._
 import net.liftweb.http.js.jquery.JqJE._
 import net.liftweb.http.js.JsCmds._
 import scala.xml.Text
-import org.antlr.runtime.{CommonTokenStream, ANTLRStringStream}
-import peal.antlr.{Z3OutputParser, Z3OutputLexer, PealProgramParser, PealProgramLexer}
 import net.liftweb.common.Loggable
 import scala.collection.JavaConversions._
 import peal.synthesis.Condition
@@ -37,7 +35,7 @@ class PealCometActor extends CometActor with Loggable {
 
   val defaultInput = "POLICIES\n" +
     "b1 = min ((q1 0.2) (q2 0.4) (q3 0.9)) default 1\n" +
-    "b2 = + ((q4 0.1) (q5 0.2) (q6 0.2)) default 0\n" +
+    "b2 = + ((q4 0.1*x) (q5 y*0.2) (q6 y)) default 0\n" +
     "POLICY_SETS\n" +
     "pSet1 = max(b1, b2)\n" +
     "pSet2 = min(b1, b2)\n" +
@@ -47,9 +45,9 @@ class PealCometActor extends CometActor with Loggable {
     "cond3 = 0.5 < pSet2\n" +
     "cond4 = 0.4 < pSet2\n" +
     "DOMAIN_SPECIFICS\n" +
-    "(declare-const x Real)\n" +
-    "(declare-const y Real)\n" +
-    "(assert (= q1 (< x (+ y 1))))\n" +
+    "(declare-const a Real)\n" +
+    "(declare-const b Real)\n" +
+    "(assert (= q1 (< a (+ b 1))))\n" +
     "ANALYSES\n" +
     "name1 = always_true? cond1\n" +
     "name2 = always_false? cond1\n" +
