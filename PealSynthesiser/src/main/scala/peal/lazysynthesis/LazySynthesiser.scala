@@ -1,8 +1,6 @@
 package peal.lazysynthesis
 
 import scala.collection.JavaConversions._
-import org.antlr.runtime.{CommonTokenStream, ANTLRStringStream}
-import peal.antlr.{PealProgramParser, PealProgramLexer}
 import peal.domain.operator.{Max, Min, Mul, Plus}
 import peal.domain._
 import peal.domain.BasicPolicySet
@@ -22,9 +20,10 @@ class LazySynthesiser(input: String) {
   val conds = pealProgramParser.conds
   val pSets = pealProgramParser.pSets
   val allRules = pealProgramParser.pols.values().flatMap(pol => pol.rules)
-  val allNames = allRules.map(r => r.q.name).toSet
-  val allVariables = allRules.filter(_.attribute.isRight).map(r => r.variable).toSet.filter(_ != "")
-  val predicateNames = allNames ++ allVariables
+  val predicateNames = allRules.foldLeft(List[String]())((acc, rule) => {
+    def mayBeWithVariable(list: List[String]) = rule.attribute.fold(left => list, right => list :+ right)
+    mayBeWithVariable(acc :+ rule.q.name)
+  })
   val constsMap = predicateNames.map(t => (t, Term(t))).toMap
   val analyses = pealProgramParser.analyses.toMap
 
