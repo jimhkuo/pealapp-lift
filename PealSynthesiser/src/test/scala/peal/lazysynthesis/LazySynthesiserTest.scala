@@ -61,7 +61,7 @@ class LazySynthesiserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
   @Test
   def testGenerateWithNonConstantWithMultipliers() {
     val input = "POLICIES\n" +
-      "b1 = + ((q1 x) (q2 2*y) (q4 y)) default 1\n" +
+      "b1 = + ((q1 x) (q2 2 *y) (q4 y*4)) default 1\n" +
       "POLICY_SETS\n" +
       "pSet1 = b1\n" +
       "CONDITIONS\n" +
@@ -80,7 +80,7 @@ class LazySynthesiserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
       "(assert (implies q2 (= 2*y b1_score_q2)))\n" +
       "(assert (implies (not (= 0.0 b1_score_q2)) q2))\n" +
       "(declare-const b1_score_q4 Real)\n" +
-      "(assert (implies q4 (= y b1_score_q4)))\n" +
+      "(assert (implies q4 (= 4*y b1_score_q4)))\n" +
       "(assert (implies (not (= 0.0 b1_score_q4)) q4))\n" +
       "(declare-const cond1_b1 Bool)\n" +
       "(assert (= cond1_b1 (or (and (<=  1.0 0.5) (not (or q1 q2 q4)))  (and (or q1 q2 q4)  (<=  (+ b1_score_q1 b1_score_q2 b1_score_q4) 0.5)))))\n(assert (= cond1 cond1_b1))\n\n(echo \"Result of analysis [name1 = always_true? cond1]:\")\n(push)\n(declare-const always_true_name1 Bool)\n(assert (= always_true_name1 cond1))\n(assert (not always_true_name1))\n(check-sat)\n(get-model)\n(pop)"
