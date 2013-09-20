@@ -1,8 +1,8 @@
 package peal.domain
 
-class Rule(val q: Predicate, val attribute : Either[BigDecimal, String]) {
+class Rule(val q: Predicate, val attr : Either[BigDecimal, String]) {
   def this(q: Predicate, doubleScore: Double) = this(q, Left(BigDecimal.valueOf(doubleScore)))
-  override def toString = "(" + q.name + " " + attribute.fold(score => score.toString(), variable => variable) + ")"
-  def score = attribute.left.get
-  def variable = attribute.right.get
+  override def toString = "(" + q.name + " " + attr.fold(score => score.toString(), variable => variable) + ")"
+  def score = attr.left.get
+  def variable = attr.right.get
 }
