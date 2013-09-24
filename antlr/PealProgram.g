@@ -63,6 +63,7 @@ program
 	|id0=IDENT '=' 'satisfiable?' id1=IDENT {AnalysisGenerator analysis = new Satisfiable($id0.text, $id1.text); analyses.put($id0.text, analysis);}	
 	|id0=IDENT '=' 'equivalent?' id1=IDENT id2=IDENT {AnalysisGenerator analysis = new Equivalent($id0.text, $id1.text, $id2.text); analyses.put($id0.text, analysis);}	
 	|id0=IDENT '=' 'different?' id1=IDENT id2=IDENT {AnalysisGenerator analysis = new Different($id0.text, $id1.text, $id2.text); analyses.put($id0.text, analysis);}		
+	|id0=IDENT '=' 'imply?' id1=IDENT id2=IDENT {AnalysisGenerator analysis = new Imply($id0.text, $id1.text, $id2.text); analyses.put($id0.text, analysis);}		
 	)+
 	)?
 	;
