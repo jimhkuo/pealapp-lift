@@ -97,14 +97,14 @@ class LazySynthesiser(input: String) {
         conds(condName) match {
           case cond: GreaterThanThCondition =>
             buffer.append("(assert (= " + condName + "_" + bName +
-              " (or (and (< " + cond.th + " " + pols(bName).defaultScore + ") (not (or " + pols(bName).rules.map(_.q.name).mkString(" ") + "))) " +
+              " (or (and (< " + cond.th + " " + pols(bName).scoreString + ") (not (or " + pols(bName).rules.map(_.q.name).mkString(" ") + "))) " +
               " (and (or " + pols(bName).rules.map(_.q.name).mkString(" ") + ") " +
               " (< " + cond.th + " (" + o + " " + pols(bName).rules.map(bName + "_score_" + _.q.name).mkString(" ") + "))))))\n")
           case cond: LessThanThCondition =>
             buffer.append("(assert (= " + condName + "_" + bName +
               " (or (and (<= " + pols(bName).scoreString + " " + cond.th + ") (not (or " + pols(bName).rules.map(_.q.name).mkString(" ") + "))) " +
               " (and (or " + pols(bName).rules.map(_.q.name).mkString(" ") + ") " +
-              " (<= " + " (" + o + " " + pols(bName).rules.map(bName + "_score_" + _.q.name).mkString(" ") + ") " + cond.th + ")))))\n")
+              " (<= (" + o + " " + pols(bName).rules.map(bName + "_score_" + _.q.name).mkString(" ") + ") " + cond.th + ")))))\n")
         }
     }
     buffer.toString()

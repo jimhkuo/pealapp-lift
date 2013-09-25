@@ -158,4 +158,40 @@ class LazySynthesiserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
         "(assert (= cond1_b1 (or (and (<= (* 2.0 z) 0.5) (not (or q1 q2 q4)))  (and (or q1 q2 q4)  (<=  (+ b1_score_q1 b1_score_q2 b1_score_q4) 0.5)))))\n(assert (= cond1 cond1_b1))\n\n(echo \"Result of analysis [name1 = always_true? cond1]:\")\n(push)\n(declare-const always_true_name1 Bool)\n(assert (= always_true_name1 cond1))\n(assert (not always_true_name1))\n(check-sat)\n(get-model)\n(pop)"
     generator.generate() should beZ3Model(expected)
   }
+
+  @Test
+  def testGenerateWithNonConstantDefaultScoreGreaterThanTh() {
+    val input = "POLICIES\n" +
+      "b1 = + ((q1 x) (q2 2 *y) (q4 y*4)) default 1.1 * z\n" +
+      "POLICY_SETS\n" +
+      "pSet1 = b1\n" +
+      "CONDITIONS\n" +
+      "cond1 = 0.5 < pSet1\n" +
+      "ANALYSES\nname1 = always_true? cond1\n"
+
+    val generator = new LazySynthesiser(input)
+    val expected =
+      "(declare-const q1 Bool)\n" +
+        "(declare-const q2 Bool)\n" +
+        "(declare-const q4 Bool)\n" +
+        "(declare-const x Real)\n" +
+        "(declare-const y Real)\n" +
+        "(declare-const z Real)\n" +
+        "(declare-const cond1 Bool)\n" +
+        "(declare-const b1_score_q1 Real)\n" +
+        "(assert (implies q1 (= x b1_score_q1)))\n" +
+        "(assert (implies (not (= 0.0 b1_score_q1)) q1))\n" +
+        "(declare-const b1_score_q2 Real)\n" +
+        "(assert (implies q2 (= (* 2.0 y) b1_score_q2)))\n" +
+        "(assert (implies (not (= 0.0 b1_score_q2)) q2))\n" +
+        "(declare-const b1_score_q4 Real)\n" +
+        "(assert (implies q4 (= (* 4.0 y) b1_score_q4)))\n" +
+        "(assert (implies (not (= 0.0 b1_score_q4)) q4))\n" +
+        "(declare-const cond1_b1 Bool)\n" +
+        "(assert (= cond1_b1 (or (and (< 0.5 (* 1.1 z)) (not (or q1 q2 q4)))  (and (or q1 q2 q4)  " +
+        "(< 0.5 (+ b1_score_q1 b1_score_q2 b1_score_q4))))))\n" +
+        "(assert (= cond1 cond1_b1))" +
+        "\n\n(echo \"Result of analysis [name1 = always_true? cond1]:\")\n(push)\n(declare-const always_true_name1 Bool)\n(assert (= always_true_name1 cond1))\n(assert (not always_true_name1))\n(check-sat)\n(get-model)\n(pop)"
+    generator.generate() should beZ3Model(expected)
+  }
 }
