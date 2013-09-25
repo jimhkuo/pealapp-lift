@@ -35,6 +35,29 @@ class PealCometActor extends CometActor with Loggable {
 
   val defaultInput = "POLICIES\n" +
     "b1 = min ((q1 0.2) (q2 0.4) (q3 0.9)) default 1\n" +
+    "b2 = + ((q4 0.1) (q5 0.2) (q6 0.6)) default 0\n" +
+    "POLICY_SETS\n" +
+    "pSet1 = max(b1, b2)\n" +
+    "pSet2 = min(b1, b2)\n" +
+    "CONDITIONS\n" +
+    "cond1 = pSet1 <= 0.5\n" +
+    "cond2 = 0.6 < pSet2\n" +
+    "cond3 = 0.5 < pSet2\n" +
+    "cond4 = 0.4 < pSet2\n" +
+    "DOMAIN_SPECIFICS\n" +
+    "(declare-const a Real)\n" +
+    "(declare-const b Real)\n" +
+    "(assert (= q1 (< a (+ b 1))))\n" +
+    "ANALYSES\n" +
+    "name1 = always_true? cond1\n" +
+    "name2 = always_false? cond1\n" +
+    "name3 = satisfiable? cond2\n" +
+    "name4 = equivalent? cond1 cond2\n" +
+    "name5 = different? cond1 cond2\n" +
+    "name6 = imply? cond1 cond2\n"
+
+  val nonConstantDefaultInput = "POLICIES\n" +
+    "b1 = min ((q1 0.2) (q2 0.4) (q3 0.9)) default 0.8*z\n" +
     "b2 = + ((q4 0.1*x) (q5 y*0.2) (q6 y)) default 0\n" +
     "POLICY_SETS\n" +
     "pSet1 = max(b1, b2)\n" +
@@ -73,10 +96,14 @@ class PealCometActor extends CometActor with Loggable {
         }, "id" -> "policies", "cols" -> "30", "rows" -> "20")}
         </div>
         <div>
-          {SHtml.ajaxButton("Reset to sample policies", () => {
+          {SHtml.ajaxButton("Sample input", () => {
           this ! Reset
           _Noop
         }) ++
+          SHtml.ajaxButton("Sample (non-constant scores)", () => {
+            this ! ResetNonConstant
+            _Noop
+          }) ++
           SHtml.ajaxButton("Clear policies", () => {
             this ! Clear
             _Noop
@@ -180,6 +207,10 @@ class PealCometActor extends CometActor with Loggable {
     case Reset =>
       this ! Message("")
       inputPolicies = defaultInput
+      partialUpdate(JqId("policies") ~> JqVal(inputPolicies))
+    case ResetNonConstant =>
+      this ! Message("")
+      inputPolicies = nonConstantDefaultInput
       partialUpdate(JqId("policies") ~> JqVal(inputPolicies))
     case Generate =>
       this ! Message("")

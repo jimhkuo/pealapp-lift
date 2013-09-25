@@ -19,6 +19,7 @@ case object Download
 case object Prepare
 
 case object Reset
+case object ResetNonConstant
 
 case object MajorityVoting
 
