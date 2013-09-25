@@ -76,17 +76,17 @@ pSet  returns [PolicySet t]
 
 pol	returns [Pol p] 
 @init {l = new ArrayList<Rule>(); }
-	:id1=IDENT '='   '+' '(' (rule {l.add($rule.r);})* ')' 'default' (n=NUMBER {$p = new Pol(l, OperatorResolver.apply("+"), new Left<BigDecimal,Variable>(BigDecimal.valueOf(Double.valueOf($n.text))), $id1.text);}
+	: id1=IDENT '=' o=operator '(' (rule {l.add($rule.r);})* ')' 'default' (n=NUMBER {$p = new Pol(l, OperatorResolver.apply($o.text), new Left<BigDecimal,Variable>(BigDecimal.valueOf(Double.valueOf($n.text))), $id1.text);}
 									|
-									id2=IDENT {$p = new Pol(l, OperatorResolver.apply("+"), new Right<BigDecimal,Variable>(new Variable(BigDecimal.valueOf(1), $id2.text)), $id1.text);}
+									n=NUMBER '*' id2=IDENT {$p = new Pol(l, OperatorResolver.apply($o.text), new Right<BigDecimal,Variable>(new Variable(BigDecimal.valueOf(Double.valueOf($n.text)), $id2.text)), $id1.text);}
 									|
-									n=NUMBER '*' id2=IDENT {$p = new Pol(l, OperatorResolver.apply("+"), new Right<BigDecimal,Variable>(new Variable(BigDecimal.valueOf(Double.valueOf($n.text)), $id2.text)), $id1.text);}
+									id2=IDENT {$p = new Pol(l, OperatorResolver.apply($o.text), new Right<BigDecimal,Variable>(new Variable(BigDecimal.valueOf(1), $id2.text)), $id1.text);}
 									|
-									id2=IDENT '*' n=NUMBER {$p = new Pol(l, OperatorResolver.apply("+"), new Right<BigDecimal,Variable>(new Variable(BigDecimal.valueOf(Double.valueOf($n.text)), $id2.text)), $id1.text);}
+									id2=IDENT '*' n=NUMBER {$p = new Pol(l, OperatorResolver.apply($o.text), new Right<BigDecimal,Variable>(new Variable(BigDecimal.valueOf(Double.valueOf($n.text)), $id2.text)), $id1.text);}
 									)
-	|id1=IDENT '='  'max' '(' (rule {l.add($rule.r);})* ')' 'default' NUMBER {$p = new Pol(l, Max$.MODULE$, new Left<BigDecimal,Variable>(BigDecimal.valueOf(Double.valueOf($NUMBER.text))),  $id1.text);}
-	|id1=IDENT '='  'min' '(' (rule {l.add($rule.r);})* ')' 'default' NUMBER {$p = new Pol(l, Min$.MODULE$, new Left<BigDecimal,Variable>(BigDecimal.valueOf(Double.valueOf($NUMBER.text))), $id1.text);} 
-	|id1=IDENT '='  '*' '(' (rule {l.add($rule.r);})* ')' 'default' NUMBER {$p = new Pol(l, Mul$.MODULE$, new Left<BigDecimal,Variable>(BigDecimal.valueOf(Double.valueOf($NUMBER.text))), $id1.text);}
+//	|id1=IDENT '='  'max' '(' (rule {l.add($rule.r);})* ')' 'default' NUMBER {$p = new Pol(l, Max$.MODULE$, new Left<BigDecimal,Variable>(BigDecimal.valueOf(Double.valueOf($NUMBER.text))),  $id1.text);}
+//	|id1=IDENT '='  'min' '(' (rule {l.add($rule.r);})* ')' 'default' NUMBER {$p = new Pol(l, Min$.MODULE$, new Left<BigDecimal,Variable>(BigDecimal.valueOf(Double.valueOf($NUMBER.text))), $id1.text);} 
+//	|id1=IDENT '='  '*' '(' (rule {l.add($rule.r);})* ')' 'default' NUMBER {$p = new Pol(l, Mul$.MODULE$, new Left<BigDecimal,Variable>(BigDecimal.valueOf(Double.valueOf($NUMBER.text))), $id1.text);}
 	;
 
 rule 	returns [Rule r]
@@ -96,8 +96,10 @@ rule 	returns [Rule r]
 	| '(' id0=IDENT id1=IDENT '*' n=NUMBER ')' {$r = new Rule(new Predicate($id0.text),new Right<BigDecimal,Variable>(new Variable(BigDecimal.valueOf(Double.valueOf($n.text)), $id1.text)));}
 	;
 
+operator : 'max' | 'min' | '+' | '*';
+
 NUMBER : ('.'|'0'..'9'|'-'|'E')+ {if(ignore) skip();};
-NEWLINE:'\r'? '\n' { $channel = HIDDEN;};
 IDENT : ('a'..'z' | 'A'..'Z')('a'..'z' | 'A'..'Z' | '0'..'9' | '_')* {if(ignore) skip();};
 WS : (' ' | '\t' | '\n' | '\r' | '\f')+ { $channel = HIDDEN;};
-
+	
+//NEWLINE:'\r'? '\n' { $channel = HIDDEN;};
