@@ -76,10 +76,10 @@ pSet  returns [PolicySet t]
 
 pol	returns [Pol p] 
 @init {l = new ArrayList<Rule>(); }
-	:id1=IDENT '='   '+' '(' (rule {l.add($rule.r);})* ')' 'default' NUMBER {$p = new Pol(l, Plus$.MODULE$, BigDecimal.valueOf(Double.valueOf($NUMBER.text)), $id1.text);}
-	|id1=IDENT '='  'max' '(' (rule {l.add($rule.r);})* ')' 'default' NUMBER {$p = new Pol(l, Max$.MODULE$, BigDecimal.valueOf(Double.valueOf($NUMBER.text)),  $id1.text);}
-	|id1=IDENT '='  'min' '(' (rule {l.add($rule.r);})* ')' 'default' NUMBER {$p = new Pol(l, Min$.MODULE$, BigDecimal.valueOf(Double.valueOf($NUMBER.text)), $id1.text);} 
-	|id1=IDENT '='  '*' '(' (rule {l.add($rule.r);})* ')' 'default' NUMBER {$p = new Pol(l, Mul$.MODULE$, BigDecimal.valueOf(Double.valueOf($NUMBER.text)), $id1.text);}
+	:id1=IDENT '='   '+' '(' (rule {l.add($rule.r);})* ')' 'default' NUMBER {$p = new Pol(l, Plus$.MODULE$, new Left<BigDecimal,Variable>(BigDecimal.valueOf(Double.valueOf($NUMBER.text))), $id1.text);}
+	|id1=IDENT '='  'max' '(' (rule {l.add($rule.r);})* ')' 'default' NUMBER {$p = new Pol(l, Max$.MODULE$, new Left<BigDecimal,Variable>(BigDecimal.valueOf(Double.valueOf($NUMBER.text))),  $id1.text);}
+	|id1=IDENT '='  'min' '(' (rule {l.add($rule.r);})* ')' 'default' NUMBER {$p = new Pol(l, Min$.MODULE$, new Left<BigDecimal,Variable>(BigDecimal.valueOf(Double.valueOf($NUMBER.text))), $id1.text);} 
+	|id1=IDENT '='  '*' '(' (rule {l.add($rule.r);})* ')' 'default' NUMBER {$p = new Pol(l, Mul$.MODULE$, new Left<BigDecimal,Variable>(BigDecimal.valueOf(Double.valueOf($NUMBER.text))), $id1.text);}
 	;
 
 rule 	returns [Rule r]

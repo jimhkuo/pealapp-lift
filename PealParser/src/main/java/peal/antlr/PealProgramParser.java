@@ -1,4 +1,4 @@
-// $ANTLR 3.4 /Users/jkuo/PealApp-lift/antlr/PealProgram.g 2013-09-24 15:22:06
+// $ANTLR 3.4 /Users/jkuo/PealApp-lift/antlr/PealProgram.g 2013-09-25 09:40:31
 
 package peal.antlr;
 import java.util.*;
@@ -855,7 +855,7 @@ public class PealProgramParser extends Parser {
 
                     NUMBER4=(Token)match(input,NUMBER,FOLLOW_NUMBER_in_pol426); 
 
-                    p = new Pol(l, Plus$.MODULE$, BigDecimal.valueOf(Double.valueOf((NUMBER4!=null?NUMBER4.getText():null))), (id1!=null?id1.getText():null));
+                    p = new Pol(l, Plus$.MODULE$, new Left<BigDecimal,Variable>(BigDecimal.valueOf(Double.valueOf((NUMBER4!=null?NUMBER4.getText():null)))), (id1!=null?id1.getText():null));
 
                     }
                     break;
@@ -908,7 +908,7 @@ public class PealProgramParser extends Parser {
 
                     NUMBER6=(Token)match(input,NUMBER,FOLLOW_NUMBER_in_pol454); 
 
-                    p = new Pol(l, Max$.MODULE$, BigDecimal.valueOf(Double.valueOf((NUMBER6!=null?NUMBER6.getText():null))),  (id1!=null?id1.getText():null));
+                    p = new Pol(l, Max$.MODULE$, new Left<BigDecimal,Variable>(BigDecimal.valueOf(Double.valueOf((NUMBER6!=null?NUMBER6.getText():null)))),  (id1!=null?id1.getText():null));
 
                     }
                     break;
@@ -961,7 +961,7 @@ public class PealProgramParser extends Parser {
 
                     NUMBER8=(Token)match(input,NUMBER,FOLLOW_NUMBER_in_pol482); 
 
-                    p = new Pol(l, Min$.MODULE$, BigDecimal.valueOf(Double.valueOf((NUMBER8!=null?NUMBER8.getText():null))), (id1!=null?id1.getText():null));
+                    p = new Pol(l, Min$.MODULE$, new Left<BigDecimal,Variable>(BigDecimal.valueOf(Double.valueOf((NUMBER8!=null?NUMBER8.getText():null)))), (id1!=null?id1.getText():null));
 
                     }
                     break;
@@ -1014,7 +1014,7 @@ public class PealProgramParser extends Parser {
 
                     NUMBER10=(Token)match(input,NUMBER,FOLLOW_NUMBER_in_pol511); 
 
-                    p = new Pol(l, Mul$.MODULE$, BigDecimal.valueOf(Double.valueOf((NUMBER10!=null?NUMBER10.getText():null))), (id1!=null?id1.getText():null));
+                    p = new Pol(l, Mul$.MODULE$, new Left<BigDecimal,Variable>(BigDecimal.valueOf(Double.valueOf((NUMBER10!=null?NUMBER10.getText():null)))), (id1!=null?id1.getText():null));
 
                     }
                     break;
