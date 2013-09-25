@@ -9,7 +9,7 @@ case class GreaterThanThCondition(phi: PolicySet, th: BigDecimal) extends Condit
     case s: MinPolicySet => And(new GreaterThanThCondition(s.lhs, th).synthesis(consts), new GreaterThanThCondition(s.rhs, th).synthesis(consts))
     case s: MaxPolicySet => Or(new GreaterThanThCondition(s.lhs, th).synthesis(consts), new GreaterThanThCondition(s.rhs, th).synthesis(consts))
     case s: BasicPolicySet => new GreaterThanThCondition(s.pol, th).synthesis(consts)
-    case s: Pol => new ThLessThanPolCondition(s, th).synthesis(consts)
+    case s: Pol => new ThLessThanPolSynthesiser(s, th).synthesis(consts)
   }
 
   def getPol = phi

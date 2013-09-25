@@ -67,7 +67,7 @@ class GreaterThanThConditionTest extends ShouldMatchersForJUnit with Z3ModelMatc
     val p2_3 = new MinPolicySet(new BasicPolicySet(b2), new BasicPolicySet(b3))
     val p0_3 = new MaxPolicySet(p0_1, p2_3)
 
-    println(new ThLessThanPolCondition(b0, 0.50).synthesis(consts))
+    println(new ThLessThanPolSynthesiser(b0, 0.50).synthesis(consts))
 
     val cond1 = new GreaterThanThCondition(p0_3, 0.50)
 

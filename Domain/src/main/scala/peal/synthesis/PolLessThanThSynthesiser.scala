@@ -5,7 +5,7 @@ import scala.collection.JavaConversions._
 import peal.domain.z3.{PealAst, Or, Not, And}
 
 
-class PolLessThanThCondition(pol: Pol, th: BigDecimal) extends Condition {
+class PolLessThanThSynthesiser(pol: Pol, th: BigDecimal) extends Condition {
 
   def synthesis(consts: Map[String, PealAst]) = pol.defaultScore match {
     case s if s <= th => Or(new DefaultLessThanTh(pol, th).synthesis(consts), new NonDefaultPolLessThanTh(pol, th).synthesis(consts))

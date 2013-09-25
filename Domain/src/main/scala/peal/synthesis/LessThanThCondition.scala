@@ -10,7 +10,7 @@ case class LessThanThCondition(phi: PolicySet, th: BigDecimal) extends Condition
     case s: MinPolicySet => Or(new LessThanThCondition(s.lhs, th).synthesis(consts), new LessThanThCondition(s.rhs, th).synthesis(consts))
     case s: MaxPolicySet => And(new LessThanThCondition(s.lhs, th).synthesis(consts), new LessThanThCondition(s.rhs, th).synthesis(consts))
     case s: BasicPolicySet => new LessThanThCondition(s.pol, th).synthesis(consts)
-    case s: Pol => new PolLessThanThCondition(s, th).synthesis(consts)
+    case s: Pol => new PolLessThanThSynthesiser(s, th).synthesis(consts)
   }
 
   def getPol = phi
