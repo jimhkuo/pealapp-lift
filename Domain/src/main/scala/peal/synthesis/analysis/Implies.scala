@@ -9,6 +9,6 @@ case class Implies(name: String, lhs: String, rhs: String) extends AnalysisGener
      "(check-sat)\n" +
      "(get-model)\n" +
      "(pop)\n"
-  def analysisName: String = name + " = equivalent? " + lhs + " " + rhs
+  def analysisName: String = name + " = implies? " + lhs + " " + rhs
 
 }

@@ -54,7 +54,7 @@ class PealCometActor extends CometActor with Loggable {
     "name3 = satisfiable? cond2\n" +
     "name4 = equivalent? cond1 cond2\n" +
     "name5 = different? cond1 cond2\n" +
-    "name6 = imply? cond1 cond2\n"
+    "name6 = implies? cond1 cond2\n"
 
   val nonConstantDefaultInput = "POLICIES\n" +
     "b1 = min ((q1 0.2) (q2 0.4) (q3 0.9)) default 0.8*z\n" +
@@ -77,7 +77,7 @@ class PealCometActor extends CometActor with Loggable {
     "name3 = satisfiable? cond2\n" +
     "name4 = equivalent? cond1 cond2\n" +
     "name5 = different? cond1 cond2\n" +
-    "name6 = imply? cond1 cond2\n"
+    "name6 = implies? cond1 cond2\n"
   var inputPolicies = defaultInput
   var majorityVotingCount = 10
   var randomModelParam = "5, 5, 4, 3, 2, 7, 0.5, 0.1"
