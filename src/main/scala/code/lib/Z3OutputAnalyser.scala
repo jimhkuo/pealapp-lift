@@ -57,6 +57,14 @@ object Z3OutputAnalyser {
               out.append(s.lhs + " and " + s.rhs + " are NOT equivalent")
               out.append("For example, when\n" + getReasons(results(a), Set(s.lhs, s.rhs), Set("equivalent_", "cond"), constsMap))
             }
+          case s: Implies =>
+            if (results(a).satResult == Unsat) {
+              out.append(s.lhs + " implies " + s.rhs)
+            }
+            else {
+              out.append(s.lhs + " does not imply " + s.rhs)
+              out.append("For example, when\n" + getReasons(results(a), Set(s.lhs, s.rhs), Set("implies_", "cond"), constsMap))
+            }
         }
     }
 
