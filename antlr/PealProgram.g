@@ -82,7 +82,7 @@ pol	returns [Pol p]
 									|
 									n=NUMBER '*' id2=IDENT {$p = new Pol(l, Plus$.MODULE$, new Right<BigDecimal,Variable>(new Variable(BigDecimal.valueOf(Double.valueOf($n.text)), $id2.text)), $id1.text);}
 									|
-									id2=IDENT '*' n=NUMBER 
+									id2=IDENT '*' n=NUMBER {$p = new Pol(l, Plus$.MODULE$, new Right<BigDecimal,Variable>(new Variable(BigDecimal.valueOf(Double.valueOf($n.text)), $id2.text)), $id1.text);}
 									)
 	|id1=IDENT '='  'max' '(' (rule {l.add($rule.r);})* ')' 'default' NUMBER {$p = new Pol(l, Max$.MODULE$, new Left<BigDecimal,Variable>(BigDecimal.valueOf(Double.valueOf($NUMBER.text))),  $id1.text);}
 	|id1=IDENT '='  'min' '(' (rule {l.add($rule.r);})* ')' 'default' NUMBER {$p = new Pol(l, Min$.MODULE$, new Left<BigDecimal,Variable>(BigDecimal.valueOf(Double.valueOf($NUMBER.text))), $id1.text);} 
