@@ -7,10 +7,41 @@ import peal.synthesis.analysis.AlwaysTrue
 import peal.util.Z3ModelMatcher
 import peal.domain.z3.{PealAst, Term}
 import peal.antlr.util.ParserHelper
+import peal.domain.Pol
 
 
 class PealProgramParserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
   val consts = Map[String, PealAst]("q0" -> Term("q0"), "q1" -> Term("q1"), "q2" -> Term("q2"), "q3" -> Term("q3"), "q4" -> Term("q4"), "q5" -> Term("q5"), "q6" -> Term("q6"))
+
+  @Test
+  def testNonConstantDefaultScores() {
+    val input =
+      "b1 = + ((q1 x) (q2 0.5) (q3 0.4)) default x\n" +
+        "b2 = + ((q1 x) (q2 0.5) (q3 0.4)) default y\n" +
+        "b3 = + ((q1 x) (q2 0.5) (q3 0.4)) default 1.1*z\n" +
+        "b4 = + ((q1 x) (q2 0.5) (q3 0.4)) default 1.1*x\n" +
+//        "pSet1 = b3\n" +
+        "pSet = max(b1, b2)\n" +
+        "cond = pSet <= 0.5"
+
+    val pealProgramParser = ParserHelper.getPealParser(input)
+    pealProgramParser.program()
+    val pols = pealProgramParser.pols
+
+    println(pols.size)
+    println(pols)
+
+    val nonConstantDefaultScores = pols.foldLeft(Set[String]())((acc, tuple) => {
+      tuple._2 match {
+        case p: Pol =>
+          def addVariables(set: Set[String]) = p.score.fold(score => set, variable => set + variable.name)
+          addVariables(acc)
+        case _ => acc
+      }
+    })
+
+    nonConstantDefaultScores should be (Set("x", "y", "z"))
+  }
 
   @Test
   def testCanNonConstantFromRules() {
@@ -28,7 +59,7 @@ class PealProgramParserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
       addVariables(acc + rule.q.name)
     })
 
-    predicateNames should be (Set("x", "q1", "q2", "q3"))
+    predicateNames should be(Set("x", "q1", "q2", "q3"))
   }
 
   @Test

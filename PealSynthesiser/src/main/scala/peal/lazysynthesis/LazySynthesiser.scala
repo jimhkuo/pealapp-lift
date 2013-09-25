@@ -8,7 +8,6 @@ import peal.domain.MaxPolicySet
 import peal.domain.MinPolicySet
 import peal.domain.Pol
 import peal.synthesis.{GreaterThanThCondition, LessThanThCondition}
-import peal.domain.z3.Term
 import peal.antlr.util.ParserHelper
 
 class LazySynthesiser(input: String) {
@@ -21,7 +20,17 @@ class LazySynthesiser(input: String) {
   val pSets = pealProgramParser.pSets
   val allRules = pealProgramParser.pols.values().flatMap(pol => pol.rules)
   val predicateNames = allRules.map(r => r.q.name).toSet
-  val variableNames = allRules.foldLeft(Set[String]())((acc, rule) => {
+//  val nonConstantDefaultScores = pSets.foldLeft(Set[String]())((acc, pol) => {
+//    pol match {
+//      case p: Pol =>
+//        def addVariables(set: Set[String]) = p.score.fold(score => set, variable => set + variable.name)
+//        addVariables(acc)
+//      case _ => acc
+//    }
+//  })
+
+
+  val nonConstantScores = allRules.foldLeft(Set[String]())((acc, rule) => {
     def addVariables(set: Set[String]) = rule.attribute.fold(score => set, variable => set + variable.name)
     addVariables(acc)
   })
@@ -138,7 +147,7 @@ class LazySynthesiser(input: String) {
     ) yield (b)
 
     val declarations = for (name <- predicateNames) yield "(declare-const " + name + " Bool)\n"
-    val variableDeclarations = for (name <- variableNames) yield "(declare-const " + name + " Real)\n"
+    val variableDeclarations = for (name <- nonConstantScores) yield "(declare-const " + name + " Real)\n"
     val condDeclarations = for (name <- conds.keys) yield "(declare-const " + name + " Bool)\n"
 
     pols.filter(p => usedB.toSet.contains(p._1)).filter(p => p._2.operator == Plus || p._2.operator == Mul).foreach {
