@@ -10,6 +10,8 @@ case class Pol(rules: java.util.List[Rule], operator: Operators, val score: Eith
 
   def defaultScore = score.fold(score => score, variable => BigDecimal.valueOf(-999))
 
+  def scoreString = score.fold(lhs => lhs.toString(), rhs => if (rhs.multiplier != 1) "(* " + rhs.multiplier + " " + rhs.name + ")" else rhs.name)
+
   //needed by Java classes
   def getName = name
 }

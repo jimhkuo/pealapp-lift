@@ -20,16 +20,14 @@ class LazySynthesiser(input: String) {
   val pSets = pealProgramParser.pSets
   val allRules = pealProgramParser.pols.values().flatMap(pol => pol.rules)
   val predicateNames = allRules.map(r => r.q.name).toSet
-//  val nonConstantDefaultScores = pSets.foldLeft(Set[String]())((acc, pol) => {
-//    pol match {
-//      case p: Pol =>
-//        def addVariables(set: Set[String]) = p.score.fold(score => set, variable => set + variable.name)
-//        addVariables(acc)
-//      case _ => acc
-//    }
-//  })
-
-
+  val nonConstantDefaultScores = pols.foldLeft(Set[String]())((acc, tuple) => {
+    tuple._2 match {
+      case p: Pol =>
+        def addVariables(set: Set[String]) = p.score.fold(score => set, variable => set + variable.name)
+        addVariables(acc)
+      case _ => acc
+    }
+  })
   val nonConstantScores = allRules.foldLeft(Set[String]())((acc, rule) => {
     def addVariables(set: Set[String]) = rule.attribute.fold(score => set, variable => set + variable.name)
     addVariables(acc)
@@ -104,7 +102,7 @@ class LazySynthesiser(input: String) {
               " (< " + cond.th + " (" + o + " " + pols(bName).rules.map(bName + "_score_" + _.q.name).mkString(" ") + "))))))\n")
           case cond: LessThanThCondition =>
             buffer.append("(assert (= " + condName + "_" + bName +
-              " (or (and (<= " + " " + pols(bName).defaultScore + " " + cond.th + ") (not (or " + pols(bName).rules.map(_.q.name).mkString(" ") + "))) " +
+              " (or (and (<= " + pols(bName).scoreString + " " + cond.th + ") (not (or " + pols(bName).rules.map(_.q.name).mkString(" ") + "))) " +
               " (and (or " + pols(bName).rules.map(_.q.name).mkString(" ") + ") " +
               " (<= " + " (" + o + " " + pols(bName).rules.map(bName + "_score_" + _.q.name).mkString(" ") + ") " + cond.th + ")))))\n")
         }
@@ -148,6 +146,7 @@ class LazySynthesiser(input: String) {
 
     val declarations = for (name <- predicateNames) yield "(declare-const " + name + " Bool)\n"
     val variableDeclarations = for (name <- nonConstantScores) yield "(declare-const " + name + " Real)\n"
+    val nonConstantScoreDeclarations = for (name <- nonConstantDefaultScores) yield "(declare-const " + name + " Real)\n"
     val condDeclarations = for (name <- conds.keys) yield "(declare-const " + name + " Bool)\n"
 
     pols.filter(p => usedB.toSet.contains(p._1)).filter(p => p._2.operator == Plus || p._2.operator == Mul).foreach {
@@ -179,6 +178,6 @@ class LazySynthesiser(input: String) {
       "(echo \"Result of analysis [" + analyses(analysis).analysisName + "]:\")\n" + analyses(analysis).z3SMTInput
     }
 
-    declarations.mkString("") + variableDeclarations.mkString("") + condDeclarations.mkString("") + buffer.toString() + domainSpecifics.mkString("", "\n", "\n") + generatedAnalyses.mkString("")
+    declarations.mkString("") + variableDeclarations.mkString("") + nonConstantScoreDeclarations.mkString("") + condDeclarations.mkString("") + buffer.toString() + domainSpecifics.mkString("", "\n", "\n") + generatedAnalyses.mkString("")
   }
 }
