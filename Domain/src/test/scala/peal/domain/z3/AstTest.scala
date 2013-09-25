@@ -1,8 +1,7 @@
-package peal.domain.z3.wrapper
+package peal.domain.z3
 
 import org.scalatest.junit.ShouldMatchersForJUnit
 import org.junit.Test
-import peal.domain.z3.{Or, And}
 
 class AstTest extends ShouldMatchersForJUnit {
 
