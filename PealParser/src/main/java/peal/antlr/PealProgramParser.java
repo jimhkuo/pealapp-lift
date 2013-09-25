@@ -1,4 +1,4 @@
-// $ANTLR 3.4 /Users/jkuo/PealApp-lift/antlr/PealProgram.g 2013-09-25 10:45:20
+// $ANTLR 3.4 /Users/jkuo/PealApp-lift/antlr/PealProgram.g 2013-09-25 10:53:15
 
 package peal.antlr;
 import java.util.*;
@@ -905,7 +905,7 @@ public class PealProgramParser extends Parser {
                             {
                             n=(Token)match(input,NUMBER,FOLLOW_NUMBER_in_pol429); 
 
-                            p = new Pol(l, Plus$.MODULE$, new Left<BigDecimal,Variable>(BigDecimal.valueOf(Double.valueOf((n!=null?n.getText():null)))), (id1!=null?id1.getText():null));
+                            p = new Pol(l, OperatorResolver.apply("+"), new Left<BigDecimal,Variable>(BigDecimal.valueOf(Double.valueOf((n!=null?n.getText():null)))), (id1!=null?id1.getText():null));
 
                             }
                             break;
@@ -914,7 +914,7 @@ public class PealProgramParser extends Parser {
                             {
                             id2=(Token)match(input,IDENT,FOLLOW_IDENT_in_pol455); 
 
-                            p = new Pol(l, Plus$.MODULE$, new Right<BigDecimal,Variable>(new Variable(BigDecimal.valueOf(1), (id2!=null?id2.getText():null))), (id1!=null?id1.getText():null));
+                            p = new Pol(l, OperatorResolver.apply("+"), new Right<BigDecimal,Variable>(new Variable(BigDecimal.valueOf(1), (id2!=null?id2.getText():null))), (id1!=null?id1.getText():null));
 
                             }
                             break;
@@ -927,7 +927,7 @@ public class PealProgramParser extends Parser {
 
                             id2=(Token)match(input,IDENT,FOLLOW_IDENT_in_pol487); 
 
-                            p = new Pol(l, Plus$.MODULE$, new Right<BigDecimal,Variable>(new Variable(BigDecimal.valueOf(Double.valueOf((n!=null?n.getText():null))), (id2!=null?id2.getText():null))), (id1!=null?id1.getText():null));
+                            p = new Pol(l, OperatorResolver.apply("+"), new Right<BigDecimal,Variable>(new Variable(BigDecimal.valueOf(Double.valueOf((n!=null?n.getText():null))), (id2!=null?id2.getText():null))), (id1!=null?id1.getText():null));
 
                             }
                             break;
@@ -940,7 +940,7 @@ public class PealProgramParser extends Parser {
 
                             n=(Token)match(input,NUMBER,FOLLOW_NUMBER_in_pol519); 
 
-                            p = new Pol(l, Plus$.MODULE$, new Right<BigDecimal,Variable>(new Variable(BigDecimal.valueOf(Double.valueOf((n!=null?n.getText():null))), (id2!=null?id2.getText():null))), (id1!=null?id1.getText():null));
+                            p = new Pol(l, OperatorResolver.apply("+"), new Right<BigDecimal,Variable>(new Variable(BigDecimal.valueOf(Double.valueOf((n!=null?n.getText():null))), (id2!=null?id2.getText():null))), (id1!=null?id1.getText():null));
 
                             }
                             break;
