@@ -48,22 +48,22 @@ class LazySynthesiser(input: String) {
           case cond: LessThanThCondition =>
             val filtered = pols(bName).rules.filter(_.score <= cond.getTh)
             if (filtered.size > 0) {
-              "(or (and (<= " + pols(bName).defaultScore + " " + cond.getTh + ") (not (or " + pols(bName).rules.map(_.q.name).mkString(" ") + ")))\n" +
+              "(or (and (<= " + pols(bName).scoreString + " " + cond.getTh + ") (not (or " + pols(bName).rules.map(_.q.name).mkString(" ") + ")))\n" +
                 "(or " + filtered.map(_.q.name).mkString(" ") + ")))"
             }
             else {
-              "(or (and (<= " + pols(bName).defaultScore + " " + cond.getTh + ") (not (or " + pols(bName).rules.map(_.q.name).mkString(" ") + ")))\n" +
+              "(or (and (<= " + pols(bName).scoreString + " " + cond.getTh + ") (not (or " + pols(bName).rules.map(_.q.name).mkString(" ") + ")))\n" +
                 "false))"
 
             }
           case cond: GreaterThanThCondition =>
             val filtered = pols(bName).rules.filter(_.score <= cond.getTh)
             if (filtered.size > 0) {
-              "(or (and (< " + cond.getTh + " " + pols(bName).defaultScore + ") (not (or " + pols(bName).rules.map(_.q.name).mkString(" ") + ")))\n" +
+              "(or (and (< " + cond.getTh + " " + pols(bName).scoreString + ") (not (or " + pols(bName).rules.map(_.q.name).mkString(" ") + ")))\n" +
                 "(and (or " + pols(bName).rules.map(_.q.name).mkString(" ") + ") " + "(not (or " + filtered.map(_.q.name).mkString(" ") + ")))))"
             }
             else {
-              "(or (and (< " + cond.getTh + " " + pols(bName).defaultScore + ") (not (or " + pols(bName).rules.map(_.q.name).mkString(" ") + ")))\n" +
+              "(or (and (< " + cond.getTh + " " + pols(bName).scoreString + ") (not (or " + pols(bName).rules.map(_.q.name).mkString(" ") + ")))\n" +
                 "(and (or " + pols(bName).rules.map(_.q.name).mkString(" ") + ") " + "(not false))))"
             }
         }
@@ -73,21 +73,21 @@ class LazySynthesiser(input: String) {
           case cond: LessThanThCondition =>
             val filtered = pols(bName).rules.filter(_.score <= cond.getTh)
             if (filtered.size > 0) {
-              "(or (and (<= " + pols(bName).defaultScore + " " + cond.getTh + ") (not (or " + pols(bName).rules.map(_.q.name).mkString(" ") + ")))\n" +
+              "(or (and (<= " + pols(bName).scoreString + " " + cond.getTh + ") (not (or " + pols(bName).rules.map(_.q.name).mkString(" ") + ")))\n" +
                 "(and (or " + pols(bName).rules.map(_.q.name).mkString(" ") + ") " + "(not (or " + pols(bName).rules.filter(_.score <= cond.getTh).map(_.q.name).mkString(" ") + ")))))"
             }
             else {
-              "(or (and (<= " + pols(bName).defaultScore + " " + cond.getTh + ") (not (or " + pols(bName).rules.map(_.q.name).mkString(" ") + ")))\n" +
+              "(or (and (<= " + pols(bName).scoreString + " " + cond.getTh + ") (not (or " + pols(bName).rules.map(_.q.name).mkString(" ") + ")))\n" +
                 "(and (or " + pols(bName).rules.map(_.q.name).mkString(" ") + ") " + "(not false))))"
             }
           case cond: GreaterThanThCondition =>
             val filtered = pols(bName).rules.filter(cond.getTh < _.score)
             if (filtered.size > 0) {
-              "(or (and (< " + cond.getTh + " " + pols(bName).defaultScore + ") (not (or " + pols(bName).rules.map(_.q.name).mkString(" ") + ")))\n" +
+              "(or (and (< " + cond.getTh + " " + pols(bName).scoreString + ") (not (or " + pols(bName).rules.map(_.q.name).mkString(" ") + ")))\n" +
                 "(or " + filtered.map(_.q.name).mkString(" ") + ")))"
             }
             else {
-              "(or (and (< " + cond.getTh + " " + pols(bName).defaultScore + ") (not (or " + pols(bName).rules.map(_.q.name).mkString(" ") + ")))\n" +
+              "(or (and (< " + cond.getTh + " " + pols(bName).scoreString + ") (not (or " + pols(bName).rules.map(_.q.name).mkString(" ") + ")))\n" +
                 "false))"
             }
         }
