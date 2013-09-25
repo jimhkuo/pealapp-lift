@@ -17,9 +17,9 @@ class PealProgramParserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
   def testNonConstantDefaultScores() {
     val input =
       "b1 = + ((q1 x) (q2 0.5) (q3 0.4)) default x\n" +
-        "b2 = + ((q1 x) (q2 0.5) (q3 0.4)) default y\n" +
-        "b3 = + ((q1 x) (q2 0.5) (q3 0.4)) default 1.1*x\n" +
-        "b4 = + ((q1 x) (q2 0.5) (q3 0.4)) default z * 2.9\n" +
+        "b2 = min ((q1 x) (q2 0.5) (q3 0.4)) default y\n" +
+        "b3 = * ((q1 x) (q2 0.5) (q3 0.4)) default 1.1*x\n" +
+        "b4 = max ((q1 x) (q2 0.5) (q3 0.4)) default z * 2.9\n" +
         "pSet = max(b1, b2)\n" +
         "cond = pSet <= 0.5"
 
