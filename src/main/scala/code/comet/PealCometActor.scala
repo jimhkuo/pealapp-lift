@@ -140,6 +140,9 @@ class PealCometActor extends CometActor with Loggable {
         }) ++ SHtml.ajaxButton("EXPLICIT synthesis and call z3", () => {
           this ! SynthesisAndCallZ3
           _Noop
+        })++ SHtml.ajaxButton("Call z3", () => {
+          this ! SynthesisAndCallZ3Quiet
+          _Noop
         })}
           <span>||</span>
           {SHtml.ajaxButton("EXPLICIT synthesis (and download)", () => {
@@ -169,7 +172,10 @@ class PealCometActor extends CometActor with Loggable {
     case Init =>
     case SynthesisAndCallZ3 =>
       val (constsMap,  conds, pSets, analyses, domainSpecific) = onCompute(inputPolicies)
-      onCallEagerZ3(constsMap, conds,  pSets, analyses, domainSpecific)
+      onCallEagerZ3(true, constsMap, conds,  pSets, analyses, domainSpecific)
+    case SynthesisAndCallZ3Quiet =>
+      val (constsMap,  conds, pSets, analyses, domainSpecific) = onCompute(inputPolicies)
+      onCallEagerZ3(false, constsMap, conds,  pSets, analyses, domainSpecific)
     case LazySynthesisAndCallZ3 =>
       val input = new LazySynthesiser(inputPolicies).generate()
       onCallLazyZ3(input)
@@ -286,7 +292,7 @@ class PealCometActor extends CometActor with Loggable {
     this ! SaveFile(z3SMTInput, lapseTime)
   }
 
-  private def onCallEagerZ3(constsMap: Map[String, PealAst], conds: Map[String, Condition], pSets: Map[String, PolicySet], analyses: Map[String, AnalysisGenerator], domainSpecifics: Array[String]) {
+  private def onCallEagerZ3(verbose: Boolean, constsMap: Map[String, PealAst], conds: Map[String, Condition], pSets: Map[String, PolicySet], analyses: Map[String, AnalysisGenerator], domainSpecifics: Array[String]) {
     val declarations = for (name <- constsMap.keys) yield "(declare-const " + name + " Bool)\n"
     val declarations1 = for (name <- conds.keys) yield "(declare-const " + name + " Bool)\n"
     val sortedKeys = conds.keys.toSeq.sortWith(_ < _)
@@ -305,11 +311,18 @@ class PealCometActor extends CometActor with Loggable {
       val z3OutputParser = ParserHelper.getZ3OutputParser(resultList.mkString(""))
       val z3Models = z3OutputParser.results().toMap
       val analysedResults = Z3OutputAnalyser.execute(analyses, z3Models, constsMap)
-
-      this ! Result(<pre>{z3SMTInput}</pre> <pre>Analysed results:<br/>{analysedResults}<br/><br/>Z3 Raw Output:<br/>{resultList.mkString("")}</pre>)
+      verbose match {
+        case true => this ! Result(<pre>{z3SMTInput}</pre> <pre>Analysed results:<br/>{analysedResults}<br/><br/>Z3 Raw Output:<br/>{resultList.mkString("")}</pre>)
+        case false => this ! Result(<pre>Analysed results:<br/>{analysedResults}</pre>)
+      }
     } catch {
-      case e: Exception =>     this ! Result(<pre>{z3SMTInput}</pre> <pre>Z3 Raw Output:<br/>{resultList.mkString("")}</pre>)
-//        dealWithIt(e)
+      case e: Exception =>
+        verbose match {
+          case true => this ! Result(<pre>{z3SMTInput}</pre> <pre>Z3 Raw Output:<br/>{resultList.mkString("")}</pre>)
+          case false => this ! Result(<pre>Result analysis failed, returned model contains unexpected string:<br/>{resultList.mkString("")}</pre>)
+        }
+
+      //        dealWithIt(e)
     }
   }
 
