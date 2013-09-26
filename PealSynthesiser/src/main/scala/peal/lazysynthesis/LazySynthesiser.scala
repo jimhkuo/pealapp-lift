@@ -7,8 +7,14 @@ import peal.domain.BasicPolicySet
 import peal.domain.MaxPolicySet
 import peal.domain.MinPolicySet
 import peal.domain.Pol
-import peal.synthesis.{ConjunctionCondition, NotCondition, GreaterThanThCondition, LessThanThCondition}
+import peal.synthesis._
 import peal.antlr.util.ParserHelper
+import peal.domain.BasicPolicySet
+import peal.synthesis.GreaterThanThCondition
+import peal.synthesis.LessThanThCondition
+import peal.domain.MinPolicySet
+import peal.domain.MaxPolicySet
+import peal.domain.Pol
 
 class LazySynthesiser(input: String) {
 
@@ -115,9 +121,9 @@ class LazySynthesiser(input: String) {
     conds(condName) match {
       case s: GreaterThanThCondition => buffer.append("(assert (= " + condName + " " + genPSA("<", s.getPol) + "))\n")
       case s: LessThanThCondition => buffer.append("(assert (= " + condName + " " + genPSA("<=", s.getPol) + "))\n")
-      //TODO add new condition extension here
       case s: NotCondition => buffer.append("(assert (= " + condName + " " + s.synthesis(null) + "))\n")
       case s: ConjunctionCondition => buffer.append("(assert (= " + condName + " " + s.synthesis(null) + "))\n")
+      case s: DisjunctionCondition => buffer.append("(assert (= " + condName + " " + s.synthesis(null) + "))\n")
     }
 
     def genPSA(operator: String, pSet: PolicySet): String = operator match {
