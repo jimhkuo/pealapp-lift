@@ -110,6 +110,23 @@ class PealProgramParserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
   }
 
   @Test
+  def testNotCondition() {
+    val input = "POLICIES\n" +
+      "b1 = min ((q1 0.2) (q2 0.4) (q3 0.9)) default 1\n" +
+      "b2 = + ((q4 0.1) (q5 0.2) (q6 0.2)) default 0\n" +
+      "POLICY_SETS\n" +
+      "pSet1 = max(b1, b2)\n" +
+      "CONDITIONS\n" +
+      "cond1 = pSet1 <= 0.5\n" +
+      "cond2 = !cond1\n"
+
+    val pealProgrmParser = ParserHelper.getPealParser(input)
+    pealProgrmParser.program()
+
+    pealProgrmParser.conds("cond2").synthesis(consts) should beZ3Model("(not cond1)")
+  }
+
+  @Test
   def testCanParseDefaultInputInWebapp() {
     val input =
       "b1 = min ((q1 0.2) (q2 0.4) (q3 0.9)) default 1" +
