@@ -7,7 +7,7 @@ import peal.domain.BasicPolicySet
 import peal.domain.MaxPolicySet
 import peal.domain.MinPolicySet
 import peal.domain.Pol
-import peal.synthesis.{GreaterThanThCondition, LessThanThCondition}
+import peal.synthesis.{NotCondition, GreaterThanThCondition, LessThanThCondition}
 import peal.antlr.util.ParserHelper
 
 class LazySynthesiser(input: String) {
@@ -38,6 +38,7 @@ class LazySynthesiser(input: String) {
     case s: BasicPolicySet => Set(s.pol.asInstanceOf[Pol].name)
     case s: MaxPolicySet => findAllPolicySets(s.lhs) ++ findAllPolicySets(s.rhs)
     case s: MinPolicySet => findAllPolicySets(s.lhs) ++ findAllPolicySets(s.rhs)
+    case _ => Set()
   }
 
   private def generateConditionEnforcement(condName: String, bName: String): String = {
@@ -112,11 +113,10 @@ class LazySynthesiser(input: String) {
   private def generatePolicySetAssertions(condName: String): String = {
     val buffer = new StringBuilder
     conds(condName) match {
-      case s: GreaterThanThCondition => // <
-        buffer.append("(assert (= " + condName + " " + genPSA("<", s.getPol) + "))\n")
-      case s: LessThanThCondition => // >=
-        buffer.append("(assert (= " + condName + " " + genPSA("<=", s.getPol) + "))\n")
-        //TODO add new condition extension here
+      case s: GreaterThanThCondition => buffer.append("(assert (= " + condName + " " + genPSA("<", s.getPol) + "))\n")
+      case s: LessThanThCondition => buffer.append("(assert (= " + condName + " " + genPSA("<=", s.getPol) + "))\n")
+      //TODO add new condition extension here
+      case s: NotCondition => buffer.append("(assert (= " + condName + " " + s.synthesis(null) + "))\n")
     }
 
     def genPSA(operator: String, pSet: PolicySet): String = operator match {
