@@ -60,6 +60,10 @@ program
 	id0=IDENT '=' id1=IDENT '&&' id2=IDENT {Condition cond = new ConjunctionCondition($id1.text, $id2.text); conds.put($id0.text, cond);}
 	|
 	id0=IDENT '=' id1=IDENT '||' id2=IDENT {Condition cond = new DisjunctionCondition($id1.text, $id2.text); conds.put($id0.text, cond);}
+	|
+	id0 =IDENT '=' 'true' {Condition cond = new TrueCondition(); conds.put($id0.text, cond);}
+	|
+	id0 =IDENT '=' 'false' {Condition cond = new FalseCondition(); conds.put($id0.text, cond);}
 	)+
 	('DOMAIN_SPECIFICS' {ignore = true;}
 	(IDENT | NUMBER | '+' | '*' | '=' | '(' | ')' | '<' | '<=' )*)?
