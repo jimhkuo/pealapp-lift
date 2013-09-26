@@ -116,6 +116,7 @@ class LazySynthesiser(input: String) {
         buffer.append("(assert (= " + condName + " " + genPSA("<", s.getPol) + "))\n")
       case s: LessThanThCondition => // >=
         buffer.append("(assert (= " + condName + " " + genPSA("<=", s.getPol) + "))\n")
+        //TODO add new condition extension here
     }
 
     def genPSA(operator: String, pSet: PolicySet): String = operator match {
