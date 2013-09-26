@@ -83,6 +83,25 @@ class LazySynthesiserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
   }
 
   @Test
+  def testGenerateTruthCondition() {
+    val input = "POLICIES\n" +
+      "b1 = min ((q1 0.2) (q2 0.4) (q4 0.9)) default 1\n" +
+      "b2 = + ((q4 0.1) (q5 0.2) (q6 0.2)) default 0\n" +
+      "b3 = + ((q4 0.1) (q5 0.2) (q6 0.2)) default 0\n" +
+      "b4 = + ((q4 0.1) (q5 0.2) (q6 0.2)) default 0\n" +
+      "POLICY_SETS\n" +
+      "pSet1 = max(b1, b2)\n" +
+      "pSet2 = min(b1, b2)\n" +
+      "CONDITIONS\n" +
+      "cond1 = false\n" +
+      "cond2 = true\n" +
+      "ANALYSES\nname1 = always_true? cond1\n"
+
+    val generator = new LazySynthesiser(input)
+    generator.generate() should beZ3Model("(declare-const q5 Bool)\n(declare-const q4 Bool)\n(declare-const q2 Bool)\n(declare-const q1 Bool)\n(declare-const q6 Bool)\n(declare-const cond2 Bool)\n(declare-const cond1 Bool)\n(assert (= cond2 true))\n(assert (= cond1 false))\n\n(echo \"Result of analysis [name1 = always_true? cond1]:\")\n(push)\n(declare-const always_true_name1 Bool)\n(assert (= always_true_name1 cond1))\n(assert (not always_true_name1))\n(check-sat)\n(get-model)\n(pop)")
+  }
+
+  @Test
   def testBroken() {
     val input = "POLICIES\nb0 = * ((q4 0.17)) default 0.95\nb1 = max ((q1 0.86)) default 0.51\nb2 = + ((q4 0.86)) default 0.99\nb3 = min ((q4 0.66) (q1 0.79)) default 0.83\nPOLICY_SETS\np0_1 = min(b0,b1)\np2_3 = min(b2,b3)\np0_3 = max(p0_1,p2_3)\n\nCONDITIONS\ncond1 = 0.50 < p0_3\ncond2 = 0.60 < p0_3\nANALYSES\nanalysis1 = always_true? cond1"
     val generator = new LazySynthesiser(input)

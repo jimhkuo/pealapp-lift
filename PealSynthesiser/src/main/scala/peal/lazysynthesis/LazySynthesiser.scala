@@ -124,6 +124,8 @@ class LazySynthesiser(input: String) {
       case s: NotCondition => buffer.append("(assert (= " + condName + " " + s.synthesis(null) + "))\n")
       case s: ConjunctionCondition => buffer.append("(assert (= " + condName + " " + s.synthesis(null) + "))\n")
       case s: DisjunctionCondition => buffer.append("(assert (= " + condName + " " + s.synthesis(null) + "))\n")
+      case s: TrueCondition => buffer.append("(assert (= " + condName + " " + s.synthesis(null) + "))\n")
+      case s: FalseCondition => buffer.append("(assert (= " + condName + " " + s.synthesis(null) + "))\n")
     }
 
     def genPSA(operator: String, pSet: PolicySet): String = operator match {
