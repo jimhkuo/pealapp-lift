@@ -1,6 +1,6 @@
 package peal.synthesis
 
-import peal.domain.z3.{And, Term, Not, PealAst}
+import peal.domain.z3.{And, Term, PealAst}
 
 class ConjunctionCondition(lhs: String, rhs: String) extends Condition {
    def getPol = null
