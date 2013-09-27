@@ -1,4 +1,4 @@
-package peal.domain
+package peal.model
 
 import org.junit.Test
 import peal.model.RandomModelGenerator
