@@ -6,7 +6,7 @@ import akka.pattern.ask
 import akka.util.Timeout
 import akka.actor.{ActorRef, Props, ActorSystem}
 import peal.runner.actor._
-import peal.model.RandomModelGenerator
+import peal.model.{MajorityVotingGenerator, RandomModelGenerator}
 import java.io.File
 import util.FileUtil
 import scala.sys.process._
@@ -20,6 +20,11 @@ class ExperimentRunner(runMode: RunMode, doDomainSpecifics: Boolean, system: Act
 
   def runRandomModel(n: Int, min: Int, max: Int, plus: Int, mul: Int, k: Int, th: Double, delta: Double): TimingOutput = {
     val model = RandomModelGenerator.generate(doDomainSpecifics, n, min, max, plus, mul, k, th, delta)
+    runExperiment(model)
+  }
+
+  def runMajorityVoting(n: Int): TimingOutput = {
+    val model = MajorityVotingGenerator.generateForCount(n)
     runExperiment(model)
   }
 
