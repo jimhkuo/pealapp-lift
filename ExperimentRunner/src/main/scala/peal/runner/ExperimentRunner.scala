@@ -92,10 +92,9 @@ class ExperimentRunner(runMode: RunMode, doDomainSpecifics: Boolean, system: Act
           output.lazyZ3 = lapsedTime
           lazyResult match {
             case FailedExecution => throw new RuntimeException("Z3 caller aborted")
-            case _ => output.model1Result = lazyResult.asInstanceOf[Map[String, String]]
+            case _ => output.model2Result = lazyResult.asInstanceOf[Map[String, String]]
           }
           print("z")
-          output.model2Result = lazyResult.asInstanceOf[Map[String, String]]
         } catch {
           case e: TimeoutException => processKiller ! z3InputFile
             throw e
@@ -103,7 +102,9 @@ class ExperimentRunner(runMode: RunMode, doDomainSpecifics: Boolean, system: Act
       }
 
       if (runMode != Both) {
-        output.isSameOutput = true
+        if ((output.model1Result.contains("analysis = always_true? cond") && output.model1Result("analysis = always_true? cond") == "sat" && runMode == EagerOnly) || (output.model2Result.contains("analysis = always_true? cond") && output.model2Result("analysis = always_true? cond") == "sat" && runMode == LazyOnly)) {
+          output.isSameOutput = true
+        }
       }
       else {
         if (!output.model1Result.isEmpty && output.model1Result == output.model2Result) {

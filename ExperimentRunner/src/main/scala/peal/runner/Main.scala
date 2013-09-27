@@ -11,11 +11,11 @@ object Main extends App {
   private val doDomainSpecifics = true
 
   println("Picking up z3 from environment PATH: " + System.getenv("PATH"))
-  binarySearchOnMajorityVoting(Both)
+  binarySearchOnMajorityVoting(LazyOnly)
   System.exit(0)
 
   private def binarySearchOnMajorityVoting(runMode: RunMode) {
-    val execute: (Int) => Boolean = (x) => executeRunner(runMode, x, -1, -1, -1, -1, -1, -0.5, -0.1)
+    val execute: (Int) => Boolean = (x) => executeRunner(runMode, x, 0, 0, 0, 0, 0, 0, 0)
 
     var lastSuccess = 0
     var lastFailure = 0
@@ -116,6 +116,7 @@ object Main extends App {
         ezt += output.eagerZ3
         lt += output.lazySynthesis
         lzt += output.lazyZ3
+//        print(output.model1Result + "," + output.model2Result + ",")
         if (!output.isSameOutput) {
           if (output.model1Result.size == 0) {
             println("model1 is empty")
