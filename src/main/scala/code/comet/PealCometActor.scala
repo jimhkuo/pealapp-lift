@@ -19,7 +19,7 @@ import net.liftweb.http.js.jquery.JqJE.JqId
 import code.lib.Message
 import code.lib.Result
 import code.lib.SaveFile
-import peal.model.RandomModelGenerator
+import peal.model.{MajorityVotingGenerator, RandomModelGenerator}
 import peal.domain.PolicySet
 import peal.lazysynthesis.LazySynthesiser
 import peal.domain.z3.{PealAst, Term}
@@ -212,9 +212,7 @@ class PealCometActor extends CometActor with Loggable {
       partialUpdate(JqId("policies") ~> JqVal(""))
     case MajorityVoting =>
       this ! Message("")
-      inputPolicies = "b1 = + (" +
-        (for (i <- 0 until majorityVotingCount) yield "(q" + i + " " + BigDecimal.valueOf(1.0 / majorityVotingCount) + ")").mkString("") +
-        " ) default 0\npSet = b1\ncond = 0.5 < pSet\nANALYSES\nanalysis = always_true? cond\n"
+      inputPolicies = MajorityVotingGenerator.generateForCount(majorityVotingCount)
       partialUpdate(JqId("policies") ~> JqVal(inputPolicies))
     case Reset =>
       this ! Message("")
