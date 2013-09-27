@@ -83,7 +83,7 @@ object Main extends App {
       print(n + "-" + m0 + "-" + m1 + "-" + m2 + "-" + m3 + "-" + th + "-" + delta + "," + timeout + ",")
 
       for (i <- 1 to iterations) {
-        val output = new ExperimentRunner(runMode, doDomainSpecifics, system, timeout, z3MemoryBound).run(n, m0, m1, m2, m3, k, th, delta)
+        val output = new ExperimentRunner(runMode, doDomainSpecifics, system, timeout, z3MemoryBound).runRandomModel(n, m0, m1, m2, m3, k, th, delta)
         mt += output.modelGeneration
         et += output.eagerSynthesis
         ezt += output.eagerZ3

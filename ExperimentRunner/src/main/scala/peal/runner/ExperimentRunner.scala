@@ -16,19 +16,22 @@ import java.util.concurrent.TimeoutException
 class TimingOutput(var modelGeneration: Long = 0, var eagerSynthesis: Long = 0, var eagerZ3: Long = 0, var lazySynthesis: Long = 0, var lazyZ3: Long = 0, var isSameOutput: Boolean = false, var model1Result: Map[String, String] = Map(), var model2Result: Map[String, String] = Map(), var pealInput: String = "")
 
 class ExperimentRunner(runMode: RunMode, doDomainSpecifics: Boolean, system: ActorSystem, duration: Long, z3CallerMemoryBound: Long) {
+  implicit val timeout = Timeout(duration, MILLISECONDS)
 
-  def run(n: Int, min: Int, max: Int, plus: Int, mul: Int, k: Int, th: Double, delta: Double): TimingOutput = {
-    implicit val timeout = Timeout(duration, MILLISECONDS)
+  def runRandomModel(n: Int, min: Int, max: Int, plus: Int, mul: Int, k: Int, th: Double, delta: Double): TimingOutput = {
+    val model = RandomModelGenerator.generate(doDomainSpecifics, n, min, max, plus, mul, k, th, delta)
+    runExperiment(model)
+  }
+
+  private def runExperiment(model: String): TimingOutput = {
     val output = new TimingOutput()
-
     val processKiller = system.actorOf(Props[ProcessKillerActor])
     var eagerZ3Caller: ActorRef = null
     var lazyZ3Caller: ActorRef = null
-    val randomModelFile = File.createTempFile("randomModel", "")
 
+    val randomModelFile = File.createTempFile("randomModel", "")
     try {
       var start = System.nanoTime()
-      val model = RandomModelGenerator.generate(doDomainSpecifics, n, min, max, plus, mul, k, th, delta)
       var lapsedTime = System.nanoTime() - start
       output.modelGeneration = lapsedTime
       print("m")
@@ -117,5 +120,4 @@ class ExperimentRunner(runMode: RunMode, doDomainSpecifics: Boolean, system: Act
       randomModelFile.delete()
     }
   }
-
 }
