@@ -11,7 +11,7 @@ object Main extends App {
   private val doDomainSpecifics = true
 
   println("Picking up z3 from environment PATH: " + System.getenv("PATH"))
-  binarySearchOnMajorityVoting(LazyOnly)
+  binarySearchOnMajorityVoting(EagerOnly)
   System.exit(0)
 
   private def binarySearchOnMajorityVoting(runMode: RunMode) {
@@ -23,21 +23,21 @@ object Main extends App {
 
     while (execute(p)) {
       lastSuccess = p
-      p = p * 2
+      p = p + 1
     }
 
-    println("############################")
-
-    lastFailure = p
-    while (lastFailure - lastSuccess > 10) {
-      p = (lastSuccess + lastFailure) / 2
-      if (execute(p)) {
-        lastSuccess = p
-      }
-      else {
-        lastFailure = p
-      }
-    }
+//    println("############################")
+//
+//    lastFailure = p
+//    while (lastFailure - lastSuccess > 10) {
+//      p = (lastSuccess + lastFailure) / 2
+//      if (execute(p)) {
+//        lastSuccess = p
+//      }
+//      else {
+//        lastFailure = p
+//      }
+//    }
   }
 
   private def binarySearchOnRuleSize(runMode: RunMode) {
@@ -109,14 +109,14 @@ object Main extends App {
       print(n + "-" + m0 + "-" + m1 + "-" + m2 + "-" + m3 + "-" + th + "-" + delta + "," + timeout + ",")
 
       for (i <- 1 to iterations) {
-//        val output = new ExperimentRunner(runMode, doDomainSpecifics, system, timeout, z3MemoryBound).runRandomModel(n, m0, m1, m2, m3, k, th, delta)
+        //        val output = new ExperimentRunner(runMode, doDomainSpecifics, system, timeout, z3MemoryBound).runRandomModel(n, m0, m1, m2, m3, k, th, delta)
         val output = new ExperimentRunner(runMode, doDomainSpecifics, system, timeout, z3MemoryBound).runMajorityVoting(n)
         mt += output.modelGeneration
         et += output.eagerSynthesis
         ezt += output.eagerZ3
         lt += output.lazySynthesis
         lzt += output.lazyZ3
-//        print(output.model1Result + "," + output.model2Result + ",")
+        //        print(output.model1Result + "," + output.model2Result + ",")
         if (!output.isSameOutput) {
           if (output.model1Result.size == 0) {
             println("model1 is empty")
