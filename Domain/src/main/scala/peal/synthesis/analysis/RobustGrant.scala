@@ -7,6 +7,7 @@ case class RobustGrant(name: String, cond: String) extends AnalysisGenerator {
 //  (not phi[cond]))
 
   //need to do synthesis, then create sub(.)
+  //(not really good)
   def z3SMTInput: String = ""
 
   def analysisName: String = name + " = robust_grant? " + cond
