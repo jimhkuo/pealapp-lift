@@ -3,10 +3,6 @@ package peal.lazysynthesis
 import scala.collection.JavaConversions._
 import peal.domain.operator.{Max, Min, Mul, Plus}
 import peal.domain._
-import peal.domain.BasicPolicySet
-import peal.domain.MaxPolicySet
-import peal.domain.MinPolicySet
-import peal.domain.Pol
 import peal.synthesis._
 import peal.antlr.util.ParserHelper
 import peal.domain.BasicPolicySet
@@ -20,6 +16,8 @@ class LazySynthesiser(input: String) {
 
   val pealProgramParser = ParserHelper.getPealParser(input)
   pealProgramParser.program()
+
+  //TODO may need to support duplication of these dictionaries
 
   val pols = pealProgramParser.pols
   val conds = pealProgramParser.conds
