@@ -17,7 +17,7 @@ class LazySynthesiser(input: String) {
   val pealProgramParser = ParserHelper.getPealParser(input)
   pealProgramParser.program()
 
-  //TODO may need to support duplication of these dictionaries
+  //TODO need to support synthesis of predicate replacement
 
   val pols = pealProgramParser.pols
   val conds = pealProgramParser.conds
