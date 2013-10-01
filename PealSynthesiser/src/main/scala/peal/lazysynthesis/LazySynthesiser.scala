@@ -40,7 +40,10 @@ class LazySynthesiser(input: String) {
 
   private def findAllPolicySets(policySet: Option[PolicySet]): Set[String] = policySet match {
     case Some(pSet) => pSet match {
-      case t: BasicPolicySet => Set(t.pol.asInstanceOf[Pol].name)
+      case t: BasicPolicySet =>
+        t.pol match {
+          case u: Pol => Set(u.name)
+        }
       case t: MaxPolicySet => findAllPolicySets(Some(t.lhs)) ++ findAllPolicySets(Some(t.rhs))
       case t: MinPolicySet => findAllPolicySets(Some(t.lhs)) ++ findAllPolicySets(Some(t.rhs))
     }
