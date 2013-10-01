@@ -1,5 +1,7 @@
 package code.comet
 
+//merge test
+
 import _root_.util.FileUtil
 import net.liftweb._
 import http._
