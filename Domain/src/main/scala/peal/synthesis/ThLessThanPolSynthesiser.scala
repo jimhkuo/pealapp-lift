@@ -25,6 +25,6 @@ class ThLessThanPolSynthesiser(pol: Pol, th: BigDecimal) extends Condition {
       case s if s > 1 => Or(pol.rules.map(p => consts(p.q.name)):_*) //pol.rules.map(_.q.name).mkString("(or ", " ", ")")
     }
   }
+  def getPol = None
   def getTh = th
-  def getPol = pol
 }

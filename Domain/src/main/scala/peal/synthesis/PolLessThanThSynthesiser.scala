@@ -26,7 +26,7 @@ class PolLessThanThSynthesiser(pol: Pol, th: BigDecimal) extends Condition {
     }
   }
 
-  def getPol = pol
+  def getPol = None
 
   def getTh = th
 }

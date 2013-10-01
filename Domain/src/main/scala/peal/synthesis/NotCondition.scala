@@ -3,7 +3,7 @@ package peal.synthesis
 import peal.domain.z3.{Term, Not, PealAst}
 
 class NotCondition(cond: String) extends Condition {
-  def getPol = null
+  def getPol = None
 
   def getTh = null
 

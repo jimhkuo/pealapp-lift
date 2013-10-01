@@ -3,7 +3,7 @@ package peal.synthesis
 import peal.domain.z3.{And, Term, PealAst}
 
 class ConjunctionCondition(lhs: String, rhs: String) extends Condition {
-   def getPol = null
+   def getPol = None
 
    def getTh = null
 

@@ -12,7 +12,7 @@ case class GreaterThanThCondition(phi: PolicySet, th: BigDecimal) extends Condit
     case s: Pol => new ThLessThanPolSynthesiser(s, th).synthesis(consts)
   }
 
-  def getPol = phi
+  def getPol = Some(phi)
 
   def getTh = th
 }

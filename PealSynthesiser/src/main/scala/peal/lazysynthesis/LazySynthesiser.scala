@@ -38,11 +38,13 @@ class LazySynthesiser(input: String) {
   })
   val analyses = pealProgramParser.analyses.toMap
 
-  private def findAllPolicySets(policySet: PolicySet): Set[String] = policySet match {
-    case s: BasicPolicySet => Set(s.pol.asInstanceOf[Pol].name)
-    case s: MaxPolicySet => findAllPolicySets(s.lhs) ++ findAllPolicySets(s.rhs)
-    case s: MinPolicySet => findAllPolicySets(s.lhs) ++ findAllPolicySets(s.rhs)
-    case _ => Set()
+  private def findAllPolicySets(policySet: Option[PolicySet]): Set[String] = policySet match {
+    case Some(pSet) => pSet match {
+      case t: BasicPolicySet => Set(t.pol.asInstanceOf[Pol].name)
+      case t: MaxPolicySet => findAllPolicySets(Some(t.lhs)) ++ findAllPolicySets(Some(t.rhs))
+      case t: MinPolicySet => findAllPolicySets(Some(t.lhs)) ++ findAllPolicySets(Some(t.rhs))
+    }
+    case None => Set()
   }
 
   private def generateConditionEnforcement(condName: String, bName: String): String = {
@@ -117,13 +119,13 @@ class LazySynthesiser(input: String) {
   private def generatePolicySetAssertions(condName: String): String = {
     val buffer = new StringBuilder
     conds(condName) match {
-      case s: GreaterThanThCondition => buffer.append("(assert (= " + condName + " " + genPSA("<", s.getPol) + "))\n")
-      case s: LessThanThCondition => buffer.append("(assert (= " + condName + " " + genPSA("<=", s.getPol) + "))\n")
-      case s: NotCondition => buffer.append("(assert (= " + condName + " " + s.synthesis(null) + "))\n")
-      case s: ConjunctionCondition => buffer.append("(assert (= " + condName + " " + s.synthesis(null) + "))\n")
-      case s: DisjunctionCondition => buffer.append("(assert (= " + condName + " " + s.synthesis(null) + "))\n")
-      case s: TrueCondition => buffer.append("(assert (= " + condName + " " + s.synthesis(null) + "))\n")
-      case s: FalseCondition => buffer.append("(assert (= " + condName + " " + s.synthesis(null) + "))\n")
+      case c: GreaterThanThCondition => buffer.append("(assert (= " + condName + " " + genPSA("<", c.getPol.get) + "))\n")
+      case c: LessThanThCondition => buffer.append("(assert (= " + condName + " " + genPSA("<=", c.getPol.get) + "))\n")
+      case c: NotCondition => buffer.append("(assert (= " + condName + " " + c.synthesis(null) + "))\n")
+      case c: ConjunctionCondition => buffer.append("(assert (= " + condName + " " + c.synthesis(null) + "))\n")
+      case c: DisjunctionCondition => buffer.append("(assert (= " + condName + " " + c.synthesis(null) + "))\n")
+      case c: TrueCondition => buffer.append("(assert (= " + condName + " " + c.synthesis(null) + "))\n")
+      case c: FalseCondition => buffer.append("(assert (= " + condName + " " + c.synthesis(null) + "))\n")
     }
 
     def genPSA(operator: String, pSet: PolicySet): String = operator match {
