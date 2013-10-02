@@ -11,7 +11,7 @@ class Boot {
     LiftRules.addToPackages("code")
 
     val entries = List(
-      Menu.i("Peal") / "index",
+      Menu.i("PEALT tool") / "index",
       Menu.i("Debug info") / "debug",
       Menu.i("About us") / "aboutus"
       //      Menu.i("Download") / "download"

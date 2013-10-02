@@ -96,7 +96,25 @@ class PealCometActor extends CometActor with Loggable {
 
     <form class="lift:form.ajax">
       <div>
-        <h3>Input policies:</h3>
+        <h3>Enter policies, policy sets, conditions, and analyses here:</h3>
+        <div>
+          {SHtml.ajaxButton("Generate random model", () => {
+          this ! Generate
+          _Noop
+        }) }{SHtml.ajaxText(randomModelParam, s => {
+          randomModelParam = s
+          _Noop
+        }, "id" -> "r", "size" -> "30")}
+        </div>
+        <div>
+          {SHtml.ajaxButton("Generate random model with DOMAIN_SPECIFICS", () => {
+          this ! GenerateDomainSpecifics
+          _Noop
+        }) }{SHtml.ajaxText(randomModelParamWithDomain, s => {
+          randomModelParamWithDomain = s
+          _Noop
+        }, "id" -> "r", "size" -> "30")}
+        </div>
         <div>
           {SHtml.ajaxTextarea(inputPolicies, s => {
           inputPolicies = s
@@ -122,24 +140,6 @@ class PealCometActor extends CometActor with Loggable {
           majorityVotingCount = s.toInt
           _Noop
         }, "id" -> "n", "size" -> "10")}
-        </div>
-        <div>
-          {SHtml.ajaxButton("Generate random model", () => {
-          this ! Generate
-          _Noop
-        }) }{SHtml.ajaxText(randomModelParam, s => {
-          randomModelParam = s
-          _Noop
-        }, "id" -> "r", "size" -> "30")}
-        </div>
-        <div>
-          {SHtml.ajaxButton("Generate random model with DOMAIN_SPECIFICS", () => {
-          this ! GenerateDomainSpecifics
-          _Noop
-        }) }{SHtml.ajaxText(randomModelParamWithDomain, s => {
-          randomModelParamWithDomain = s
-          _Noop
-        }, "id" -> "r", "size" -> "30")}
         </div>
         <div>
           {SHtml.ajaxButton("EXPLICIT synthesis", () => {

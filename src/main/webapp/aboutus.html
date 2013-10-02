@@ -12,13 +12,29 @@
     <!--</span>-->
 
 
-    <h3>Abstract</h3>
-    <p>This little application demonstrates the logical synthesis from Peal policies.</p>
-    <p>We explore how best to do the synthesis of logical formula that capture whether a
-        Peal policy evaluates below or strictly above some threshold. We confine our attention for now
-        to scores that are non-negative. We will consider the consistency of conjunctions of predicates,
-        and investigate what research issues and trade-offs such consideration brings to this synthesis process.</p>
-    <p>By Michael Huth and Jim Huan-Pu Kuo</p>
+    <p>The PEALT tool is a workbench for articulating and analyzing policies that aggregate trust evidence. Such policy-based evidence is then meant to inform decision making in a variety of contexts such as access control, policy making, and risk management. PEALT is implemented by Jim Kuo and the researchers on this project are Michael Huth and Jim Kuo.
+        <br/><br/>
+
+        The capabilities of the current version of PEALT are consistent with those detailed in the technical report
+        <br/><br/>
+        M. Huth and J. Kuo. PEALT: A reasoning tool for numerical aggregation of trust evidence. Technical Report 2013/7, Imperial College London, Department of Computing, October 2013. ISSN 1469-4166 (Print), ISSN 1469-4174 (Online). Please see http://www.doc.ic.ac.uk/research/technicalreports/2013/ for the reports from that year.
+        <br/><br/>
+        We refer to this document in lieu of a user manual. Users should note that the tool will typically produce flawed results if used in an unintended input/task combination. We now describe these illicit combinations:
+        <br/><br/>
+        Usage constraint 1: explicit synthesis should not be used when any + policy occurring within an analysis contains some negative or non-constant score or when any such * policy has scores not in the unit interval [0,1]; it should also not be used when any min or max policy occurring in an analysis contains some non-constant score (negative ones are OK then).
+        <br/><br/>
+        Usage constraint 2: symbolic synthesis should not be used when any min or max policy occurring within an analysis contains some non-constant score (negative ones are OK then).
+        <br/><br/>
+        It is therefore safe to use explicit synthesis for positive, constant scores only. And it is safe to use symbolic synthesis for positive and negative scores when only + and * policies may have non-constant scores.
+        <br/><br/>
+        Please contact Jim Kuo (google for contact info) with any queries or feedback regarding the PEALT tool. </p>
+    <!--<h3>Abstract</h3>-->
+    <!--<p>This little application demonstrates the logical synthesis from Peal policies.</p>-->
+    <!--<p>We explore how best to do the synthesis of logical formula that capture whether a-->
+        <!--Peal policy evaluates below or strictly above some threshold. We confine our attention for now-->
+        <!--to scores that are non-negative. We will consider the consistency of conjunctions of predicates,-->
+        <!--and investigate what research issues and trade-offs such consideration brings to this synthesis process.</p>-->
+    <!--<p>By Michael Huth and Jim Huan-Pu Kuo</p>-->
 
 </div>
 
