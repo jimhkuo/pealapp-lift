@@ -98,6 +98,26 @@ class PealCometActor extends CometActor with Loggable {
       <div>
         <h3>Enter policies, policy sets, conditions, and analyses here:</h3>
         <div>
+          {SHtml.ajaxButton("Sample input", () => {
+          this ! Reset
+          _Noop
+        }) ++
+          SHtml.ajaxButton("Sample (non-constant scores)", () => {
+            this ! ResetNonConstant
+            _Noop
+          }) ++
+          SHtml.ajaxButton("Clear policies", () => {
+            this ! Clear
+            _Noop
+          })}{SHtml.ajaxButton("Majority Voting", () => {
+          this ! MajorityVoting
+          _Noop
+        })}{SHtml.ajaxText(majorityVotingCount.toString, s => {
+          majorityVotingCount = s.toInt
+          _Noop
+        }, "id" -> "n", "size" -> "10")}
+        </div>
+        <div>
           {SHtml.ajaxButton("Generate random model", () => {
           this ! Generate
           _Noop
@@ -120,26 +140,6 @@ class PealCometActor extends CometActor with Loggable {
           inputPolicies = s
           _Noop
         }, "id" -> "policies", "cols" -> "30", "rows" -> "20")}
-        </div>
-        <div>
-          {SHtml.ajaxButton("Sample input", () => {
-          this ! Reset
-          _Noop
-        }) ++
-          SHtml.ajaxButton("Sample (non-constant scores)", () => {
-            this ! ResetNonConstant
-            _Noop
-          }) ++
-          SHtml.ajaxButton("Clear policies", () => {
-            this ! Clear
-            _Noop
-          })}{SHtml.ajaxButton("Majority Voting", () => {
-          this ! MajorityVoting
-          _Noop
-        })}{SHtml.ajaxText(majorityVotingCount.toString, s => {
-          majorityVotingCount = s.toInt
-          _Noop
-        }, "id" -> "n", "size" -> "10")}
         </div>
         <div>
           {SHtml.ajaxButton("EXPLICIT synthesis", () => {
@@ -169,7 +169,7 @@ class PealCometActor extends CometActor with Loggable {
         </div>
         <br/>
         <div>
-          <h3>Result:</h3>
+          <h3>Generated output:</h3>
           <div id="result"></div>
         </div>
       </div>
