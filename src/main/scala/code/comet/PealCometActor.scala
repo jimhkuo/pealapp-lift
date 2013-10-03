@@ -137,13 +137,13 @@ class PealCometActor extends CometActor with Loggable {
         </div>
         </div>
         <div class="form-group">
-          <div class="col-lg-7">
+          <div class="col-lg-6">
           {SHtml.ajaxTextarea(inputPolicies, s => {
           inputPolicies = s
           _Noop
         }, "id" -> "policies", "class" -> "form-control", "cols" -> "30", "rows" -> "20")}
         </div>
-        <div class="col-lg-3">
+        <div class="col-lg-4">
           <ul class="nav nav-tabs" id="myTab">
             <li class="active"><a href="#explicit" data-toggle="tab">Explicit Synthesis</a></li>
             <li><a href="#symbolic" data-toggle="tab">Symbolic Synthesis</a></li>
