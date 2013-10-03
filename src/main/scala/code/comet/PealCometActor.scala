@@ -230,6 +230,7 @@ class PealCometActor extends CometActor with Loggable {
     case Failed(message) => partialUpdate(JqId("result") ~> JqHtml(<h3>Error:</h3> ++ Text(message)))
     case Clear =>
       this ! Message("")
+      inputPolicies = ""
       partialUpdate(JqId("policies") ~> JqVal(""))
     case MajorityVoting =>
       this ! Message("")
