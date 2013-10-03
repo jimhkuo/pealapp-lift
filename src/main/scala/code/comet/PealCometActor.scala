@@ -18,9 +18,6 @@ import peal.synthesis.analysis._
 import scala.collection.mutable.ListBuffer
 import code.lib._
 import net.liftweb.http.js.jquery.JqJE.JqId
-import code.lib.Message
-import code.lib.Result
-import code.lib.SaveFile
 import peal.model.{MajorityVotingGenerator, RandomModelGenerator}
 import peal.domain.PolicySet
 import peal.lazysynthesis.LazySynthesiser
@@ -229,7 +226,8 @@ class PealCometActor extends CometActor with Loggable {
         <a href="download">here</a>
         to download the file</p>)
     case Result(output) => partialUpdate(JqId("result") ~> JqHtml(<h3>3. Generated output:</h3> ++ output))
-    case Message(message) => partialUpdate(JqId("result") ~> JqHtml(<h3>Error:</h3> ++ Text(message)))
+    case Message(message) => partialUpdate(JqId("result") ~> JqHtml(Text(message)))
+    case Failed(message) => partialUpdate(JqId("result") ~> JqHtml(<h3>Error:</h3> ++ Text(message)))
     case Clear =>
       this ! Message("")
       partialUpdate(JqId("policies") ~> JqVal(""))
@@ -367,8 +365,7 @@ class PealCometActor extends CometActor with Loggable {
   }
 
   private def dealWithIt(e: Throwable) = {
-    println("error: " + e.getMessage)
-    this ! Message("error: " + e.getMessage)
+    this ! Failed(e.getMessage)
     throw e
   }
 }
