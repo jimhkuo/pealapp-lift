@@ -170,8 +170,9 @@ class PealCometActor extends CometActor with Loggable {
         }, "class" -> "btn btn-warning btn-sm", "style" -> "margin:2px;")}
         </div>
         </div>
-        <hr/>
-        <div class="form-group">
+
+        <div class="form-group col-lg-10">
+          <hr/>
           <h3>Generated output:</h3>
           <div id="result"></div>
         </div>
