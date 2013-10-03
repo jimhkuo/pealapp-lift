@@ -96,7 +96,8 @@ class PealCometActor extends CometActor with Loggable {
 
     <form class="lift:form.ajax">
       <div>
-        <h3>Enter policies, policy sets, conditions, and analyses here:</h3>
+        <h3>Enter policies, policy sets, conditions, and analyses in the textarea below:</h3>
+        <span>Or click one of the buttons to generate a valid input</span>
         <div class="form-group">
         <div>
           {SHtml.ajaxButton("Constant-score sample", () => {this ! Reset; _Noop}, "class" -> "btn btn-primary btn-sm", "style" -> "margin:2px;") ++
@@ -153,19 +154,19 @@ class PealCometActor extends CometActor with Loggable {
           <div class="tab-content">
             <div class="tab-pane active" id="explicit">
               <div class="col-lg-3">
-              {SHtml.ajaxButton("Generate and show Z3 code", () => {
-                this ! Display
+              {SHtml.ajaxButton("Display results of all analyses in pretty printed form", () => {
+                this ! SynthesisAndCallZ3Quiet
                 _Noop
               }, "class" -> "btn btn-warning btn-sm", "style" -> "margin:2px;") ++
                 SHtml.ajaxButton("Generate, show, and run Z3 code, display results in pretty-printed and raw form", () => {
-                this ! SynthesisAndCallZ3
+                  this ! SynthesisAndCallZ3
+                  _Noop
+                }, "class" -> "btn btn-warning btn-sm", "style" -> "margin:2px;")++
+                SHtml.ajaxButton("Generate and show Z3 code", () => {
+                this ! Display
                 _Noop
-              }, "class" -> "btn btn-warning btn-sm", "style" -> "margin:2px;")++
-                SHtml.ajaxButton("Display results of all analyses in pretty printed form", () => {
-                this ! SynthesisAndCallZ3Quiet
-                _Noop
-              }, "class" -> "btn btn-warning btn-sm", "style" -> "margin:2px;")}
-              {SHtml.ajaxButton("Generate and download Z3 code", () => {
+              }, "class" -> "btn btn-warning btn-sm", "style" -> "margin:2px;") ++
+              SHtml.ajaxButton("Generate and download Z3 code", () => {
                 this ! Prepare
                 _Noop
               }, "class" -> "btn btn-warning btn-sm", "style" -> "margin:2px;") }
