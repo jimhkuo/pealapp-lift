@@ -98,15 +98,11 @@ class PealCometActor extends CometActor with Loggable {
       <div>
         <h3>Enter policies, policy sets, conditions, and analyses here:</h3>
         <div>
-          {SHtml.ajaxButton("Sample input", () => {this ! Reset; _Noop}, "class" -> "btn btn-primary btn-sm", "style" -> "margin:2px;") ++
-          SHtml.ajaxButton("Sample (non-constant scores)", () => {
+          {SHtml.ajaxButton("Constant-score sample", () => {this ! Reset; _Noop}, "class" -> "btn btn-primary btn-sm", "style" -> "margin:2px;") ++
+          SHtml.ajaxButton("Non-constant score sample", () => {
             this ! ResetNonConstant
             _Noop
-          }, "class" -> "btn btn-primary btn-sm", "style" -> "margin:2px;") ++
-          SHtml.ajaxButton("Clear policies", () => {
-            this ! Clear
-            _Noop
-          }, "class" -> "btn btn-primary btn-sm", "style" -> "margin:2px;")}{SHtml.ajaxButton("Majority Voting", () => {
+          }, "class" -> "btn btn-primary btn-sm", "style" -> "margin:2px;")}{SHtml.ajaxButton("Majority-voting sample, n =", () => {
           this ! MajorityVoting
           _Noop
         }, "class" -> "btn btn-primary btn-sm", "style" -> "margin:2px;")}{SHtml.ajaxText(majorityVotingCount.toString, s => {
@@ -115,7 +111,7 @@ class PealCometActor extends CometActor with Loggable {
         }, "id" -> "n", "size" -> "10")}
         </div>
         <div>
-          {SHtml.ajaxButton("Generate random model", () => {
+          {SHtml.ajaxButton("Random sample without domain specifics: n, m_min, m_max, m_+, m_*, p, th, delta", () => {
           this ! Generate
           _Noop
         }, "class" -> "btn btn-primary btn-sm", "style" -> "margin:2px;") }{SHtml.ajaxText(randomModelParam, s => {
@@ -124,13 +120,19 @@ class PealCometActor extends CometActor with Loggable {
         }, "id" -> "r", "size" -> "30")}
         </div>
         <div>
-          {SHtml.ajaxButton("Generate random model with DOMAIN_SPECIFICS", () => {
+          {SHtml.ajaxButton("Random sample with domain specifics: n, m_min, m_max, m_+, m_*, p, th, delta", () => {
           this ! GenerateDomainSpecifics
           _Noop
         }, "class" -> "btn btn-primary btn-sm", "style" -> "margin:2px;") }{SHtml.ajaxText(randomModelParamWithDomain, s => {
           randomModelParamWithDomain = s
           _Noop
         }, "id" -> "r", "size" -> "30")}
+        </div>
+        <div>{
+          SHtml.ajaxButton("Clear input panel", () => {
+            this ! Clear
+            _Noop
+          }, "class" -> "btn btn-warning btn-sm", "style" -> "margin:2px;")}
         </div>
         <div>
           {SHtml.ajaxTextarea(inputPolicies, s => {
