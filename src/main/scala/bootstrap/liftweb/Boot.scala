@@ -13,7 +13,7 @@ class Boot {
     val entries = List(
       Menu.i("PEALT tool") / "index",
       Menu.i("Debug info") / "debug",
-      Menu.i("About us") / "aboutus"
+      Menu.i("About PEALT") / "aboutpealt"
       //      Menu.i("Download") / "download"
       //    ,  Menu(Loc("Static", Link(List("static"), true, "/static/index"), "Some static page"))
     )

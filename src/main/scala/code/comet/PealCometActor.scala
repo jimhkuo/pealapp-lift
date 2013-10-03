@@ -93,7 +93,7 @@ class PealCometActor extends CometActor with Loggable {
 
     <form class="lift:form.ajax">
       <div>
-        <h3>1. Enter policies, policy sets, conditions, and analyses in the textarea below:</h3>
+        <h3>1. Enter policies, policy sets, conditions, and analyses in the text area below:</h3>
         <h6>Or click on one of the blue buttons to generate a valid input</h6>
         <div class="form-group">
         <div>
@@ -142,7 +142,7 @@ class PealCometActor extends CometActor with Loggable {
         }, "id" -> "policies", "class" -> "form-control", "cols" -> "30", "rows" -> "20")}
         </div>
         <div class="col-lg-4">
-          <h4>2. Then click on one of the green synthesiser buttons:</h4>
+          <h4>2. Choose a synthesis method. Then click on one of the green synthesiser buttons:</h4>
           <ul class="nav nav-tabs" id="myTab">
             <li class="active"><a href="#explicit" data-toggle="tab">Explicit Synthesis</a></li>
             <li><a href="#symbolic" data-toggle="tab">Symbolic Synthesis</a></li>
