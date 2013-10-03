@@ -153,17 +153,19 @@ class PealCometActor extends CometActor with Loggable {
           <div class="tab-content">
             <div class="tab-pane active" id="explicit">
               <div class="col-lg-3">
-              {SHtml.ajaxButton("EXPLICIT synthesis", () => {
+              {SHtml.ajaxButton("Generate and show Z3 code", () => {
                 this ! Display
                 _Noop
-              }, "class" -> "btn btn-warning btn-sm", "style" -> "margin:2px;") ++ SHtml.ajaxButton("EXPLICIT synthesis and call z3", () => {
+              }, "class" -> "btn btn-warning btn-sm", "style" -> "margin:2px;") ++
+                SHtml.ajaxButton("Generate, show, and run Z3 code, display results in pretty-printed and raw form", () => {
                 this ! SynthesisAndCallZ3
                 _Noop
-              }, "class" -> "btn btn-warning btn-sm", "style" -> "margin:2px;")++ SHtml.ajaxButton("Call z3", () => {
+              }, "class" -> "btn btn-warning btn-sm", "style" -> "margin:2px;")++
+                SHtml.ajaxButton("Display results of all analyses in pretty printed form", () => {
                 this ! SynthesisAndCallZ3Quiet
                 _Noop
               }, "class" -> "btn btn-warning btn-sm", "style" -> "margin:2px;")}
-              {SHtml.ajaxButton("EXPLICIT synthesis (and download)", () => {
+              {SHtml.ajaxButton("Generate and download Z3 code", () => {
                 this ! Prepare
                 _Noop
               }, "class" -> "btn btn-warning btn-sm", "style" -> "margin:2px;") }
