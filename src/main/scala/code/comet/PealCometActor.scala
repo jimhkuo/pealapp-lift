@@ -174,10 +174,11 @@ class PealCometActor extends CometActor with Loggable {
             </div>
             <div class="tab-pane" id="symbolic">
               <div class="col-lg-3">
-                {SHtml.ajaxButton("SYMBOLIC synthesis", () => {
+                {SHtml.ajaxButton("Generate and display Z3 code", () => {
                 this ! LazyDisplay
                 _Noop
-              }, "class" -> "btn btn-warning btn-sm", "style" -> "margin:2px;")++ SHtml.ajaxButton("SYMBOLIC synthesis and call z3", () => {
+              }, "class" -> "btn btn-warning btn-sm", "style" -> "margin:2px;")++
+                SHtml.ajaxButton("Generate, display, and run Z3 code, display results of all analyses in raw Z3 form", () => {
                 this ! LazySynthesisAndCallZ3
                 _Noop
               }, "class" -> "btn btn-warning btn-sm", "style" -> "margin:2px;")}
