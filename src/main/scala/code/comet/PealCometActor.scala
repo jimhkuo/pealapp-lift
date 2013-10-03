@@ -97,6 +97,7 @@ class PealCometActor extends CometActor with Loggable {
     <form class="lift:form.ajax">
       <div>
         <h3>Enter policies, policy sets, conditions, and analyses here:</h3>
+        <div class="form-group">
         <div>
           {SHtml.ajaxButton("Constant-score sample", () => {this ! Reset; _Noop}, "class" -> "btn btn-primary btn-sm", "style" -> "margin:2px;") ++
           SHtml.ajaxButton("Non-constant score sample", () => {
@@ -134,7 +135,9 @@ class PealCometActor extends CometActor with Loggable {
             _Noop
           }, "class" -> "btn btn-warning btn-sm", "style" -> "margin:2px;")}
         </div>
-        <div>
+        </div>
+        <div class="form-group">
+          <div class="col-lg-7">
           {SHtml.ajaxTextarea(inputPolicies, s => {
           inputPolicies = s
           _Noop
@@ -166,8 +169,9 @@ class PealCometActor extends CometActor with Loggable {
           _Noop
         }, "class" -> "btn btn-warning btn-sm", "style" -> "margin:2px;")}
         </div>
-        <br/>
-        <div>
+        </div>
+        <hr/>
+        <div class="form-group">
           <h3>Generated output:</h3>
           <div id="result"></div>
         </div>
