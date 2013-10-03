@@ -143,7 +143,7 @@ class PealCometActor extends CometActor with Loggable {
           _Noop
         }, "id" -> "policies", "class" -> "form-control", "cols" -> "30", "rows" -> "20")}
         </div>
-        <div>
+        <div class="col-lg-3">
           {SHtml.ajaxButton("EXPLICIT synthesis", () => {
           this ! Display
           _Noop
@@ -154,13 +154,12 @@ class PealCometActor extends CometActor with Loggable {
           this ! SynthesisAndCallZ3Quiet
           _Noop
         }, "class" -> "btn btn-warning btn-sm", "style" -> "margin:2px;")}
-          <span>||</span>
           {SHtml.ajaxButton("EXPLICIT synthesis (and download)", () => {
           this ! Prepare
           _Noop
         }, "class" -> "btn btn-warning btn-sm", "style" -> "margin:2px;") }
         </div>
-        <div>
+        <div class="col-lg-3">
           {SHtml.ajaxButton("SYMBOLIC synthesis", () => {
           this ! LazyDisplay
           _Noop
