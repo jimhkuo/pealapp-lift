@@ -96,8 +96,8 @@ class PealCometActor extends CometActor with Loggable {
 
     <form class="lift:form.ajax">
       <div>
-        <h3>Enter policies, policy sets, conditions, and analyses in the textarea below:</h3>
-        <span>Or click one of the buttons to generate a valid input</span>
+        <h3>1. Enter policies, policy sets, conditions, and analyses in the textarea below:</h3>
+        <h6>Or click on one of the blue buttons to generate a valid input</h6>
         <div class="form-group">
         <div>
           {SHtml.ajaxButton("Constant-score sample", () => {this ! Reset; _Noop}, "class" -> "btn btn-primary btn-sm", "style" -> "margin:2px;") ++
@@ -145,6 +145,7 @@ class PealCometActor extends CometActor with Loggable {
         }, "id" -> "policies", "class" -> "form-control", "cols" -> "30", "rows" -> "20")}
         </div>
         <div class="col-lg-4">
+          <h4>2. Then click on one of the green synthesiser buttons:</h4>
           <ul class="nav nav-tabs" id="myTab">
             <li class="active"><a href="#explicit" data-toggle="tab">Explicit Synthesis</a></li>
             <li><a href="#symbolic" data-toggle="tab">Symbolic Synthesis</a></li>
@@ -157,19 +158,19 @@ class PealCometActor extends CometActor with Loggable {
               {SHtml.ajaxButton("Display results of all analyses in pretty printed form", () => {
                 this ! SynthesisAndCallZ3Quiet
                 _Noop
-              }, "class" -> "btn btn-warning btn-sm", "style" -> "margin:2px;") ++
+              }, "class" -> "btn btn-success btn-sm", "style" -> "margin:2px;") ++
                 SHtml.ajaxButton("Generate, show, and run Z3 code, display results in pretty-printed and raw form", () => {
                   this ! SynthesisAndCallZ3
                   _Noop
-                }, "class" -> "btn btn-warning btn-sm", "style" -> "margin:2px;")++
+                }, "class" -> "btn btn-success btn-sm", "style" -> "margin:2px;")++
                 SHtml.ajaxButton("Generate and show Z3 code", () => {
                 this ! Display
                 _Noop
-              }, "class" -> "btn btn-warning btn-sm", "style" -> "margin:2px;") ++
+              }, "class" -> "btn btn-success btn-sm", "style" -> "margin:2px;") ++
               SHtml.ajaxButton("Generate and download Z3 code", () => {
                 this ! Prepare
                 _Noop
-              }, "class" -> "btn btn-warning btn-sm", "style" -> "margin:2px;") }
+              }, "class" -> "btn btn-success btn-sm", "style" -> "margin:2px;") }
             </div>
             </div>
             <div class="tab-pane" id="symbolic">
@@ -177,11 +178,11 @@ class PealCometActor extends CometActor with Loggable {
                 {SHtml.ajaxButton("Generate and display Z3 code", () => {
                 this ! LazyDisplay
                 _Noop
-              }, "class" -> "btn btn-warning btn-sm", "style" -> "margin:2px;")++
+              }, "class" -> "btn btn-success btn-sm", "style" -> "margin:2px;")++
                 SHtml.ajaxButton("Generate, display, and run Z3 code, display results of all analyses in raw Z3 form", () => {
                 this ! LazySynthesisAndCallZ3
                 _Noop
-              }, "class" -> "btn btn-warning btn-sm", "style" -> "margin:2px;")}
+              }, "class" -> "btn btn-success btn-sm", "style" -> "margin:2px;")}
               </div>
             </div>
           </div>
@@ -190,7 +191,6 @@ class PealCometActor extends CometActor with Loggable {
 
         <div class="form-group col-lg-10">
           <hr/>
-          <h3>Generated output:</h3>
           <div id="result"></div>
         </div>
       </div>
@@ -228,8 +228,8 @@ class PealCometActor extends CometActor with Loggable {
         ms, please click
         <a href="download">here</a>
         to download the file</p>)
-    case Result(output) => partialUpdate(JqId("result") ~> JqHtml(output))
-    case Message(message) => partialUpdate(JqId("result") ~> JqHtml(Text(message)))
+    case Result(output) => partialUpdate(JqId("result") ~> JqHtml(<h3>3. Generated output:</h3> ++ output))
+    case Message(message) => partialUpdate(JqId("result") ~> JqHtml(<h3>Error:</h3> ++ Text(message)))
     case Clear =>
       this ! Message("")
       partialUpdate(JqId("policies") ~> JqVal(""))
