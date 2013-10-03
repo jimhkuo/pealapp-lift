@@ -164,7 +164,7 @@ class PealCometActor extends CometActor with Loggable {
                 this ! Display
                 _Noop
               }, "class" -> "btn btn-success btn-sm", "style" -> "margin:2px;") ++
-              SHtml.ajaxButton("Generate and download Z3 code", () => {
+              SHtml.ajaxButton("Generate Z3 code and a link to it below", () => {
                 this ! Prepare
                 _Noop
               }, "class" -> "btn btn-success btn-sm", "style" -> "margin:2px;") }
@@ -278,30 +278,18 @@ class PealCometActor extends CometActor with Loggable {
   }
 
   private def onDisplay(constsMap: Map[String, PealAst], conds: Map[String, Condition], pSets: Map[String, PolicySet], analyses: Map[String, AnalysisGenerator], domainSpecifics: Array[String]) {
-    val declarations = for (name <- constsMap.keys) yield <p>
-      {"(declare-const " + name + " Bool)"}
-    </p>
-    val declarations1 = for (name <- conds.keys) yield <p>
-      {"(declare-const " + name + " Bool)"}
-    </p>
-
+    val declarations = for (name <- constsMap.keys) yield "(declare-const " + name + " Bool)\n"
+    val condDeclarations = for (name <- conds.keys) yield "(declare-const " + name + " Bool)\n"
     val sortedConds = conds.keys.toSeq.sortWith(_ < _)
-    val conditions = for (cond <- sortedConds) yield {<p>
-      {"(assert (= " + cond + " " + conds(cond).synthesis(constsMap) + "))"}
-    </p>}
-
+    val conditions = for (cond <- sortedConds) yield "(assert (= " + cond + " " + conds(cond).synthesis(constsMap) + "))\n"
     val sortedAnalyses = analyses.keys.toSeq.sortWith(_ < _)
-    val generatedAnalyses = for (analysis <- sortedAnalyses) yield {
-      <pre>{analyses(analysis).z3SMTInput}</pre>
-    }
-
-    val result = <span>
-      {declarations}
-      {declarations1}
-      {conditions}
-      {domainSpecifics.map(s => <p>{s}</p>)}
-      {generatedAnalyses}
-    </span>
+    val generatedAnalyses = for (analysis <- sortedAnalyses) yield analyses(analysis).z3SMTInput + "\n"
+    val result = <pre>{declarations.mkString("") +
+      condDeclarations.mkString("") +
+      conditions.mkString("") +
+      domainSpecifics.map(s => s).mkString("") +
+      generatedAnalyses.mkString("")}
+    </pre>
     this ! Result(result)
   }
 
@@ -338,7 +326,7 @@ class PealCometActor extends CometActor with Loggable {
       val z3Models = z3OutputParser.results().toMap
       val analysedResults = Z3OutputAnalyser.execute(analyses, z3Models, constsMap)
       verbose match {
-        case true => this ! Result(<pre>{z3SMTInput}</pre> <pre>Analysed results:<br/>{analysedResults}<br/><br/>Z3 Raw Output:<br/>{resultList.mkString("")}</pre>)
+        case true => this ! Result(<pre>{z3SMTInput}</pre> <pre>Analysed results:<br/>{analysedResults}</pre><pre>Z3 Raw Output:<br/>{resultList.mkString("")}</pre>)
         case false => this ! Result(<pre>Analysed results:<br/>{analysedResults}</pre>)
       }
     } catch {
@@ -359,7 +347,7 @@ class PealCometActor extends CometActor with Loggable {
     Process(Seq("bash", "-c", "z3 -nw -smt2 " + tmp.getAbsolutePath)) ! processLogger
     tmp.delete()
     try {
-      this ! Result(<pre>{z3SMTInput}</pre><span>Z3 Raw Output:<br/></span><pre>{resultList.mkString("")}</pre>)
+      this ! Result(<pre>{z3SMTInput}</pre><pre>Z3 Raw Output:<br/>{resultList.mkString("")}</pre>)
     } catch {
       case e: Exception =>  dealWithIt(e)
     }
