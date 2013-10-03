@@ -98,21 +98,18 @@ class PealCometActor extends CometActor with Loggable {
       <div>
         <h3>Enter policies, policy sets, conditions, and analyses here:</h3>
         <div>
-          {SHtml.ajaxButton("Sample input", () => {
-          this ! Reset
-          _Noop
-        }) ++
+          {SHtml.ajaxButton("Sample input", () => {this ! Reset; _Noop}, "class" -> "btn btn-primary btn-sm", "style" -> "margin:2px;") ++
           SHtml.ajaxButton("Sample (non-constant scores)", () => {
             this ! ResetNonConstant
             _Noop
-          }) ++
+          }, "class" -> "btn btn-primary btn-sm", "style" -> "margin:2px;") ++
           SHtml.ajaxButton("Clear policies", () => {
             this ! Clear
             _Noop
-          })}{SHtml.ajaxButton("Majority Voting", () => {
+          }, "class" -> "btn btn-primary btn-sm", "style" -> "margin:2px;")}{SHtml.ajaxButton("Majority Voting", () => {
           this ! MajorityVoting
           _Noop
-        })}{SHtml.ajaxText(majorityVotingCount.toString, s => {
+        }, "class" -> "btn btn-primary btn-sm", "style" -> "margin:2px;")}{SHtml.ajaxText(majorityVotingCount.toString, s => {
           majorityVotingCount = s.toInt
           _Noop
         }, "id" -> "n", "size" -> "10")}
@@ -121,7 +118,7 @@ class PealCometActor extends CometActor with Loggable {
           {SHtml.ajaxButton("Generate random model", () => {
           this ! Generate
           _Noop
-        }) }{SHtml.ajaxText(randomModelParam, s => {
+        }, "class" -> "btn btn-primary btn-sm", "style" -> "margin:2px;") }{SHtml.ajaxText(randomModelParam, s => {
           randomModelParam = s
           _Noop
         }, "id" -> "r", "size" -> "30")}
@@ -130,7 +127,7 @@ class PealCometActor extends CometActor with Loggable {
           {SHtml.ajaxButton("Generate random model with DOMAIN_SPECIFICS", () => {
           this ! GenerateDomainSpecifics
           _Noop
-        }) }{SHtml.ajaxText(randomModelParamWithDomain, s => {
+        }, "class" -> "btn btn-primary btn-sm", "style" -> "margin:2px;") }{SHtml.ajaxText(randomModelParamWithDomain, s => {
           randomModelParamWithDomain = s
           _Noop
         }, "id" -> "r", "size" -> "30")}
@@ -139,33 +136,33 @@ class PealCometActor extends CometActor with Loggable {
           {SHtml.ajaxTextarea(inputPolicies, s => {
           inputPolicies = s
           _Noop
-        }, "id" -> "policies", "cols" -> "30", "rows" -> "20")}
+        }, "id" -> "policies", "class" -> "form-control", "cols" -> "30", "rows" -> "20")}
         </div>
         <div>
           {SHtml.ajaxButton("EXPLICIT synthesis", () => {
           this ! Display
           _Noop
-        }) ++ SHtml.ajaxButton("EXPLICIT synthesis and call z3", () => {
+        }, "class" -> "btn btn-warning btn-sm", "style" -> "margin:2px;") ++ SHtml.ajaxButton("EXPLICIT synthesis and call z3", () => {
           this ! SynthesisAndCallZ3
           _Noop
-        })++ SHtml.ajaxButton("Call z3", () => {
+        }, "class" -> "btn btn-warning btn-sm", "style" -> "margin:2px;")++ SHtml.ajaxButton("Call z3", () => {
           this ! SynthesisAndCallZ3Quiet
           _Noop
-        })}
+        }, "class" -> "btn btn-warning btn-sm", "style" -> "margin:2px;")}
           <span>||</span>
           {SHtml.ajaxButton("EXPLICIT synthesis (and download)", () => {
           this ! Prepare
           _Noop
-        }) }
+        }, "class" -> "btn btn-warning btn-sm", "style" -> "margin:2px;") }
         </div>
         <div>
           {SHtml.ajaxButton("SYMBOLIC synthesis", () => {
           this ! LazyDisplay
           _Noop
-        })++ SHtml.ajaxButton("SYMBOLIC synthesis and call z3", () => {
+        }, "class" -> "btn btn-warning btn-sm", "style" -> "margin:2px;")++ SHtml.ajaxButton("SYMBOLIC synthesis and call z3", () => {
           this ! LazySynthesisAndCallZ3
           _Noop
-        })}
+        }, "class" -> "btn btn-warning btn-sm", "style" -> "margin:2px;")}
         </div>
         <br/>
         <div>
