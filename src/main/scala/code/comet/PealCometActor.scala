@@ -144,30 +144,44 @@ class PealCometActor extends CometActor with Loggable {
         }, "id" -> "policies", "class" -> "form-control", "cols" -> "30", "rows" -> "20")}
         </div>
         <div class="col-lg-3">
-          {SHtml.ajaxButton("EXPLICIT synthesis", () => {
-          this ! Display
-          _Noop
-        }, "class" -> "btn btn-warning btn-sm", "style" -> "margin:2px;") ++ SHtml.ajaxButton("EXPLICIT synthesis and call z3", () => {
-          this ! SynthesisAndCallZ3
-          _Noop
-        }, "class" -> "btn btn-warning btn-sm", "style" -> "margin:2px;")++ SHtml.ajaxButton("Call z3", () => {
-          this ! SynthesisAndCallZ3Quiet
-          _Noop
-        }, "class" -> "btn btn-warning btn-sm", "style" -> "margin:2px;")}
-          {SHtml.ajaxButton("EXPLICIT synthesis (and download)", () => {
-          this ! Prepare
-          _Noop
-        }, "class" -> "btn btn-warning btn-sm", "style" -> "margin:2px;") }
+          <ul class="nav nav-tabs" id="myTab">
+            <li class="active"><a href="#explicit" data-toggle="tab">Explicit Synthesis</a></li>
+            <li><a href="#symbolic" data-toggle="tab">Symbolic Synthesis</a></li>
+          </ul>
         </div>
-        <div class="col-lg-3">
-          {SHtml.ajaxButton("SYMBOLIC synthesis", () => {
-          this ! LazyDisplay
-          _Noop
-        }, "class" -> "btn btn-warning btn-sm", "style" -> "margin:2px;")++ SHtml.ajaxButton("SYMBOLIC synthesis and call z3", () => {
-          this ! LazySynthesisAndCallZ3
-          _Noop
-        }, "class" -> "btn btn-warning btn-sm", "style" -> "margin:2px;")}
-        </div>
+
+          <div class="tab-content">
+            <div class="tab-pane active" id="explicit">
+              <div class="col-lg-3">
+              {SHtml.ajaxButton("EXPLICIT synthesis", () => {
+                this ! Display
+                _Noop
+              }, "class" -> "btn btn-warning btn-sm", "style" -> "margin:2px;") ++ SHtml.ajaxButton("EXPLICIT synthesis and call z3", () => {
+                this ! SynthesisAndCallZ3
+                _Noop
+              }, "class" -> "btn btn-warning btn-sm", "style" -> "margin:2px;")++ SHtml.ajaxButton("Call z3", () => {
+                this ! SynthesisAndCallZ3Quiet
+                _Noop
+              }, "class" -> "btn btn-warning btn-sm", "style" -> "margin:2px;")}
+              {SHtml.ajaxButton("EXPLICIT synthesis (and download)", () => {
+                this ! Prepare
+                _Noop
+              }, "class" -> "btn btn-warning btn-sm", "style" -> "margin:2px;") }
+            </div>
+            </div>
+            <div class="tab-pane" id="symbolic">
+              <div class="col-lg-3">
+                {SHtml.ajaxButton("SYMBOLIC synthesis", () => {
+                this ! LazyDisplay
+                _Noop
+              }, "class" -> "btn btn-warning btn-sm", "style" -> "margin:2px;")++ SHtml.ajaxButton("SYMBOLIC synthesis and call z3", () => {
+                this ! LazySynthesisAndCallZ3
+                _Noop
+              }, "class" -> "btn btn-warning btn-sm", "style" -> "margin:2px;")}
+              </div>
+            </div>
+          </div>
+
         </div>
 
         <div class="form-group col-lg-10">
