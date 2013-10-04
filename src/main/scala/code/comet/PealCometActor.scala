@@ -93,6 +93,7 @@ class PealCometActor extends CometActor with Loggable {
 
     <form class="lift:form.ajax">
       <div class="row">
+        <div class="col-md-12">
         <h3>1. Enter policies, policy sets, conditions, and analyses in the text area below:</h3>
         <h6>Or click on one of the blue buttons to generate a valid input</h6>
         <div>
@@ -132,12 +133,14 @@ class PealCometActor extends CometActor with Loggable {
             _Noop
           }, "class" -> "btn btn-warning btn-sm", "style" -> "margin:2px;")}
         </div>
-        <div class="row">
-          <div class="col-md-7">
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-7">
           {SHtml.ajaxTextarea(inputPolicies, s => {
           inputPolicies = s
           _Noop
-        }, "id" -> "policies", "class" -> "form-control", "cols" -> "30", "rows" -> "20")}
+          }, "id" -> "policies", "class" -> "form-control", "cols" -> "30", "rows" -> "20")}
         </div>
         <div class="col-md-5">
           <h4>2. Choose a synthesis method. Then click on one of the green synthesiser buttons:</h4>
@@ -181,11 +184,10 @@ class PealCometActor extends CometActor with Loggable {
               </div>
             </div>
           </div>
-        </div>
-        <div class="row col-md-12">
-          <hr/>
-          <div id="result"></div>
-        </div>
+      </div>
+      <div class="row">
+        <hr/>
+        <div class="col-md-12" id="result"></div>
       </div>
     </form>
   }
