@@ -97,90 +97,48 @@ class PealCometActor extends CometActor with Loggable {
         <h3>1. Enter policies, policy sets, conditions, and analyses in the text area below:</h3>
         <h6>Or click on one of the blue buttons to generate a valid input</h6>
         <div>
-          {SHtml.ajaxButton("Constant-score sample", () => {this ! Reset; _Noop}, "class" -> "btn btn-primary btn-sm", "style" -> "margin:2px;") ++
-          SHtml.ajaxButton("Non-constant score sample", () => {
-            this ! ResetNonConstant
-            _Noop
-          }, "class" -> "btn btn-primary btn-sm", "style" -> "margin:2px;")}{SHtml.ajaxButton("Majority-voting sample, n =", () => {
-          this ! MajorityVoting
-          _Noop
-        }, "class" -> "btn btn-primary btn-sm", "style" -> "margin:2px;")}{SHtml.ajaxText(majorityVotingCount.toString, s => {
-          majorityVotingCount = s.toInt
-          _Noop
-        }, "id" -> "n", "size" -> "10")}
+          {SHtml.ajaxButton("Constant-score sample", () => {this ! Reset; _Noop}, "class" -> "btn btn-primary btn-sm", "style" -> "margin:2px;")}
+          {SHtml.ajaxButton("Non-constant score sample", () => {this ! ResetNonConstant; _Noop}, "class" -> "btn btn-primary btn-sm", "style" -> "margin:2px;")}
+          {SHtml.ajaxButton("Majority-voting sample, n =", () => {this ! MajorityVoting; _Noop}, "class" -> "btn btn-primary btn-sm", "style" -> "margin:2px;")}
+          {SHtml.ajaxText(majorityVotingCount.toString, s => {majorityVotingCount = s.toInt; _Noop}, "id" -> "n", "size" -> "10")}
         </div>
         <div>
-          {SHtml.ajaxButton("Random sample without domain specifics: n, m_min, m_max, m_+, m_*, p, th, delta", () => {
-          this ! Generate
-          _Noop
-        }, "class" -> "btn btn-primary btn-sm", "style" -> "margin:2px;") }{SHtml.ajaxText(randomModelParam, s => {
-          randomModelParam = s
-          _Noop
-        }, "id" -> "r", "size" -> "30")}
+          {SHtml.ajaxButton("Random sample without domain specifics: n, m_min, m_max, m_+, m_*, p, th, delta", () => {this ! Generate; _Noop}, "class" -> "btn btn-primary btn-sm", "style" -> "margin:2px;") }
+          {SHtml.ajaxText(randomModelParam, s => {randomModelParam = s; _Noop}, "id" -> "r", "size" -> "30")}
         </div>
         <div>
-          {SHtml.ajaxButton("Random sample with domain specifics: n, m_min, m_max, m_+, m_*, p, th, delta", () => {
-          this ! GenerateDomainSpecifics
-          _Noop
-        }, "class" -> "btn btn-primary btn-sm", "style" -> "margin:2px;") }{SHtml.ajaxText(randomModelParamWithDomain, s => {
-          randomModelParamWithDomain = s
-          _Noop
-        }, "id" -> "r", "size" -> "30")}
+          {SHtml.ajaxButton("Random sample with domain specifics: n, m_min, m_max, m_+, m_*, p, th, delta", () => {this ! GenerateDomainSpecifics; _Noop}, "class" -> "btn btn-primary btn-sm", "style" -> "margin:2px;")}
+          {SHtml.ajaxText(randomModelParamWithDomain, s => {randomModelParamWithDomain = s; _Noop}, "id" -> "r", "size" -> "30")}
         </div>
-        <div>{
-          SHtml.ajaxButton("Clear text area", () => {
-            this ! Clear
-            _Noop
-          }, "class" -> "btn btn-warning btn-sm", "style" -> "margin:2px;")}
+        <div>
+          {SHtml.ajaxButton("Clear text area", () => {this ! Clear; _Noop}, "class" -> "btn btn-warning btn-sm", "style" -> "margin:2px;")}
         </div>
         </div>
       </div>
       <div class="row">
         <div class="col-md-7">
-          {SHtml.ajaxTextarea(inputPolicies, s => {
-          inputPolicies = s
-          _Noop
-          }, "id" -> "policies", "class" -> "form-control", "cols" -> "30", "rows" -> "20")}
+          {SHtml.ajaxTextarea(inputPolicies, s => {inputPolicies = s; _Noop}, "id" -> "policies", "class" -> "form-control", "cols" -> "30", "rows" -> "20")}
         </div>
         <div class="col-md-5">
           <h4>2. Choose a synthesis method. Then click on one of the green synthesiser buttons:</h4>
-          <ul class="nav nav-tabs" id="myTab">
+          <ul class="nav nav-tabs">
             <li class="active"><a href="#explicit" data-toggle="tab">Explicit Synthesis</a></li>
             <li><a href="#symbolic" data-toggle="tab">Symbolic Synthesis</a></li>
           </ul>
         </div>
-
           <div class="tab-content">
             <div class="tab-pane active" id="explicit">
               <div class="col-md-5">
-              {SHtml.ajaxButton("Display results of all analyses in pretty printed form", () => {
-                this ! SynthesisAndCallZ3Quiet
-                _Noop
-              }, "class" -> "btn btn-success btn-sm", "style" -> "margin:2px;") ++
-                SHtml.ajaxButton("Generate, show, and run Z3 code, display results in pretty-printed and raw form", () => {
-                  this ! SynthesisAndCallZ3
-                  _Noop
-                }, "class" -> "btn btn-success btn-sm", "style" -> "margin:2px;")++
-                SHtml.ajaxButton("Generate and show Z3 code", () => {
-                this ! Display
-                _Noop
-              }, "class" -> "btn btn-success btn-sm", "style" -> "margin:2px;") ++
-              SHtml.ajaxButton("Generate Z3 code and a link to it below", () => {
-                this ! Prepare
-                _Noop
-              }, "class" -> "btn btn-success btn-sm", "style" -> "margin:2px;") }
+                {SHtml.ajaxButton("Display results of all analyses in pretty printed form", () => {this ! SynthesisAndCallZ3Quiet; _Noop}, "class" -> "btn btn-success btn-sm", "style" -> "margin:2px;")}
+                {SHtml.ajaxButton("Generate, show, and run Z3 code, display results in pretty-printed and raw form", () => {this ! SynthesisAndCallZ3; _Noop}, "class" -> "btn btn-success btn-sm", "style" -> "margin:2px;")}
+                {SHtml.ajaxButton("Generate and show Z3 code", () => {this ! Display; _Noop}, "class" -> "btn btn-success btn-sm", "style" -> "margin:2px;")}
+                {SHtml.ajaxButton("Generate Z3 code and a link to it below", () => {this ! Prepare; _Noop}, "class" -> "btn btn-success btn-sm", "style" -> "margin:2px;")}
             </div>
             </div>
             <div class="tab-pane" id="symbolic">
               <div class="col-md-5">
-                {SHtml.ajaxButton("Generate and display Z3 code", () => {
-                this ! LazyDisplay
-                _Noop
-              }, "class" -> "btn btn-success btn-sm", "style" -> "margin:2px;")++
-                SHtml.ajaxButton("Generate, display, and run Z3 code, display results of all analyses in raw Z3 form", () => {
-                this ! LazySynthesisAndCallZ3
-                _Noop
-              }, "class" -> "btn btn-success btn-sm", "style" -> "margin:2px;")}
+                {SHtml.ajaxButton("Generate and display Z3 code", () => {this ! LazyDisplay; _Noop}, "class" -> "btn btn-success btn-sm", "style" -> "margin:2px;")}
+                {SHtml.ajaxButton("Generate, display, and run Z3 code, display results of all analyses in raw Z3 form", () => {this ! LazySynthesisAndCallZ3; _Noop}, "class" -> "btn btn-success btn-sm", "style" -> "margin:2px;")}
               </div>
             </div>
           </div>
