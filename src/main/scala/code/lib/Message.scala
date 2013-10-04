@@ -4,6 +4,8 @@ import scala.xml.NodeSeq
 
 case class Message(output: String)
 
+case class Failed(output: String)
+
 case class Result(output: NodeSeq)
 
 case class SaveFile(result: String, lapseTime: Long)

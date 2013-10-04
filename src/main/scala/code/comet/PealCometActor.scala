@@ -18,9 +18,6 @@ import peal.synthesis.analysis._
 import scala.collection.mutable.ListBuffer
 import code.lib._
 import net.liftweb.http.js.jquery.JqJE.JqId
-import code.lib.Message
-import code.lib.Result
-import code.lib.SaveFile
 import peal.model.{MajorityVotingGenerator, RandomModelGenerator}
 import peal.domain.PolicySet
 import peal.lazysynthesis.LazySynthesiser
@@ -96,80 +93,101 @@ class PealCometActor extends CometActor with Loggable {
 
     <form class="lift:form.ajax">
       <div>
-        <h3>Input policies:</h3>
+        <h3>1. Enter policies, policy sets, conditions, and analyses in the text area below:</h3>
+        <h6>Or click on one of the blue buttons to generate a valid input</h6>
+        <div class="form-group">
         <div>
-          {SHtml.ajaxTextarea(inputPolicies, s => {
-          inputPolicies = s
-          _Noop
-        }, "id" -> "policies", "cols" -> "30", "rows" -> "20")}
-        </div>
-        <div>
-          {SHtml.ajaxButton("Sample input", () => {
-          this ! Reset
-          _Noop
-        }) ++
-          SHtml.ajaxButton("Sample (non-constant scores)", () => {
+          {SHtml.ajaxButton("Constant-score sample", () => {this ! Reset; _Noop}, "class" -> "btn btn-primary btn-sm", "style" -> "margin:2px;") ++
+          SHtml.ajaxButton("Non-constant score sample", () => {
             this ! ResetNonConstant
             _Noop
-          }) ++
-          SHtml.ajaxButton("Clear policies", () => {
-            this ! Clear
-            _Noop
-          })}{SHtml.ajaxButton("Majority Voting", () => {
+          }, "class" -> "btn btn-primary btn-sm", "style" -> "margin:2px;")}{SHtml.ajaxButton("Majority-voting sample, n =", () => {
           this ! MajorityVoting
           _Noop
-        })}{SHtml.ajaxText(majorityVotingCount.toString, s => {
+        }, "class" -> "btn btn-primary btn-sm", "style" -> "margin:2px;")}{SHtml.ajaxText(majorityVotingCount.toString, s => {
           majorityVotingCount = s.toInt
           _Noop
         }, "id" -> "n", "size" -> "10")}
         </div>
         <div>
-          {SHtml.ajaxButton("Generate random model", () => {
+          {SHtml.ajaxButton("Random sample without domain specifics: n, m_min, m_max, m_+, m_*, p, th, delta", () => {
           this ! Generate
           _Noop
-        }) }{SHtml.ajaxText(randomModelParam, s => {
+        }, "class" -> "btn btn-primary btn-sm", "style" -> "margin:2px;") }{SHtml.ajaxText(randomModelParam, s => {
           randomModelParam = s
           _Noop
         }, "id" -> "r", "size" -> "30")}
         </div>
         <div>
-          {SHtml.ajaxButton("Generate random model with DOMAIN_SPECIFICS", () => {
+          {SHtml.ajaxButton("Random sample with domain specifics: n, m_min, m_max, m_+, m_*, p, th, delta", () => {
           this ! GenerateDomainSpecifics
           _Noop
-        }) }{SHtml.ajaxText(randomModelParamWithDomain, s => {
+        }, "class" -> "btn btn-primary btn-sm", "style" -> "margin:2px;") }{SHtml.ajaxText(randomModelParamWithDomain, s => {
           randomModelParamWithDomain = s
           _Noop
         }, "id" -> "r", "size" -> "30")}
         </div>
-        <div>
-          {SHtml.ajaxButton("EXPLICIT synthesis", () => {
-          this ! Display
-          _Noop
-        }) ++ SHtml.ajaxButton("EXPLICIT synthesis and call z3", () => {
-          this ! SynthesisAndCallZ3
-          _Noop
-        })++ SHtml.ajaxButton("Call z3", () => {
-          this ! SynthesisAndCallZ3Quiet
-          _Noop
-        })}
-          <span>||</span>
-          {SHtml.ajaxButton("EXPLICIT synthesis (and download)", () => {
-          this ! Prepare
-          _Noop
-        }) }
+        <div>{
+          SHtml.ajaxButton("Clear text area", () => {
+            this ! Clear
+            _Noop
+          }, "class" -> "btn btn-warning btn-sm", "style" -> "margin:2px;")}
         </div>
-        <div>
-          {SHtml.ajaxButton("SYMBOLIC synthesis", () => {
-          this ! LazyDisplay
-          _Noop
-        })++ SHtml.ajaxButton("SYMBOLIC synthesis and call z3", () => {
-          this ! LazySynthesisAndCallZ3
-          _Noop
-        })}
         </div>
-        <br/>
-        <div>
-          <h3>Result:</h3>
+        <div class="form-group">
+          <div class="col-lg-6">
+          {SHtml.ajaxTextarea(inputPolicies, s => {
+          inputPolicies = s
+          _Noop
+        }, "id" -> "policies", "class" -> "form-control", "cols" -> "30", "rows" -> "20")}
+        </div>
+        <div class="col-lg-4">
+          <h4>2. Choose a synthesis method. Then click on one of the green synthesiser buttons:</h4>
+          <ul class="nav nav-tabs" id="myTab">
+            <li class="active"><a href="#explicit" data-toggle="tab">Explicit Synthesis</a></li>
+            <li><a href="#symbolic" data-toggle="tab">Symbolic Synthesis</a></li>
+          </ul>
+        </div>
+
+          <div class="tab-content">
+            <div class="tab-pane active" id="explicit">
+              <div class="col-lg-3">
+              {SHtml.ajaxButton("Display results of all analyses in pretty printed form", () => {
+                this ! SynthesisAndCallZ3Quiet
+                _Noop
+              }, "class" -> "btn btn-success btn-sm", "style" -> "margin:2px;") ++
+                SHtml.ajaxButton("Generate, show, and run Z3 code, display results in pretty-printed and raw form", () => {
+                  this ! SynthesisAndCallZ3
+                  _Noop
+                }, "class" -> "btn btn-success btn-sm", "style" -> "margin:2px;")++
+                SHtml.ajaxButton("Generate and show Z3 code", () => {
+                this ! Display
+                _Noop
+              }, "class" -> "btn btn-success btn-sm", "style" -> "margin:2px;") ++
+              SHtml.ajaxButton("Generate Z3 code and a link to it below", () => {
+                this ! Prepare
+                _Noop
+              }, "class" -> "btn btn-success btn-sm", "style" -> "margin:2px;") }
+            </div>
+            </div>
+            <div class="tab-pane" id="symbolic">
+              <div class="col-lg-3">
+                {SHtml.ajaxButton("Generate and display Z3 code", () => {
+                this ! LazyDisplay
+                _Noop
+              }, "class" -> "btn btn-success btn-sm", "style" -> "margin:2px;")++
+                SHtml.ajaxButton("Generate, display, and run Z3 code, display results of all analyses in raw Z3 form", () => {
+                this ! LazySynthesisAndCallZ3
+                _Noop
+              }, "class" -> "btn btn-success btn-sm", "style" -> "margin:2px;")}
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <div class="form-group col-lg-10">
+          <hr/>
           <div id="result"></div>
         </div>
       </div>
@@ -207,10 +225,12 @@ class PealCometActor extends CometActor with Loggable {
         ms, please click
         <a href="download">here</a>
         to download the file</p>)
-    case Result(output) => partialUpdate(JqId("result") ~> JqHtml(output))
+    case Result(output) => partialUpdate(JqId("result") ~> JqHtml(<h3>3. Generated output:</h3> ++ output))
     case Message(message) => partialUpdate(JqId("result") ~> JqHtml(Text(message)))
+    case Failed(message) => partialUpdate(JqId("result") ~> JqHtml(<h3>Error:</h3> ++ Text(message)))
     case Clear =>
       this ! Message("")
+      inputPolicies = ""
       partialUpdate(JqId("policies") ~> JqVal(""))
     case MajorityVoting =>
       this ! Message("")
@@ -258,30 +278,18 @@ class PealCometActor extends CometActor with Loggable {
   }
 
   private def onDisplay(constsMap: Map[String, PealAst], conds: Map[String, Condition], pSets: Map[String, PolicySet], analyses: Map[String, AnalysisGenerator], domainSpecifics: Array[String]) {
-    val declarations = for (name <- constsMap.keys) yield <p>
-      {"(declare-const " + name + " Bool)"}
-    </p>
-    val declarations1 = for (name <- conds.keys) yield <p>
-      {"(declare-const " + name + " Bool)"}
-    </p>
-
+    val declarations = for (name <- constsMap.keys) yield "(declare-const " + name + " Bool)\n"
+    val condDeclarations = for (name <- conds.keys) yield "(declare-const " + name + " Bool)\n"
     val sortedConds = conds.keys.toSeq.sortWith(_ < _)
-    val conditions = for (cond <- sortedConds) yield {<p>
-      {"(assert (= " + cond + " " + conds(cond).synthesis(constsMap) + "))"}
-    </p>}
-
+    val conditions = for (cond <- sortedConds) yield "(assert (= " + cond + " " + conds(cond).synthesis(constsMap) + "))\n"
     val sortedAnalyses = analyses.keys.toSeq.sortWith(_ < _)
-    val generatedAnalyses = for (analysis <- sortedAnalyses) yield {
-      <pre>{analyses(analysis).z3SMTInput}</pre>
-    }
-
-    val result = <span>
-      {declarations}
-      {declarations1}
-      {conditions}
-      {domainSpecifics.map(s => <p>{s}</p>)}
-      {generatedAnalyses}
-    </span>
+    val generatedAnalyses = for (analysis <- sortedAnalyses) yield analyses(analysis).z3SMTInput + "\n"
+    val result = <pre>{declarations.mkString("") +
+      condDeclarations.mkString("") +
+      conditions.mkString("") +
+      domainSpecifics.map(s => s).mkString("") +
+      generatedAnalyses.mkString("")}
+    </pre>
     this ! Result(result)
   }
 
@@ -318,7 +326,7 @@ class PealCometActor extends CometActor with Loggable {
       val z3Models = z3OutputParser.results().toMap
       val analysedResults = Z3OutputAnalyser.execute(analyses, z3Models, constsMap)
       verbose match {
-        case true => this ! Result(<pre>{z3SMTInput}</pre> <pre>Analysed results:<br/>{analysedResults}<br/><br/>Z3 Raw Output:<br/>{resultList.mkString("")}</pre>)
+        case true => this ! Result(<pre>{z3SMTInput}</pre> <pre>Analysed results:<br/>{analysedResults}</pre><pre>Z3 Raw Output:<br/>{resultList.mkString("")}</pre>)
         case false => this ! Result(<pre>Analysed results:<br/>{analysedResults}</pre>)
       }
     } catch {
@@ -339,15 +347,14 @@ class PealCometActor extends CometActor with Loggable {
     Process(Seq("bash", "-c", "z3 -nw -smt2 " + tmp.getAbsolutePath)) ! processLogger
     tmp.delete()
     try {
-      this ! Result(<pre>{z3SMTInput}</pre><span>Z3 Raw Output:<br/></span><pre>{resultList.mkString("")}</pre>)
+      this ! Result(<pre>{z3SMTInput}</pre><pre>Z3 Raw Output:<br/>{resultList.mkString("")}</pre>)
     } catch {
       case e: Exception =>  dealWithIt(e)
     }
   }
 
   private def dealWithIt(e: Throwable) = {
-    println("error: " + e.getMessage)
-    this ! Message("error: " + e.getMessage)
+    this ! Failed(e.getMessage)
     throw e
   }
 }
