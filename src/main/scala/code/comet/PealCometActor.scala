@@ -181,9 +181,7 @@ class PealCometActor extends CometActor with Loggable {
               </div>
             </div>
           </div>
-
         </div>
-
         <div class="row col-md-12">
           <hr/>
           <div id="result"></div>
@@ -194,22 +192,21 @@ class PealCometActor extends CometActor with Loggable {
 
   override def lowPriority = {
     case Init =>
+    case LazyDisplay =>
+      this ! Result(<pre>{lazySynthesis}</pre>)
+    case LazySynthesisAndCallZ3 =>
+      onCallLazyZ3(lazySynthesis)
     case SynthesisAndCallZ3 =>
-      val (constsMap,  conds, pSets, analyses, domainSpecific) = onCompute(inputPolicies)
+      val (constsMap,  conds, pSets, analyses, domainSpecific) = parseInput(inputPolicies)
       onCallEagerZ3(true, constsMap, conds,  pSets, analyses, domainSpecific)
     case SynthesisAndCallZ3Quiet =>
-      val (constsMap,  conds, pSets, analyses, domainSpecific) = onCompute(inputPolicies)
+      val (constsMap,  conds, pSets, analyses, domainSpecific) = parseInput(inputPolicies)
       onCallEagerZ3(false, constsMap, conds,  pSets, analyses, domainSpecific)
-    case LazySynthesisAndCallZ3 =>
-      val input = new LazySynthesiser(inputPolicies).generate()
-      onCallLazyZ3(input)
-    case LazyDisplay =>
-      this ! Result(<pre>{new LazySynthesiser(inputPolicies).generate()}</pre>)
     case Display =>
-      val (constsMap, conds,  pSets, analyses, domainSpecific) = onCompute(inputPolicies)
+      val (constsMap, conds,  pSets, analyses, domainSpecific) = parseInput(inputPolicies)
       onDisplay(constsMap, conds,  pSets, analyses, domainSpecific)
     case Download =>
-      val (constsMap, conds,  pSets, analyses, domainSpecific) = onCompute(inputPolicies)
+      val (constsMap, conds,  pSets, analyses, domainSpecific) = parseInput(inputPolicies)
       onDownload(constsMap, conds,  pSets, analyses, domainSpecific)
     case Prepare =>
       partialUpdate(JqId("result") ~> JqHtml(Text("Synthesising... Please wait...")))
@@ -252,7 +249,18 @@ class PealCometActor extends CometActor with Loggable {
       partialUpdate(JqId("policies") ~> JqVal(inputPolicies))
   }
 
-  private def onCompute(input: String): (Map[String, PealAst], Map[String, Condition], Map[String, PolicySet], Map[String, AnalysisGenerator], Array[String]) = {
+
+  private def lazySynthesis: String = {
+    try {
+      new LazySynthesiser(inputPolicies).generate()
+    } catch {
+      case e: Exception =>
+        e.printStackTrace()
+        dealWithIt(e)
+    }
+  }
+
+  private def parseInput(input: String): (Map[String, PealAst], Map[String, Condition], Map[String, PolicySet], Map[String, AnalysisGenerator], Array[String]) = {
     val pealProgramParser = ParserHelper.getPealParser(input)
 
     try {
@@ -333,8 +341,6 @@ class PealCometActor extends CometActor with Loggable {
           case true => this ! Result(<pre>{z3SMTInput}</pre> <pre>Z3 Raw Output:<br/>{resultList.mkString("")}</pre>)
           case false => this ! Result(<pre>Result analysis failed, returned model contains unexpected string:<br/>{resultList.mkString("")}</pre>)
         }
-
-      //        dealWithIt(e)
     }
   }
 

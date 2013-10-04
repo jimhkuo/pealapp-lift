@@ -16,6 +16,7 @@ import scala.Some
 class LazySynthesiser(input: String) {
 
   //TODO need to support synthesis of predicate replacement
+  println("lazy input: " + input)
   val pealProgramParser = ParserHelper.getPealParser(input)
   pealProgramParser.program()
 
@@ -45,7 +46,6 @@ class LazySynthesiser(input: String) {
       case t: MinPolicySet => findAllPolicySets(Some(t.lhs)) ++ findAllPolicySets(Some(t.rhs))
     })
   }
-
 
   private def generateConditionEnforcement(condName: String, bName: String): String = {
     val buffer = new StringBuilder

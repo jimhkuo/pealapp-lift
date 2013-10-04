@@ -6,6 +6,11 @@ import peal.util.Z3ModelMatcher
 
 class LazySynthesiserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
 
+  @Test(expected = classOf[RuntimeException])
+  def testEmptyInput() {
+    new LazySynthesiser("")
+  }
+
   @Test
   def testGenerate() {
     val input = "POLICIES\n" +
