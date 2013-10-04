@@ -128,7 +128,7 @@ class PealCometActor extends CometActor with Loggable {
         }, "id" -> "r", "size" -> "30")}
         </div>
         <div>{
-          SHtml.ajaxButton("Clear input panel", () => {
+          SHtml.ajaxButton("Clear text area", () => {
             this ! Clear
             _Noop
           }, "class" -> "btn btn-warning btn-sm", "style" -> "margin:2px;")}
