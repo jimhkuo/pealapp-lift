@@ -115,9 +115,9 @@ class PealCometActor extends CometActor with Loggable {
         </div>
         </div>
       </div>
-      <div class="row">
+      <div class="row" style="margin-top: 5px">
         <div class="col-md-7">
-          {SHtml.ajaxTextarea(inputPolicies, s => {inputPolicies = s; _Noop}, "id" -> "policies", "class" -> "form-control", "cols" -> "30", "rows" -> "20")}
+          {SHtml.ajaxTextarea(inputPolicies, s => {inputPolicies = s; _Noop}, "id" -> "policies", "class" -> "form-control", "rows" -> "20")}
         </div>
         <div class="col-md-5">
           <h4>2. Choose a synthesis method. Then click on one of the green synthesiser buttons:</h4>
@@ -126,25 +126,24 @@ class PealCometActor extends CometActor with Loggable {
             <li><a href="#symbolic" data-toggle="tab">Symbolic Synthesis</a></li>
           </ul>
         </div>
-          <div class="tab-content">
-            <div class="tab-pane active" id="explicit">
-              <div class="col-md-5">
-                {SHtml.ajaxButton("Display results of all analyses in pretty printed form", () => {this ! SynthesisAndCallZ3Quiet; _Noop}, "class" -> "btn btn-success btn-sm", "style" -> "margin:2px;")}
-                {SHtml.ajaxButton("Generate, show, and run Z3 code, display results in pretty-printed and raw form", () => {this ! SynthesisAndCallZ3; _Noop}, "class" -> "btn btn-success btn-sm", "style" -> "margin:2px;")}
-                {SHtml.ajaxButton("Generate and show Z3 code", () => {this ! Display; _Noop}, "class" -> "btn btn-success btn-sm", "style" -> "margin:2px;")}
-                {SHtml.ajaxButton("Generate Z3 code and a link to it below", () => {this ! Prepare; _Noop}, "class" -> "btn btn-success btn-sm", "style" -> "margin:2px;")}
-            </div>
-            </div>
-            <div class="tab-pane" id="symbolic">
-              <div class="col-md-5">
-                {SHtml.ajaxButton("Generate and display Z3 code", () => {this ! LazyDisplay; _Noop}, "class" -> "btn btn-success btn-sm", "style" -> "margin:2px;")}
-                {SHtml.ajaxButton("Generate, display, and run Z3 code, display results of all analyses in raw Z3 form", () => {this ! LazySynthesisAndCallZ3; _Noop}, "class" -> "btn btn-success btn-sm", "style" -> "margin:2px;")}
-              </div>
+        <div class="tab-content">
+          <div class="tab-pane active" id="explicit">
+            <div class="col-md-5">
+              {SHtml.ajaxButton("Display results of all analyses in pretty printed form", () => {this ! SynthesisAndCallZ3Quiet; _Noop}, "class" -> "btn btn-success btn-sm", "style" -> "margin:2px;")}
+              {SHtml.ajaxButton("Generate, show, and run Z3 code, display results in pretty-printed and raw form", () => {this ! SynthesisAndCallZ3; _Noop}, "class" -> "btn btn-success btn-sm", "style" -> "margin:2px;")}
+              {SHtml.ajaxButton("Generate and show Z3 code", () => {this ! Display; _Noop}, "class" -> "btn btn-success btn-sm", "style" -> "margin:2px;")}
+              {SHtml.ajaxButton("Generate Z3 code and a link to it below", () => {this ! Prepare; _Noop}, "class" -> "btn btn-success btn-sm", "style" -> "margin:2px;")}
             </div>
           </div>
+          <div class="tab-pane" id="symbolic">
+            <div class="col-md-5">
+              {SHtml.ajaxButton("Generate and display Z3 code", () => {this ! LazyDisplay; _Noop}, "class" -> "btn btn-success btn-sm", "style" -> "margin:2px;")}
+              {SHtml.ajaxButton("Generate, display, and run Z3 code, display results of all analyses in raw Z3 form", () => {this ! LazySynthesisAndCallZ3; _Noop}, "class" -> "btn btn-success btn-sm", "style" -> "margin:2px;")}
+            </div>
+          </div>
+        </div>
       </div>
-      <div class="row">
-        <hr/>
+      <div class="row" style="margin-top: 2px">
         <div class="col-md-12" id="result"></div>
       </div>
     </form>
