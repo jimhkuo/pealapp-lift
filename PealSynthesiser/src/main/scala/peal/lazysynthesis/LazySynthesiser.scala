@@ -5,8 +5,6 @@ import peal.domain.operator.{Max, Min, Mul, Plus}
 import peal.domain._
 import peal.synthesis._
 import peal.antlr.util.ParserHelper
-import peal.synthesis.GreaterThanThCondition
-import peal.synthesis.LessThanThCondition
 import peal.domain.BasicPolicySet
 import peal.synthesis.GreaterThanThCondition
 import peal.synthesis.LessThanThCondition
@@ -17,10 +15,9 @@ import scala.Some
 
 class LazySynthesiser(input: String) {
 
+  //TODO need to support synthesis of predicate replacement
   val pealProgramParser = ParserHelper.getPealParser(input)
   pealProgramParser.program()
-
-  //TODO need to support synthesis of predicate replacement
 
   val pols = pealProgramParser.pols
   val conds = pealProgramParser.conds
@@ -42,12 +39,8 @@ class LazySynthesiser(input: String) {
   val analyses = pealProgramParser.analyses.toMap
 
   private def findAllPolicySets(policySet: Option[PolicySet]): Set[String] = {
-    def singlePolicy(ps: BasicPolicySet) = ps.pol match {
-      case u: Pol => Set(u.name)
-    }
-
     policySet.fold(Set[String]())(_ match {
-      case t: BasicPolicySet => singlePolicy(t)
+      case t: BasicPolicySet => Set(t.policyName)
       case t: MaxPolicySet => findAllPolicySets(Some(t.lhs)) ++ findAllPolicySets(Some(t.rhs))
       case t: MinPolicySet => findAllPolicySets(Some(t.lhs)) ++ findAllPolicySets(Some(t.rhs))
     })
