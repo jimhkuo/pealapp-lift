@@ -35,50 +35,8 @@
         <p>
             We refer to this document in lieu of a user manual.
             Users should note that the current version of the tool will typically produce flawed results if
-            used in an unintended input/task combination.
+            used in an unintended input/task combination. Please see the <a href="/userguide">user guide</a> for more details.
         </p>
-
-        <h4>PEALT usage constraints</h4>
-
-        <p>We now describe the illicit combinations, which we want to automatically disable in future version of the
-            tool:</p>
-
-        <p>
-            Usage constraint 1: explicit synthesis should not be used when any + policy occurring within an analysis
-            contains some negative or non-constant score or when any such * policy has scores not in the unit interval
-            [0,1]; it should also not be used when any min or max policy occurring in an analysis contains some
-            non-constant
-            score (negative but constant ones are OK then).
-        </p>
-
-        <p>
-            Usage constraint 2: symbolic synthesis should not be used when any min or max policy occurring within an
-            analysis contains some non-constant score (negative but constant ones are OK then).
-        </p>
-
-        <p>
-            <!--It is therefore safe to use explicit synthesis for positive, constant scores only.-->
-            For example, it is safe to use explicit synthesis for constant scores in the unit interval.
-            <!--can currently not be generated  -->
-            <!--domain specific information contains complex features such as  quantification or functions.-->
-            For example, it is safe to use symbolic synthesis for both positive and negative scores
-            when only + and * policies have non-constant scores.
-        </p>
-
-        <p>Additionally, pretty printed output is currently not available for inputs with domain specifics,
-            and symbolic synthesis results. This problem will be rectified in due course.</p>
-
-        <p>
-            Please contact Jim Kuo (google for contact info) with any queries or feedback regarding the PEALT tool.
-        </p>
-
-        <!--<h3>Abstract</h3>-->
-        <!--<p>This little application demonstrates the logical synthesis from Peal policies.</p>-->
-        <!--<p>We explore how best to do the synthesis of logical formula that capture whether a-->
-        <!--Peal policy evaluates below or strictly above some threshold. We confine our attention for now-->
-        <!--to scores that are non-negative. We will consider the consistency of conjunctions of predicates,-->
-        <!--and investigate what research issues and trade-offs such consideration brings to this synthesis process.</p>-->
-        <!--<p>By Michael Huth and Jim Huan-Pu Kuo</p>-->
 
     </div>
 </div>
