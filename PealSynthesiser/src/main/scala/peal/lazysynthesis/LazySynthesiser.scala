@@ -62,23 +62,23 @@ class LazySynthesiser(input: String) {
           case cond: LessThanThCondition =>
             val filtered = pols(bName).rules.filter(_.score <= cond.getTh)
             if (filtered.size > 0) {
-              "(or (and (<= " + pols(bName).scoreString + " " + cond.getTh + ") (not " + "(or " + pols(bName).rules.map(_.q.name).mkString(" ") + ")" + "))\n" +
+              "(or (and (<= " + pols(bName).scoreString + " " + cond.getTh + ") (not " + constructOr(pols(bName).rules.map(_.q.name))  + "))\n" +
                 "(or " + filtered.map(_.q.name).mkString(" ") + ")))"
             }
             else {
-              "(or (and (<= " + pols(bName).scoreString + " " + cond.getTh + ") (not " + "(or " + pols(bName).rules.map(_.q.name).mkString(" ") + ")" + "))\n" +
+              "(or (and (<= " + pols(bName).scoreString + " " + cond.getTh + ") (not " + constructOr(pols(bName).rules.map(_.q.name)) + "))\n" +
                 "false))"
 
             }
           case cond: GreaterThanThCondition =>
             val filtered = pols(bName).rules.filter(_.score <= cond.getTh)
             if (filtered.size > 0) {
-              "(or (and (< " + cond.getTh + " " + pols(bName).scoreString + ") (not " + "(or " + pols(bName).rules.map(_.q.name).mkString(" ") + ")" + "))\n" +
-                "(and (or " + pols(bName).rules.map(_.q.name).mkString(" ") + ") " + "(not (or " + filtered.map(_.q.name).mkString(" ") + ")))))"
+              "(or (and (< " + cond.getTh + " " + pols(bName).scoreString + ") (not " + constructOr(pols(bName).rules.map(_.q.name)) + "))\n" +
+                "(and " + constructOr(pols(bName).rules.map(_.q.name)) + " " + "(not (or " + filtered.map(_.q.name).mkString(" ") + ")))))"
             }
             else {
-              "(or (and (< " + cond.getTh + " " + pols(bName).scoreString + ") (not " + "(or " + pols(bName).rules.map(_.q.name).mkString(" ") + ")" + "))\n" +
-                "(and " + "(or " + pols(bName).rules.map(_.q.name).mkString(" ") + ")" + " (not false))))"
+              "(or (and (< " + cond.getTh + " " + pols(bName).scoreString + ") (not " + constructOr(pols(bName).rules.map(_.q.name)) + "))\n" +
+                "(and " + constructOr(pols(bName).rules.map(_.q.name)) + " (not false))))"
             }
         }
         buffer.append("(assert (= " + condName + "_" + bName + " " + genFormula + ")\n")
@@ -87,21 +87,21 @@ class LazySynthesiser(input: String) {
           case cond: LessThanThCondition =>
             val filtered = pols(bName).rules.filter(_.score <= cond.getTh)
             if (filtered.size > 0) {
-              "(or (and (<= " + pols(bName).scoreString + " " + cond.getTh + ") (not " + "(or " + pols(bName).rules.map(_.q.name).mkString(" ") + ")" + "))\n" +
-                "(and (or " + pols(bName).rules.map(_.q.name).mkString(" ") + ") " + "(not " + "(or " + filtered.map(_.q.name).mkString(" ") + ")" + "))))"
+              "(or (and (<= " + pols(bName).scoreString + " " + cond.getTh + ") (not " + constructOr(pols(bName).rules.map(_.q.name)) + "))\n" +
+                "(and " + constructOr(pols(bName).rules.map(_.q.name)) + " (not " + "(or " + filtered.map(_.q.name).mkString(" ") + ")" + "))))"
             }
             else {
-              "(or (and (<= " + pols(bName).scoreString + " " + cond.getTh + ") (not " + "(or " + pols(bName).rules.map(_.q.name).mkString(" ") + ")" + "))\n" +
-                "(and (or " + pols(bName).rules.map(_.q.name).mkString(" ") + ") " + "(not false))))"
+              "(or (and (<= " + pols(bName).scoreString + " " + cond.getTh + ") (not " + constructOr(pols(bName).rules.map(_.q.name)) + "))\n" +
+                "(and " + constructOr(pols(bName).rules.map(_.q.name)) + " (not false))))"
             }
           case cond: GreaterThanThCondition =>
             val filtered = pols(bName).rules.filter(cond.getTh < _.score)
             if (filtered.size > 0) {
-              "(or (and (< " + cond.getTh + " " + pols(bName).scoreString + ") (not " + "(or " + pols(bName).rules.map(_.q.name).mkString(" ") + ")" + "))\n" +
+              "(or (and (< " + cond.getTh + " " + pols(bName).scoreString + ") (not " + constructOr(pols(bName).rules.map(_.q.name)) + "))\n" +
                 "(or " + filtered.map(_.q.name).mkString(" ") + ")))"
             }
             else {
-              "(or (and (< " + cond.getTh + " " + pols(bName).scoreString + ") (not " + "(or " + pols(bName).rules.map(_.q.name).mkString(" ") + ")" + "))\n" +
+              "(or (and (< " + cond.getTh + " " + pols(bName).scoreString + ") (not " + constructOr(pols(bName).rules.map(_.q.name)) + "))\n" +
                 "false))"
             }
         }
@@ -110,17 +110,22 @@ class LazySynthesiser(input: String) {
         conds(condName) match {
           case cond: GreaterThanThCondition =>
             buffer.append("(assert (= " + condName + "_" + bName +
-              " (or (and (< " + cond.th + " " + pols(bName).scoreString + ") (not " + "(or " + pols(bName).rules.map(_.q.name).mkString(" ") + ")" + ")) " +
-              " (and " + "(or " + pols(bName).rules.map(_.q.name).mkString(" ") + ")" + " " +
+              " (or (and (< " + cond.th + " " + pols(bName).scoreString + ") (not " + constructOr(pols(bName).rules.map(_.q.name)) + ")) " +
+              " (and " + constructOr(pols(bName).rules.map(_.q.name)) + " " +
               " (< " + cond.th + " " + ruleAssert(plusOrMul, bName) + ")))))\n")
           case cond: LessThanThCondition =>
             buffer.append("(assert (= " + condName + "_" + bName +
-              " (or (and (<= " + pols(bName).scoreString + " " + cond.th + ") (not " + "(or " + pols(bName).rules.map(_.q.name).mkString(" ") + ")" + ")) " +
-              " (and " + "(or " + pols(bName).rules.map(_.q.name).mkString(" ") + ")" + " " +
+              " (or (and (<= " + pols(bName).scoreString + " " + cond.th + ") (not " + constructOr(pols(bName).rules.map(_.q.name)) + ")) " +
+              " (and " + constructOr(pols(bName).rules.map(_.q.name)) + " " +
               " (<= " + ruleAssert(plusOrMul, bName) + " " + cond.th + ")))))\n")
         }
     }
     buffer.toString()
+  }
+
+  private def constructOr(seq: Seq[String]) = seq.size match {
+    case 0 => "false"
+    case _ => "(or " + seq.mkString(" ") + ")"
   }
 
   private def ruleAssert(op: Operators, bName: String) = op match {

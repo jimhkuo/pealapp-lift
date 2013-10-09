@@ -11,7 +11,6 @@ class LazySynthesiserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
     new LazySynthesiser("")
   }
 
-  @Ignore("wip")
   @Test
   def testGenerateNoRule() {
     val input = "POLICIES\n" +
