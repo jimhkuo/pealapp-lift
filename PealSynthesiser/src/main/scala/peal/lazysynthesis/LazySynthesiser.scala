@@ -1,10 +1,17 @@
 package peal.lazysynthesis
 
 import scala.collection.JavaConversions._
-import peal.domain.operator.{Max, Min, Mul, Plus}
+import peal.domain.operator._
 import peal.domain._
 import peal.synthesis._
 import peal.antlr.util.ParserHelper
+import peal.domain.BasicPolicySet
+import peal.synthesis.GreaterThanThCondition
+import peal.synthesis.LessThanThCondition
+import peal.domain.MinPolicySet
+import peal.domain.MaxPolicySet
+import peal.domain.Pol
+import scala.Some
 import peal.domain.BasicPolicySet
 import peal.synthesis.GreaterThanThCondition
 import peal.synthesis.LessThanThCondition
@@ -55,23 +62,23 @@ class LazySynthesiser(input: String) {
           case cond: LessThanThCondition =>
             val filtered = pols(bName).rules.filter(_.score <= cond.getTh)
             if (filtered.size > 0) {
-              "(or (and (<= " + pols(bName).scoreString + " " + cond.getTh + ") (not (or " + pols(bName).rules.map(_.q.name).mkString(" ") + ")))\n" +
+              "(or (and (<= " + pols(bName).scoreString + " " + cond.getTh + ") (not " + "(or " + pols(bName).rules.map(_.q.name).mkString(" ") + ")" + "))\n" +
                 "(or " + filtered.map(_.q.name).mkString(" ") + ")))"
             }
             else {
-              "(or (and (<= " + pols(bName).scoreString + " " + cond.getTh + ") (not (or " + pols(bName).rules.map(_.q.name).mkString(" ") + ")))\n" +
+              "(or (and (<= " + pols(bName).scoreString + " " + cond.getTh + ") (not " + "(or " + pols(bName).rules.map(_.q.name).mkString(" ") + ")" + "))\n" +
                 "false))"
 
             }
           case cond: GreaterThanThCondition =>
             val filtered = pols(bName).rules.filter(_.score <= cond.getTh)
             if (filtered.size > 0) {
-              "(or (and (< " + cond.getTh + " " + pols(bName).scoreString + ") (not (or " + pols(bName).rules.map(_.q.name).mkString(" ") + ")))\n" +
+              "(or (and (< " + cond.getTh + " " + pols(bName).scoreString + ") (not " + "(or " + pols(bName).rules.map(_.q.name).mkString(" ") + ")" + "))\n" +
                 "(and (or " + pols(bName).rules.map(_.q.name).mkString(" ") + ") " + "(not (or " + filtered.map(_.q.name).mkString(" ") + ")))))"
             }
             else {
-              "(or (and (< " + cond.getTh + " " + pols(bName).scoreString + ") (not (or " + pols(bName).rules.map(_.q.name).mkString(" ") + ")))\n" +
-                "(and (or " + pols(bName).rules.map(_.q.name).mkString(" ") + ") " + "(not false))))"
+              "(or (and (< " + cond.getTh + " " + pols(bName).scoreString + ") (not " + "(or " + pols(bName).rules.map(_.q.name).mkString(" ") + ")" + "))\n" +
+                "(and " + "(or " + pols(bName).rules.map(_.q.name).mkString(" ") + ")" + " (not false))))"
             }
         }
         buffer.append("(assert (= " + condName + "_" + bName + " " + genFormula + ")\n")
@@ -80,40 +87,47 @@ class LazySynthesiser(input: String) {
           case cond: LessThanThCondition =>
             val filtered = pols(bName).rules.filter(_.score <= cond.getTh)
             if (filtered.size > 0) {
-              "(or (and (<= " + pols(bName).scoreString + " " + cond.getTh + ") (not (or " + pols(bName).rules.map(_.q.name).mkString(" ") + ")))\n" +
-                "(and (or " + pols(bName).rules.map(_.q.name).mkString(" ") + ") " + "(not (or " + pols(bName).rules.filter(_.score <= cond.getTh).map(_.q.name).mkString(" ") + ")))))"
+              "(or (and (<= " + pols(bName).scoreString + " " + cond.getTh + ") (not " + "(or " + pols(bName).rules.map(_.q.name).mkString(" ") + ")" + "))\n" +
+                "(and (or " + pols(bName).rules.map(_.q.name).mkString(" ") + ") " + "(not " + "(or " + filtered.map(_.q.name).mkString(" ") + ")" + "))))"
             }
             else {
-              "(or (and (<= " + pols(bName).scoreString + " " + cond.getTh + ") (not (or " + pols(bName).rules.map(_.q.name).mkString(" ") + ")))\n" +
+              "(or (and (<= " + pols(bName).scoreString + " " + cond.getTh + ") (not " + "(or " + pols(bName).rules.map(_.q.name).mkString(" ") + ")" + "))\n" +
                 "(and (or " + pols(bName).rules.map(_.q.name).mkString(" ") + ") " + "(not false))))"
             }
           case cond: GreaterThanThCondition =>
             val filtered = pols(bName).rules.filter(cond.getTh < _.score)
             if (filtered.size > 0) {
-              "(or (and (< " + cond.getTh + " " + pols(bName).scoreString + ") (not (or " + pols(bName).rules.map(_.q.name).mkString(" ") + ")))\n" +
+              "(or (and (< " + cond.getTh + " " + pols(bName).scoreString + ") (not " + "(or " + pols(bName).rules.map(_.q.name).mkString(" ") + ")" + "))\n" +
                 "(or " + filtered.map(_.q.name).mkString(" ") + ")))"
             }
             else {
-              "(or (and (< " + cond.getTh + " " + pols(bName).scoreString + ") (not (or " + pols(bName).rules.map(_.q.name).mkString(" ") + ")))\n" +
+              "(or (and (< " + cond.getTh + " " + pols(bName).scoreString + ") (not " + "(or " + pols(bName).rules.map(_.q.name).mkString(" ") + ")" + "))\n" +
                 "false))"
             }
         }
         buffer.append("(assert (= " + condName + "_" + bName + " " + genFormula + ")\n")
-      case o =>
+      case plusOrMul =>
         conds(condName) match {
           case cond: GreaterThanThCondition =>
             buffer.append("(assert (= " + condName + "_" + bName +
-              " (or (and (< " + cond.th + " " + pols(bName).scoreString + ") (not (or " + pols(bName).rules.map(_.q.name).mkString(" ") + "))) " +
-              " (and (or " + pols(bName).rules.map(_.q.name).mkString(" ") + ") " +
-              " (< " + cond.th + " (" + o + " " + pols(bName).rules.map(bName + "_score_" + _.q.name).mkString(" ") + "))))))\n")
+              " (or (and (< " + cond.th + " " + pols(bName).scoreString + ") (not " + "(or " + pols(bName).rules.map(_.q.name).mkString(" ") + ")" + ")) " +
+              " (and " + "(or " + pols(bName).rules.map(_.q.name).mkString(" ") + ")" + " " +
+              " (< " + cond.th + " " + ruleAssert(plusOrMul, bName) + ")))))\n")
           case cond: LessThanThCondition =>
             buffer.append("(assert (= " + condName + "_" + bName +
-              " (or (and (<= " + pols(bName).scoreString + " " + cond.th + ") (not (or " + pols(bName).rules.map(_.q.name).mkString(" ") + "))) " +
-              " (and (or " + pols(bName).rules.map(_.q.name).mkString(" ") + ") " +
-              " (<= (" + o + " " + pols(bName).rules.map(bName + "_score_" + _.q.name).mkString(" ") + ") " + cond.th + ")))))\n")
+              " (or (and (<= " + pols(bName).scoreString + " " + cond.th + ") (not " + "(or " + pols(bName).rules.map(_.q.name).mkString(" ") + ")" + ")) " +
+              " (and " + "(or " + pols(bName).rules.map(_.q.name).mkString(" ") + ")" + " " +
+              " (<= " + ruleAssert(plusOrMul, bName) + " " + cond.th + ")))))\n")
         }
     }
     buffer.toString()
+  }
+
+  private def ruleAssert(op: Operators, bName: String) = op match {
+    case Plus => pols(bName).rules.size match {
+      case 0 => "0.0"
+      case _ => "(+ " + pols(bName).rules.map(bName + "_score_" + _.q.name).mkString(" ") + ")"
+    }
   }
 
   private def generatePolicySetAssertions(condName: String): String = {

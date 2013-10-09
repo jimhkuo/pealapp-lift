@@ -1,7 +1,7 @@
 package peal.lazysynthesis
 
 import org.scalatest.junit.ShouldMatchersForJUnit
-import org.junit.Test
+import org.junit.{Ignore, Test}
 import peal.util.Z3ModelMatcher
 
 class LazySynthesiserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
@@ -9,6 +9,22 @@ class LazySynthesiserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
   @Test(expected = classOf[RuntimeException])
   def testEmptyInput() {
     new LazySynthesiser("")
+  }
+
+  @Ignore("wip")
+  @Test
+  def testGenerateNoRule() {
+    val input = "POLICIES\n" +
+      "b1 = + () default 1\n" +
+      "POLICY_SETS\n" +
+      "pSet1 = b1\n" +
+      "CONDITIONS\n" +
+      "cond1 = pSet1 <= 0.5\n" +
+      "ANALYSES\nname1 = always_true? cond1\n"
+
+    val generator = new LazySynthesiser(input)
+//    println(generator.generate())
+    generator.generate() should beZ3Model("(declare-const cond1 Bool)\n(declare-const cond1_b1 Bool)\n(assert (= cond1_b1 (or (and (<= 1.0 0.5) (not false))  (and false  (<= 0.0 0.5)))))\n(assert (= cond1 cond1_b1))\n\n(echo \"Result of analysis [name1 = always_true? cond1]:\")\n(push)\n(declare-const always_true_name1 Bool)\n(assert (= always_true_name1 cond1))\n(assert (not always_true_name1))\n(check-sat)\n(get-model)\n(pop)")
   }
 
   @Test
