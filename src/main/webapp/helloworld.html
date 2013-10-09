@@ -27,9 +27,10 @@ name4 = implies? cond1 cond2
 </pre>
         <p>this sets up two policies b1, and b2. Policy b1 gets the minimum of the scores associated with q1, q2 and q3
             when any of them is true.
-        If q1, q2, and q3 are all false, then b1 = 1 (the default score).
-        The score of b2 is evaluated in a similar manner, the only difference is that the score aggregation operator is changed to
-        mathematical +.</p>
+            If q1, q2, and q3 are all false, then b1 = 1 (the default score).
+            The score of b2 is evaluated in a similar manner, the only difference is that the score aggregation operator
+            is changed to
+            mathematical +.</p>
 
         <p>Policy set pSet1 represents the combined score of b1 and b2 using the max operator.</p>
 
@@ -37,7 +38,8 @@ name4 = implies? cond1 cond2
             In our example, we compare pSet1 to 0.5 and 0.6.</p>
 
         <p>Finally, we define four analyses, hopefully their intentions are intuitive from the operators used. We get
-        these pretty printed results by clicking the "Display results of all analyses in pretty printed form" button.</p>
+            these pretty printed results by clicking the "Display results of all analyses in pretty printed form"
+            button.</p>
 
         <pre>Analysed results:
 
@@ -72,8 +74,9 @@ cond2 is true
 Result of analysis [name4 = implies? cond1 cond2]
 cond1 implies cond2</pre>
 
-         <p>We check that whether cond1 is always true, whether cond1 and cond2 are equivalent, and different. Lastly,
-         we check if cond1 implies cond2. Whenever an analysis is false, a counter example is provided in the output.</p>
+        <p>We check that whether cond1 is always true, whether cond1 and cond2 are equivalent, and different. Lastly,
+            we check if cond1 implies cond2. Whenever an analysis is false, a counter example is provided in the
+            output.</p>
 
 
     </div>
