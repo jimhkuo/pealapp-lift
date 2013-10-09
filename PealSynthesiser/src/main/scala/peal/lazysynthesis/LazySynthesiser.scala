@@ -133,6 +133,10 @@ class LazySynthesiser(input: String) {
       case 0 => "0.0"
       case _ => "(+ " + pols(bName).rules.map(bName + "_score_" + _.q.name).mkString(" ") + ")"
     }
+    case Mul => pols(bName).rules.size match {
+      case 0 => "1.0"
+      case _ => "(* " + pols(bName).rules.map(bName + "_score_" + _.q.name).mkString(" ") + ")"
+    }
   }
 
   private def generatePolicySetAssertions(condName: String): String = {
