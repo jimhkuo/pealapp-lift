@@ -25,7 +25,7 @@
         <!--<h4>POLICIES</h4>-->
 
         <p>
-            Multiple input policies can be defined in this section. A valid policy may be,
+            Multiple input policies can be defined in section POLICIES. A valid policy may be,
         </p>
 
         <pre>b1 = min ((q1 0.2) (q2 0.4) (q3 0.9)) default 1</pre>
@@ -43,12 +43,12 @@
 
             Predicates do not need to be declared. The Peal parser will read in a policy and automatically recognise the
             left
-            hand side of the rule tuples as predicates.
+            hand sides of the rule tuples as predicates.
 
             A predicate is a boolean value, a true value means the associated score is applicable, otherwise it means
             the tuple has no effect in the container policy.
             If all predicates are false, then the policy is assigned the default score.
-            If a predicate name appears in more than one policies, it simply means
+            If a predicate name appears in more than one policy, it simply means
             the same boolean variable controls application of associated scores in those policies.
         </p>
 
@@ -63,7 +63,7 @@
             name.
         </p>
 
-        <p>At the risk of spelling out the obvious, this statement says b1 is evaluated to the minimum
+        <p>At the risk of spelling out the obvious, the above statement says b1 is evaluated to the minimum
             of all scores where the predicates are true. If all predicates are false, then b1 is assigned the default
             score 1.
         </p>
@@ -72,19 +72,19 @@
         <!--<h4>POLICY_SETS</h4>-->
 
         <p>
-            Policy Sets aggregate the scores of previously defined policies. A policy set can simply equal to a policy, or
+            Policy sets aggregate the scores of previously defined policies. A policy set can simply equal to a policy, or
             aggregation of two policy sets by max or min operator (binary). For example, assuming we have policies b1, b2, and b3, then we can do,
         </p>
 
         <pre>pSet1 = b1
 pSet2 = max(b1, b2)</pre>
 
-       <p>If we wish to express a nested structure, we can achieve so by referring to already declared variable,
+       <p>If we wish to express a nested structure, we can achieve this by referring to already declared variable,
            as the policy set operators are binary. For example,</p>
 
         <pre>pSet3 = min(b3, pSet2)</pre>
 
-        <p>is the allowed input to express pSet3 = min(b3, max(b1, b2)).</p>
+        <p>is the allowed input to express pSet3 = min(b3, max(b1, b2)), which is not allowed input syntax.</p>
 
         <!--<h4>CONDITIONS</h4>-->
 
@@ -92,7 +92,7 @@ pSet2 = max(b1, b2)</pre>
         <p>
             The domain specifics section contains Z3 specific code that will simply be appended to the end of generated code.
             It is users' responsibilities to enter valid inputs accepted by the Z3 SMT solver.
-            And that Boolean predicates that occur in rules do not (in fact must not) be redeclared as Boolean predicates
+            And to ensure that Boolean predicates that occur in rules do not (in fact must not) be redeclared as Boolean predicates
             in DOMAIN_SPECIFICS if they are referred to in that part.
         </p>
 
@@ -108,6 +108,77 @@ pSet2 = max(b1, b2)</pre>
 
         <!--<p>Intuitively, always_false? cond1 checks if cond1 is always false, and satisfiable? cond1 checks if it's possible-->
         <!--to make cond1 true (essentially it's !always_false)</p>-->
+
+        <h4>Simple example</h4>
+
+        <p>Given the following input,</p>
+        <pre>POLICIES
+b1 = min ((q1 0.2) (q2 0.4) (q3 0.9)) default 1
+b2 = + ((q4 0.1) (q5 0.2) (q6 0.6)) default 0
+POLICY_SETS
+pSet1 = max(b1, b2)
+CONDITIONS
+cond1 = pSet1 &lt;= 0.5
+cond2 = pSet1 &lt;= 0.6
+ANALYSES
+name1 = always_true? cond1
+name2 = equivalent? cond1 cond2
+name3 = different? cond1 cond2
+name4 = implies? cond1 cond2
+</pre>
+        <p>this sets up two policies b1, and b2. Policy b1 gets the minimum of the scores associated with q1, q2 and q3
+            when any of them is true.
+            If q1, q2, and q3 are all false, then b1 = 1 (the default score).
+            The score of b2 is evaluated in a similar manner, the only difference is that the score aggregation operator
+            is changed to
+            addition operator +.</p>
+
+        <p>Policy set pSet1 represents the combined score of b1 and b2 using the max operator.</p>
+
+        <p>Then we define two conditions, each asserting the score of pSet1 is less than or equal to some value.
+            In our example, we compare pSet1 to 0.5 and 0.6.</p>
+
+        <p>Finally, we define four analyses, hopefully their intentions are intuitive from the operators used. We get
+            these pretty printed results by clicking the "Display results of all analyses in pretty printed form"
+            button.</p>
+
+        <pre>Analysed results:
+
+Result of analysis [name1 = always_true? cond1]
+cond1 is NOT always true
+For example, when
+q5 is false
+q1 is true
+q6 is true
+q4 is false
+
+Result of analysis [name2 = equivalent? cond1 cond2]
+cond1 and cond2 are NOT equivalent
+For example, when
+q5 is false
+q1 is true
+q6 is true
+q4 is false
+cond1 is false
+cond2 is true
+
+Result of analysis [name3 = different? cond1 cond2]
+cond1 and cond2 are different
+For example, when
+q5 is false
+q1 is true
+q6 is true
+q4 is false
+cond1 is false
+cond2 is true
+
+Result of analysis [name4 = implies? cond1 cond2]
+cond1 implies cond2</pre>
+
+        <p>We check that whether cond1 is always true, whether cond1 and cond2 are equivalent, respectively different. Lastly,
+            we check if cond1 implies cond2. Whenever the outcome of an analysis can be supported by a model,
+            such a model is provided in the output.</p>
+
 
         <h4>PEALT usage constraints</h4>
 
@@ -158,75 +229,6 @@ pSet2 = max(b1, b2)</pre>
         <!--and investigate what research issues and trade-offs such consideration brings to this synthesis process.</p>-->
         <!--<p>By Michael Huth and Jim Huan-Pu Kuo</p>-->
 
-        <h4>Simple example</h4>
-
-        <p>Given the following input,</p>
-        <pre>POLICIES
-b1 = min ((q1 0.2) (q2 0.4) (q3 0.9)) default 1
-b2 = + ((q4 0.1) (q5 0.2) (q6 0.6)) default 0
-POLICY_SETS
-pSet1 = max(b1, b2)
-CONDITIONS
-cond1 = pSet1 &lt;= 0.5
-cond2 = pSet1 &lt;= 0.6
-ANALYSES
-name1 = always_true? cond1
-name2 = equivalent? cond1 cond2
-name3 = different? cond1 cond2
-name4 = implies? cond1 cond2
-</pre>
-        <p>this sets up two policies b1, and b2. Policy b1 gets the minimum of the scores associated with q1, q2 and q3
-            when any of them is true.
-            If q1, q2, and q3 are all false, then b1 = 1 (the default score).
-            The score of b2 is evaluated in a similar manner, the only difference is that the score aggregation operator
-            is changed to
-            mathematical +.</p>
-
-        <p>Policy set pSet1 represents the combined score of b1 and b2 using the max operator.</p>
-
-        <p>Then we define two conditions, each asserting the score of pSet1 is less than or equal to some value.
-            In our example, we compare pSet1 to 0.5 and 0.6.</p>
-
-        <p>Finally, we define four analyses, hopefully their intentions are intuitive from the operators used. We get
-            these pretty printed results by clicking the "Display results of all analyses in pretty printed form"
-            button.</p>
-
-        <pre>Analysed results:
-
-Result of analysis [name1 = always_true? cond1]
-cond1 is NOT always true
-For example, when
-q5 is false
-q1 is true
-q6 is true
-q4 is false
-
-Result of analysis [name2 = equivalent? cond1 cond2]
-cond1 and cond2 are NOT equivalent
-For example, when
-q5 is false
-q1 is true
-q6 is true
-q4 is false
-cond1 is false
-cond2 is true
-
-Result of analysis [name3 = different? cond1 cond2]
-cond1 and cond2 are different
-For example, when
-q5 is false
-q1 is true
-q6 is true
-q4 is false
-cond1 is false
-cond2 is true
-
-Result of analysis [name4 = implies? cond1 cond2]
-cond1 implies cond2</pre>
-
-        <p>We check that whether cond1 is always true, whether cond1 and cond2 are equivalent, and different. Lastly,
-            we check if cond1 implies cond2. Whenever an analysis is satisfiable, a counter example is provided in the
-            output.</p>
 
 
     </div>
