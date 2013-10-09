@@ -6,6 +6,9 @@ import peal.domain.Pol
 import peal.domain.z3.{PealAst, Or, And}
 
 case class LessThanThCondition(phi: PolicySet, th: BigDecimal) extends Condition {
+
+  if (phi == null) throw new RuntimeException("Referred to undeclared policy set in LessThanThCondition")
+
   def synthesis(consts: Map[String, PealAst]): PealAst = phi match {
     case s: MinPolicySet => Or(new LessThanThCondition(s.lhs, th).synthesis(consts), new LessThanThCondition(s.rhs, th).synthesis(consts))
     case s: MaxPolicySet => And(new LessThanThCondition(s.lhs, th).synthesis(consts), new LessThanThCondition(s.rhs, th).synthesis(consts))

@@ -36,7 +36,7 @@ class PealProgramParserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
       }
     })
 
-    nonConstantDefaultScores should be (Set("x", "y", "z"))
+    nonConstantDefaultScores should be(Set("x", "y", "z"))
   }
 
   @Test

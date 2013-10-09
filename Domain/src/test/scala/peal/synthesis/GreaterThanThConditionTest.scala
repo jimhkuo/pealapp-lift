@@ -13,6 +13,11 @@ import peal.domain.z3.{PealAst, Term}
 class GreaterThanThConditionTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
   val consts = Map[String, PealAst]("q0" -> Term("q0"), "q1" -> Term("q1"), "q2" -> Term("q2"), "q3" -> Term("q3"), "q4" -> Term("q4"), "q5" -> Term("q5"), "q6" -> Term("q6"))
 
+  @Test(expected = classOf[RuntimeException])
+  def testNullThrowException() {
+    new GreaterThanThCondition(null, 0.6)
+  }
+
   @Test
   def testNoRules() {
     new GreaterThanThCondition(new BasicPolicySet(new Pol(List[Rule](), Min, 0.7)), 0.6).synthesis(consts) should beZ3Model ("(or true (not false))")

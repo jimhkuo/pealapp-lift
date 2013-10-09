@@ -229,6 +229,7 @@ class PealCometActor extends CometActor with Loggable {
       val constsMap = predicateNames.toSeq.distinct.map(t => (t, Term(t))).toMap
       val domainSpecifics = input.split("\n").dropWhile(!_.startsWith("DOMAIN_SPECIFICS")).takeWhile(!_.startsWith("ANALYSES")).drop(1)
 
+//      println((constsMap, pealProgramParser.conds.toMap, pealProgramParser.pSets.toMap, pealProgramParser.analyses.toMap, domainSpecifics))
       (constsMap, pealProgramParser.conds.toMap, pealProgramParser.pSets.toMap, pealProgramParser.analyses.toMap, domainSpecifics)
     } catch {
       case e: Exception =>
