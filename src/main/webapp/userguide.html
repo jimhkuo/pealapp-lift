@@ -57,13 +57,13 @@
         </p>
 
         <p>
-            Note that while voilating this does not cause an error, the policy name should be unique. Internally,
+            Note that while violating this does not cause an error, the policy name should be unique. Internally,
             policies are
-            held in a map with polcy names as the key, thus the policies will be overridden by later ones of the same
+            held in a map with policy names as the key, thus the policies will be overridden by later ones of the same
             name.
         </p>
 
-        <p>At the risk of spelling out the obvious, this statement says b1 is evaluted to the minimum
+        <p>At the risk of spelling out the obvious, this statement says b1 is evaluated to the minimum
             of all scores where the predicates are true. If all predicates are false, then b1 is assigned the default
             score 1.
         </p>
@@ -73,14 +73,18 @@
 
         <p>
             Policy Sets aggregate the scores of previously defined policies. A policy set can simply equal to a policy, or
-            aggregation of two policy sets by max or min operator. For exampe, assuming we have policies b1, b2, and b3, then
+            aggregation of two policy sets by max or min operator (binary). For example, assuming we have policies b1, b2, and b3, then we can do,
         </p>
 
         <pre>pSet1 = b1
-pSet2 = max(b1, b2)
-pSet3 = min(b3, pSet2)</pre>
+pSet2 = max(b1, b2)</pre>
 
-        <p>are all valid policy sets.</p>
+       <p>If we wish to express a nested structure, we can achieve so by referring to already declared variable,
+           as the policy set operators are binary. For example,</p>
+
+        <pre>pSet3 = min(b3, pSet2)</pre>
+
+        <p>is the allowed input to express pSet3 = min(b3, max(b1, b2)).</p>
 
         <!--<h4>CONDITIONS</h4>-->
 
@@ -88,6 +92,8 @@ pSet3 = min(b3, pSet2)</pre>
         <p>
             The domain specifics section contains Z3 specific code that will simply be appended to the end of generated code.
             It is users' responsibilities to enter valid inputs accepted by the Z3 SMT solver.
+            And that Boolean predicates that occur in rules do not (in fact must not) be redeclared as Boolean predicates
+            in DOMAIN_SPECIFICS if they are referred to in that part.
         </p>
 
         <p>Supported analyses, conditions and their usage are documented in the technical report.</p>
@@ -126,12 +132,19 @@ pSet3 = min(b3, pSet2)</pre>
             For example, it is safe to use explicit synthesis for constant scores in the unit interval.
             <!--can currently not be generated  -->
             <!--domain specific information contains complex features such as  quantification or functions.-->
-            For example, it is safe to use symbolic synthesis for both positive and negative scores
+            Also, it is safe to use symbolic synthesis for both positive and negative scores
             when only + and * policies have non-constant scores.
         </p>
 
+        <p>
+            In this early alpha version of PEALT, the app will return no result if any stage of processing exhausts the system
+            resource. For example,
+            PEALT may produce no output if a model generated for <i>n</i> greater than 20 of majority voting is supplied.
+        </p>
+
         <p>Additionally, pretty printed output is currently not available for inputs with domain specifics,
-            and symbolic synthesis results. This problem will be rectified in due course.</p>
+            and symbolic synthesis results. This problem will be rectified in due course.
+        </p>
 
         <p>
             Please contact Jim Kuo (google for contact info) with any queries or feedback regarding the PEALT tool.
