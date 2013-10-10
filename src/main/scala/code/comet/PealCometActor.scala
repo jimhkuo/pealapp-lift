@@ -1,7 +1,5 @@
 package code.comet
 
-//merge test
-
 import _root_.util.FileUtil
 import net.liftweb._
 import http._
@@ -23,7 +21,6 @@ import peal.domain.PolicySet
 import peal.lazysynthesis.LazySynthesiser
 import peal.domain.z3.{PealAst, Term}
 import peal.antlr.util.ParserHelper
-
 
 class PealCometActor extends CometActor with Loggable {
   val resultList = ListBuffer[String]()
@@ -137,8 +134,9 @@ class PealCometActor extends CometActor with Loggable {
             </div>
             <div class="tab-pane" id="symbolic">
               <div class="col-sm-5">
-                {SHtml.ajaxButton("Generate and display Z3 code", () => {this ! LazyDisplay; _Noop}, "class" -> "btn btn-success btn-sm", "style" -> "margin:2px;")}
-                {SHtml.ajaxButton("Generate, display, and run Z3 code, display results of all analyses in raw Z3 form", () => {this ! LazySynthesisAndCallZ3; _Noop}, "class" -> "btn btn-success btn-sm", "style" -> "margin:2px;")}
+                {SHtml.ajaxButton("Generate, show, and run Z3 code, display results in raw Z3 form", () => {this ! LazySynthesisAndCallZ3; _Noop}, "class" -> "btn btn-success btn-sm", "style" -> "margin:2px;")}
+                {SHtml.ajaxButton("Generate and show Z3 code", () => {this ! LazyDisplay; _Noop}, "class" -> "btn btn-success btn-sm", "style" -> "margin:2px;")}
+                {SHtml.ajaxButton("Generate Z3 code and a link to it below", () => {this ! PrepareLazy; _Noop}, "class" -> "btn btn-success btn-sm", "style" -> "margin:2px;")}
               </div>
             </div>
           </div>
@@ -153,9 +151,17 @@ class PealCometActor extends CometActor with Loggable {
   override def lowPriority = {
     case Init =>
     case LazyDisplay =>
-      this ! Result(<pre>{lazySynthesis}</pre>)
+      this ! Result(<pre>{performLazySynthesis(inputPolicies)}</pre>)
     case LazySynthesisAndCallZ3 =>
-      onCallLazyZ3(lazySynthesis)
+      onCallLazyZ3(performLazySynthesis(inputPolicies))
+    case PrepareLazy =>
+      partialUpdate(JqId("result") ~> JqHtml(Text("Synthesising... Please wait...")))
+      this ! DownloadLazy
+    case DownloadLazy =>
+      val start = System.nanoTime()
+      var lazySynthesis = performLazySynthesis(inputPolicies)
+      val lapseTime = System.nanoTime() - start
+      this ! SaveFile(lazySynthesis, lapseTime)
     case SynthesisAndCallZ3 =>
       val (constsMap,  conds, pSets, analyses, domainSpecific) = parseInput(inputPolicies)
       onCallEagerZ3(true, constsMap, conds,  pSets, analyses, domainSpecific)
@@ -165,12 +171,12 @@ class PealCometActor extends CometActor with Loggable {
     case Display =>
       val (constsMap, conds,  pSets, analyses, domainSpecific) = parseInput(inputPolicies)
       onDisplay(constsMap, conds,  pSets, analyses, domainSpecific)
-    case Download =>
-      val (constsMap, conds,  pSets, analyses, domainSpecific) = parseInput(inputPolicies)
-      onDownload(constsMap, conds,  pSets, analyses, domainSpecific)
     case Prepare =>
       partialUpdate(JqId("result") ~> JqHtml(Text("Synthesising... Please wait...")))
       this ! Download
+    case Download =>
+      val (constsMap, conds,  pSets, analyses, domainSpecific) = parseInput(inputPolicies)
+      onDownload(constsMap, conds,  pSets, analyses, domainSpecific)
     case SaveFile(result, lapseTime) =>
       Z3SMTData.set(result)
       this ! Result(<p>Output prepared, lapse time:
@@ -210,9 +216,9 @@ class PealCometActor extends CometActor with Loggable {
   }
 
 
-  private def lazySynthesis: String = {
+  private def performLazySynthesis(policies: String): String = {
     try {
-      new LazySynthesiser(inputPolicies).generate()
+      new LazySynthesiser(policies).generate()
     } catch {
       case e: Exception =>
         e.printStackTrace()

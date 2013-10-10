@@ -20,7 +20,11 @@ case object GenerateDomainSpecifics
 
 case object Download
 
+case object DownloadLazy
+
 case object Prepare
+
+case object PrepareLazy
 
 case object Reset
 

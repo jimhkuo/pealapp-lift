@@ -12,18 +12,11 @@ import peal.domain.MinPolicySet
 import peal.domain.MaxPolicySet
 import peal.domain.Pol
 import scala.Some
-import peal.domain.BasicPolicySet
-import peal.synthesis.GreaterThanThCondition
-import peal.synthesis.LessThanThCondition
-import peal.domain.MinPolicySet
-import peal.domain.MaxPolicySet
-import peal.domain.Pol
-import scala.Some
 
 class LazySynthesiser(input: String) {
 
-  //TODO need to support synthesis of predicate replacement
-  println("lazy input: " + input)
+  //TODO need to support synthesis of predicate replacement for robustness analysis
+//  println("lazy input: " + input)
   val pealProgramParser = ParserHelper.getPealParser(input)
   pealProgramParser.program()
 
