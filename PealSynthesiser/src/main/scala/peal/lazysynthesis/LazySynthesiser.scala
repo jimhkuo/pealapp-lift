@@ -138,8 +138,8 @@ class LazySynthesiser(input: String) {
       case c: GreaterThanThCondition => buffer.append("(assert (= " + condName + " " + genPSA("<", c.getPol.get) + "))\n")
       case c: LessThanThCondition => buffer.append("(assert (= " + condName + " " + genPSA("<=", c.getPol.get) + "))\n")
       case c: NotCondition => buffer.append("(assert (= " + condName + " " + c.synthesis(null) + "))\n")
-      case c: ConjunctionCondition => buffer.append("(assert (= " + condName + " " + c.synthesis(null) + "))\n")
-      case c: DisjunctionCondition => buffer.append("(assert (= " + condName + " " + c.synthesis(null) + "))\n")
+      case c: AndCondition => buffer.append("(assert (= " + condName + " " + c.synthesis(null) + "))\n")
+      case c: OrCondition => buffer.append("(assert (= " + condName + " " + c.synthesis(null) + "))\n")
       case c: TrueCondition => buffer.append("(assert (= " + condName + " " + c.synthesis(null) + "))\n")
       case c: FalseCondition => buffer.append("(assert (= " + condName + " " + c.synthesis(null) + "))\n")
     }

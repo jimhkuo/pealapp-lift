@@ -4,7 +4,6 @@ package peal.antlr;
 import java.util.*;
 import peal.domain.*;
 import peal.antlr.util.*;
-import peal.*;
 import org.antlr.runtime.BitSet;
 import peal.synthesis.*;
 import peal.synthesis.analysis.*;
@@ -14,7 +13,7 @@ import scala.util.*;
 
 
 import org.antlr.runtime.*;
-import java.util.Stack;
+
 import java.util.List;
 import java.util.ArrayList;
 
@@ -435,7 +434,7 @@ public class PealProgramParser extends Parser {
 
             	    id2=(Token)match(input,IDENT,FOLLOW_IDENT_in_program179); 
 
-            	    Condition cond = new ConjunctionCondition((id1!=null?id1.getText():null), (id2!=null?id2.getText():null)); conds.put((id0!=null?id0.getText():null), cond);
+            	    Condition cond = new AndCondition((id1!=null?id1.getText():null), (id2!=null?id2.getText():null)); conds.put((id0!=null?id0.getText():null), cond);
 
             	    }
             	    break;
@@ -452,7 +451,7 @@ public class PealProgramParser extends Parser {
 
             	    id2=(Token)match(input,IDENT,FOLLOW_IDENT_in_program201); 
 
-            	    Condition cond = new DisjunctionCondition((id1!=null?id1.getText():null), (id2!=null?id2.getText():null)); conds.put((id0!=null?id0.getText():null), cond);
+            	    Condition cond = new OrCondition((id1!=null?id1.getText():null), (id2!=null?id2.getText():null)); conds.put((id0!=null?id0.getText():null), cond);
 
             	    }
             	    break;
