@@ -136,13 +136,13 @@ class LazySynthesiser(input: String) {
   private def generatePolicySetAssertions(condName: String): String = {
     val buffer = new StringBuilder
     conds(condName) match {
-      case c: GreaterThanThCondition => buffer.append("(assert (= " + condName + " " + genPSA("<", c.getPol.get) + "))\n")
-      case c: LessThanThCondition => buffer.append("(assert (= " + condName + " " + genPSA("<=", c.getPol.get) + "))\n")
-      case c: NotCondition => buffer.append("(assert (= " + condName + " " + c.synthesis(null) + "))\n")
-      case c: AndCondition => buffer.append("(assert (= " + condName + " " + c.synthesis(null) + "))\n")
-      case c: OrCondition => buffer.append("(assert (= " + condName + " " + c.synthesis(null) + "))\n")
-      case c: TrueCondition => buffer.append("(assert (= " + condName + " " + c.synthesis(null) + "))\n")
-      case c: FalseCondition => buffer.append("(assert (= " + condName + " " + c.synthesis(null) + "))\n")
+      case condition: GreaterThanThCondition => buffer.append("(assert (= " + condName + " " + genPSA("<", condition.getPol.get) + "))\n")
+      case condition: LessThanThCondition => buffer.append("(assert (= " + condName + " " + genPSA("<=", condition.getPol.get) + "))\n")
+      case condition: NotCondition => buffer.append("(assert (= " + condName + " " + condition.synthesis(null) + "))\n")
+      case condition: AndCondition => buffer.append("(assert (= " + condName + " " + condition.synthesis(null) + "))\n")
+      case condition: OrCondition => buffer.append("(assert (= " + condName + " " + condition.synthesis(null) + "))\n")
+      case condition: TrueCondition => buffer.append("(assert (= " + condName + " " + condition.synthesis(null) + "))\n")
+      case condition: FalseCondition => buffer.append("(assert (= " + condName + " " + condition.synthesis(null) + "))\n")
     }
 
     def genPSA(operator: String, pSet: PolicySet): String = pSet match {
