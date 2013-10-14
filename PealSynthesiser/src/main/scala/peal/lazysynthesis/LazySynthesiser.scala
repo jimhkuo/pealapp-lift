@@ -183,8 +183,8 @@ class LazySynthesiser(input: String) {
         }
     }
 
-    conds.foreach {
-      case (name, c) =>
+    conds.keys.foreach {
+      case name =>
         findAllPolicySets(conds(name).getPol).foreach {
           b =>
             buffer.append("(declare-const " + name + "_" + b + " Bool)\n")
