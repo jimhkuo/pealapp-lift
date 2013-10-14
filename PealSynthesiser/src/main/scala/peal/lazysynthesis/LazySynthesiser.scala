@@ -144,19 +144,16 @@ class LazySynthesiser(input: String) {
       case c: FalseCondition => buffer.append("(assert (= " + condName + " " + c.synthesis(null) + "))\n")
     }
 
-    def genPSA(operator: String, pSet: PolicySet): String = operator match {
-      case "<" =>
-        pSet match {
-          case s: MaxPolicySet => "(or " + genPSA(operator, s.lhs) + " " + genPSA(operator, s.rhs) + ")"
-          case s: MinPolicySet => "(and " + genPSA(operator, s.lhs) + " " + genPSA(operator, s.rhs) + ")"
-          case s: BasicPolicySet => condName + "_" + s.pol.asInstanceOf[Pol].name
-        }
-      case "<=" =>
-        pSet match {
-          case s: MinPolicySet => "(or " + genPSA(operator, s.lhs) + " " + genPSA(operator, s.rhs) + ")"
-          case s: MaxPolicySet => "(and " + genPSA(operator, s.lhs) + " " + genPSA(operator, s.rhs) + ")"
-          case s: BasicPolicySet => condName + "_" + s.pol.asInstanceOf[Pol].name
-        }
+    def genPSA(operator: String, pSet: PolicySet): String = pSet match {
+      case s: MaxPolicySet => operator match {
+        case "<" => "(or " + genPSA(operator, s.lhs) + " " + genPSA(operator, s.rhs) + ")"
+        case "<=" => "(and " + genPSA(operator, s.lhs) + " " + genPSA(operator, s.rhs) + ")"
+      }
+      case s: MinPolicySet => operator match {
+        case "<" => "(and " + genPSA(operator, s.lhs) + " " + genPSA(operator, s.rhs) + ")"
+        case "<=" => "(or " + genPSA(operator, s.lhs) + " " + genPSA(operator, s.rhs) + ")"
+      }
+      case s: BasicPolicySet => condName + "_" + s.policyName
     }
 
     buffer.toString()
