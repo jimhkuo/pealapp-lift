@@ -52,6 +52,7 @@ class LazySynthesiser(input: String) {
     pols(bName).operator match {
       case Min =>
         val genFormula = conds(condName) match {
+            //if we support pSet < pSet, then cond type is no longer associated with cond name
           case cond: LessThanThCondition =>
             val filtered = pols(bName).rules.filter(_.score <= cond.getTh)
             if (filtered.size > 0) {
