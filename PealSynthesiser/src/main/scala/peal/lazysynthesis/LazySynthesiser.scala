@@ -164,7 +164,7 @@ class LazySynthesiser(input: String) {
     val usedB = for
     (c <- conds;
      b <- findAllPolicySets(conds(c._1).getPol)
-    ) yield (b)
+    ) yield b
 
     val declarations = for (name <- predicateNames) yield "(declare-const " + name + " Bool)\n"
     val variableDeclarations = for (name <- nonConstantScores) yield "(declare-const " + name + " Real)\n"
