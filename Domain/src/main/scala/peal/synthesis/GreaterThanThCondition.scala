@@ -4,7 +4,9 @@ import peal.domain._
 import peal.domain.Pol
 import peal.domain.z3.{PealAst, Or, And}
 
+//TODO consider using Either for th
 case class GreaterThanThCondition(phi: PolicySet, th: BigDecimal) extends Condition {
+
   if (phi == null) throw new RuntimeException("Referred to undeclared policy set in GreaterThanThCondition")
 
   def synthesis(consts: Map[String, PealAst]): PealAst = phi match {
