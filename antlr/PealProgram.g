@@ -50,6 +50,8 @@ program
 	('POLICY_SETS')?
 	(id2=IDENT '=' pSet { pSets.put($id2.text, $pSet.t);})+
 	('CONDITIONS')?
+	// need to modify this to support pSet < pSet
+	//need to sort out Condition to handle two pSets
 	(
 	id0=IDENT '=' id2=IDENT '<=' num=NUMBER {Condition cond = new LessThanThCondition(pSets.get($id2.text), BigDecimal.valueOf(Double.valueOf($num.text))); conds.put($id0.text, cond);}
     	|
