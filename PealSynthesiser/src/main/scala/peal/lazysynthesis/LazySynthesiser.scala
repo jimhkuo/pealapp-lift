@@ -104,14 +104,14 @@ class LazySynthesiser(input: String) {
         conds(condName) match {
           case cond: GreaterThanThCondition =>
             buffer.append("(assert (= " + condName + "_" + bName +
-              " (or (and (< " + cond.th + " " + pols(bName).scoreString + ") (not " + constructOr(pols(bName).rules.map(_.q.name)) + ")) " +
+              " (or (and (< " + cond.rhs + " " + pols(bName).scoreString + ") (not " + constructOr(pols(bName).rules.map(_.q.name)) + ")) " +
               " (and " + constructOr(pols(bName).rules.map(_.q.name)) + " " +
-              " (< " + cond.th + " " + ruleAssert(plusOrMul, bName) + ")))))\n")
+              " (< " + cond.rhs + " " + ruleAssert(plusOrMul, bName) + ")))))\n")
           case cond: LessThanThCondition =>
             buffer.append("(assert (= " + condName + "_" + bName +
-              " (or (and (<= " + pols(bName).scoreString + " " + cond.th + ") (not " + constructOr(pols(bName).rules.map(_.q.name)) + ")) " +
+              " (or (and (<= " + pols(bName).scoreString + " " + cond.rhs + ") (not " + constructOr(pols(bName).rules.map(_.q.name)) + ")) " +
               " (and " + constructOr(pols(bName).rules.map(_.q.name)) + " " +
-              " (<= " + ruleAssert(plusOrMul, bName) + " " + cond.th + ")))))\n")
+              " (<= " + ruleAssert(plusOrMul, bName) + " " + cond.rhs + ")))))\n")
         }
     }
     buffer.toString()

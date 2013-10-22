@@ -5,18 +5,18 @@ import peal.domain.Pol
 import peal.domain.z3.{PealAst, Or, And}
 
 //TODO consider using Either for th
-case class GreaterThanThCondition(phi: PolicySet, th: BigDecimal) extends Condition {
+case class GreaterThanThCondition(lhs: PolicySet, rhs: BigDecimal) extends Condition {
 
-  if (phi == null) throw new RuntimeException("Referred to undeclared policy set in GreaterThanThCondition")
+  if (lhs == null) throw new RuntimeException("Referred to undeclared policy set in GreaterThanThCondition")
 
-  def synthesis(consts: Map[String, PealAst]): PealAst = phi match {
-    case s: MinPolicySet => And(new GreaterThanThCondition(s.lhs, th).synthesis(consts), new GreaterThanThCondition(s.rhs, th).synthesis(consts))
-    case s: MaxPolicySet => Or(new GreaterThanThCondition(s.lhs, th).synthesis(consts), new GreaterThanThCondition(s.rhs, th).synthesis(consts))
-    case s: BasicPolicySet => new GreaterThanThCondition(s.pol, th).synthesis(consts)
-    case s: Pol => new ThLessThanPolSynthesiser(s, th).synthesis(consts)
+  def synthesis(consts: Map[String, PealAst]): PealAst = lhs match {
+    case l: MinPolicySet => And(new GreaterThanThCondition(l.lhs, rhs).synthesis(consts), new GreaterThanThCondition(l.rhs, rhs).synthesis(consts))
+    case l: MaxPolicySet => Or(new GreaterThanThCondition(l.lhs, rhs).synthesis(consts), new GreaterThanThCondition(l.rhs, rhs).synthesis(consts))
+    case l: BasicPolicySet => new GreaterThanThCondition(l.pol, rhs).synthesis(consts)
+    case l: Pol => new ThLessThanPolSynthesiser(l, rhs).synthesis(consts)
   }
 
-  def getPol = Some(phi)
+  def getPol = Some(lhs)
 
-  def getTh = th
+  def getTh = rhs
 }
