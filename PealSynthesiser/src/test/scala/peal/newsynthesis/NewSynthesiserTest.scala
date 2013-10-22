@@ -83,7 +83,7 @@ class NewSynthesiserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
       "b2 = min ((q1 0.5) (q2 0.6) (q3 0.7)) default x*0.2\n" +
       "POLICY_SETS\n" +
       "pSet1 = max(b1, b2)\n" +
-      "pSet2 = b2\n" +
+      "pSet2 = min(b1, b2)\n" +
       "CONDITIONS\n" +
       "cond = pSet1 <= pSet2\n" +
       "ANALYSES\n" +
@@ -99,11 +99,12 @@ class NewSynthesiserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
       "(declare-const b2_score Real)\n" +
       "(declare-const pSet1_score Real)\n" +
       "(declare-const pSet2_score Real)\n" +
-      "(assert (= pSet2_score b2_score))\n" +
+      "(assert (= pSet2_score (ite (> b2_score b1_score) b1_score b2_score)))\n" +
       "(assert (= pSet1_score (ite (> b1_score b2_score) b1_score b2_score)))\n" +
       ""
 
     new NewSynthesiser(input).generate() should startWith(expected)
   }
 
+  //TODO deal with pSet < pSet
 }

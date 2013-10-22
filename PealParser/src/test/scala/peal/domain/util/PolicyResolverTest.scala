@@ -19,7 +19,7 @@ class PolicyResolverTest extends ShouldMatchersForJUnit{
     val pSet = new MinPolicySet(new BasicPolicySet(p1), new BasicPolicySet(p2))
     val pSetMap = Map("pSet" -> pSet)
 
-    PolicyResolver.getFromOr(polMap, pSetMap, "p1") should be (new BasicPolicySet(p1))
+    PolicyResolver.getFromOr(polMap, pSetMap, "p1") should be (new BasicPolicySet(p1, "p1"))
     PolicyResolver.getFromOr(polMap, pSetMap, "pSet") should be (pSet)
   }
 

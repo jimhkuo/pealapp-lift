@@ -2,7 +2,7 @@ package peal.newsynthesis
 
 import peal.antlr.util.ParserHelper
 import scala.collection.JavaConversions._
-import peal.domain.{MaxPolicySet, BasicPolicySet, Pol}
+import peal.domain.{MinPolicySet, MaxPolicySet, BasicPolicySet, Pol}
 
 class NewSynthesiser(input: String) {
 
@@ -36,8 +36,6 @@ class NewSynthesiser(input: String) {
     val policyScoreDeclarations = for (name <- pols.keySet()) yield "(declare-const " + name + "_score" + " Real)\n"
     val policySetScoreDeclarations = for (name <- pSets.keySet()) yield "(declare-const " + name + "_score" + " Real)\n"
 
-    println(pSets)
-
     declarations.mkString("") +
       variableDeclarations.mkString("") +
       nonConstantScoreDeclarations.mkString("") +
@@ -51,7 +49,7 @@ class NewSynthesiser(input: String) {
       pSet match {
         case p: BasicPolicySet => "(assert (= " + name + "_score " + p.underlyingPolicyName + "_score))\n"
         case p: MaxPolicySet => "(assert (= " + name + "_score (ite (> " + p.lhs.getPolicySetName + "_score " + p.rhs.getPolicySetName + "_score) " + p.lhs.getPolicySetName + "_score " + p.rhs.getPolicySetName + "_score)))\n"
-        case _ => "x\n"
+        case p: MinPolicySet => "(assert (= " + name + "_score (ite (> " + p.rhs.getPolicySetName + "_score " + p.lhs.getPolicySetName + "_score) " + p.lhs.getPolicySetName + "_score " + p.rhs.getPolicySetName + "_score)))\n"
       }
     }
   }
