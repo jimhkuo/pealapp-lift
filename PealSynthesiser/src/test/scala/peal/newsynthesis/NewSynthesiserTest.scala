@@ -205,7 +205,43 @@ class NewSynthesiserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
       "(assert (or (and (not (or q1 q2 q3)) (= b1_score 0.1)) (and q1 (= b1_score 0.1)) (and q2 (= b1_score 0.2)) (and q3 (= b1_score 0.4))))\n" +
       "(assert (or (and (not (or q1 q2 q3)) (= b2_score 0.2)) (and q1 (= b2_score 0.5)) (and q2 (= b2_score 0.6)) (and q3 (= b2_score 0.7))))\n" +
       ""
-//    println(new NewSynthesiser(input).generate())
+    new NewSynthesiser(input).generate() should startWith(expected)
+  }
+
+  @Test
+  def testCanGeneratePolicyScoreAssertionsWithVariables() {
+    val input = "POLICIES\n" +
+      "b1 = max ((q1 0.1) (q2 0.2) (q3 0.4*x)) default 0.1\n" +
+      "b2 = min ((q1 0.5) (q2 0.6) (q3 z*0.7)) default y*0.2\n" +
+      "POLICY_SETS\n" +
+      "pSet1 = b1\n" +
+      "pSet2 = b2\n" +
+      "CONDITIONS\n" +
+      "cond = pSet1 <= pSet2\n" +
+      "ANALYSES\n" +
+      "name1 = always_true? cond"
+
+    val expected = "(declare-const q1 Bool)\n" +
+      "(declare-const q2 Bool)\n" +
+      "(declare-const q3 Bool)\n" +
+      "(declare-const x Real)\n" +
+      "(declare-const z Real)\n" +
+      "(declare-const y Real)\n" +
+      "(declare-const b1_score Real)\n" +
+      "(declare-const b2_score Real)\n" +
+      "(declare-const pSet1_score Real)\n" +
+      "(declare-const pSet2_score Real)\n" +
+      "(assert (= pSet2_score b2_score))\n" +
+      "(assert (= pSet1_score b1_score))\n" +
+      "(assert (implies q1 (<= 0.1 b1_score_q1)))\n" +
+      "(assert (implies q2 (<= 0.2 b1_score_q2)))\n" +
+      "(assert (implies q3 (<= (* 0.4 x) b1_score_q3)))\n" +
+      "(assert (implies q1 (<= b2_score_q1 0.5)))\n" +
+      "(assert (implies q2 (<= b2_score_q2 0.6)))\n" +
+      "(assert (implies q3 (<= b2_score_q3 (* 0.7 z))))\n" +
+      "(assert (or (and (not (or q1 q2 q3)) (= b1_score 0.1)) (and q1 (= b1_score 0.1)) (and q2 (= b1_score 0.2)) (and q3 (= b1_score (* 0.4 x)))))\n" +
+      "(assert (or (and (not (or q1 q2 q3)) (= b2_score (* 0.2 y))) (and q1 (= b2_score 0.5)) (and q2 (= b2_score 0.6)) (and q3 (= b2_score (* 0.7 z)))))\n" +
+      ""
     new NewSynthesiser(input).generate() should startWith(expected)
   }
 
