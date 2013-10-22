@@ -1,5 +1,3 @@
 package peal.domain
 
-case class MaxPolicySet(lhs: PolicySet, rhs: PolicySet) extends PolicySet{
-  var policySetName = ""
-}
+case class MaxPolicySet(lhs: PolicySet, rhs: PolicySet) extends PolicySet

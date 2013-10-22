@@ -48,7 +48,8 @@ program
 	('POLICIES')?
 	(pol {pols.put($pol.p.getPolicyName(), $pol.p);})*
 	('POLICY_SETS')?
-	(id2=IDENT '=' pSet { pSets.put($id2.text, $pSet.t);})+
+	(pSet)+
+//	(id2=IDENT '=' pSet { $pSet.t.setName($id2.text); pSets.put($id2.text, $pSet.t);})+
 	('CONDITIONS')?
 	(
 	id0=IDENT '=' id2=IDENT '<=' num=NUMBER {Condition cond = new LessThanThCondition(pSets.get($id2.text), new Left<BigDecimal,PolicySet>(BigDecimal.valueOf(Double.valueOf($num.text)))); conds.put($id0.text, cond);}
@@ -80,10 +81,10 @@ program
 	)?
 	;
 
-pSet  returns [PolicySet t] 
-	: id1=IDENT {$t = new BasicPolicySet(pols.get($id1.text));}
-	| 'max' '(' id1=IDENT ',' id2=IDENT ')' {$t = new MaxPolicySet(PolicyResolver.getFromOr(pols, pSets, $id1.text), PolicyResolver.getFromOr(pols, pSets, $id2.text));}
-	| 'min' '(' id1=IDENT ',' id2=IDENT ')' {$t = new MinPolicySet(PolicyResolver.getFromOr(pols, pSets, $id1.text), PolicyResolver.getFromOr(pols, pSets, $id2.text));}
+pSet  
+	:id0=IDENT '=' id1=IDENT {PolicySet p = new BasicPolicySet(pols.get($id1.text)); pSets.put($id0.text, p);}
+	|id0=IDENT '=' 'max' '(' id1=IDENT ',' id2=IDENT ')' {PolicySet p = new MaxPolicySet(PolicyResolver.getFromOr(pols, pSets, $id1.text), PolicyResolver.getFromOr(pols, pSets, $id2.text)); pSets.put($id0.text, p);}
+	|id0=IDENT '=' 'min' '(' id1=IDENT ',' id2=IDENT ')' {PolicySet p = new MinPolicySet(PolicyResolver.getFromOr(pols, pSets, $id1.text), PolicyResolver.getFromOr(pols, pSets, $id2.text)); pSets.put($id0.text, p);}
 	;
 
 pol	returns [Pol p] 

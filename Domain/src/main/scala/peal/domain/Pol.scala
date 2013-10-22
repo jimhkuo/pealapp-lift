@@ -15,5 +15,4 @@ case class Pol(rules: java.util.List[Rule], operator: Operators, val score: Eith
   //needed by Java classes
   def getPolicyName = policyName
 
-  var policySetName = ""
 }

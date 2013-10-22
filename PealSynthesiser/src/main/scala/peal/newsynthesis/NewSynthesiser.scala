@@ -2,7 +2,7 @@ package peal.newsynthesis
 
 import peal.antlr.util.ParserHelper
 import scala.collection.JavaConversions._
-import peal.domain.{BasicPolicySet, Pol}
+import peal.domain.{MaxPolicySet, BasicPolicySet, Pol}
 
 class NewSynthesiser(input: String) {
 
@@ -48,6 +48,7 @@ class NewSynthesiser(input: String) {
     for ((name, pSet) <- pSets) yield {
       pSet match {
         case p : BasicPolicySet => "(assert (= " + name + "_score " + p.underlyingPolicyName + "_score))\n"
+//        case p : MaxPolicySet => "(assert (= " + name + "_score (ite (> " + p.lhs.policySetName + "_score " + p.rhs.policySetName + "_score) " + p.lhs.policySetName + "_score " + p.rhs.policySetName + "_score)))\n"
         case _ => "x\n"
       }
     }

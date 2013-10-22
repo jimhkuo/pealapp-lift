@@ -77,4 +77,34 @@ class NewSynthesiserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
     new NewSynthesiser(input).generate() should startWith(expected)
   }
 
+  @Ignore("wip")
+  @Test
+  def testCanGenerateBodyOfExample4MaxMinPolicySets() {
+    val input = "POLICIES\nb1 = max ((q1 0.1) (q2 z* 0.2) (q3 0.4 * y)) default 0.1\n" +
+      "b2 = min ((q1 0.5) (q2 0.6) (q3 0.7)) default x*0.2\n" +
+      "POLICY_SETS\n" +
+      "pSet1 = max(b1, b2)\n" +
+      "pSet2 = b2\n" +
+      "CONDITIONS\n" +
+      "cond = pSet1 <= pSet2\n" +
+      "ANALYSES\n" +
+      "name1 = always_true? cond"
+
+    val expected = "(declare-const q1 Bool)\n" +
+      "(declare-const q2 Bool)\n" +
+      "(declare-const q3 Bool)\n" +
+      "(declare-const z Real)\n" +
+      "(declare-const y Real)\n" +
+      "(declare-const x Real)\n" +
+      "(declare-const b1_score Real)\n" +
+      "(declare-const b2_score Real)\n" +
+      "(declare-const pSet1_score Real)\n" +
+      "(declare-const pSet2_score Real)\n" +
+      "(assert (= pSet2_score b2_score))\n" +
+      "(assert (= pSet1_score (ite (> b1_score b2_score) b1_score b2_score)))\n" +
+      ""
+
+    new NewSynthesiser(input).generate() should startWith(expected)
+  }
+
 }
