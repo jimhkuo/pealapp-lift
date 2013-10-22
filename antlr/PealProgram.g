@@ -53,7 +53,7 @@ program
 	// need to modify this to support pSet < pSet
 	//need to sort out Condition to handle two pSets
 	(
-	id0=IDENT '=' id2=IDENT '<=' num=NUMBER {Condition cond = new LessThanThCondition(pSets.get($id2.text), BigDecimal.valueOf(Double.valueOf($num.text))); conds.put($id0.text, cond);}
+	id0=IDENT '=' id2=IDENT '<=' num=NUMBER {Condition cond = new LessThanThCondition(pSets.get($id2.text), new Left<BigDecimal,PolicySet>(BigDecimal.valueOf(Double.valueOf($num.text)))); conds.put($id0.text, cond);}
     	|
 // parked
 //	id0=IDENT '=' id2=IDENT '<=' id3=IDENT 
@@ -62,9 +62,9 @@ program
 	|
 	id0=IDENT '=' '!' id1=IDENT {Condition cond = new NotCondition($id1.text); conds.put($id0.text, cond);}
 	|
-	id0=IDENT '=' id1=IDENT '&&' id2=IDENT {Condition cond = new ConjunctionCondition($id1.text, $id2.text); conds.put($id0.text, cond);}
+	id0=IDENT '=' id1=IDENT '&&' id2=IDENT {Condition cond = new AndCondition($id1.text, $id2.text); conds.put($id0.text, cond);}
 	|
-	id0=IDENT '=' id1=IDENT '||' id2=IDENT {Condition cond = new DisjunctionCondition($id1.text, $id2.text); conds.put($id0.text, cond);}
+	id0=IDENT '=' id1=IDENT '||' id2=IDENT {Condition cond = new OrCondition($id1.text, $id2.text); conds.put($id0.text, cond);}
 	|
 	id0 =IDENT '=' 'true' {Condition cond = new TrueCondition(); conds.put($id0.text, cond);}
 	|

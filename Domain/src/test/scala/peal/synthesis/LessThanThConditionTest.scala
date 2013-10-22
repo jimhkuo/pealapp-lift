@@ -18,19 +18,19 @@ class LessThanThConditionTest extends ShouldMatchersForJUnit with Z3ModelMatcher
 
   @Test(expected = classOf[RuntimeException])
   def testNullThrowException() {
-    new LessThanThCondition(null, 0.6)
+    new LessThanThCondition(null, Left(0.6))
   }
 
   @Test
   def testNoRules() {
-    new LessThanThCondition(new BasicPolicySet(new Pol(List[Rule](), Min, 0.6)), 0.6).synthesis(consts) should beZ3Model ("(or true false)")
-    new LessThanThCondition(new BasicPolicySet(new Pol(List[Rule](), Max, 0.5)), 0.6).synthesis(consts) should beZ3Model ("(or true (not false))")
-    new LessThanThCondition(new BasicPolicySet(new Pol(List[Rule](), Plus, 0.5)), 0.6).synthesis(consts) should beZ3Model ("(or true (not false))")
-    new LessThanThCondition(new BasicPolicySet(new Pol(List[Rule](), Mul, 0.5)), 0.6).synthesis(consts) should beZ3Model ("(or true false)")
-    new LessThanThCondition(new BasicPolicySet(new Pol(List[Rule](), Min, 0.7)), 0.6).synthesis(consts) should beZ3Model ("(and false false)")
-    new LessThanThCondition(new BasicPolicySet(new Pol(List[Rule](), Max, 0.7)), 0.6).synthesis(consts) should beZ3Model ("(and false (not false))")
-    new LessThanThCondition(new BasicPolicySet(new Pol(List[Rule](), Plus, 0.7)), 0.6).synthesis(consts) should beZ3Model ("(and false (not false))")
-    new LessThanThCondition(new BasicPolicySet(new Pol(List[Rule](), Mul, 0.7)), 0.6).synthesis(consts) should beZ3Model ("(and false false)")
+    new LessThanThCondition(new BasicPolicySet(new Pol(List[Rule](), Min, 0.6)), Left(0.6)).synthesis(consts) should beZ3Model ("(or true false)")
+    new LessThanThCondition(new BasicPolicySet(new Pol(List[Rule](), Max, 0.5)), Left(0.6)).synthesis(consts) should beZ3Model ("(or true (not false))")
+    new LessThanThCondition(new BasicPolicySet(new Pol(List[Rule](), Plus, 0.5)), Left(0.6)).synthesis(consts) should beZ3Model ("(or true (not false))")
+    new LessThanThCondition(new BasicPolicySet(new Pol(List[Rule](), Mul, 0.5)), Left(0.6)).synthesis(consts) should beZ3Model ("(or true false)")
+    new LessThanThCondition(new BasicPolicySet(new Pol(List[Rule](), Min, 0.7)), Left(0.6)).synthesis(consts) should beZ3Model ("(and false false)")
+    new LessThanThCondition(new BasicPolicySet(new Pol(List[Rule](), Max, 0.7)), Left(0.6)).synthesis(consts) should beZ3Model ("(and false (not false))")
+    new LessThanThCondition(new BasicPolicySet(new Pol(List[Rule](), Plus, 0.7)), Left(0.6)).synthesis(consts) should beZ3Model ("(and false (not false))")
+    new LessThanThCondition(new BasicPolicySet(new Pol(List[Rule](), Mul, 0.7)), Left(0.6)).synthesis(consts) should beZ3Model ("(and false false)")
   }
 
   @Test
@@ -38,7 +38,7 @@ class LessThanThConditionTest extends ShouldMatchersForJUnit with Z3ModelMatcher
     val p1 = new Pol(List(new Rule(new Predicate("q1"), 0.5)), Min, 1)
     val p2 = new Pol(List(new Rule(new Predicate("q2"), 0.5)), Min, 0)
     val pSet = new MinPolicySet(new BasicPolicySet(p1), new BasicPolicySet(p2))
-    val phi = new LessThanThCondition(pSet, 0.6)
+    val phi = new LessThanThCondition(pSet, Left(0.6))
 
     phi.synthesis(consts) should beZ3Model("(or (and q1 q1) (or (not q2) q2))")
   }
@@ -49,7 +49,7 @@ class LessThanThConditionTest extends ShouldMatchersForJUnit with Z3ModelMatcher
     val p2 = new Pol(List(new Rule(new Predicate("q2"), 0.5)), Min, 0)
     val pSet1 = new MinPolicySet(new BasicPolicySet(p1), new BasicPolicySet(p2))
     val pSet2 = new MinPolicySet(new BasicPolicySet(p1), pSet1)
-    val phi = new LessThanThCondition(pSet2, 0.6)
+    val phi = new LessThanThCondition(pSet2, Left(0.6))
 
     phi.synthesis(consts) should beZ3Model("(or (and q1 q1) (or (and q1 q1) (or (not q2) q2)))")
   }
@@ -60,7 +60,7 @@ class LessThanThConditionTest extends ShouldMatchersForJUnit with Z3ModelMatcher
     val p2 = new Pol(List(new Rule(new Predicate("q2"), 0.5)), Min, 0)
     val pSet1 = new MaxPolicySet(new BasicPolicySet(p1), new BasicPolicySet(p2))
     val pSet2 = new MaxPolicySet(new BasicPolicySet(p1), pSet1)
-    val phi = new LessThanThCondition(pSet2, 0.6)
+    val phi = new LessThanThCondition(pSet2, Left(0.6))
     phi.synthesis(consts) should beZ3Model("(and (and q1 q1) (and (and q1 q1) (or (not q2) q2)))")
   }
 }
