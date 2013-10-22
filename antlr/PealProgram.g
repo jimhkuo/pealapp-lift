@@ -46,7 +46,7 @@ private boolean ignore = false;
 program	
 	: 
 	('POLICIES')?
-	(pol {pols.put($pol.p.getName(), $pol.p);})*
+	(pol {pols.put($pol.p.getPolicyName(), $pol.p);})*
 	('POLICY_SETS')?
 	(id2=IDENT '=' pSet { pSets.put($id2.text, $pSet.t);})+
 	('CONDITIONS')?

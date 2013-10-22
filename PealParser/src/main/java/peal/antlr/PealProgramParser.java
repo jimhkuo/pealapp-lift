@@ -1,4 +1,4 @@
-// $ANTLR 3.4 /Users/jkuo/PealApp-lift/antlr/PealProgram.g 2013-10-22 11:11:35
+// $ANTLR 3.4 /Users/jkuo/PealApp-lift/antlr/PealProgram.g 2013-10-22 12:58:48
 
 package peal.antlr;
 import java.util.*;
@@ -198,7 +198,7 @@ public class PealProgramParser extends Parser {
             	    state._fsp--;
 
 
-            	    pols.put(pol1.getName(), pol1);
+            	    pols.put(pol1.getPolicyName(), pol1);
 
             	    }
             	    break;
