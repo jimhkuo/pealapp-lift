@@ -41,7 +41,7 @@ class LazySynthesiser(input: String) {
 
   private def findAllPolicySets(policySet: Option[PolicySet]): Set[String] = {
     policySet.fold(Set[String]())(_ match {
-      case t: BasicPolicySet => Set(t.policyName)
+      case t: BasicPolicySet => Set(t.underlyingPolicyName)
       case t: MaxPolicySet => findAllPolicySets(Some(t.lhs)) ++ findAllPolicySets(Some(t.rhs))
       case t: MinPolicySet => findAllPolicySets(Some(t.lhs)) ++ findAllPolicySets(Some(t.rhs))
     })
@@ -154,7 +154,7 @@ class LazySynthesiser(input: String) {
         case "<" => "(and " + genPSA(operator, s.lhs) + " " + genPSA(operator, s.rhs) + ")"
         case "<=" => "(or " + genPSA(operator, s.lhs) + " " + genPSA(operator, s.rhs) + ")"
       }
-      case s: BasicPolicySet => condName + "_" + s.policyName
+      case s: BasicPolicySet => condName + "_" + s.underlyingPolicyName
     }
 
     buffer.toString()
