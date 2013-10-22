@@ -5,10 +5,19 @@ import peal.util.Z3ModelMatcher
 import org.junit.{Ignore, Test}
 
 class NewSynthesiserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
+
   @Ignore("wip")
   @Test
   def testExample4() {
-    val input = "POLICIES\nb1 = max ((q1 0.1) (q2 0.2) (q3 0.4)) default 0.1\nb2 = min ((q1 0.5) (q2 0.6) (q3 0.7)) default 0.2\nPOLICY_SETS\npSet1 = b1\npSet2 = b2\nCONDITIONS\ncond = pSet1 < pSet2\nANALYSES\nname1 = always_true? cond"
+    val input = "POLICIES\nb1 = max ((q1 0.1) (q2 0.2) (q3 0.4)) default 0.1\n" +
+      "b2 = min ((q1 0.5) (q2 0.6) (q3 0.7)) default 0.2\n" +
+      "POLICY_SETS\npSet1 = b1\n" +
+      "pSet2 = b2\n" +
+      "CONDITIONS\n" +
+      "cond = pSet1 <= pSet2\n" +
+      "ANALYSES\n" +
+      "name1 = always_true? cond"
+
     val expected = "(declare-const q1 Bool)\n" +
       "(declare-const q2 Bool)\n" +
       "(declare-const q3 Bool)\n" +
@@ -30,7 +39,7 @@ class NewSynthesiserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
       "(assert (or (and (not (or q1 q2 q3)) (= b2_score 0.2)) (and q1 (= b2_score 0.5)) (and q2 (= b2_score 0.6)) (and q3 (= b2_score 0.7))))\n" +
       "(push)\n" +
       "(declare-const always_true_name1 Bool)\n" +
-      "(assert (= always_true_name1 (< pSet1_score pSet2_score)))\n" +
+      "(assert (= always_true_name1 (<= pSet1_score pSet2_score)))\n" +
       "(assert (not always_true_name1))\n" +
       "(check-sat)\n" +
       "(get-model)\n" +
