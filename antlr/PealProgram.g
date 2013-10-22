@@ -82,9 +82,9 @@ program
 	;
 
 pSet  
-	:id0=IDENT '=' id1=IDENT {PolicySet p = new BasicPolicySet(pols.get($id1.text)); pSets.put($id0.text, p);}
-	|id0=IDENT '=' 'max' '(' id1=IDENT ',' id2=IDENT ')' {PolicySet p = new MaxPolicySet(PolicyResolver.getFromOr(pols, pSets, $id1.text), PolicyResolver.getFromOr(pols, pSets, $id2.text)); pSets.put($id0.text, p);}
-	|id0=IDENT '=' 'min' '(' id1=IDENT ',' id2=IDENT ')' {PolicySet p = new MinPolicySet(PolicyResolver.getFromOr(pols, pSets, $id1.text), PolicyResolver.getFromOr(pols, pSets, $id2.text)); pSets.put($id0.text, p);}
+	:id0=IDENT '=' id1=IDENT {PolicySet p = new BasicPolicySet(pols.get($id1.text), $id0.text); pSets.put($id0.text, p);}
+	|id0=IDENT '=' 'max' '(' id1=IDENT ',' id2=IDENT ')' {PolicySet p = new MaxPolicySet(PolicyResolver.getFromOr(pols, pSets, $id1.text), PolicyResolver.getFromOr(pols, pSets, $id2.text), $id0.text); pSets.put($id0.text, p);}
+	|id0=IDENT '=' 'min' '(' id1=IDENT ',' id2=IDENT ')' {PolicySet p = new MinPolicySet(PolicyResolver.getFromOr(pols, pSets, $id1.text), PolicyResolver.getFromOr(pols, pSets, $id2.text), $id0.text); pSets.put($id0.text, p);}
 	;
 
 pol	returns [Pol p] 

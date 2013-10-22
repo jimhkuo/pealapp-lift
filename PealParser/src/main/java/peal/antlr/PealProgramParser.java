@@ -1,4 +1,4 @@
-// $ANTLR 3.4 /Users/jkuo/PealApp-lift/antlr/PealProgram.g 2013-10-22 13:35:39
+// $ANTLR 3.4 /Users/jkuo/PealApp-lift/antlr/PealProgram.g 2013-10-22 13:39:14
 
 package peal.antlr;
 import java.util.*;
@@ -830,7 +830,7 @@ public class PealProgramParser extends Parser {
 
                     id1=(Token)match(input,IDENT,FOLLOW_IDENT_in_pSet451); 
 
-                    PolicySet p = new BasicPolicySet(pols.get((id1!=null?id1.getText():null))); pSets.put((id0!=null?id0.getText():null), p);
+                    PolicySet p = new BasicPolicySet(pols.get((id1!=null?id1.getText():null)), (id0!=null?id0.getText():null)); pSets.put((id0!=null?id0.getText():null), p);
 
                     }
                     break;
@@ -853,7 +853,7 @@ public class PealProgramParser extends Parser {
 
                     match(input,10,FOLLOW_10_in_pSet477); 
 
-                    PolicySet p = new MaxPolicySet(PolicyResolver.getFromOr(pols, pSets, (id1!=null?id1.getText():null)), PolicyResolver.getFromOr(pols, pSets, (id2!=null?id2.getText():null))); pSets.put((id0!=null?id0.getText():null), p);
+                    PolicySet p = new MaxPolicySet(PolicyResolver.getFromOr(pols, pSets, (id1!=null?id1.getText():null)), PolicyResolver.getFromOr(pols, pSets, (id2!=null?id2.getText():null)), (id0!=null?id0.getText():null)); pSets.put((id0!=null?id0.getText():null), p);
 
                     }
                     break;
@@ -876,7 +876,7 @@ public class PealProgramParser extends Parser {
 
                     match(input,10,FOLLOW_10_in_pSet503); 
 
-                    PolicySet p = new MinPolicySet(PolicyResolver.getFromOr(pols, pSets, (id1!=null?id1.getText():null)), PolicyResolver.getFromOr(pols, pSets, (id2!=null?id2.getText():null))); pSets.put((id0!=null?id0.getText():null), p);
+                    PolicySet p = new MinPolicySet(PolicyResolver.getFromOr(pols, pSets, (id1!=null?id1.getText():null)), PolicyResolver.getFromOr(pols, pSets, (id2!=null?id2.getText():null)), (id0!=null?id0.getText():null)); pSets.put((id0!=null?id0.getText():null), p);
 
                     }
                     break;
