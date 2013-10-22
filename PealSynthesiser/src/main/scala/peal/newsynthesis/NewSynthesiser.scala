@@ -60,7 +60,7 @@ class NewSynthesiser(input: String) {
       case (name, pol) =>
         pol.operator match {
           case Max => pol.rules.map(r => "(assert (implies " + r.q.name + " (<= " + r.scoreString + " " + name + "_score_" + r.q.name + ")))\n")
-          case Min => ""
+          case Min => pol.rules.map(r => "(assert (implies " + r.q.name + " (<= " + name + "_score_" + r.q.name + " " + r.scoreString + ")))\n")
         }
     }
   }
