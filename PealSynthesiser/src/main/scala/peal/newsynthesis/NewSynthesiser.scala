@@ -32,7 +32,13 @@ class NewSynthesiser(input: String) {
     val declarations = for (name <- predicateNames) yield "(declare-const " + name + " Bool)\n"
     val variableDeclarations = for (name <- nonConstantScores) yield "(declare-const " + name + " Real)\n"
     val nonConstantScoreDeclarations = for (name <- nonConstantDefaultScores) yield "(declare-const " + name + " Real)\n"
+    val policyScoreDeclarations = for (name <- pols.keySet()) yield "(declare-const " + name + "_score" + " Real)\n"
+    val policySetScoreDeclarations = for (name <- pSets.keySet()) yield "(declare-const " + name + "_score" + " Real)\n"
 
-    declarations.mkString("") + variableDeclarations.mkString("") + nonConstantScoreDeclarations.mkString("")
+    declarations.mkString("") +
+      variableDeclarations.mkString("") +
+      nonConstantScoreDeclarations.mkString("") +
+      policyScoreDeclarations.mkString("") +
+      policySetScoreDeclarations.mkString("")
   }
 }
