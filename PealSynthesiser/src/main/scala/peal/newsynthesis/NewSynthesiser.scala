@@ -42,7 +42,8 @@ class NewSynthesiser(input: String) {
       policyScoreDeclarations.mkString("") +
       policySetScoreDeclarations.mkString("") +
       policySetAssertions.mkString("") +
-      policyAssertions.mkString("")
+      policyAssertions.mkString("") +
+      policyScoreAssertions.mkString("")
   }
 
   private def policySetAssertions = {
@@ -56,12 +57,29 @@ class NewSynthesiser(input: String) {
   }
 
   private def policyAssertions = {
-    pols.flatMap{
+    pols.flatMap {
       case (name, pol) =>
         pol.operator match {
           case Max => pol.rules.map(r => "(assert (implies " + r.q.name + " (<= " + r.scoreString + " " + name + "_score_" + r.q.name + ")))\n")
           case Min => pol.rules.map(r => "(assert (implies " + r.q.name + " (<= " + name + "_score_" + r.q.name + " " + r.scoreString + ")))\n")
         }
+    }
+  }
+
+  private def defaultCase(p: Pol) = {
+    "(and (not (or " + p.rules.map(_.q.name).mkString(" ") + ")) (= " + p.getPolicyName + "_score " + p.scoreString + "))"
+  }
+
+  private def nonDefaultCase(p: Pol) = {
+    val out = for (r <- p.rules) yield {
+      "(and " + r.q.name + " (= " + p.policyName + "_score " + r.scoreString + "))"
+    }
+    out.mkString("", " ", "")
+  }
+
+  private def policyScoreAssertions = {
+    for ((name, pol) <- pols) yield {
+      "(assert (or " + defaultCase(pol) + " " + nonDefaultCase(pol) + "))\n"
     }
   }
 }
