@@ -4,4 +4,5 @@ case class BasicPolicySet(pol: PolicySet) extends PolicySet {
   val underlyingPolicyName = pol match {
     case p : Pol => p.policyName
   }
+  var policySetName = ""
 }

@@ -1,3 +1,5 @@
 package peal.domain
 
-trait PolicySet
+trait PolicySet {
+  var policySetName : String
+}
