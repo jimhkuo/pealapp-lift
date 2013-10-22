@@ -36,6 +36,8 @@ class NewSynthesiser(input: String) {
     val policyScoreDeclarations = for (name <- pols.keySet()) yield "(declare-const " + name + "_score" + " Real)\n"
     val policySetScoreDeclarations = for (name <- pSets.keySet()) yield "(declare-const " + name + "_score" + " Real)\n"
 
+    println(pSets)
+
     declarations.mkString("") +
       variableDeclarations.mkString("") +
       nonConstantScoreDeclarations.mkString("") +
@@ -47,8 +49,8 @@ class NewSynthesiser(input: String) {
   private def policySetAssertions = {
     for ((name, pSet) <- pSets) yield {
       pSet match {
-        case p : BasicPolicySet => "(assert (= " + name + "_score " + p.underlyingPolicyName + "_score))\n"
-//        case p : MaxPolicySet => "(assert (= " + name + "_score (ite (> " + p.lhs.policySetName + "_score " + p.rhs.policySetName + "_score) " + p.lhs.policySetName + "_score " + p.rhs.policySetName + "_score)))\n"
+        case p: BasicPolicySet => "(assert (= " + name + "_score " + p.underlyingPolicyName + "_score))\n"
+        case p: MaxPolicySet => "(assert (= " + name + "_score (ite (> " + p.lhs.getPolicySetName + "_score " + p.rhs.getPolicySetName + "_score) " + p.lhs.getPolicySetName + "_score " + p.rhs.getPolicySetName + "_score)))\n"
         case _ => "x\n"
       }
     }

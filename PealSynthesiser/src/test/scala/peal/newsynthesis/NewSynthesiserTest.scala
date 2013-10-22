@@ -77,7 +77,6 @@ class NewSynthesiserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
     new NewSynthesiser(input).generate() should startWith(expected)
   }
 
-  @Ignore("wip")
   @Test
   def testCanGenerateBodyOfExample4MaxMinPolicySets() {
     val input = "POLICIES\nb1 = max ((q1 0.1) (q2 z* 0.2) (q3 0.4 * y)) default 0.1\n" +

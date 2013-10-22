@@ -8,7 +8,7 @@ import scala.collection.JavaConversions._
 object PolicyResolver {
   def getFromOr(polMap: Map[String, Pol], pSetMap: Map[String, PolicySet], name: String) : PolicySet = {
     if (polMap.contains(name)) {
-      new BasicPolicySet(polMap(name))
+      new BasicPolicySet(polMap(name), name)
     }
     else {
       pSetMap(name)
