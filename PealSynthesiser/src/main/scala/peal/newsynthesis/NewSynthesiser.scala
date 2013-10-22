@@ -4,6 +4,7 @@ import peal.antlr.util.ParserHelper
 import scala.collection.JavaConversions._
 import peal.domain.{MinPolicySet, MaxPolicySet, BasicPolicySet, Pol}
 import peal.domain.operator.{Min, Max}
+import peal.synthesis.analysis.AlwaysTrue
 
 class NewSynthesiser(input: String) {
 
@@ -43,7 +44,8 @@ class NewSynthesiser(input: String) {
       policySetScoreDeclarations.mkString("") +
       policySetAssertions.mkString("") +
       policyAssertions.mkString("") +
-      policyScoreAssertions.mkString("")
+      policyScoreAssertions.mkString("") +
+      analysesAssertions.mkString("")
   }
 
   private def policySetAssertions = {
@@ -82,4 +84,21 @@ class NewSynthesiser(input: String) {
       "(assert (or " + defaultCase(pol) + " " + nonDefaultCase(pol) + "))\n"
     }
   }
+
+  private def analysesAssertions = {
+//    for (analysis <- analyses) yield {
+//      analysis match {
+//        case AlwaysTrue => //need to pull condition and put the whole content here
+//      }
+//    }
+    ""
+  }
+
+  //  "(push)\n" +
+  //    "(declare-const always_true_name1 Bool)\n" +
+  //    "(assert (= always_true_name1 (< pSet1_score pSet2_score)))\n" +
+  //    "(assert (not always_true_name1))\n" +
+  //    "(check-sat)\n" +
+  //    "(get-model)\n" +
+  //    "(pop)\n"
 }
