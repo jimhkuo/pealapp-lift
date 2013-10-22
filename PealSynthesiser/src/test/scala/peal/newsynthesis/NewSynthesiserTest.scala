@@ -8,8 +8,8 @@ class NewSynthesiserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
 
   @Test
   def testCanGenerateHeaderOfExample4() {
-    val input = "POLICIES\nb1 = max ((q1 0.1) (q2 0.2) (q3 0.4)) default 0.1\n" +
-      "b2 = min ((q1 0.5) (q2 0.6) (q3 0.7)) default 0.2\n" +
+    val input = "POLICIES\nb1 = max ((q1 0.1) (q2 z* 0.2) (q3 0.4 * y)) default 0.1\n" +
+      "b2 = min ((q1 0.5) (q2 0.6) (q3 0.7)) default x*0.2\n" +
       "POLICY_SETS\npSet1 = b1\n" +
       "pSet2 = b2\n" +
       "CONDITIONS\n" +
@@ -20,6 +20,9 @@ class NewSynthesiserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
     val expected = "(declare-const q1 Bool)\n" +
       "(declare-const q2 Bool)\n" +
       "(declare-const q3 Bool)\n" +
+      "(declare-const z Real)\n" +
+      "(declare-const y Real)\n" +
+      "(declare-const x Real)\n" +
       "(declare-const b1_score Real)\n" +
       "(declare-const b2_score Real)\n" +
       "(declare-const pSet1_score Real)\n" +
