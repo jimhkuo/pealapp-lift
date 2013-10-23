@@ -5,7 +5,15 @@ import scala.collection.JavaConversions._
 import peal.domain.{MinPolicySet, MaxPolicySet, BasicPolicySet, Pol}
 import peal.domain.operator.{Min, Max}
 import peal.synthesis.analysis.AlwaysTrue
-import peal.synthesis.{GreaterThanThCondition, LessThanThCondition, Condition}
+import peal.synthesis._
+import peal.domain.BasicPolicySet
+import peal.synthesis.analysis.AlwaysTrue
+import peal.synthesis.NotCondition
+import peal.synthesis.GreaterThanThCondition
+import peal.domain.MaxPolicySet
+import peal.domain.MinPolicySet
+import peal.synthesis.LessThanThCondition
+import peal.domain.Pol
 
 class NewSynthesiser(input: String) {
 
@@ -106,7 +114,11 @@ class NewSynthesiser(input: String) {
   private def condString(cond: Condition) = cond match {
     case c: LessThanThCondition => "(<= " + c.lhs.getPolicySetName + "_score " + c.getRhsString + "_score)"
     case c: GreaterThanThCondition => "(< " + c.getRhsString + "_score " + c.lhs.getPolicySetName + "_score)"
-    //TODO other condition types here
+    case c: NotCondition => "(not " + c.condName + ")"
+    case c: AndCondition => "(and " + c.lhs + " " + c.rhs + ")"
+    case c: OrCondition => "(or " + c.lhs + " " + c.rhs + ")"
+    case c: TrueCondition => "true"
+    case c: FalseCondition => "false"
   }
 
   private def conditionAssertions = {

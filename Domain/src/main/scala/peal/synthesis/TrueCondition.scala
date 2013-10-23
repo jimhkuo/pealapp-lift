@@ -2,7 +2,7 @@ package peal.synthesis
 
 import peal.domain.z3.{True, PealAst}
 
-class TrueCondition() extends Condition {
+case class TrueCondition() extends Condition {
    def getPol = None
 
    def getTh = null
