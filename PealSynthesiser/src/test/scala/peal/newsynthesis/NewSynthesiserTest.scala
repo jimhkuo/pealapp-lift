@@ -16,10 +16,10 @@ class NewSynthesiserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
       "cond = pSet1 <= 0.5\n" +
       "cond1 = 0.4 < pSet1\n" +
       "ANALYSES\n" +
-      "name1 = always_true? cond\n" +
       "name2 = different? cond1 cond\n" +
       "name3 = satisfiable? cond\n" +
       "name4 = equivalent? cond1 cond\n" +
+      "name1 = always_true? cond\n" +
       "name5 = implies? cond cond1"
 
     val expected = "(declare-const q1 Bool)\n" +
@@ -44,7 +44,9 @@ class NewSynthesiserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
       "(push)\n(declare-const always_true_name1 Bool)\n(assert (= always_true_name1 cond))\n" +
       "(assert (not always_true_name1))\n(check-sat)\n(get-model)\n(pop)"
 
-    new NewSynthesiser(input).generate() should startWith(expected)
+    val output = new NewSynthesiser(input).generate()
+    println(output)
+    output should startWith(expected)
   }
 
   @Test
