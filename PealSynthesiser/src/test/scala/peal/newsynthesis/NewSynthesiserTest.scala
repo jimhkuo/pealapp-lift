@@ -29,6 +29,7 @@ class NewSynthesiserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
       "(declare-const z Real)\n" +
       "(declare-const y Real)\n" +
       "(declare-const x Real)\n" +
+      "(declare-const cond Bool)\n" +
       "(declare-const b1_score Real)\n" +
       "(declare-const b2_score Real)\n" +
       "(declare-const pSet1_score Real)\n" +
@@ -55,6 +56,7 @@ class NewSynthesiserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
       "(declare-const z Real)\n" +
       "(declare-const y Real)\n" +
       "(declare-const x Real)\n" +
+      "(declare-const cond Bool)\n" +
       "(declare-const b1_score Real)\n" +
       "(declare-const b2_score Real)\n" +
       "(declare-const pSet1_score Real)\n" +
@@ -84,6 +86,7 @@ class NewSynthesiserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
       "(declare-const z Real)\n" +
       "(declare-const y Real)\n" +
       "(declare-const x Real)\n" +
+      "(declare-const cond Bool)\n" +
       "(declare-const b1_score Real)\n" +
       "(declare-const b2_score Real)\n" +
       "(declare-const pSet1_score Real)\n" +
@@ -111,6 +114,7 @@ class NewSynthesiserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
     val expected = "(declare-const q1 Bool)\n" +
       "(declare-const q2 Bool)\n" +
       "(declare-const q3 Bool)\n" +
+      "(declare-const cond Bool)\n" +
       "(declare-const b1_score Real)\n" +
       "(declare-const b2_score Real)\n" +
       "(declare-const pSet1_score Real)\n" +
@@ -150,6 +154,7 @@ class NewSynthesiserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
     val expected = "(declare-const q1 Bool)\n" +
       "(declare-const q2 Bool)\n" +
       "(declare-const q3 Bool)\n" +
+      "(declare-const cond Bool)\n" +
       "(declare-const b1_score Real)\n" +
       "(declare-const b2_score Real)\n" +
       "(declare-const pSet1_score Real)\n" +
@@ -197,6 +202,7 @@ class NewSynthesiserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
       "(declare-const q3 Bool)\n" +
       "(declare-const x Real)\n" +
       "(declare-const y Real)\n" +
+      "(declare-const cond Bool)\n" +
       "(declare-const b1_score Real)\n" +
       "(declare-const b2_score Real)\n" +
       "(declare-const pSet1_score Real)\n" +
@@ -236,6 +242,7 @@ class NewSynthesiserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
     val expected = "(declare-const q1 Bool)\n" +
       "(declare-const q2 Bool)\n" +
       "(declare-const q3 Bool)\n" +
+      "(declare-const cond Bool)\n" +
       "(declare-const b1_score Real)\n" +
       "(declare-const b2_score Real)\n" +
       "(declare-const pSet1_score Real)\n" +
@@ -283,6 +290,7 @@ class NewSynthesiserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
         "(declare-const x Real)\n" +
         "(declare-const z Real)\n" +
         "(declare-const y Real)\n" +
+        "(declare-const cond Bool)\n" +
         "(declare-const b1_score Real)\n" +
         "(declare-const b2_score Real)\n" +
         "(declare-const pSet1_score Real)\n" +
@@ -330,6 +338,7 @@ class NewSynthesiserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
         "(declare-const x Real)\n" +
         "(declare-const z Real)\n" +
         "(declare-const y Real)\n" +
+        "(declare-const cond Bool)\n" +
         "(declare-const b1_score Real)\n" +
         "(declare-const b2_score Real)\n" +
         "(declare-const pSet1_score Real)\n" +
@@ -385,6 +394,7 @@ class NewSynthesiserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
         "(declare-const x Real)\n" +
         "(declare-const z Real)\n" +
         "(declare-const y Real)\n" +
+        "(declare-const cond Bool)\n" +
         "(declare-const b1_score Real)\n" +
         "(declare-const b2_score Real)\n" +
         "(declare-const pSet1_score Real)\n" +
@@ -448,6 +458,7 @@ class NewSynthesiserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
         "(declare-const x Real)\n" +
         "(declare-const z Real)\n" +
         "(declare-const y Real)\n" +
+        "(declare-const cond7 Bool)\n(declare-const cond9 Bool)\n(declare-const cond8 Bool)\n(declare-const cond5 Bool)\n(declare-const cond3 Bool)\n(declare-const cond2 Bool)\n(declare-const cond4 Bool)\n(declare-const cond1 Bool)\n(declare-const cond6 Bool)\n" +
         "(declare-const b1_score Real)\n" +
         "(declare-const b2_score Real)\n" +
         "(declare-const pSet1_score Real)\n" +

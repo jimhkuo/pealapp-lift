@@ -45,10 +45,12 @@ class NewSynthesiser(input: String) {
     val nonConstantScoreDeclarations = for (name <- nonConstantDefaultScores) yield "(declare-const " + name + " Real)\n"
     val policyScoreDeclarations = for (name <- pols.keySet()) yield "(declare-const " + name + "_score" + " Real)\n"
     val policySetScoreDeclarations = for (name <- pSets.keySet()) yield "(declare-const " + name + "_score" + " Real)\n"
+    val condDeclarations = for (name <- conds.keys) yield "(declare-const " + name + " Bool)\n"
 
     declarations.mkString("") +
       variableDeclarations.mkString("") +
       nonConstantScoreDeclarations.mkString("") +
+      condDeclarations.mkString("") +
       policyScoreDeclarations.mkString("") +
       policySetScoreDeclarations.mkString("") +
       policySetAssertions.mkString("") +
@@ -74,18 +76,18 @@ class NewSynthesiser(input: String) {
         pol.operator match {
           case Max => pol.rules.map(r =>
             "(declare-const " + name + "_score_" + r.q.name + " Real)\n" +
-            "(assert (implies " + r.q.name + " (<= " + r.scoreString + " " + name + "_score_" + r.q.name + ")))\n")
+              "(assert (implies " + r.q.name + " (<= " + r.scoreString + " " + name + "_score_" + r.q.name + ")))\n")
           case Min => pol.rules.map(r =>
             "(declare-const " + name + "_score_" + r.q.name + " Real)\n" +
-            "(assert (implies " + r.q.name + " (<= " + name + "_score_" + r.q.name + " " + r.scoreString + ")))\n")
+              "(assert (implies " + r.q.name + " (<= " + name + "_score_" + r.q.name + " " + r.scoreString + ")))\n")
           case Plus => pol.rules.map(r =>
             "(declare-const " + name + "_score_" + r.q.name + " Real)\n" +
-            "(assert (implies " + r.q.name + " (= " + r.scoreString + " " + name + "_score_" + r.q.name + ")))\n" +
-            "(assert (implies (not (= 0.0 " + name + "_score_" + r.q.name + ")) " + r.q.name + "))\n")
+              "(assert (implies " + r.q.name + " (= " + r.scoreString + " " + name + "_score_" + r.q.name + ")))\n" +
+              "(assert (implies (not (= 0.0 " + name + "_score_" + r.q.name + ")) " + r.q.name + "))\n")
           case Mul => pol.rules.map(r =>
             "(declare-const " + name + "_score_" + r.q.name + " Real)\n" +
-            "(assert (implies " + r.q.name + " (= " + r.scoreString + " " + name + "_score_" + r.q.name + ")))\n" +
-            "(assert (implies (not (= 1.0 " + name + "_score_" + r.q.name + ")) " + r.q.name + "))\n")
+              "(assert (implies " + r.q.name + " (= " + r.scoreString + " " + name + "_score_" + r.q.name + ")))\n" +
+              "(assert (implies (not (= 1.0 " + name + "_score_" + r.q.name + ")) " + r.q.name + "))\n")
         }
     }
   }
