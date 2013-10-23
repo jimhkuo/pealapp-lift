@@ -286,9 +286,10 @@ class NewSynthesiserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
         "(assert (implies q6 (<= b2_score_q6 (* 0.7 z))))\n" +
         "(assert (or (and (not (or q1 q2 q3)) (= b1_score 0.1)) (and q1 (= b1_score 0.1)) (and q2 (= b1_score 0.2)) (and q3 (= b1_score (* 0.4 x)))))\n" +
         "(assert (or (and (not (or q4 q5 q6)) (= b2_score (* 0.2 y))) (and q4 (= b2_score 0.5)) (and q5 (= b2_score 0.6)) (and q6 (= b2_score (* 0.7 z)))))\n" +
+        "(assert (= cond (<= pSet1_score pSet2_score)))\n" +
         "(push)\n" +
         "(declare-const always_true_name1 Bool)\n" +
-        "(assert (= always_true_name1 (<= pSet1_score pSet2_score)))\n" +
+        "(assert (= always_true_name1 cond))\n" +
         "(assert (not always_true_name1))\n" +
         "(check-sat)\n" +
         "(get-model)\n" +
@@ -334,9 +335,10 @@ class NewSynthesiserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
         "(assert (implies q6 (<= b2_score_q6 (* 0.7 z))))\n" +
         "(assert (or (and (not (or q1 q2 q3)) (= b1_score 0.1)) (and q1 (= b1_score 0.1)) (and q2 (= b1_score 0.2)) (and q3 (= b1_score (* 0.4 x)))))\n" +
         "(assert (or (and (not (or q4 q5 q6)) (= b2_score (* 0.2 y))) (and q4 (= b2_score 0.5)) (and q5 (= b2_score 0.6)) (and q6 (= b2_score (* 0.7 z)))))\n" +
+        "(assert (= cond (< pSet1_score pSet2_score)))\n" +
         "(push)\n" +
         "(declare-const always_true_name1 Bool)\n" +
-        "(assert (= always_true_name1 (< pSet1_score pSet2_score)))\n" +
+        "(assert (= always_true_name1 cond))\n" +
         "(assert (not always_true_name1))\n" +
         "(check-sat)\n" +
         "(get-model)\n" +

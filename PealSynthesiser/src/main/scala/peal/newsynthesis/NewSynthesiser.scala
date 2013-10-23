@@ -46,6 +46,7 @@ class NewSynthesiser(input: String) {
       policySetAssertions.mkString("") +
       policyAssertions.mkString("") +
       policyScoreAssertions.mkString("") +
+      conditionAssertions.mkString("") +
       analysesAssertions.mkString("")
   }
 
@@ -92,7 +93,7 @@ class NewSynthesiser(input: String) {
         case AlwaysTrue(n, c) =>
           "(push)\n" +
             "(declare-const always_true_" + name + " Bool)\n" +
-            "(assert (= always_true_" + name + " " + condString(conds(c)) + "))\n" +
+            "(assert (= always_true_" + name + " " + c + "))\n" +
             "(assert (not always_true_" + name + "))\n" +
             "(check-sat)\n" +
             "(get-model)\n" +
@@ -104,5 +105,11 @@ class NewSynthesiser(input: String) {
   private def condString(cond: Condition) = cond match {
     case c: LessThanThCondition => "(<= " + c.lhs.getPolicySetName + "_score " + c.getRhsString + "_score)"
     case c: GreaterThanThCondition => "(< " + c.getRhsString + "_score " + c.lhs.getPolicySetName + "_score)"
+  }
+
+  private def conditionAssertions = {
+    conds.flatMap {
+      case (name, cond) => "(assert (= " + name + " " + condString(cond) + "))\n"
+    }
   }
 }
