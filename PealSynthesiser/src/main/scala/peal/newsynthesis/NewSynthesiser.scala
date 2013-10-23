@@ -125,8 +125,8 @@ class NewSynthesiser(input: String) {
   }
 
   private def condString(cond: Condition) = cond match {
-    case c: LessThanThCondition => "(<= " + c.lhs.getPolicySetName + "_score " + c.getRhsString + "_score)"
-    case c: GreaterThanThCondition => "(< " + c.getRhsString + "_score " + c.lhs.getPolicySetName + "_score)"
+    case c: LessThanThCondition => "(<= " + c.lhs.getPolicySetName + "_score " + c.rhs.fold(score => score, pSet => pSet.getPolicySetName + "_score") + ")"
+    case c: GreaterThanThCondition => "(< " + c.rhs.fold(score => score, pSet => pSet.getPolicySetName + "_score") + " " + c.lhs.getPolicySetName + "_score)"
     case c: NotCondition => "(not " + c.condName + ")"
     case c: AndCondition => "(and " + c.lhs + " " + c.rhs + ")"
     case c: OrCondition => "(or " + c.lhs + " " + c.rhs + ")"

@@ -18,6 +18,4 @@ case class GreaterThanThCondition(lhs: PolicySet, rhs: Either[BigDecimal,PolicyS
   def getPol = Some(lhs)
 
   def getTh = rhs.left.get
-  def getRhsString = rhs.fold(score => score.toString(), pSet => pSet.getPolicySetName)
-
 }

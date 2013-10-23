@@ -7,9 +7,40 @@ import org.junit.{Ignore, Test}
 class NewSynthesiserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
 
   @Test
-  def testCanGenerateForSampleInput() {
-    val input = "POLICIES\nb1 = min ((q1 0.2) (q2 0.4) (q3 0.9)) default 0.4\nb2 = max ((q4 0.1) (q5 0.5) (q6 0.8)) default 0.9\nb3 = + ((q7 0.1) (q8 0.3) (q9 0.6)) default 0\nb4 = * ((q10 0.3) (q11 0.6) (q12 0.7)) default 1\nPOLICY_SETS\npSet1 = max(b1, b2)\npSet2 = min(b3, b4)\nCONDITIONS\ncond1 = pSet1 <= pSet2\ncond2 = pSet2 < pSet1\nANALYSES\nname1 = always_true? cond1\nname2 = always_true? cond2"
-    println(new NewSynthesiser(input).generate())
+  def testCanHandleNumericalTh() {
+    val input = "POLICIES\n" +
+      "b1 = max ((q1 0.1) (q2 z* 0.2) (q3 0.4 * y)) default 0.1\n" +
+      "POLICY_SETS\n" +
+      "pSet1 = b1\n" +
+      "CONDITIONS\n" +
+      "cond = pSet1 <= 0.5\n" +
+      "cond1 = 0.4 < pSet1\n" +
+      "ANALYSES\n" +
+      "name1 = always_true? cond"
+
+    val expected = "(declare-const q1 Bool)\n" +
+      "(declare-const q2 Bool)\n" +
+      "(declare-const q3 Bool)\n" +
+      "(declare-const z Real)\n" +
+      "(declare-const y Real)\n" +
+      "(declare-const cond Bool)\n" +
+      "(declare-const cond1 Bool)\n" +
+      "(declare-const b1_score Real)\n" +
+      "(declare-const pSet1_score Real)\n" +
+      "(assert (= pSet1_score b1_score))\n" +
+      "(declare-const b1_score_q1 Real)\n" +
+      "(assert (implies q1 (<= 0.1 b1_score_q1)))\n" +
+      "(declare-const b1_score_q2 Real)\n" +
+      "(assert (implies q2 (<= (* 0.2 z) b1_score_q2)))\n" +
+      "(declare-const b1_score_q3 Real)\n" +
+      "(assert (implies q3 (<= (* 0.4 y) b1_score_q3)))\n" +
+      "(assert (or (and (not (or q1 q2 q3)) (= b1_score 0.1)) (and q1 (= b1_score 0.1)) (and q2 (= b1_score (* 0.2 z))) (and q3 (= b1_score (* 0.4 y)))))\n" +
+      "(assert (= cond (<= pSet1_score 0.5)))\n" +
+      "(assert (= cond1 (< 0.4 pSet1_score)))\n" +
+      "(push)\n(declare-const always_true_name1 Bool)\n(assert (= always_true_name1 cond))\n" +
+      "(assert (not always_true_name1))\n(check-sat)\n(get-model)\n(pop)"
+
+    new NewSynthesiser(input).generate() should startWith(expected)
   }
 
   @Test
