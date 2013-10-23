@@ -120,6 +120,7 @@ class NewSynthesiser(input: String) {
             "(check-sat)\n" +
             "(get-model)\n" +
             "(pop)\n"
+        case _ => ""
       }
     }
   }

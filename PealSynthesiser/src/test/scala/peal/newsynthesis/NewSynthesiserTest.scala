@@ -7,6 +7,47 @@ import org.junit.{Ignore, Test}
 class NewSynthesiserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
 
   @Test
+  def testUnsupportedAnalysesWontBlowUp() {
+    val input = "POLICIES\n" +
+      "b1 = max ((q1 0.1) (q2 z* 0.2) (q3 0.4 * y)) default 0.1\n" +
+      "POLICY_SETS\n" +
+      "pSet1 = b1\n" +
+      "CONDITIONS\n" +
+      "cond = pSet1 <= 0.5\n" +
+      "cond1 = 0.4 < pSet1\n" +
+      "ANALYSES\n" +
+      "name1 = always_true? cond\n" +
+      "name2 = different? cond1 cond\n" +
+      "name3 = satisfiable? cond\n" +
+      "name4 = equivalent? cond1 cond\n" +
+      "name5 = implies? cond cond1"
+
+    val expected = "(declare-const q1 Bool)\n" +
+      "(declare-const q2 Bool)\n" +
+      "(declare-const q3 Bool)\n" +
+      "(declare-const z Real)\n" +
+      "(declare-const y Real)\n" +
+      "(declare-const cond Bool)\n" +
+      "(declare-const cond1 Bool)\n" +
+      "(declare-const b1_score Real)\n" +
+      "(declare-const pSet1_score Real)\n" +
+      "(assert (= pSet1_score b1_score))\n" +
+      "(declare-const b1_score_q1 Real)\n" +
+      "(assert (implies q1 (<= 0.1 b1_score_q1)))\n" +
+      "(declare-const b1_score_q2 Real)\n" +
+      "(assert (implies q2 (<= (* 0.2 z) b1_score_q2)))\n" +
+      "(declare-const b1_score_q3 Real)\n" +
+      "(assert (implies q3 (<= (* 0.4 y) b1_score_q3)))\n" +
+      "(assert (or (and (not (or q1 q2 q3)) (= b1_score 0.1)) (and q1 (= b1_score 0.1)) (and q2 (= b1_score (* 0.2 z))) (and q3 (= b1_score (* 0.4 y)))))\n" +
+      "(assert (= cond (<= pSet1_score 0.5)))\n" +
+      "(assert (= cond1 (< 0.4 pSet1_score)))\n\n" +
+      "(push)\n(declare-const always_true_name1 Bool)\n(assert (= always_true_name1 cond))\n" +
+      "(assert (not always_true_name1))\n(check-sat)\n(get-model)\n(pop)"
+
+    new NewSynthesiser(input).generate() should startWith(expected)
+  }
+
+  @Test
   def testAddDomainSpecifics() {
     val input = "POLICIES\n" +
       "b1 = max ((q1 0.1) (q2 z* 0.2) (q3 0.4 * y)) default 0.1\n" +
