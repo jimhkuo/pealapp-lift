@@ -249,7 +249,6 @@ class NewSynthesiserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
     new NewSynthesiser(input).generate() should startWith(expected)
   }
 
-  @Ignore("wip")
   @Test
   def testCanGenerateAnalyses() {
     val input = "POLICIES\n" +
@@ -289,7 +288,7 @@ class NewSynthesiserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
         "(assert (or (and (not (or q4 q5 q6)) (= b2_score (* 0.2 y))) (and q4 (= b2_score 0.5)) (and q5 (= b2_score 0.6)) (and q6 (= b2_score (* 0.7 z)))))\n" +
         "(push)\n" +
         "(declare-const always_true_name1 Bool)\n" +
-        "(assert (= always_true_name1 (< pSet1_score pSet2_score)))\n" +
+        "(assert (= always_true_name1 (<= pSet1_score pSet2_score)))\n" +
         "(assert (not always_true_name1))\n" +
         "(check-sat)\n" +
         "(get-model)\n" +
