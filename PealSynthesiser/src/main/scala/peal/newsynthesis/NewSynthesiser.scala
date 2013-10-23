@@ -72,8 +72,12 @@ class NewSynthesiser(input: String) {
     pols.flatMap {
       case (name, pol) =>
         pol.operator match {
-          case Max => pol.rules.map(r => "(assert (implies " + r.q.name + " (<= " + r.scoreString + " " + name + "_score_" + r.q.name + ")))\n")
-          case Min => pol.rules.map(r => "(assert (implies " + r.q.name + " (<= " + name + "_score_" + r.q.name + " " + r.scoreString + ")))\n")
+          case Max => pol.rules.map(r =>
+            "(declare-const " + name + "_score_" + r.q.name + " Real)\n" +
+            "(assert (implies " + r.q.name + " (<= " + r.scoreString + " " + name + "_score_" + r.q.name + ")))\n")
+          case Min => pol.rules.map(r =>
+            "(declare-const " + name + "_score_" + r.q.name + " Real)\n" +
+            "(assert (implies " + r.q.name + " (<= " + name + "_score_" + r.q.name + " " + r.scoreString + ")))\n")
           case Plus => pol.rules.map(r =>
             "(declare-const " + name + "_score_" + r.q.name + " Real)\n" +
             "(assert (implies " + r.q.name + " (= " + r.scoreString + " " + name + "_score_" + r.q.name + ")))\n" +
