@@ -3,7 +3,7 @@ package peal.newsynthesis
 import peal.antlr.util.ParserHelper
 import scala.collection.JavaConversions._
 import peal.domain.{MinPolicySet, MaxPolicySet, BasicPolicySet, Pol}
-import peal.domain.operator.{Min, Max}
+import peal.domain.operator.{Mul, Plus, Min, Max}
 import peal.synthesis.analysis.AlwaysTrue
 import peal.synthesis._
 import peal.domain.BasicPolicySet
@@ -74,7 +74,14 @@ class NewSynthesiser(input: String) {
         pol.operator match {
           case Max => pol.rules.map(r => "(assert (implies " + r.q.name + " (<= " + r.scoreString + " " + name + "_score_" + r.q.name + ")))\n")
           case Min => pol.rules.map(r => "(assert (implies " + r.q.name + " (<= " + name + "_score_" + r.q.name + " " + r.scoreString + ")))\n")
-            //TODO two other operators here
+          case Plus => pol.rules.map(r =>
+            "(declare-const " + name + "_score_" + r.q.name + " Real)\n" +
+            "(assert (implies " + r.q.name + " (= " + r.scoreString + " " + name + "_score_" + r.q.name + ")))\n" +
+            "(assert (implies (not (= 0.0 " + name + "_score_" + r.q.name + ")) " + r.q.name + "))\n")
+          case Mul => pol.rules.map(r =>
+            "(declare-const " + name + "_score_" + r.q.name + " Real)\n" +
+            "(assert (implies " + r.q.name + " (= " + r.scoreString + " " + name + "_score_" + r.q.name + ")))\n" +
+            "(assert (implies (not (= 1.0 " + name + "_score_" + r.q.name + ")) " + r.q.name + "))\n")
         }
     }
   }
