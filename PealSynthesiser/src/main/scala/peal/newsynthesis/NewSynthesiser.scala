@@ -113,6 +113,7 @@ class NewSynthesiser(input: String) {
     analyses.flatMap {
       case (name, analysis) => analysis match {
         case AlwaysTrue(n, c) =>
+          "(echo \"Result of analysis [" + name + "]:\")\n" +
           "(push)\n" +
             "(declare-const always_true_" + name + " Bool)\n" +
             "(assert (= always_true_" + name + " " + c + "))\n" +
