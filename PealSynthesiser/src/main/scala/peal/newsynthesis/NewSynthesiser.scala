@@ -66,6 +66,7 @@ class NewSynthesiser(input: String) {
         pol.operator match {
           case Max => pol.rules.map(r => "(assert (implies " + r.q.name + " (<= " + r.scoreString + " " + name + "_score_" + r.q.name + ")))\n")
           case Min => pol.rules.map(r => "(assert (implies " + r.q.name + " (<= " + name + "_score_" + r.q.name + " " + r.scoreString + ")))\n")
+            //TODO two other operators here
         }
     }
   }
@@ -105,6 +106,7 @@ class NewSynthesiser(input: String) {
   private def condString(cond: Condition) = cond match {
     case c: LessThanThCondition => "(<= " + c.lhs.getPolicySetName + "_score " + c.getRhsString + "_score)"
     case c: GreaterThanThCondition => "(< " + c.getRhsString + "_score " + c.lhs.getPolicySetName + "_score)"
+    //TODO other condition types here
   }
 
   private def conditionAssertions = {
