@@ -4,8 +4,7 @@ import peal.domain._
 import peal.domain.Pol
 import peal.domain.z3.{PealAst, Or, And}
 
-//TODO consider using Either for th
-case class GreaterThanThCondition(lhs: PolicySet, rhs: BigDecimal) extends Condition {
+case class GreaterThanThCondition(lhs: PolicySet, rhs: Either[BigDecimal,PolicySet]) extends Condition {
 
   if (lhs == null) throw new RuntimeException("Referred to undeclared policy set in GreaterThanThCondition")
 
@@ -13,10 +12,12 @@ case class GreaterThanThCondition(lhs: PolicySet, rhs: BigDecimal) extends Condi
     case l: MinPolicySet => And(new GreaterThanThCondition(l.lhs, rhs).synthesis(consts), new GreaterThanThCondition(l.rhs, rhs).synthesis(consts))
     case l: MaxPolicySet => Or(new GreaterThanThCondition(l.lhs, rhs).synthesis(consts), new GreaterThanThCondition(l.rhs, rhs).synthesis(consts))
     case l: BasicPolicySet => new GreaterThanThCondition(l.pol, rhs).synthesis(consts)
-    case l: Pol => new ThLessThanPolSynthesiser(l, rhs).synthesis(consts)
+    case l: Pol => new ThLessThanPolSynthesiser(l, rhs.left.get).synthesis(consts)
   }
 
   def getPol = Some(lhs)
 
-  def getTh = rhs
+  def getTh = rhs.left.get
+  def getRhsString = rhs.fold(score => score.toString(), pSet => pSet.getPolicySetName)
+
 }
