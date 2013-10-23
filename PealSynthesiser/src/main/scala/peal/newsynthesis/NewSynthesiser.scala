@@ -2,9 +2,7 @@ package peal.newsynthesis
 
 import peal.antlr.util.ParserHelper
 import scala.collection.JavaConversions._
-import peal.domain.{MinPolicySet, MaxPolicySet, BasicPolicySet, Pol}
 import peal.domain.operator.{Mul, Plus, Min, Max}
-import peal.synthesis.analysis.AlwaysTrue
 import peal.synthesis._
 import peal.domain.BasicPolicySet
 import peal.synthesis.analysis.AlwaysTrue
@@ -46,6 +44,7 @@ class NewSynthesiser(input: String) {
     val policyScoreDeclarations = for (name <- pols.keySet()) yield "(declare-const " + name + "_score" + " Real)\n"
     val policySetScoreDeclarations = for (name <- pSets.keySet()) yield "(declare-const " + name + "_score" + " Real)\n"
     val condDeclarations = for (name <- conds.keys) yield "(declare-const " + name + " Bool)\n"
+    val domainSpecifics = input.split("\n").dropWhile(!_.startsWith("DOMAIN_SPECIFICS")).takeWhile(!_.startsWith("ANALYSES")).drop(1)
 
     declarations.mkString("") +
       variableDeclarations.mkString("") +
@@ -57,6 +56,7 @@ class NewSynthesiser(input: String) {
       policyAssertions.mkString("") +
       policyScoreAssertions.mkString("") +
       conditionAssertions.mkString("") +
+      domainSpecifics.mkString("", "\n", "\n") +
       analysesAssertions.mkString("")
   }
 
