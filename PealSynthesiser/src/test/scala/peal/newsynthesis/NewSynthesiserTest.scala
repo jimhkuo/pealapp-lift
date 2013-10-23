@@ -7,6 +7,12 @@ import org.junit.{Ignore, Test}
 class NewSynthesiserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
 
   @Test
+  def testCanGenerateForSampleInput() {
+    val input = "POLICIES\nb1 = min ((q1 0.2) (q2 0.4) (q3 0.9)) default 0.4\nb2 = max ((q4 0.1) (q5 0.5) (q6 0.8)) default 0.9\nb3 = + ((q7 0.1) (q8 0.3) (q9 0.6)) default 0\nb4 = * ((q10 0.3) (q11 0.6) (q12 0.7)) default 1\nPOLICY_SETS\npSet1 = max(b1, b2)\npSet2 = min(b3, b4)\nCONDITIONS\ncond1 = pSet1 <= pSet2\ncond2 = pSet2 < pSet1\nANALYSES\nname1 = always_true? cond1\nname2 = always_true? cond2"
+    println(new NewSynthesiser(input).generate())
+  }
+
+  @Test
   def testCanGenerateHeaderOfExample4() {
     val input = "POLICIES\nb1 = max ((q1 0.1) (q2 z* 0.2) (q3 0.4 * y)) default 0.1\n" +
       "b2 = min ((q1 0.5) (q2 0.6) (q3 0.7)) default x*0.2\n" +
