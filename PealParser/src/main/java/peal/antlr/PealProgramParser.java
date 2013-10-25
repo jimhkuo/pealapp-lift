@@ -4,7 +4,6 @@ package peal.antlr;
 import java.util.*;
 import peal.domain.*;
 import peal.antlr.util.*;
-import peal.*;
 import org.antlr.runtime.BitSet;
 import peal.synthesis.*;
 import peal.synthesis.analysis.*;
@@ -14,7 +13,7 @@ import scala.util.*;
 
 
 import org.antlr.runtime.*;
-import java.util.Stack;
+
 import java.util.List;
 import java.util.ArrayList;
 
@@ -1037,7 +1036,7 @@ public class PealProgramParser extends Parser {
                     {
                     n=(Token)match(input,NUMBER,FOLLOW_NUMBER_in_pol578); 
 
-                    p = new Pol(l, OperatorResolver.apply((o!=null?input.toString(o.start,o.stop):null)), new Left<BigDecimal,Variable>(BigDecimal.valueOf(Double.valueOf((n!=null?n.getText():null)))), (id1!=null?id1.getText():null));
+                    p = new Pol(l, OperatorResolver.apply((o!=null?input.toString(o.start,o.stop):null)), new Left<BigDecimal, Multiplier>(BigDecimal.valueOf(Double.valueOf((n!=null?n.getText():null)))), (id1!=null?id1.getText():null));
 
                     }
                     break;
@@ -1050,7 +1049,7 @@ public class PealProgramParser extends Parser {
 
                     id2=(Token)match(input,IDENT,FOLLOW_IDENT_in_pol610); 
 
-                    p = new Pol(l, OperatorResolver.apply((o!=null?input.toString(o.start,o.stop):null)), new Right<BigDecimal,Variable>(new Variable(BigDecimal.valueOf(Double.valueOf((n!=null?n.getText():null))), (id2!=null?id2.getText():null))), (id1!=null?id1.getText():null));
+                    p = new Pol(l, OperatorResolver.apply((o!=null?input.toString(o.start,o.stop):null)), new Right<BigDecimal, Multiplier>(new Multiplier(BigDecimal.valueOf(Double.valueOf((n!=null?n.getText():null))), (id2!=null?id2.getText():null))), (id1!=null?id1.getText():null));
 
                     }
                     break;
@@ -1059,7 +1058,7 @@ public class PealProgramParser extends Parser {
                     {
                     id2=(Token)match(input,IDENT,FOLLOW_IDENT_in_pol636); 
 
-                    p = new Pol(l, OperatorResolver.apply((o!=null?input.toString(o.start,o.stop):null)), new Right<BigDecimal,Variable>(new Variable(BigDecimal.valueOf(1), (id2!=null?id2.getText():null))), (id1!=null?id1.getText():null));
+                    p = new Pol(l, OperatorResolver.apply((o!=null?input.toString(o.start,o.stop):null)), new Right<BigDecimal, Multiplier>(new Multiplier(BigDecimal.valueOf(1), (id2!=null?id2.getText():null))), (id1!=null?id1.getText():null));
 
                     }
                     break;
@@ -1072,7 +1071,7 @@ public class PealProgramParser extends Parser {
 
                     n=(Token)match(input,NUMBER,FOLLOW_NUMBER_in_pol668); 
 
-                    p = new Pol(l, OperatorResolver.apply((o!=null?input.toString(o.start,o.stop):null)), new Right<BigDecimal,Variable>(new Variable(BigDecimal.valueOf(Double.valueOf((n!=null?n.getText():null))), (id2!=null?id2.getText():null))), (id1!=null?id1.getText():null));
+                    p = new Pol(l, OperatorResolver.apply((o!=null?input.toString(o.start,o.stop):null)), new Right<BigDecimal, Multiplier>(new Multiplier(BigDecimal.valueOf(Double.valueOf((n!=null?n.getText():null))), (id2!=null?id2.getText():null))), (id1!=null?id1.getText():null));
 
                     }
                     break;
@@ -1189,7 +1188,7 @@ public class PealProgramParser extends Parser {
 
                     match(input,10,FOLLOW_10_in_rule703); 
 
-                    r = new Rule(new Predicate((IDENT3!=null?IDENT3.getText():null)),new Left<BigDecimal,Variable>(BigDecimal.valueOf(Double.valueOf((NUMBER4!=null?NUMBER4.getText():null)))));
+                    r = new Rule(new Predicate((IDENT3!=null?IDENT3.getText():null)),new Left<BigDecimal, Multiplier>(BigDecimal.valueOf(Double.valueOf((NUMBER4!=null?NUMBER4.getText():null)))));
 
                     }
                     break;
@@ -1204,7 +1203,7 @@ public class PealProgramParser extends Parser {
 
                     match(input,10,FOLLOW_10_in_rule719); 
 
-                    r = new Rule(new Predicate((id0!=null?id0.getText():null)),new Right<BigDecimal,Variable>(new Variable(BigDecimal.valueOf(1), (id1!=null?id1.getText():null))));
+                    r = new Rule(new Predicate((id0!=null?id0.getText():null)),new Right<BigDecimal, Multiplier>(new Multiplier(BigDecimal.valueOf(1), (id1!=null?id1.getText():null))));
 
                     }
                     break;
@@ -1223,7 +1222,7 @@ public class PealProgramParser extends Parser {
 
                     match(input,10,FOLLOW_10_in_rule741); 
 
-                    r = new Rule(new Predicate((id0!=null?id0.getText():null)),new Right<BigDecimal,Variable>(new Variable(BigDecimal.valueOf(Double.valueOf((n!=null?n.getText():null))), (id1!=null?id1.getText():null))));
+                    r = new Rule(new Predicate((id0!=null?id0.getText():null)),new Right<BigDecimal, Multiplier>(new Multiplier(BigDecimal.valueOf(Double.valueOf((n!=null?n.getText():null))), (id1!=null?id1.getText():null))));
 
                     }
                     break;
@@ -1242,7 +1241,7 @@ public class PealProgramParser extends Parser {
 
                     match(input,10,FOLLOW_10_in_rule764); 
 
-                    r = new Rule(new Predicate((id0!=null?id0.getText():null)),new Right<BigDecimal,Variable>(new Variable(BigDecimal.valueOf(Double.valueOf((n!=null?n.getText():null))), (id1!=null?id1.getText():null))));
+                    r = new Rule(new Predicate((id0!=null?id0.getText():null)),new Right<BigDecimal, Multiplier>(new Multiplier(BigDecimal.valueOf(Double.valueOf((n!=null?n.getText():null))), (id1!=null?id1.getText():null))));
 
                     }
                     break;
