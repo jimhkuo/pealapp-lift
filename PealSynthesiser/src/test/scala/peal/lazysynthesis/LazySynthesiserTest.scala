@@ -129,9 +129,9 @@ class LazySynthesiserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
   }
 
   @Test
-  def testGenerateWithNonConstant() {
+  def testGenerateWithNonConstantScoresAndDefaultScore() {
     val input = "POLICIES\n" +
-      "b1 = + ((q1 x) (q2 y) (q4 y)) default 1.1*z\n" +
+      "b1 = + ((q1 x) (q2 y) (q4 y)) default 1.1*z+0.9+a\n" +
       "POLICY_SETS\n" +
       "pSet1 = b1\n" +
       "CONDITIONS\n" +
@@ -146,6 +146,7 @@ class LazySynthesiserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
         "(declare-const x Real)\n" +
         "(declare-const y Real)\n" +
         "(declare-const z Real)\n" +
+        "(declare-const a Real)\n" +
         "(declare-const cond1 Bool)\n" +
         "(declare-const b1_score_q1 Real)\n" +
         "(assert (implies q1 (= x b1_score_q1)))\n" +
@@ -154,7 +155,7 @@ class LazySynthesiserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
         "(assert (implies q2 (= y b1_score_q2)))\n(assert (implies (not (= 0.0 b1_score_q2)) q2))\n" +
         "(declare-const b1_score_q4 Real)\n(assert (implies q4 (= y b1_score_q4)))\n" +
         "(assert (implies (not (= 0.0 b1_score_q4)) q4))\n(declare-const cond1_b1 Bool)\n" +
-        "(assert (= cond1_b1 (or (and (<= (* 1.1 z) 0.5) (not (or q1 q2 q4)))  (and (or q1 q2 q4)  (<=  (+ b1_score_q1 b1_score_q2 b1_score_q4) 0.5)))))\n(assert (= cond1 cond1_b1))\n\n(echo \"Result of analysis [name1 = always_true? cond1]:\")\n(push)\n(declare-const always_true_name1 Bool)\n(assert (= always_true_name1 cond1))\n(assert (not always_true_name1))\n(check-sat)\n(get-model)\n(pop)"
+        "(assert (= cond1_b1 (or (and (<= (+ (* 1.1 z) 0.9 a) 0.5) (not (or q1 q2 q4)))  (and (or q1 q2 q4)  (<=  (+ b1_score_q1 b1_score_q2 b1_score_q4) 0.5)))))\n(assert (= cond1 cond1_b1))\n\n(echo \"Result of analysis [name1 = always_true? cond1]:\")\n(push)\n(declare-const always_true_name1 Bool)\n(assert (= always_true_name1 cond1))\n(assert (not always_true_name1))\n(check-sat)\n(get-model)\n(pop)"
     generator.generate() should beZ3Model(expected)
   }
 
