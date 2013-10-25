@@ -110,9 +110,16 @@ rule 	returns [Rule r]
 	;
 	
 score returns [VariableFormula s]
-	: m0=mult {$s = new VariableFormula().add($m0.m);} ('+' m=mult {$s.add($m.m);})* 
+	: m0=vmult {$s = new VariableFormula().add($m0.m);} ('+' m=mult {$s.add($m.m);})* 
 	;	
 	
+vmult returns [Multiplier m]
+	: id1=IDENT '*' n=NUMBER {$m = new Multiplier(BigDecimal.valueOf(Double.valueOf($n.text)), $id1.text);}
+	| n=NUMBER '*' id1=IDENT {$m = new Multiplier(BigDecimal.valueOf(Double.valueOf($n.text)), $id1.text);}
+//	| n=NUMBER {$m = new Multiplier(BigDecimal.valueOf(Double.valueOf($n.text)), "");}
+	| id1=IDENT {$m = new Multiplier(BigDecimal.valueOf(1), $id1.text);}
+	;
+
 mult returns [Multiplier m]
 	: id1=IDENT '*' n=NUMBER {$m = new Multiplier(BigDecimal.valueOf(Double.valueOf($n.text)), $id1.text);}
 	| n=NUMBER '*' id1=IDENT {$m = new Multiplier(BigDecimal.valueOf(Double.valueOf($n.text)), $id1.text);}
