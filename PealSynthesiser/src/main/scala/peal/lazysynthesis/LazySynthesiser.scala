@@ -28,7 +28,7 @@ class LazySynthesiser(input: String) {
   val nonConstantDefaultScores = pols.foldLeft(Set[String]())((acc, tuple) => {
     tuple._2 match {
       case p: Pol =>
-        def addVariables(set: Set[String]) = p.score.fold(score => set, variable => set + variable.name)
+        def addVariables(set: Set[String]) = p.score.fold(score => set, variable => set ++ variable.names)
         addVariables(acc)
       case _ => acc
     }

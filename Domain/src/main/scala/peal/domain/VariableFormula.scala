@@ -4,6 +4,7 @@ import scala.collection.mutable.ListBuffer
 
 object VariableFormula {
   def apply(m: Multiplier) = new VariableFormula().add(m)
+  def apply(name : String) = new VariableFormula().add(Multiplier(name))
 }
 
 class VariableFormula() {
