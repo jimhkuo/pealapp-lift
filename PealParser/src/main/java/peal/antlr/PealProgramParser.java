@@ -1,4 +1,4 @@
-// $ANTLR 3.4 /Users/jkuo/PealApp-lift/antlr/PealProgram.g 2013-10-25 16:58:18
+// $ANTLR 3.4 /Users/jkuo/PealApp-lift/antlr/PealProgram.g 2013-10-25 17:07:58
 
 package peal.antlr;
 import java.util.*;
@@ -1106,7 +1106,7 @@ public class PealProgramParser extends Parser {
         Token id0=null;
         Token IDENT3=null;
         Token NUMBER4=null;
-        ScoreSum s =null;
+        VariableFormula s =null;
 
 
         try {
@@ -1175,7 +1175,7 @@ public class PealProgramParser extends Parser {
 
                     match(input,10,FOLLOW_10_in_rule703); 
 
-                    r = new Rule(new Predicate((IDENT3!=null?IDENT3.getText():null)),new Left<BigDecimal,ScoreSum>(BigDecimal.valueOf(Double.valueOf((NUMBER4!=null?NUMBER4.getText():null)))));
+                    r = new Rule(new Predicate((IDENT3!=null?IDENT3.getText():null)),new Left<BigDecimal,VariableFormula>(BigDecimal.valueOf(Double.valueOf((NUMBER4!=null?NUMBER4.getText():null)))));
 
                     }
                     break;
@@ -1194,7 +1194,7 @@ public class PealProgramParser extends Parser {
 
                     match(input,10,FOLLOW_10_in_rule722); 
 
-                    r = new Rule(new Predicate((id0!=null?id0.getText():null)),new Right<BigDecimal,ScoreSum>(s));
+                    r = new Rule(new Predicate((id0!=null?id0.getText():null)),new Right<BigDecimal,VariableFormula>(s));
 
                     }
                     break;
@@ -1216,9 +1216,9 @@ public class PealProgramParser extends Parser {
 
 
     // $ANTLR start "score"
-    // /Users/jkuo/PealApp-lift/antlr/PealProgram.g:112:1: score returns [ScoreSum s] : m0= mult ( '+' m= mult )* ;
-    public final ScoreSum score() throws RecognitionException {
-        ScoreSum s = null;
+    // /Users/jkuo/PealApp-lift/antlr/PealProgram.g:112:1: score returns [VariableFormula s] : m0= mult ( '+' m= mult )* ;
+    public final VariableFormula score() throws RecognitionException {
+        VariableFormula s = null;
 
 
         Multiplier m0 =null;
@@ -1236,9 +1236,9 @@ public class PealProgramParser extends Parser {
             state._fsp--;
 
 
-            s = new ScoreSum().add(m0);
+            s = new VariableFormula().add(m0);
 
-            // /Users/jkuo/PealApp-lift/antlr/PealProgram.g:113:46: ( '+' m= mult )*
+            // /Users/jkuo/PealApp-lift/antlr/PealProgram.g:113:53: ( '+' m= mult )*
             loop15:
             do {
                 int alt15=2;
@@ -1251,7 +1251,7 @@ public class PealProgramParser extends Parser {
 
                 switch (alt15) {
             	case 1 :
-            	    // /Users/jkuo/PealApp-lift/antlr/PealProgram.g:113:47: '+' m= mult
+            	    // /Users/jkuo/PealApp-lift/antlr/PealProgram.g:113:54: '+' m= mult
             	    {
             	    match(input,12,FOLLOW_12_in_score748); 
 

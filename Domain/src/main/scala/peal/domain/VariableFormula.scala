@@ -2,11 +2,11 @@ package peal.domain
 
 import scala.collection.mutable.ListBuffer
 
-object ScoreSum {
-  def apply(m: Multiplier) = new ScoreSum().add(m)
+object VariableFormula {
+  def apply(m: Multiplier) = new VariableFormula().add(m)
 }
 
-class ScoreSum() {
+class VariableFormula() {
   val operations = ListBuffer[Multiplier]()
 
   def add(m: Multiplier) = {

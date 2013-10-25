@@ -102,15 +102,15 @@ pol	returns [Pol p]
 
 rule 	returns [Rule r]
 	:
-	'(' IDENT NUMBER ')' {$r = new Rule(new Predicate($IDENT.text),new Left<BigDecimal,ScoreSum>(BigDecimal.valueOf(Double.valueOf($NUMBER.text))));}
+	'(' IDENT NUMBER ')' {$r = new Rule(new Predicate($IDENT.text),new Left<BigDecimal,VariableFormula>(BigDecimal.valueOf(Double.valueOf($NUMBER.text))));}
 	//| '(' id0=IDENT id1=IDENT')' {$r = new Rule(new Predicate($id0.text),new Right<BigDecimal,ScoreSum>(new Multiplier(BigDecimal.valueOf(1), $id1.text)));}
 	|
-	'(' id0=IDENT s=score')' {$r = new Rule(new Predicate($id0.text),new Right<BigDecimal,ScoreSum>($s.s));}
+	'(' id0=IDENT s=score')' {$r = new Rule(new Predicate($id0.text),new Right<BigDecimal,VariableFormula>($s.s));}
 //	| '(' id0=IDENT  ')' //{$r = new Rule(new Predicate($id0.text),new Right<BigDecimal,Variable>(new Variable(BigDecimal.valueOf(Double.valueOf($n.text)), $id1.text)));}
 	;
 	
-score returns [ScoreSum s]
-	: m0=mult {$s = new ScoreSum().add($m0.m);} ('+' m=mult {$s.add($m.m);})* 
+score returns [VariableFormula s]
+	: m0=mult {$s = new VariableFormula().add($m0.m);} ('+' m=mult {$s.add($m.m);})* 
 	;	
 	
 mult returns [Multiplier m]
