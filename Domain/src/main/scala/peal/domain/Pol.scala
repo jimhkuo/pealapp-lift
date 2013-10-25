@@ -3,7 +3,7 @@ package peal.domain
 import scala.collection.JavaConversions._
 import peal.domain.operator.Operators
 
-case class Pol(rules: java.util.List[Rule], operator: Operators, val score: Either[BigDecimal, Variable], policyName: String = "") extends PolicySet {
+case class Pol(rules: java.util.List[Rule], operator: Operators, val score: Either[BigDecimal, Multiplier], policyName: String = "") extends PolicySet {
   def this(rules: java.util.List[Rule], operator: Operators, doubleScore: Double) = this(rules, operator, Left(BigDecimal.valueOf(doubleScore)))
 
   override def toString: String = operator + " (" + rules.mkString(" ") + ") default " + score.fold(score => score.toString(), variable => variable.multiplier + "*" + variable.name)

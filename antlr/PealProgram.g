@@ -108,9 +108,13 @@ rule 	returns [Rule r]
 	;
 	
 score returns [Variable v]
-	: n=NUMBER '*' id1=IDENT 
-	| id1=IDENT '*' n=NUMBER
+	: mult ('+' m=mult)* 
 	;	
+	
+mult 
+	: id1=IDENT ('*' n=NUMBER)?
+	| n=NUMBER ('*' id1=IDENT)?
+	;
 
 operator : 'max' | 'min' | '+' | '*';
 
