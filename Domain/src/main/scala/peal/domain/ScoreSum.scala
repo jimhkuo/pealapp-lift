@@ -3,15 +3,20 @@ package peal.domain
 import scala.collection.mutable.ListBuffer
 
 object ScoreSum {
-  def apply(m : Multiplier) = new ScoreSum().add(m)
+  def apply(m: Multiplier) = new ScoreSum().add(m)
 }
 
-class ScoreSum () {
+class ScoreSum() {
   val operations = ListBuffer[Multiplier]()
 
-  def add(m: Multiplier) ={
+  def add(m: Multiplier) = {
     operations.append(m)
     this
+  }
+
+  def names = operations.size match {
+    case 0 => Set()
+    case _ => operations.map(_.name).toSet.filterNot(_ == "")
   }
 
   def toZ3Expression = operations.size match {

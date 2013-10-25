@@ -34,7 +34,7 @@ class LazySynthesiser(input: String) {
     }
   })
   val nonConstantScores = allRules.foldLeft(Set[String]())((acc, rule) => {
-    def addVariables(set: Set[String]) = rule.attribute.fold(score => set, variable => set + variable.name)
+    def addVariables(set: Set[String]) = rule.attribute.fold(score => set, variable => set ++ variable.names)
     addVariables(acc)
   })
   val analyses = pealProgramParser.analyses.toMap
@@ -178,7 +178,7 @@ class LazySynthesiser(input: String) {
         b.rules.foreach {
           predicate =>
             buffer.append("(declare-const " + bName + "_score_" + predicate.q.name + " Real)\n")
-            buffer.append("(assert (implies " + predicate.q.name + " (= " + predicate.attribute.fold(score => score.toString(), variable => if (variable.multiplier == 1) variable.name else "(* " + variable.multiplier + " " + variable.name + ")") + " " + bName + "_score_" + predicate.q.name + ")))\n")
+            buffer.append("(assert (implies " + predicate.q.name + " (= " + predicate.attribute.fold(score => score.toString(), variable => variable.toZ3Expression) + " " + bName + "_score_" + predicate.q.name + ")))\n")
             buffer.append("(assert (implies (not (= " + unit + " " + bName + "_score_" + predicate.q.name + ")) " + predicate.q.name + "))\n")
         }
     }

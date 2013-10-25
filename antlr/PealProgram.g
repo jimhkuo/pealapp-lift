@@ -90,30 +90,34 @@ pSet
 
 pol	returns [Pol p] 
 @init {l = new ArrayList<Rule>(); }
-	: id1=IDENT '=' o=operator '(' (rule {l.add($rule.r);})* ')' 'default' (n=NUMBER {$p = new Pol(l, OperatorResolver.apply($o.text), new Left<BigDecimal,Variable>(BigDecimal.valueOf(Double.valueOf($n.text))), $id1.text);}
+	: id1=IDENT '=' o=operator '(' (rule {l.add($rule.r);})* ')' 'default' (n=NUMBER {$p = new Pol(l, OperatorResolver.apply($o.text), new Left<BigDecimal,Multiplier>(BigDecimal.valueOf(Double.valueOf($n.text))), $id1.text);}
 									|
-									n=NUMBER '*' id2=IDENT {$p = new Pol(l, OperatorResolver.apply($o.text), new Right<BigDecimal,Variable>(new Variable(BigDecimal.valueOf(Double.valueOf($n.text)), $id2.text)), $id1.text);}
+									n=NUMBER '*' id2=IDENT {$p = new Pol(l, OperatorResolver.apply($o.text), new Right<BigDecimal,Multiplier>(new Multiplier(BigDecimal.valueOf(Double.valueOf($n.text)), $id2.text)), $id1.text);}
 									|
-									id2=IDENT {$p = new Pol(l, OperatorResolver.apply($o.text), new Right<BigDecimal,Variable>(new Variable(BigDecimal.valueOf(1), $id2.text)), $id1.text);}
+									id2=IDENT {$p = new Pol(l, OperatorResolver.apply($o.text), new Right<BigDecimal,Multiplier>(new Multiplier(BigDecimal.valueOf(1), $id2.text)), $id1.text);}
 									|
-									id2=IDENT '*' n=NUMBER {$p = new Pol(l, OperatorResolver.apply($o.text), new Right<BigDecimal,Variable>(new Variable(BigDecimal.valueOf(Double.valueOf($n.text)), $id2.text)), $id1.text);}
+									id2=IDENT '*' n=NUMBER {$p = new Pol(l, OperatorResolver.apply($o.text), new Right<BigDecimal,Multiplier>(new Multiplier(BigDecimal.valueOf(Double.valueOf($n.text)), $id2.text)), $id1.text);}
 									)
 	;
 
 rule 	returns [Rule r]
-	: '(' IDENT NUMBER ')' {$r = new Rule(new Predicate($IDENT.text),new Left<BigDecimal,Variable>(BigDecimal.valueOf(Double.valueOf($NUMBER.text))));}
-	| '(' id0=IDENT id1=IDENT')' {$r = new Rule(new Predicate($id0.text),new Right<BigDecimal,Variable>(new Variable(BigDecimal.valueOf(1), $id1.text)));}
-	| '(' id0=IDENT score')' //{$r = new Rule(new Predicate($id0.text),new Right<BigDecimal,Variable>(new Variable(BigDecimal.valueOf(Double.valueOf($n.text)), $id1.text)));}
+	:
+	'(' IDENT NUMBER ')' {$r = new Rule(new Predicate($IDENT.text),new Left<BigDecimal,ScoreSum>(BigDecimal.valueOf(Double.valueOf($NUMBER.text))));}
+	//| '(' id0=IDENT id1=IDENT')' {$r = new Rule(new Predicate($id0.text),new Right<BigDecimal,ScoreSum>(new Multiplier(BigDecimal.valueOf(1), $id1.text)));}
+	|
+	'(' id0=IDENT s=score')' {$r = new Rule(new Predicate($id0.text),new Right<BigDecimal,ScoreSum>($s.s));}
 //	| '(' id0=IDENT  ')' //{$r = new Rule(new Predicate($id0.text),new Right<BigDecimal,Variable>(new Variable(BigDecimal.valueOf(Double.valueOf($n.text)), $id1.text)));}
 	;
 	
-score returns [Variable v]
-	: mult ('+' m=mult)* 
+score returns [ScoreSum s]
+	: m0=mult {$s = new ScoreSum().add($m0.m);} ('+' m=mult {$s.add($m.m);})* 
 	;	
 	
-mult 
-	: id1=IDENT ('*' n=NUMBER)?
-	| n=NUMBER ('*' id1=IDENT)?
+mult returns [Multiplier m]
+	: id1=IDENT '*' n=NUMBER {$m = new Multiplier(BigDecimal.valueOf(Double.valueOf($n.text)), $id1.text);}
+	| n=NUMBER '*' id1=IDENT {$m = new Multiplier(BigDecimal.valueOf(Double.valueOf($n.text)), $id1.text);}
+	| n=NUMBER {$m = new Multiplier(BigDecimal.valueOf(Double.valueOf($n.text)), "");}
+	| id1=IDENT {$m = new Multiplier(BigDecimal.valueOf(1), $id1.text);}
 	;
 
 operator : 'max' | 'min' | '+' | '*';
