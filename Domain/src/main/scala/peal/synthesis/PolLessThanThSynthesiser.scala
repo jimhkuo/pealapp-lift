@@ -1,6 +1,5 @@
 package peal.synthesis
 
-import peal.domain.Pol
 import scala.collection.JavaConversions._
 import peal.domain.z3._
 import peal.domain.Pol

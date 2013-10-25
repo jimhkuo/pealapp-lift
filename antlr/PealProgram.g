@@ -49,7 +49,6 @@ program
 	(pol {pols.put($pol.p.getPolicyName(), $pol.p);})*
 	('POLICY_SETS')?
 	(pSet)+
-//	(id2=IDENT '=' pSet { $pSet.t.setName($id2.text); pSets.put($id2.text, $pSet.t);})+
 	('CONDITIONS')?
 	(
 	id0=IDENT '=' id2=IDENT '<=' num=NUMBER {Condition cond = new LessThanThCondition(pSets.get($id2.text), new Left<BigDecimal,PolicySet>(BigDecimal.valueOf(Double.valueOf($num.text)))); conds.put($id0.text, cond);}
@@ -104,9 +103,14 @@ pol	returns [Pol p]
 rule 	returns [Rule r]
 	: '(' IDENT NUMBER ')' {$r = new Rule(new Predicate($IDENT.text),new Left<BigDecimal,Variable>(BigDecimal.valueOf(Double.valueOf($NUMBER.text))));}
 	| '(' id0=IDENT id1=IDENT')' {$r = new Rule(new Predicate($id0.text),new Right<BigDecimal,Variable>(new Variable(BigDecimal.valueOf(1), $id1.text)));}
-	| '(' id0=IDENT n=NUMBER '*' id1=IDENT')' {$r = new Rule(new Predicate($id0.text),new Right<BigDecimal,Variable>(new Variable(BigDecimal.valueOf(Double.valueOf($n.text)), $id1.text)));}
-	| '(' id0=IDENT id1=IDENT '*' n=NUMBER ')' {$r = new Rule(new Predicate($id0.text),new Right<BigDecimal,Variable>(new Variable(BigDecimal.valueOf(Double.valueOf($n.text)), $id1.text)));}
+	| '(' id0=IDENT score')' //{$r = new Rule(new Predicate($id0.text),new Right<BigDecimal,Variable>(new Variable(BigDecimal.valueOf(Double.valueOf($n.text)), $id1.text)));}
+//	| '(' id0=IDENT  ')' //{$r = new Rule(new Predicate($id0.text),new Right<BigDecimal,Variable>(new Variable(BigDecimal.valueOf(Double.valueOf($n.text)), $id1.text)));}
 	;
+	
+score returns [Variable v]
+	: n=NUMBER '*' id1=IDENT 
+	| id1=IDENT '*' n=NUMBER
+	;	
 
 operator : 'max' | 'min' | '+' | '*';
 
