@@ -8,7 +8,7 @@ import peal.domain.Pol
 
 class PolLessThanThSynthesiser(pol: Pol, th: BigDecimal) extends Condition {
 
-  def synthesis(consts: Map[String, PealAst]) = pol.defaultScore match {
+  def synthesis(consts: Map[String, PealAst]) = pol.defaultNumericalScore match {
     case s if s <= th => Or(new DefaultLessThanTh(pol, th).synthesis(consts), new NonDefaultPolLessThanTh(pol, th).synthesis(consts))
     case _ => And(new ThLessThanDefault(pol, th).synthesis(consts), new NonDefaultPolLessThanTh(pol, th).synthesis(consts))
   }
