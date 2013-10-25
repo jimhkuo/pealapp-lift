@@ -9,6 +9,6 @@ class ScoreSumTest extends ShouldMatchersForJUnit {
   def testSimpleScoreExpression() {
       ScoreSum(Multiplier(0.5, "y")).toZ3Expression should be ("(* 0.5 y)")
       ScoreSum(Multiplier(0.5, "y")).add(Multiplier(0.4, "x")).toZ3Expression should be ("(+ (* 0.5 y) (* 0.4 x))")
+      ScoreSum(Multiplier(0.5, "y")).add(Multiplier(0.4, "x")).add(Multiplier(0.1, "z")).toZ3Expression should be ("(+ (* 0.5 y) (* 0.4 x) (* 0.1 z))")
   }
-
 }
