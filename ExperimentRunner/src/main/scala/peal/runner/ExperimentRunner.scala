@@ -35,45 +35,45 @@ class ExperimentRunner(doDomainSpecifics: Boolean, system: ActorSystem, duration
   private def runExperiment(model: String): TimingOutput = {
     val output = new TimingOutput()
     val processKiller = system.actorOf(Props[ProcessKillerActor])
-    var eagerZ3Caller: ActorRef = null
-
+    var z3Caller: ActorRef = null
     val randomModelFile = File.createTempFile("randomModel", "")
+
     try {
       FileUtil.writeToFile(randomModelFile.getAbsolutePath, model)
       print("m")
 
       def runSysthesiser(mode: String, tag: String) {
-        val eagerInput = Seq("java", "-Xmx15240m", "-Xss32m", "-cp", "./Peal.jar", "peal.runner.SynthesisRunner", mode, randomModelFile.getAbsolutePath).!!
-        if (eagerInput.trim == "TIMEOUT") {
+        val z3Input = Seq("java", "-Xmx15240m", "-Xss32m", "-cp", "./Peal.jar", "peal.runner.SynthesisRunner", mode, randomModelFile.getAbsolutePath).!!
+        if (z3Input.trim == "TIMEOUT") {
           throw new TimeoutException("Timeout in " + mode + " Synthesis")
         }
 
         mode match {
-          case "explicit" => output.eagerSynthesis = eagerInput.split("\n")(0).toLong
-          case "symbolic" => output.lazySynthesis = eagerInput.split("\n")(0).toLong
+          case "explicit" => output.eagerSynthesis = z3Input.split("\n")(0).toLong
+          case "symbolic" => output.lazySynthesis = z3Input.split("\n")(0).toLong
         }
 
         print(tag)
 
         val z3InputFile = File.createTempFile("z3File", "")
-        FileUtil.writeToFile(z3InputFile.getAbsolutePath, eagerInput)
+        FileUtil.writeToFile(z3InputFile.getAbsolutePath, z3Input)
 
         try {
-          eagerZ3Caller = system.actorOf(Props(new Z3CallerActor(z3CallerMemoryBound)))
+          z3Caller = system.actorOf(Props(new Z3CallerActor(z3CallerMemoryBound)))
           val start = System.nanoTime()
-          val eagerFuture = eagerZ3Caller ? z3InputFile
-          val eagerResult = Await.result(eagerFuture, timeout.duration)
+          val future = z3Caller ? z3InputFile
+          val result = Await.result(future, timeout.duration)
           val lapsedTime = System.nanoTime() - start
           mode match {
             case "explicit" => output.eagerZ3 = lapsedTime
             case "symbolic" => output.lazyZ3 = lapsedTime
           }
 
-          eagerResult match {
+          result match {
             case FailedExecution => throw new RuntimeException("Z3 caller aborted")
             case _ => mode match {
-              case "explicit" => output.model1Result = eagerResult.asInstanceOf[Map[String, String]]
-              case "symbolic" => output.model2Result = eagerResult.asInstanceOf[Map[String, String]]
+              case "explicit" => output.model1Result = result.asInstanceOf[Map[String, String]]
+              case "symbolic" => output.model2Result = result.asInstanceOf[Map[String, String]]
             }
           }
           print("z")
@@ -106,7 +106,7 @@ class ExperimentRunner(doDomainSpecifics: Boolean, system: ActorSystem, duration
     }
     catch {
       case e: Exception =>
-        if (eagerZ3Caller != null) system.stop(eagerZ3Caller)
+        if (z3Caller != null) system.stop(z3Caller)
         throw e
     }
     finally {
