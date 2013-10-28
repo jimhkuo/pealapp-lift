@@ -13,7 +13,11 @@ import scala.sys.process._
 import java.util.concurrent.TimeoutException
 
 
-class TimingOutput(var modelGeneration: Long = 0, var eagerSynthesis: Long = 0, var eagerZ3: Long = 0, var lazySynthesis: Long = 0, var lazyZ3: Long = 0, var isSameOutput: Boolean = false, var model1Result: Map[String, String] = Map(), var model2Result: Map[String, String] = Map(), var pealInput: String = "")
+class TimingOutput(var modelGeneration: Long = 0, var eagerSynthesis: Long = 0, var eagerZ3: Long = 0, var lazySynthesis: Long = 0, var lazyZ3: Long = 0,
+                   var isSameOutput: Boolean = false,
+                   var model1Result: Map[String, String] = Map(),
+                   var model2Result: Map[String, String] = Map(),
+                   var pealInput: String = "")
 
 class ExperimentRunner(doDomainSpecifics: Boolean, system: ActorSystem, duration: Long, z3CallerMemoryBound: Long, runModes: RunMode*) {
   implicit val timeout = Timeout(duration, MILLISECONDS)
@@ -32,38 +36,45 @@ class ExperimentRunner(doDomainSpecifics: Boolean, system: ActorSystem, duration
     val output = new TimingOutput()
     val processKiller = system.actorOf(Props[ProcessKillerActor])
     var eagerZ3Caller: ActorRef = null
-    var lazyZ3Caller: ActorRef = null
 
     val randomModelFile = File.createTempFile("randomModel", "")
     try {
-      var start = System.nanoTime()
-      var lapsedTime = System.nanoTime() - start
-      output.modelGeneration = lapsedTime
-      print("m")
       FileUtil.writeToFile(randomModelFile.getAbsolutePath, model)
+      print("m")
 
-      if (runModes.contains(Explicit)) {
-        val eagerInput = Seq("java", "-Xmx15240m", "-Xss32m", "-cp", "./Peal.jar", "peal.runner.SynthesisRunner", "explicit", randomModelFile.getAbsolutePath).!!
+      def runSysthesiser(mode: String, tag: String) {
+        val eagerInput = Seq("java", "-Xmx15240m", "-Xss32m", "-cp", "./Peal.jar", "peal.runner.SynthesisRunner", mode, randomModelFile.getAbsolutePath).!!
         if (eagerInput.trim == "TIMEOUT") {
-          throw new TimeoutException("Timeout in Eager Synthesis")
+          throw new TimeoutException("Timeout in " + mode + " Synthesis")
         }
-        output.eagerSynthesis = eagerInput.split("\n")(0).toLong
-        print("e")
 
-        val z3InputFile = File.createTempFile("eagerZ3File", "")
+        mode match {
+          case "explicit" => output.eagerSynthesis = eagerInput.split("\n")(0).toLong
+          case "symbolic" => output.lazySynthesis = eagerInput.split("\n")(0).toLong
+        }
+
+        print(tag)
+
+        val z3InputFile = File.createTempFile("z3File", "")
         FileUtil.writeToFile(z3InputFile.getAbsolutePath, eagerInput)
 
         try {
           eagerZ3Caller = system.actorOf(Props(new Z3CallerActor(z3CallerMemoryBound)))
-          start = System.nanoTime()
+          val start = System.nanoTime()
           val eagerFuture = eagerZ3Caller ? z3InputFile
           val eagerResult = Await.result(eagerFuture, timeout.duration)
-          lapsedTime = System.nanoTime() - start
-          output.eagerZ3 = lapsedTime
+          val lapsedTime = System.nanoTime() - start
+          mode match {
+            case "explicit" => output.eagerZ3 = lapsedTime
+            case "symbolic" => output.lazyZ3 = lapsedTime
+          }
 
           eagerResult match {
             case FailedExecution => throw new RuntimeException("Z3 caller aborted")
-            case _ => output.model1Result = eagerResult.asInstanceOf[Map[String, String]]
+            case _ => mode match {
+              case "explicit" => output.model1Result = eagerResult.asInstanceOf[Map[String, String]]
+              case "symbolic" => output.model2Result = eagerResult.asInstanceOf[Map[String, String]]
+            }
           }
           print("z")
         } catch {
@@ -72,33 +83,12 @@ class ExperimentRunner(doDomainSpecifics: Boolean, system: ActorSystem, duration
         }
       }
 
+      if (runModes.contains(Explicit)) {
+        runSysthesiser("explicit", "e")
+      }
+
       if (runModes.contains(Symbolic)) {
-        val lazyInput = Seq("java", "-Xmx15240m", "-Xss32m", "-cp", "./Peal.jar", "peal.runner.SynthesisRunner", "symbolic", randomModelFile.getAbsolutePath).!!
-        if (lazyInput.trim == "TIMEOUT") {
-          throw new TimeoutException("Timeout in Lazy Synthesis")
-        }
-        output.lazySynthesis = lazyInput.split("\n")(0).toLong
-        print("1")
-
-        val z3InputFile = File.createTempFile("lazyZ3File", "")
-        FileUtil.writeToFile(z3InputFile.getAbsolutePath, lazyInput)
-
-        try {
-          lazyZ3Caller = system.actorOf(Props(new Z3CallerActor(z3CallerMemoryBound)))
-          start = System.nanoTime()
-          val resultFuture = lazyZ3Caller ? z3InputFile
-          val lazyResult = Await.result(resultFuture, timeout.duration)
-          lapsedTime = System.nanoTime() - start
-          output.lazyZ3 = lapsedTime
-          lazyResult match {
-            case FailedExecution => throw new RuntimeException("Z3 caller aborted")
-            case _ => output.model2Result = lazyResult.asInstanceOf[Map[String, String]]
-          }
-          print("z")
-        } catch {
-          case e: TimeoutException => processKiller ! z3InputFile
-            throw e
-        }
+        runSysthesiser("symbolic", "l")
       }
 
       if (runModes.size == 1) {
@@ -117,7 +107,6 @@ class ExperimentRunner(doDomainSpecifics: Boolean, system: ActorSystem, duration
     catch {
       case e: Exception =>
         if (eagerZ3Caller != null) system.stop(eagerZ3Caller)
-        if (lazyZ3Caller != null) system.stop(lazyZ3Caller)
         throw e
     }
     finally {
