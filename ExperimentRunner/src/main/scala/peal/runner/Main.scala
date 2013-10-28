@@ -11,7 +11,7 @@ object Main extends App {
   private val doDomainSpecifics = false
 
   println("Picking up z3 from environment PATH: " + System.getenv("PATH"))
-  binarySearchOnRuleSize(Explicit)
+  binarySearchOnRuleSize(Explicit, Symbolic)
   System.exit(0)
 
   private def binarySearchOnRuleSize(runModes: RunMode*) {

@@ -101,8 +101,7 @@ class ExperimentRunner(doDomainSpecifics: Boolean, system: ActorSystem, duration
         }
       }
 
-      //TODO this needs clean up
-      if (!runModes.contains(Explicit) || runModes.contains(Symbolic)) {
+      if (runModes.size == 1) {
         output.isSameOutput = true
       }
       else {

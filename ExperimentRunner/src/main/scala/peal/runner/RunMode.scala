@@ -8,4 +8,3 @@ object Symbolic extends RunMode
 
 object NewSynthesis extends RunMode
 
-object AllSynthesisers extends RunMode
