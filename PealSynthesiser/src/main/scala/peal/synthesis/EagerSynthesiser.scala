@@ -4,9 +4,9 @@ import scala.collection.JavaConversions._
 import peal.domain.z3.Term
 import peal.antlr.util.ParserHelper
 
-class EagerSynthesiser() {
+class EagerSynthesiser(input:String) extends Synthesiser{
 
-  def generate(input:String): String = {
+  def generate(): String = {
     val pealProgramParser = ParserHelper.getPealParser(input)
     pealProgramParser.program()
 

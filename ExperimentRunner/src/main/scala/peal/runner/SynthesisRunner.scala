@@ -15,13 +15,13 @@ object SynthesisRunner extends App {
       val input = scala.io.Source.fromFile(inputFileName).mkString
 
       val synthesiser = args(0) match {
-        case "explicit" =>  new EagerSynthesiser()
-//        case "symbolic" =>  new LazySynthesiser()
+        case "explicit" =>  new EagerSynthesiser(input)
+        case "symbolic" =>  new LazySynthesiser(input)
       }
 
       val outputFuture = future {
         val start = System.nanoTime()
-        val out = synthesiser.generate(input)
+        val out = synthesiser.generate()
         val lapseTime = System.nanoTime() - start
         lapseTime.toString + "\n" + out
       }

@@ -10,7 +10,7 @@ import peal.domain.MaxPolicySet
 import peal.domain.Pol
 import scala.Some
 
-class LazySynthesiser(input: String) {
+class LazySynthesiser(input: String) extends Synthesiser{
 
   //TODO need to support synthesis of predicate replacement for robustness analysis
 //  println("lazy input: " + input)

@@ -3,17 +3,13 @@ package peal.synthesis
 import peal.antlr.util.ParserHelper
 import scala.collection.JavaConversions._
 import peal.domain.operator.{Mul, Plus, Min, Max}
-import peal.synthesis._
 import peal.domain.BasicPolicySet
 import peal.synthesis.analysis.AlwaysTrue
-import peal.synthesis.NotCondition
-import peal.synthesis.GreaterThanThCondition
 import peal.domain.MaxPolicySet
 import peal.domain.MinPolicySet
-import peal.synthesis.LessThanThCondition
 import peal.domain.Pol
 
-class NewSynthesiser(input: String) {
+class NewSynthesiser(input: String) extends Synthesiser {
 
   val pealProgramParser = ParserHelper.getPealParser(input)
   pealProgramParser.program()
@@ -114,7 +110,7 @@ class NewSynthesiser(input: String) {
       case (name, analysis) => analysis match {
         case AlwaysTrue(n, c) =>
           "(echo \"Result of analysis [" + analysis.analysisName + "]:\")\n" +
-          "(push)\n" +
+            "(push)\n" +
             "(declare-const always_true_" + name + " Bool)\n" +
             "(assert (= always_true_" + name + " " + c + "))\n" +
             "(assert (not always_true_" + name + "))\n" +
