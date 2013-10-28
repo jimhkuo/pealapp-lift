@@ -101,7 +101,7 @@ class ExperimentRunner(runMode: RunMode, doDomainSpecifics: Boolean, system: Act
         }
       }
 
-      if (runMode != Both) {
+      if (runMode != AllSynthesisers) {
         output.isSameOutput = true
       }
       else {
