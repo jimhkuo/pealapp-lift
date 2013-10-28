@@ -8,37 +8,11 @@ object Main extends App {
   implicit val system = ActorSystem("system")
   private val z3MemoryBound = 20000000
   private val timeout = 300000
-  private val doDomainSpecifics = true
+  private val doDomainSpecifics = false
 
   println("Picking up z3 from environment PATH: " + System.getenv("PATH"))
-  binarySearchOnMajorityVoting(EagerOnly)
+  binarySearchOnRuleSize(EagerOnly)
   System.exit(0)
-
-  private def binarySearchOnMajorityVoting(runMode: RunMode) {
-    val execute: (Int) => Boolean = (x) => executeRunner(runMode, x, 0, 0, 0, 0, 0, 0, 0)
-
-    var lastSuccess = 0
-    var lastFailure = 0
-    var p = 2
-
-    while (execute(p)) {
-      lastSuccess = p
-      p = p + 1
-    }
-
-//    println("############################")
-//
-//    lastFailure = p
-//    while (lastFailure - lastSuccess > 10) {
-//      p = (lastSuccess + lastFailure) / 2
-//      if (execute(p)) {
-//        lastSuccess = p
-//      }
-//      else {
-//        lastFailure = p
-//      }
-//    }
-  }
 
   private def binarySearchOnRuleSize(runMode: RunMode) {
     val execute: (Int) => Boolean = (x) => executeRunner(runMode, 1, x, 1, 1, 1, 3 * x, 0.5, 0.1)
@@ -92,6 +66,32 @@ object Main extends App {
     }
   }
 
+  private def binarySearchOnMajorityVoting(runMode: RunMode) {
+    val execute: (Int) => Boolean = (x) => executeRunner(runMode, x, 0, 0, 0, 0, 0, 0, 0)
+
+    var lastSuccess = 0
+    var lastFailure = 0
+    var p = 2
+
+    while (execute(p)) {
+      lastSuccess = p
+      p = p + 1
+    }
+
+    //    println("############################")
+    //
+    //    lastFailure = p
+    //    while (lastFailure - lastSuccess > 10) {
+    //      p = (lastSuccess + lastFailure) / 2
+    //      if (execute(p)) {
+    //        lastSuccess = p
+    //      }
+    //      else {
+    //        lastFailure = p
+    //      }
+    //    }
+  }
+
   private def milliTime(timeInNano: Long) = {
     "%.2f".format(timeInNano.toDouble / 1000000)
   }
@@ -109,8 +109,8 @@ object Main extends App {
       print(n + "-" + m0 + "-" + m1 + "-" + m2 + "-" + m3 + "-" + th + "-" + delta + "," + timeout + ",")
 
       for (i <- 1 to iterations) {
-        //        val output = new ExperimentRunner(runMode, doDomainSpecifics, system, timeout, z3MemoryBound).runRandomModel(n, m0, m1, m2, m3, k, th, delta)
-        val output = new ExperimentRunner(runMode, doDomainSpecifics, system, timeout, z3MemoryBound).runMajorityVoting(n)
+        val output = new ExperimentRunner(runMode, doDomainSpecifics, system, timeout, z3MemoryBound).runRandomModel(n, m0, m1, m2, m3, k, th, delta)
+        //        val output = new ExperimentRunner(runMode, doDomainSpecifics, system, timeout, z3MemoryBound).runMajorityVoting(n)
         mt += output.modelGeneration
         et += output.eagerSynthesis
         ezt += output.eagerZ3
@@ -135,6 +135,7 @@ object Main extends App {
         println(",TIMEOUT,TIMEOUT,TIMEOUT,TIMEOUT,TIMEOUT," + e.getMessage)
         false
       case e1: RuntimeException =>
+        e1.printStackTrace()
         println(",OUTOFMEMORY,OUTOFMEMORY,OUTOFMEMORY,OUTOFMEMORY,OUTOFMEMORY," + e1.getMessage)
         false
     }

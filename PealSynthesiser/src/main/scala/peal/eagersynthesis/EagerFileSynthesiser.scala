@@ -7,7 +7,7 @@ import ExecutionContext.Implicits.global
 object EagerFileSynthesiser extends App {
 
   val inputFileName: String = args(0)
-//  println(generate())
+  println(generate())
 
   def generate(): String = {
     try {

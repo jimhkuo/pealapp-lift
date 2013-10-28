@@ -102,9 +102,7 @@ class ExperimentRunner(runMode: RunMode, doDomainSpecifics: Boolean, system: Act
       }
 
       if (runMode != Both) {
-        if ((output.model1Result.contains("analysis = always_true? cond") && output.model1Result("analysis = always_true? cond") == "sat" && runMode == EagerOnly) || (output.model2Result.contains("analysis = always_true? cond") && output.model2Result("analysis = always_true? cond") == "sat" && runMode == LazyOnly)) {
           output.isSameOutput = true
-        }
       }
       else {
         if (!output.model1Result.isEmpty && output.model1Result == output.model2Result) {
@@ -123,7 +121,7 @@ class ExperimentRunner(runMode: RunMode, doDomainSpecifics: Boolean, system: Act
         throw e
     }
     finally {
-      randomModelFile.delete()
+//      randomModelFile.delete()
     }
   }
 }
