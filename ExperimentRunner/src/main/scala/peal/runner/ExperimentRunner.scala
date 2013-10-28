@@ -43,7 +43,7 @@ class ExperimentRunner(runMode: RunMode, doDomainSpecifics: Boolean, system: Act
       FileUtil.writeToFile(randomModelFile.getAbsolutePath, model)
 
       if (runMode != LazyOnly) {
-        val eagerInput = Seq("java", "-Xmx15240m", "-Xss32m", "-cp", "./Peal.jar", "peal.eagersynthesis.EagerFileSynthesiser", randomModelFile.getAbsolutePath).!!
+        val eagerInput = Seq("java", "-Xmx15240m", "-Xss32m", "-cp", "./Peal.jar", "peal.runner.SynthesisRunner", "explicit", randomModelFile.getAbsolutePath).!!
         if (eagerInput.trim == "TIMEOUT") {
           throw new TimeoutException("Timeout in Eager Synthesis")
         }
@@ -73,7 +73,7 @@ class ExperimentRunner(runMode: RunMode, doDomainSpecifics: Boolean, system: Act
       }
 
       if (runMode != EagerOnly) {
-        val lazyInput = Seq("java", "-Xmx15240m", "-Xss32m", "-cp", "./Peal.jar", "peal.lazysynthesis.LazyFileSynthesiser", randomModelFile.getAbsolutePath).!!
+        val lazyInput = Seq("java", "-Xmx15240m", "-Xss32m", "-cp", "./Peal.jar", "peal.runner.SynthesisRunner", "symbolic", randomModelFile.getAbsolutePath).!!
         if (lazyInput.trim == "TIMEOUT") {
           throw new TimeoutException("Timeout in Lazy Synthesis")
         }
@@ -102,7 +102,7 @@ class ExperimentRunner(runMode: RunMode, doDomainSpecifics: Boolean, system: Act
       }
 
       if (runMode != Both) {
-          output.isSameOutput = true
+        output.isSameOutput = true
       }
       else {
         if (!output.model1Result.isEmpty && output.model1Result == output.model2Result) {
@@ -121,7 +121,7 @@ class ExperimentRunner(runMode: RunMode, doDomainSpecifics: Boolean, system: Act
         throw e
     }
     finally {
-//      randomModelFile.delete()
+      //      randomModelFile.delete()
     }
   }
 }

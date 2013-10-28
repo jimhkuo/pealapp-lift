@@ -3,6 +3,7 @@ package peal.lazysynthesis
 import org.scalatest.junit.ShouldMatchersForJUnit
 import org.junit.{Ignore, Test}
 import peal.util.Z3ModelMatcher
+import peal.synthesis.LazySynthesiser
 
 class LazySynthesiserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
 

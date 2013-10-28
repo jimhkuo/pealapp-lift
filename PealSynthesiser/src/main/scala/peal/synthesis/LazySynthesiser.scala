@@ -1,13 +1,10 @@
-package peal.lazysynthesis
+package peal.synthesis
 
 import scala.collection.JavaConversions._
 import peal.domain.operator._
 import peal.domain._
-import peal.synthesis._
 import peal.antlr.util.ParserHelper
 import peal.domain.BasicPolicySet
-import peal.synthesis.GreaterThanThCondition
-import peal.synthesis.LessThanThCondition
 import peal.domain.MinPolicySet
 import peal.domain.MaxPolicySet
 import peal.domain.Pol

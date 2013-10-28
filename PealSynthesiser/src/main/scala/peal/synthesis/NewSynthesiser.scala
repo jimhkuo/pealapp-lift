@@ -1,4 +1,4 @@
-package peal.newsynthesis
+package peal.synthesis
 
 import peal.antlr.util.ParserHelper
 import scala.collection.JavaConversions._

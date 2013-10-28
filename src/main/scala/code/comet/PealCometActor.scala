@@ -8,7 +8,7 @@ import net.liftweb.http.js.JsCmds._
 import scala.xml.Text
 import net.liftweb.common.Loggable
 import scala.collection.JavaConversions._
-import peal.synthesis.Condition
+import peal.synthesis.{NewSynthesiser, LazySynthesiser, Condition}
 import scala.Predef._
 import scala.sys.process._
 import java.io.File
@@ -18,10 +18,8 @@ import code.lib._
 import net.liftweb.http.js.jquery.JqJE.JqId
 import peal.model.{MajorityVotingGenerator, RandomModelGenerator}
 import peal.domain.PolicySet
-import peal.lazysynthesis.LazySynthesiser
 import peal.domain.z3.{PealAst, Term}
 import peal.antlr.util.ParserHelper
-import peal.newsynthesis.NewSynthesiser
 
 class PealCometActor extends CometActor with Loggable {
   val resultList = ListBuffer[String]()

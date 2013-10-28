@@ -1,4 +1,4 @@
-package peal.eagersynthesis
+package peal.synthesis
 
 import scala.collection.JavaConversions._
 import peal.domain.z3.Term

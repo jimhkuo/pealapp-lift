@@ -6,6 +6,7 @@ import peal.util.Z3ModelMatcher
 import scala.concurrent._
 import scala.concurrent.duration._
 import ExecutionContext.Implicits.global
+import peal.synthesis.EagerSynthesiser
 
 
 class EagerSynthesiserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {

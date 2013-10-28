@@ -1,21 +1,27 @@
-package peal.eagersynthesis
+package peal.runner
 
 import scala.concurrent._
 import scala.concurrent.duration._
 import ExecutionContext.Implicits.global
+import peal.synthesis.{LazySynthesiser, EagerSynthesiser}
 
-object EagerFileSynthesiser extends App {
+object SynthesisRunner extends App {
 
-  val inputFileName: String = args(0)
+  val inputFileName: String = args(1)
   println(generate())
 
   def generate(): String = {
     try {
       val input = scala.io.Source.fromFile(inputFileName).mkString
 
+      val synthesiser = args(0) match {
+        case "explicit" =>  new EagerSynthesiser()
+//        case "symbolic" =>  new LazySynthesiser()
+      }
+
       val outputFuture = future {
         val start = System.nanoTime()
-        val out = new EagerSynthesiser().generate(input)
+        val out = synthesiser.generate(input)
         val lapseTime = System.nanoTime() - start
         lapseTime.toString + "\n" + out
       }

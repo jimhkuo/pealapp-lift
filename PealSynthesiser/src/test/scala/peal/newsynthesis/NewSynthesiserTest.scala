@@ -3,6 +3,7 @@ package peal.newsynthesis
 import org.scalatest.junit.ShouldMatchersForJUnit
 import peal.util.Z3ModelMatcher
 import org.junit.{Ignore, Test}
+import peal.synthesis.NewSynthesiser
 
 class NewSynthesiserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
 
