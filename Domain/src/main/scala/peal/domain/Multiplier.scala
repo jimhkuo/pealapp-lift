@@ -1,6 +1,5 @@
 package peal.domain
 
-//TODO need to expand this to support 0.5*x + y
 object Multiplier {
   def apply(name: String) = new Multiplier(1, name)
 
