@@ -1,9 +1,8 @@
-package peal.newsynthesis
+package peal.synthesis
 
 import org.scalatest.junit.ShouldMatchersForJUnit
 import peal.util.Z3ModelMatcher
-import org.junit.{Ignore, Test}
-import peal.synthesis.NewSynthesiser
+import org.junit.Test
 
 class NewSynthesiserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
 
