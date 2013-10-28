@@ -14,6 +14,7 @@ object SynthesisRunner extends App {
     try {
       val input = scala.io.Source.fromFile(inputFileName).mkString
 
+      //TODO set up one more entry for new synthesis
       val synthesiser = args(0) match {
         case "explicit" =>  new EagerSynthesiser(input)
         case "symbolic" =>  new LazySynthesiser(input)

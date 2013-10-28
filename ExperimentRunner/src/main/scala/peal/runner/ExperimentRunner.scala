@@ -43,6 +43,7 @@ class ExperimentRunner(doDomainSpecifics: Boolean, system: ActorSystem, duration
       print("m")
 
       def runSysthesiser(mode: String, tag: String) {
+        //TODO set up one more entry for new synthesis, need to write results in corresponding places
         val z3Input = Seq("java", "-Xmx15240m", "-Xss32m", "-cp", "./Peal.jar", "peal.runner.SynthesisRunner", mode, randomModelFile.getAbsolutePath).!!
         if (z3Input.trim == "TIMEOUT") {
           throw new TimeoutException("Timeout in " + mode + " Synthesis")
@@ -90,6 +91,8 @@ class ExperimentRunner(doDomainSpecifics: Boolean, system: ActorSystem, duration
       if (runModes.contains(Symbolic)) {
         runSysthesiser("symbolic", "l")
       }
+
+      //TODO set up one more entry for new synthesis
 
       if (runModes.size == 1) {
         output.isSameOutput = true
