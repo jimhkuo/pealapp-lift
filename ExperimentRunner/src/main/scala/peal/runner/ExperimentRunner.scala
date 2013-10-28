@@ -15,7 +15,7 @@ import java.util.concurrent.TimeoutException
 
 class TimingOutput(var modelGeneration: Long = 0, var eagerSynthesis: Long = 0, var eagerZ3: Long = 0, var lazySynthesis: Long = 0, var lazyZ3: Long = 0, var isSameOutput: Boolean = false, var model1Result: Map[String, String] = Map(), var model2Result: Map[String, String] = Map(), var pealInput: String = "")
 
-class ExperimentRunner(runMode: RunMode, doDomainSpecifics: Boolean, system: ActorSystem, duration: Long, z3CallerMemoryBound: Long) {
+class ExperimentRunner(doDomainSpecifics: Boolean, system: ActorSystem, duration: Long, z3CallerMemoryBound: Long, runModes: RunMode*) {
   implicit val timeout = Timeout(duration, MILLISECONDS)
 
   def runRandomModel(n: Int, min: Int, max: Int, plus: Int, mul: Int, k: Int, th: Double, delta: Double): TimingOutput = {
@@ -42,7 +42,7 @@ class ExperimentRunner(runMode: RunMode, doDomainSpecifics: Boolean, system: Act
       print("m")
       FileUtil.writeToFile(randomModelFile.getAbsolutePath, model)
 
-      if (runMode != LazyOnly) {
+      if (runModes.contains(Explicit)) {
         val eagerInput = Seq("java", "-Xmx15240m", "-Xss32m", "-cp", "./Peal.jar", "peal.runner.SynthesisRunner", "explicit", randomModelFile.getAbsolutePath).!!
         if (eagerInput.trim == "TIMEOUT") {
           throw new TimeoutException("Timeout in Eager Synthesis")
@@ -72,7 +72,7 @@ class ExperimentRunner(runMode: RunMode, doDomainSpecifics: Boolean, system: Act
         }
       }
 
-      if (runMode != EagerOnly) {
+      if (runModes.contains(Symbolic)) {
         val lazyInput = Seq("java", "-Xmx15240m", "-Xss32m", "-cp", "./Peal.jar", "peal.runner.SynthesisRunner", "symbolic", randomModelFile.getAbsolutePath).!!
         if (lazyInput.trim == "TIMEOUT") {
           throw new TimeoutException("Timeout in Lazy Synthesis")
@@ -101,7 +101,8 @@ class ExperimentRunner(runMode: RunMode, doDomainSpecifics: Boolean, system: Act
         }
       }
 
-      if (runMode != AllSynthesisers) {
+      //TODO this needs clean up
+      if (!runModes.contains(Explicit) || runModes.contains(Symbolic)) {
         output.isSameOutput = true
       }
       else {

@@ -2,6 +2,10 @@ package peal.runner
 
 trait RunMode
 
-object EagerOnly extends RunMode
-object LazyOnly extends RunMode
+object Explicit extends RunMode
+
+object Symbolic extends RunMode
+
+object NewSynthesis extends RunMode
+
 object AllSynthesisers extends RunMode
