@@ -11,12 +11,20 @@ import java.io.File
 import util.FileUtil
 import scala.sys.process._
 import java.util.concurrent.TimeoutException
+import scala.collection.mutable.ListBuffer
 
 
-class TimingOutput(var modelGeneration: Long = 0, var eagerSynthesis: Long = 0, var eagerZ3: Long = 0, var lazySynthesis: Long = 0, var lazyZ3: Long = 0,
+class TimingOutput(var modelGeneration: Long = 0,
+                   var eagerSynthesis: Long = 0,
+                   var eagerZ3: Long = 0,
+                   var lazySynthesis: Long = 0,
+                   var lazyZ3: Long = 0,
+                   var newSynthesis: Long = 0,
+                   var newZ3: Long = 0,
                    var isSameOutput: Boolean = false,
-                   var model1Result: Map[String, String] = Map(),
-                   var model2Result: Map[String, String] = Map(),
+                   var modelResults: ListBuffer[Map[String, String]] = ListBuffer(),
+                   //                   var model2Result: Map[String, String] = Map(),
+                   //                   var model3Result: Map[String, String] = Map(),
                    var pealInput: String = "")
 
 class ExperimentRunner(doDomainSpecifics: Boolean, system: ActorSystem, duration: Long, z3CallerMemoryBound: Long, runModes: RunMode*) {
@@ -42,19 +50,17 @@ class ExperimentRunner(doDomainSpecifics: Boolean, system: ActorSystem, duration
       FileUtil.writeToFile(randomModelFile.getAbsolutePath, model)
       print("m")
 
-      def runSysthesiser(mode: String, tag: String) {
-        //TODO set up one more entry for new synthesis, need to write results in corresponding places
+      def runSysthesiser(mode: String) {
         val z3Input = Seq("java", "-Xmx15240m", "-Xss32m", "-cp", "./Peal.jar", "peal.runner.SynthesisRunner", mode, randomModelFile.getAbsolutePath).!!
         if (z3Input.trim == "TIMEOUT") {
           throw new TimeoutException("Timeout in " + mode + " Synthesis")
         }
 
         mode match {
-          case "explicit" => output.eagerSynthesis = z3Input.split("\n")(0).toLong
-          case "symbolic" => output.lazySynthesis = z3Input.split("\n")(0).toLong
+          case "explicit" => output.eagerSynthesis = z3Input.split("\n")(0).toLong; print("e")
+          case "symbolic" => output.lazySynthesis = z3Input.split("\n")(0).toLong; print("l")
+          case "new" => output.newSynthesis = z3Input.split("\n")(0).toLong; print("n")
         }
-
-        print(tag)
 
         val z3InputFile = File.createTempFile("z3File", "")
         FileUtil.writeToFile(z3InputFile.getAbsolutePath, z3Input)
@@ -68,15 +74,14 @@ class ExperimentRunner(doDomainSpecifics: Boolean, system: ActorSystem, duration
           mode match {
             case "explicit" => output.eagerZ3 = lapsedTime
             case "symbolic" => output.lazyZ3 = lapsedTime
+            case "new" => output.newZ3 = lapsedTime
           }
 
           result match {
             case FailedExecution => throw new RuntimeException("Z3 caller aborted")
-            case _ => mode match {
-              case "explicit" => output.model1Result = result.asInstanceOf[Map[String, String]]
-              case "symbolic" => output.model2Result = result.asInstanceOf[Map[String, String]]
-            }
+            case _ => output.modelResults.append(result.asInstanceOf[Map[String, String]])
           }
+
           print("z")
         } catch {
           case e: TimeoutException => processKiller ! z3InputFile
@@ -85,25 +90,22 @@ class ExperimentRunner(doDomainSpecifics: Boolean, system: ActorSystem, duration
       }
 
       if (runModes.contains(Explicit)) {
-        runSysthesiser("explicit", "e")
+        runSysthesiser("explicit")
       }
 
       if (runModes.contains(Symbolic)) {
-        runSysthesiser("symbolic", "l")
+        runSysthesiser("symbolic")
       }
 
-      //TODO set up one more entry for new synthesis
+      if (runModes.contains(NewSynthesis)) {
+        runSysthesiser("new")
+      }
 
-      if (runModes.size == 1) {
+      if (runModes.size == 1 || allEqual(output.modelResults.toList)) {
         output.isSameOutput = true
       }
       else {
-        if (!output.model1Result.isEmpty && output.model1Result == output.model2Result) {
-          output.isSameOutput = true
-        }
-        else {
-          output.pealInput = model
-        }
+        output.pealInput = model
       }
       output
     }
@@ -115,5 +117,10 @@ class ExperimentRunner(doDomainSpecifics: Boolean, system: ActorSystem, duration
     finally {
       //      randomModelFile.delete()
     }
+  }
+
+  private def allEqual(list: List[Any]): Boolean = list match {
+    case x1 :: x2 :: xs => (x1 == x2) && allEqual(x2 :: xs)
+    case x1 :: Nil => true
   }
 }

@@ -12,4 +12,14 @@ class RunnerTest extends ShouldMatchersForJUnit {
     Seq(Explicit, Symbolic) should contain(Symbolic.asInstanceOf[RunMode])
   }
 
+  private def allEqual(list: List[Any]): Boolean = list match {
+    case x1 :: x2 :: xs => (x1 == x2) && allEqual(x2 :: xs)
+    case x1 :: Nil => true
+  }
+
+  @Test
+  def testList() {
+      allEqual(List(1,1,1)) should be (true)
+      allEqual(List(1,1,2)) should be (false)
+  }
 }

@@ -3,7 +3,7 @@ package peal.runner
 import scala.concurrent._
 import scala.concurrent.duration._
 import ExecutionContext.Implicits.global
-import peal.synthesis.{LazySynthesiser, EagerSynthesiser}
+import peal.synthesis.{NewSynthesiser, LazySynthesiser, EagerSynthesiser}
 
 object SynthesisRunner extends App {
 
@@ -18,6 +18,7 @@ object SynthesisRunner extends App {
       val synthesiser = args(0) match {
         case "explicit" =>  new EagerSynthesiser(input)
         case "symbolic" =>  new LazySynthesiser(input)
+        case "new" =>  new NewSynthesiser(input)
       }
 
       val outputFuture = future {
