@@ -11,7 +11,7 @@ object Main extends App {
   private val doDomainSpecifics = false
 
   println("Picking up z3 from environment PATH: " + System.getenv("PATH"))
-  binarySearchOnRuleSize(Explicit, Symbolic)
+  binarySearchOnRuleSize(Explicit, Symbolic, NewSynthesis)
   System.exit(0)
 
   private def binarySearchOnRuleSize(runModes: RunMode*) {
@@ -84,13 +84,15 @@ object Main extends App {
   }
 
   private def executeRunner(n: Int, m0: Int, m1: Int, m2: Int, m3: Int, k: Int, th: Double, delta: Double, runModes: RunMode*): Boolean = {
-    val iterations: Int = 5
+    val iterations: Int = 50
 
     var mt = 0l
     var et = 0l
     var ezt = 0l
     var lt = 0l
     var lzt = 0l
+    var nt = 0l
+    var nzt = 0l
 
     try {
       print(n + "-" + m0 + "-" + m1 + "-" + m2 + "-" + m3 + "-" + th + "-" + delta + "," + timeout + ",")
@@ -103,14 +105,16 @@ object Main extends App {
         ezt += output.eagerZ3
         lt += output.lazySynthesis
         lzt += output.lazyZ3
+        nt += output.newSynthesis
+        nzt += output.newZ3
 
         if (!output.isSameOutput) {
           println(output.modelResults)
-          println("eager and lazy produce different result," + n + "-" + m0 + "-" + m1 + "-" + m2 + "-" + m3 + "-" + th + "-" + delta + "," + timeout + "," + output.pealInput)
+          println("syntheses produce different results," + n + "-" + m0 + "-" + m1 + "-" + m2 + "-" + m3 + "-" + th + "-" + delta + "," + timeout + "," + output.pealInput)
         }
       }
 
-      println("," + milliTime(mt / iterations) + "," + milliTime(et / iterations) + "," + milliTime(ezt / iterations) + "," + milliTime(lt / iterations) + "," + milliTime(lzt / iterations))
+      println("," + milliTime(mt / iterations) + "," + milliTime(et / iterations) + "," + milliTime(ezt / iterations) + "," + milliTime(lt / iterations) + "," + milliTime(lzt / iterations) + "," + milliTime(nt / iterations) + "," + milliTime(nzt / iterations))
       true
     } catch {
       case e: TimeoutException =>

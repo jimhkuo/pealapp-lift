@@ -30,36 +30,36 @@ object RandomModelGenerator {
         predicates = Random.shuffle(predicates)
         val rules = (0 until m0).map {
           i =>
-            new Rule(predicates(i), Random.nextDouble())
+            new Rule(predicates(i), "%.4f".format(Random.nextDouble()))
         }
-        new Pol(rules, Min, Random.nextDouble())
+        new Pol(rules, Min, "%.4f".format(Random.nextDouble()))
     }
     val maxPolicies = (0 until n).map {
       j =>
         predicates = Random.shuffle(predicates)
         val rules = (0 until m1).map {
           i =>
-            new Rule(predicates(i), Random.nextDouble())
+            new Rule(predicates(i), "%.4f".format(Random.nextDouble()))
         }
-        new Pol(rules, Max, Random.nextDouble())
+        new Pol(rules, Max, "%.4f".format(Random.nextDouble()))
     }
     val plusPolicies = (0 until n).map {
       j =>
         predicates = Random.shuffle(predicates)
         val rules = (0 until m2).map {
           i =>
-            new Rule(predicates(i), Random.nextDouble())
+            new Rule(predicates(i), "%.4f".format(Random.nextDouble()))
         }
-        new Pol(rules, Plus, Random.nextDouble())
+        new Pol(rules, Plus, "%.4f".format(Random.nextDouble()))
     }
     val mulPolicies = (0 until n).map {
       j =>
         predicates = Random.shuffle(predicates)
         val rules = (0 until m3).map {
           i =>
-            new Rule(predicates(i), Random.nextDouble())
+            new Rule(predicates(i), "%.4f".format(Random.nextDouble()))
         }
-        new Pol(rules, Mul, Random.nextDouble())
+        new Pol(rules, Mul, "%.4f".format(Random.nextDouble()))
     }
     val policyList = Random.shuffle(minPolicies ++ maxPolicies ++ plusPolicies ++ mulPolicies)
     var i = -1
@@ -139,6 +139,7 @@ object RandomModelGenerator {
 
     val pealText = "POLICIES\n" + policies.toSeq.mkString("\n") + "\nPOLICY_SETS\n" + pSets.flatten.toSeq.map(c => c._1 + " = " + c._2).mkString("\n") + "\n\n" + reminder.toSeq.map(c => c._1 + " = " + c._2).mkString("\n") + lastBit + "CONDITIONS\n" + cond1 + "\n" + cond2 + "\n"
     val analyses = "analysis1 = always_true? cond1\nanalysis2 = always_false? cond2\nanalysis3 = different? cond1 cond2\n"
+//    val analyses = "analysis1 = always_true? cond1\nanalysis2 = always_true? cond2\n" //for new synthesis
     val domainSpecifics = if (doDomainSpecific) generateDomainSpecifics(k / 3, pealText) else ""
 
     pealText + domainSpecifics + "ANALYSES\n" + analyses
@@ -156,8 +157,8 @@ object RandomModelGenerator {
     val methodNameDeclaration = for (i <- 0 until p) yield ("(declare-const n" + i + " MethodName)")
 
     val firstLevel = for (i <- 0 until p if (predicates.contains("q" + i))) yield ("(assert (= q" + i + " (calledBy n" + Random.nextInt(p) + ")))")
-    val secondLevel = for (i <- p until 2 * p if (predicates.contains("q" + i))) yield ("(assert (= q" + i + " (< a" + Random.nextInt(p) + " (+ a" + Random.nextInt(p) + " " + "%.8f".format(Random.nextDouble()) + "))))")
-    val thirdLevel = for (i <- 2 * p until 3 * p if (predicates.contains("q" + i))) yield ("(assert (= q" + i + " (< x" + Random.nextInt(p) + " (* x" + Random.nextInt(p) + " " + "%.8f".format(Random.nextDouble()) + "))))")
+    val secondLevel = for (i <- p until 2 * p if (predicates.contains("q" + i))) yield ("(assert (= q" + i + " (< a" + Random.nextInt(p) + " (+ a" + Random.nextInt(p) + " " + "%.4f".format(Random.nextDouble()) + "))))")
+    val thirdLevel = for (i <- 2 * p until 3 * p if (predicates.contains("q" + i))) yield ("(assert (= q" + i + " (< x" + Random.nextInt(p) + " (* x" + Random.nextInt(p) + " " + "%.4f".format(Random.nextDouble()) + "))))")
 
     "DOMAIN_SPECIFICS\n" + realDeclaration.mkString("", "\n", "\n") + intDeclaration.mkString("", "\n", "\n") + methodName + methodNameDeclaration.mkString("", "\n", "\n") + firstLevel.mkString("", "\n", "\n") + secondLevel.mkString("", "\n", "\n") + thirdLevel.mkString("", "\n", "\n")
 

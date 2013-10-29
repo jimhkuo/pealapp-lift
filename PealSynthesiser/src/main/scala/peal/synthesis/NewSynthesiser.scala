@@ -4,7 +4,7 @@ import peal.antlr.util.ParserHelper
 import scala.collection.JavaConversions._
 import peal.domain.operator.{Mul, Plus, Min, Max}
 import peal.domain.BasicPolicySet
-import peal.synthesis.analysis.AlwaysTrue
+import peal.synthesis.analysis.{AnalysisGenerator, Different, AlwaysFalse, AlwaysTrue}
 import peal.domain.MaxPolicySet
 import peal.domain.MinPolicySet
 import peal.domain.Pol
@@ -106,19 +106,39 @@ class NewSynthesiser(input: String) extends Synthesiser {
   }
 
   private def analysesAssertions = {
-    analyses.flatMap {
-      case (name, analysis) => analysis match {
-        case AlwaysTrue(n, c) =>
-          "(echo \"Result of analysis [" + analysis.analysisName + "]:\")\n" +
-            "(push)\n" +
-            "(declare-const always_true_" + name + " Bool)\n" +
-            "(assert (= always_true_" + name + " " + c + "))\n" +
-            "(assert (not always_true_" + name + "))\n" +
-            "(check-sat)\n" +
-            "(get-model)\n" +
-            "(pop)\n"
-        case _ => ""
-      }
+
+    def expand(analysis: AnalysisGenerator) = analysis match {
+      case AlwaysTrue(n, c) =>
+        "(push)\n" +
+          "(declare-const always_true_" + n + " Bool)\n" +
+          "(assert (= always_true_" + n + " " + c + "))\n" +
+          "(assert (not always_true_" + n + "))\n" +
+          "(check-sat)\n" +
+          "(get-model)\n" +
+          "(pop)\n"
+      case AlwaysFalse(n, c) =>
+        "(push)\n" +
+          "(declare-const always_false_" + n + " Bool)\n" +
+          "(assert (= always_false_" + n + " " + c + "))\n" +
+          "(assert always_false_" + n + ")\n" +
+          "(check-sat)\n" +
+          "(get-model)\n" +
+          "(pop)\n"
+      case Different(n, lhs, rhs) =>
+        "(push)\n" +
+          "(declare-const different_" + n + " Bool)\n" +
+          "(assert (= different_" + n + " (or (and " + lhs + " (not " + rhs + ")) (and (not " + lhs + ") " + rhs + "))))\n" +
+          "(assert different_" + n + ")\n" +
+          "(check-sat)\n" +
+          "(get-model)\n" +
+          "(pop)\n"
+      case _ => ""
+    }
+
+    val sortedAnalyses = analyses.keys.toSeq.sortWith(_ < _)
+
+    for (analysis <- sortedAnalyses) yield {
+      "(echo \"Result of analysis [" + analyses(analysis).analysisName + "]:\")\n" + expand(analyses(analysis))
     }
   }
 
