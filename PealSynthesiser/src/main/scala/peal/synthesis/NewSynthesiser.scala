@@ -71,11 +71,9 @@ class NewSynthesiser(input: String) extends Synthesiser {
       case (name, pol) =>
         pol.operator match {
           case Max => pol.rules.map(r =>
-            "(declare-const " + name + "_score_" + r.q.name + " Real)\n" +
-              "(assert (implies " + r.q.name + " (<= " + r.scoreString + " " + name + "_score_" + r.q.name + ")))\n")
+              "(assert (implies " + r.q.name + " (<= " + r.scoreString + " " + name + "_score" + ")))\n")
           case Min => pol.rules.map(r =>
-            "(declare-const " + name + "_score_" + r.q.name + " Real)\n" +
-              "(assert (implies " + r.q.name + " (<= " + name + "_score_" + r.q.name + " " + r.scoreString + ")))\n")
+              "(assert (implies " + r.q.name + " (<= " + name + "_score" + " " + r.scoreString + ")))\n")
           case Plus => pol.rules.map(r =>
             "(declare-const " + name + "_score_" + r.q.name + " Real)\n" +
               "(assert (implies " + r.q.name + " (= " + r.scoreString + " " + name + "_score_" + r.q.name + ")))\n" +
@@ -100,6 +98,10 @@ class NewSynthesiser(input: String) extends Synthesiser {
   }
 
   private def policyScoreAssertions = {
+
+    //TODO this is wrong, missing a case for +/*
+// +    (assert (= b1_score (ite (not (or q1 q2 q3)) (* 0.1 x) (+ b1_score_q1 b1_score_q2 b1_score_q3))))
+// *   (assert (= b1_score (ite (not (or q1 q2 q3)) 0.1 (* b1_score_q1 b1_score_q2 b1_score_q3))))
     for ((name, pol) <- pols) yield {
       "(assert (or " + defaultCase(pol) + " " + nonDefaultCase(pol) + "))\n"
     }

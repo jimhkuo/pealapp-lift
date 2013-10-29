@@ -15,7 +15,7 @@ object Main extends App {
   System.exit(0)
 
   private def binarySearchOnRuleSize(runModes: RunMode*) {
-    val execute: (Int) => Boolean = (x) => executeRunner(1, x, 1, 1, 1, 3 * x, 0.5, 0.1, runModes: _*)
+    val execute: (Int) => Boolean = (x) => executeRunner(1, x, x, x, x, 3 * x, 0.5, 0.1, runModes: _*)
 
     var lastSuccess = 0
     var lastFailure = 0
@@ -84,7 +84,7 @@ object Main extends App {
   }
 
   private def executeRunner(n: Int, m0: Int, m1: Int, m2: Int, m3: Int, k: Int, th: Double, delta: Double, runModes: RunMode*): Boolean = {
-    val iterations: Int = 50
+    val iterations: Int = 5
 
     var mt = 0l
     var et = 0l

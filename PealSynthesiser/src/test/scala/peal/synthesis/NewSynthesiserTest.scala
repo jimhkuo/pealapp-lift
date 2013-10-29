@@ -32,12 +32,9 @@ class NewSynthesiserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
       "(declare-const b1_score Real)\n" +
       "(declare-const pSet1_score Real)\n" +
       "(assert (= pSet1_score b1_score))\n" +
-      "(declare-const b1_score_q1 Real)\n" +
-      "(assert (implies q1 (<= 0.1 b1_score_q1)))\n" +
-      "(declare-const b1_score_q2 Real)\n" +
-      "(assert (implies q2 (<= (* 0.2 z) b1_score_q2)))\n" +
-      "(declare-const b1_score_q3 Real)\n" +
-      "(assert (implies q3 (<= (* 0.4 y) b1_score_q3)))\n" +
+      "(assert (implies q1 (<= 0.1 b1_score)))\n" +
+      "(assert (implies q2 (<= (* 0.2 z) b1_score)))\n" +
+      "(assert (implies q3 (<= (* 0.4 y) b1_score)))\n" +
       "(assert (or (and (not (or q1 q2 q3)) (= b1_score 0.1)) (and q1 (= b1_score 0.1)) (and q2 (= b1_score (* 0.2 z))) (and q3 (= b1_score (* 0.4 y)))))\n" +
       "(assert (= cond (<= pSet1_score 0.5)))\n" +
       "(assert (= cond1 (< 0.4 pSet1_score)))\n\n" +
@@ -76,12 +73,9 @@ class NewSynthesiserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
       "(declare-const b1_score Real)\n" +
       "(declare-const pSet1_score Real)\n" +
       "(assert (= pSet1_score b1_score))\n" +
-      "(declare-const b1_score_q1 Real)\n" +
-      "(assert (implies q1 (<= 0.1 b1_score_q1)))\n" +
-      "(declare-const b1_score_q2 Real)\n" +
-      "(assert (implies q2 (<= (* 0.2 z) b1_score_q2)))\n" +
-      "(declare-const b1_score_q3 Real)\n" +
-      "(assert (implies q3 (<= (* 0.4 y) b1_score_q3)))\n" +
+      "(assert (implies q1 (<= 0.1 b1_score)))\n" +
+      "(assert (implies q2 (<= (* 0.2 z) b1_score)))\n" +
+      "(assert (implies q3 (<= (* 0.4 y) b1_score)))\n" +
       "(assert (or (and (not (or q1 q2 q3)) (= b1_score 0.1)) (and q1 (= b1_score 0.1)) (and q2 (= b1_score (* 0.2 z))) (and q3 (= b1_score (* 0.4 y)))))\n" +
       "(assert (= cond (<= pSet1_score 0.5)))\n" +
       "(assert (= cond1 (< 0.4 pSet1_score)))\n" +
@@ -117,12 +111,9 @@ class NewSynthesiserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
       "(declare-const b1_score Real)\n" +
       "(declare-const pSet1_score Real)\n" +
       "(assert (= pSet1_score b1_score))\n" +
-      "(declare-const b1_score_q1 Real)\n" +
-      "(assert (implies q1 (<= 0.1 b1_score_q1)))\n" +
-      "(declare-const b1_score_q2 Real)\n" +
-      "(assert (implies q2 (<= (* 0.2 z) b1_score_q2)))\n" +
-      "(declare-const b1_score_q3 Real)\n" +
-      "(assert (implies q3 (<= (* 0.4 y) b1_score_q3)))\n" +
+      "(assert (implies q1 (<= 0.1 b1_score)))\n" +
+      "(assert (implies q2 (<= (* 0.2 z) b1_score)))\n" +
+      "(assert (implies q3 (<= (* 0.4 y) b1_score)))\n" +
       "(assert (or (and (not (or q1 q2 q3)) (= b1_score 0.1)) (and q1 (= b1_score 0.1)) (and q2 (= b1_score (* 0.2 z))) (and q3 (= b1_score (* 0.4 y)))))\n" +
       "(assert (= cond (<= pSet1_score 0.5)))\n" +
       "(assert (= cond1 (< 0.4 pSet1_score)))\n\n" +
@@ -244,18 +235,12 @@ class NewSynthesiserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
       "(declare-const pSet2_score Real)\n" +
       "(assert (= pSet2_score b2_score))\n" +
       "(assert (= pSet1_score b1_score))\n" +
-      "(declare-const b1_score_q1 Real)\n" +
-      "(assert (implies q1 (<= 0.1 b1_score_q1)))\n" +
-      "(declare-const b1_score_q2 Real)\n" +
-      "(assert (implies q2 (<= 0.2 b1_score_q2)))\n" +
-      "(declare-const b1_score_q3 Real)\n" +
-      "(assert (implies q3 (<= 0.4 b1_score_q3)))\n" +
-      "(declare-const b2_score_q1 Real)\n" +
-      "(assert (implies q1 (<= b2_score_q1 0.5)))\n" +
-      "(declare-const b2_score_q2 Real)\n" +
-      "(assert (implies q2 (<= b2_score_q2 0.6)))\n" +
-      "(declare-const b2_score_q3 Real)\n" +
-      "(assert (implies q3 (<= b2_score_q3 0.7)))\n" +
+      "(assert (implies q1 (<= 0.1 b1_score)))\n" +
+      "(assert (implies q2 (<= 0.2 b1_score)))\n" +
+      "(assert (implies q3 (<= 0.4 b1_score)))\n" +
+      "(assert (implies q1 (<= b2_score 0.5)))\n" +
+      "(assert (implies q2 (<= b2_score 0.6)))\n" +
+      "(assert (implies q3 (<= b2_score 0.7)))\n" +
       ""
 
     new NewSynthesiser(input).generate() should startWith(expected)
@@ -332,18 +317,12 @@ class NewSynthesiserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
       "(declare-const pSet2_score Real)\n" +
       "(assert (= pSet2_score b2_score))\n" +
       "(assert (= pSet1_score b1_score))\n" +
-      "(declare-const b1_score_q1 Real)\n" +
-      "(assert (implies q1 (<= 0.1 b1_score_q1)))\n" +
-      "(declare-const b1_score_q2 Real)\n" +
-      "(assert (implies q2 (<= 0.2 b1_score_q2)))\n" +
-      "(declare-const b1_score_q3 Real)\n" +
-      "(assert (implies q3 (<= (* 0.4 x) b1_score_q3)))\n" +
-      "(declare-const b2_score_q1 Real)\n" +
-      "(assert (implies q1 (<= b2_score_q1 0.5)))\n" +
-      "(declare-const b2_score_q2 Real)\n" +
-      "(assert (implies q2 (<= b2_score_q2 (* 0.6 y))))\n" +
-      "(declare-const b2_score_q3 Real)\n" +
-      "(assert (implies q3 (<= b2_score_q3 0.7)))\n" +
+      "(assert (implies q1 (<= 0.1 b1_score)))\n" +
+      "(assert (implies q2 (<= 0.2 b1_score)))\n" +
+      "(assert (implies q3 (<= (* 0.4 x) b1_score)))\n" +
+      "(assert (implies q1 (<= b2_score 0.5)))\n" +
+      "(assert (implies q2 (<= b2_score (* 0.6 y))))\n" +
+      "(assert (implies q3 (<= b2_score 0.7)))\n" +
       ""
 
     new NewSynthesiser(input).generate() should startWith(expected)
@@ -372,18 +351,12 @@ class NewSynthesiserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
       "(declare-const pSet2_score Real)\n" +
       "(assert (= pSet2_score b2_score))\n" +
       "(assert (= pSet1_score b1_score))\n" +
-      "(declare-const b1_score_q1 Real)\n" +
-      "(assert (implies q1 (<= 0.1 b1_score_q1)))\n" +
-      "(declare-const b1_score_q2 Real)\n" +
-      "(assert (implies q2 (<= 0.2 b1_score_q2)))\n" +
-      "(declare-const b1_score_q3 Real)\n" +
-      "(assert (implies q3 (<= 0.4 b1_score_q3)))\n" +
-      "(declare-const b2_score_q1 Real)\n" +
-      "(assert (implies q1 (<= b2_score_q1 0.5)))\n" +
-      "(declare-const b2_score_q2 Real)\n" +
-      "(assert (implies q2 (<= b2_score_q2 0.6)))\n" +
-      "(declare-const b2_score_q3 Real)\n" +
-      "(assert (implies q3 (<= b2_score_q3 0.7)))\n" +
+      "(assert (implies q1 (<= 0.1 b1_score)))\n" +
+      "(assert (implies q2 (<= 0.2 b1_score)))\n" +
+      "(assert (implies q3 (<= 0.4 b1_score)))\n" +
+      "(assert (implies q1 (<= b2_score 0.5)))\n" +
+      "(assert (implies q2 (<= b2_score 0.6)))\n" +
+      "(assert (implies q3 (<= b2_score 0.7)))\n" +
       "(assert (or (and (not (or q1 q2 q3)) (= b1_score 0.1)) (and q1 (= b1_score 0.1)) (and q2 (= b1_score 0.2)) (and q3 (= b1_score 0.4))))\n" +
       "(assert (or (and (not (or q1 q2 q3)) (= b2_score 0.2)) (and q1 (= b2_score 0.5)) (and q2 (= b2_score 0.6)) (and q3 (= b2_score 0.7))))\n" +
       ""
@@ -417,18 +390,12 @@ class NewSynthesiserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
       "(declare-const pSet2_score Real)\n" +
       "(assert (= pSet2_score b2_score))\n" +
       "(assert (= pSet1_score b1_score))\n" +
-      "(declare-const b1_score_q1 Real)\n" +
-      "(assert (implies q1 (<= 0.1 b1_score_q1)))\n" +
-      "(declare-const b1_score_q2 Real)\n" +
-      "(assert (implies q2 (<= 0.2 b1_score_q2)))\n" +
-      "(declare-const b1_score_q3 Real)\n" +
-      "(assert (implies q3 (<= 0.4 b1_score_q3)))\n" +
-      "(declare-const b2_score_q1 Real)\n" +
-      "(assert (implies q1 (<= b2_score_q1 0.5)))\n" +
-      "(declare-const b2_score_q2 Real)\n" +
-      "(assert (implies q2 (<= b2_score_q2 0.6)))\n" +
-      "(declare-const b2_score_q3 Real)\n" +
-      "(assert (implies q3 (<= b2_score_q3 0.7)))\n" +
+      "(assert (implies q1 (<= 0.1 b1_score)))\n" +
+      "(assert (implies q2 (<= 0.2 b1_score)))\n" +
+      "(assert (implies q3 (<= 0.4 b1_score)))\n" +
+      "(assert (implies q1 (<= b2_score 0.5)))\n" +
+      "(assert (implies q2 (<= b2_score 0.6)))\n" +
+      "(assert (implies q3 (<= b2_score 0.7)))\n" +
       "(assert (or (and (not (or q1 q2 q3)) (= b1_score (+ (* 0.1 x) 0.9 b))) (and q1 (= b1_score 0.1)) (and q2 (= b1_score 0.2)) (and q3 (= b1_score 0.4))))\n" +
       "(assert (or (and (not (or q1 q2 q3)) (= b2_score (+ (* 0.2 y) a))) (and q1 (= b2_score 0.5)) (and q2 (= b2_score 0.6)) (and q3 (= b2_score 0.7))))\n" +
       ""
@@ -465,18 +432,12 @@ class NewSynthesiserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
         "(declare-const pSet2_score Real)\n" +
         "(assert (= pSet2_score b2_score))\n" +
         "(assert (= pSet1_score b1_score))\n" +
-        "(declare-const b1_score_q1 Real)\n" +
-        "(assert (implies q1 (<= 0.1 b1_score_q1)))\n" +
-        "(declare-const b1_score_q2 Real)\n" +
-        "(assert (implies q2 (<= 0.2 b1_score_q2)))\n" +
-        "(declare-const b1_score_q3 Real)\n" +
-        "(assert (implies q3 (<= (* 0.4 x) b1_score_q3)))\n" +
-        "(declare-const b2_score_q4 Real)\n" +
-        "(assert (implies q4 (<= b2_score_q4 0.5)))\n" +
-        "(declare-const b2_score_q5 Real)\n" +
-        "(assert (implies q5 (<= b2_score_q5 0.6)))\n" +
-        "(declare-const b2_score_q6 Real)\n" +
-        "(assert (implies q6 (<= b2_score_q6 (* 0.7 z))))\n" +
+        "(assert (implies q1 (<= 0.1 b1_score)))\n" +
+        "(assert (implies q2 (<= 0.2 b1_score)))\n" +
+        "(assert (implies q3 (<= (* 0.4 x) b1_score)))\n" +
+        "(assert (implies q4 (<= b2_score 0.5)))\n" +
+        "(assert (implies q5 (<= b2_score 0.6)))\n" +
+        "(assert (implies q6 (<= b2_score (* 0.7 z))))\n" +
         "(assert (or (and (not (or q1 q2 q3)) (= b1_score 0.1)) (and q1 (= b1_score 0.1)) (and q2 (= b1_score 0.2)) (and q3 (= b1_score (* 0.4 x)))))\n" +
         "(assert (or (and (not (or q4 q5 q6)) (= b2_score (* 0.2 y))) (and q4 (= b2_score 0.5)) (and q5 (= b2_score 0.6)) (and q6 (= b2_score (* 0.7 z)))))\n" +
         ""
@@ -513,18 +474,12 @@ class NewSynthesiserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
         "(declare-const pSet2_score Real)\n" +
         "(assert (= pSet2_score b2_score))\n" +
         "(assert (= pSet1_score b1_score))\n" +
-        "(declare-const b1_score_q1 Real)\n" +
-        "(assert (implies q1 (<= 0.1 b1_score_q1)))\n" +
-        "(declare-const b1_score_q2 Real)\n" +
-        "(assert (implies q2 (<= 0.2 b1_score_q2)))\n" +
-        "(declare-const b1_score_q3 Real)\n" +
-        "(assert (implies q3 (<= (* 0.4 x) b1_score_q3)))\n" +
-        "(declare-const b2_score_q4 Real)\n" +
-        "(assert (implies q4 (<= b2_score_q4 0.5)))\n" +
-        "(declare-const b2_score_q5 Real)\n" +
-        "(assert (implies q5 (<= b2_score_q5 0.6)))\n" +
-        "(declare-const b2_score_q6 Real)\n" +
-        "(assert (implies q6 (<= b2_score_q6 (* 0.7 z))))\n" +
+        "(assert (implies q1 (<= 0.1 b1_score)))\n" +
+        "(assert (implies q2 (<= 0.2 b1_score)))\n" +
+        "(assert (implies q3 (<= (* 0.4 x) b1_score)))\n" +
+        "(assert (implies q4 (<= b2_score 0.5)))\n" +
+        "(assert (implies q5 (<= b2_score 0.6)))\n" +
+        "(assert (implies q6 (<= b2_score (* 0.7 z))))\n" +
         "(assert (or (and (not (or q1 q2 q3)) (= b1_score 0.1)) (and q1 (= b1_score 0.1)) (and q2 (= b1_score 0.2)) (and q3 (= b1_score (* 0.4 x)))))\n" +
         "(assert (or (and (not (or q4 q5 q6)) (= b2_score (* 0.2 y))) (and q4 (= b2_score 0.5)) (and q5 (= b2_score 0.6)) (and q6 (= b2_score (* 0.7 z)))))\n" +
         "(assert (= cond (<= pSet1_score pSet2_score)))\n\n" +
@@ -570,18 +525,12 @@ class NewSynthesiserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
         "(declare-const pSet2_score Real)\n" +
         "(assert (= pSet2_score b2_score))\n" +
         "(assert (= pSet1_score b1_score))\n" +
-        "(declare-const b1_score_q1 Real)\n" +
-        "(assert (implies q1 (<= 0.1 b1_score_q1)))\n" +
-        "(declare-const b1_score_q2 Real)\n" +
-        "(assert (implies q2 (<= 0.2 b1_score_q2)))\n" +
-        "(declare-const b1_score_q3 Real)\n" +
-        "(assert (implies q3 (<= (* 0.4 x) b1_score_q3)))\n" +
-        "(declare-const b2_score_q4 Real)\n" +
-        "(assert (implies q4 (<= b2_score_q4 0.5)))\n" +
-        "(declare-const b2_score_q5 Real)\n" +
-        "(assert (implies q5 (<= b2_score_q5 0.6)))\n" +
-        "(declare-const b2_score_q6 Real)\n" +
-        "(assert (implies q6 (<= b2_score_q6 (* 0.7 z))))\n" +
+        "(assert (implies q1 (<= 0.1 b1_score)))\n" +
+        "(assert (implies q2 (<= 0.2 b1_score)))\n" +
+        "(assert (implies q3 (<= (* 0.4 x) b1_score)))\n" +
+        "(assert (implies q4 (<= b2_score 0.5)))\n" +
+        "(assert (implies q5 (<= b2_score 0.6)))\n" +
+        "(assert (implies q6 (<= b2_score (* 0.7 z))))\n" +
         "(assert (or (and (not (or q1 q2 q3)) (= b1_score 0.1)) (and q1 (= b1_score 0.1)) (and q2 (= b1_score 0.2)) (and q3 (= b1_score (* 0.4 x)))))\n" +
         "(assert (or (and (not (or q4 q5 q6)) (= b2_score (* 0.2 y))) (and q4 (= b2_score 0.5)) (and q5 (= b2_score 0.6)) (and q6 (= b2_score (* 0.7 z)))))\n" +
         "(assert (= cond (< pSet1_score pSet2_score)))\n\n" +
@@ -635,18 +584,12 @@ class NewSynthesiserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
         "(declare-const pSet2_score Real)\n" +
         "(assert (= pSet2_score b2_score))\n" +
         "(assert (= pSet1_score b1_score))\n" +
-        "(declare-const b1_score_q1 Real)\n" +
-        "(assert (implies q1 (<= 0.1 b1_score_q1)))\n" +
-        "(declare-const b1_score_q2 Real)\n" +
-        "(assert (implies q2 (<= 0.2 b1_score_q2)))\n" +
-        "(declare-const b1_score_q3 Real)\n" +
-        "(assert (implies q3 (<= (* 0.4 x) b1_score_q3)))\n" +
-        "(declare-const b2_score_q4 Real)\n" +
-        "(assert (implies q4 (<= b2_score_q4 0.5)))\n" +
-        "(declare-const b2_score_q5 Real)\n" +
-        "(assert (implies q5 (<= b2_score_q5 0.6)))\n" +
-        "(declare-const b2_score_q6 Real)\n" +
-        "(assert (implies q6 (<= b2_score_q6 (* 0.7 z))))\n" +
+        "(assert (implies q1 (<= 0.1 b1_score)))\n" +
+        "(assert (implies q2 (<= 0.2 b1_score)))\n" +
+        "(assert (implies q3 (<= (* 0.4 x) b1_score)))\n" +
+        "(assert (implies q4 (<= b2_score 0.5)))\n" +
+        "(assert (implies q5 (<= b2_score 0.6)))\n" +
+        "(assert (implies q6 (<= b2_score (* 0.7 z))))\n" +
         "(assert (or (and (not (or q1 q2 q3)) (= b1_score 0.1)) (and q1 (= b1_score 0.1)) (and q2 (= b1_score 0.2)) (and q3 (= b1_score (* 0.4 x)))))\n" +
         "(assert (or (and (not (or q4 q5 q6)) (= b2_score (* 0.2 y))) (and q4 (= b2_score 0.5)) (and q5 (= b2_score 0.6)) (and q6 (= b2_score (* 0.7 z)))))\n" +
         "(assert (= cond2 (<= pSet2_score pSet1_score)))\n" +
