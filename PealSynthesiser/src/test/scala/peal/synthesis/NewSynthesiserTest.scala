@@ -404,14 +404,7 @@ class NewSynthesiserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
       "(declare-const b2_score_q3 Real)\n" +
       "(assert (implies q3 (= 0.7 b2_score_q3)))\n" +
       "(assert (implies (not (= 1.0 b2_score_q3)) q3))\n" +
-      //      "(assert (implies q1 (<= 0.1 b1_score)))\n" +
-      //      "(assert (implies q2 (<= 0.2 b1_score)))\n" +
-      //      "(assert (implies q3 (<= 0.4 b1_score)))\n" +
-      //      "(assert (implies q1 (<= b2_score 0.5)))\n" +
-      //      "(assert (implies q2 (<= b2_score 0.6)))\n" +
-      //      "(assert (implies q3 (<= b2_score 0.7)))\n" +
-      //      "(assert (or (and (not (or q1 q2 q3)) (= b1_score 0.1)) (and q1 (= b1_score 0.1)) (and q2 (= b1_score 0.2)) (and q3 (= b1_score 0.4))))\n" +
-      //      "(assert (or (and (not (or q1 q2 q3)) (= b2_score 0.2)) (and q1 (= b2_score 0.5)) (and q2 (= b2_score 0.6)) (and q3 (= b2_score 0.7))))\n" +
+      "(assert (= b1_score (ite (not (or q1 q2 q3)) 0.1 (+ b1_score_q1 b1_score_q2 b1_score_q3))))" +
       ""
     new NewSynthesiser(input).generate() should startWith(expected)
   }
