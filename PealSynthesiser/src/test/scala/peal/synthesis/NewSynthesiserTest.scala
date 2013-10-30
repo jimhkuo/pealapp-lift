@@ -329,7 +329,7 @@ class NewSynthesiserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
   }
 
   @Test
-  def testCanGeneratePolicyScoreAssertions() {
+  def testCanGeneratePolicyScoreAssertionsForMaxMin() {
     val input = "POLICIES\n" +
       "b1 = max ((q1 0.1) (q2 0.2) (q3 0.4)) default 0.1\n" +
       "b2 = min ((q1 0.5) (q2 0.6) (q3 0.7)) default 0.2\n" +
