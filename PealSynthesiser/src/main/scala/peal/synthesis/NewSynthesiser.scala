@@ -16,7 +16,6 @@ class NewSynthesiser(input: String) extends Synthesiser {
 
   val pealProgramParser = ParserHelper.getPealParser(input)
   pealProgramParser.program()
-
   val pols = pealProgramParser.pols
   val conds = pealProgramParser.conds
   val pSets = pealProgramParser.pSets
@@ -36,72 +35,41 @@ class NewSynthesiser(input: String) extends Synthesiser {
   })
   val analyses = pealProgramParser.analyses
 
-  def generate() = {
-    val declarations = for (name <- predicateNames) yield "(declare-const " + name + " Bool)\n"
-    val variableDeclarations = for (name <- nonConstantScores) yield "(declare-const " + name + " Real)\n"
-    val nonConstantScoreDeclarations = for (name <- nonConstantDefaultScores) yield "(declare-const " + name + " Real)\n"
-    val policyScoreDeclarations = for (name <- pols.keySet()) yield "(declare-const " + name + "_score" + " Real)\n"
-    val policySetScoreDeclarations = for (name <- pSets.keySet()) yield "(declare-const " + name + "_score" + " Real)\n"
-    val condDeclarations = for (name <- conds.keys) yield "(declare-const " + name + " Bool)\n"
-    val domainSpecifics = input.split("\n").dropWhile(!_.startsWith("DOMAIN_SPECIFICS")).takeWhile(!_.startsWith("ANALYSES")).drop(1)
-
-    declarations.mkString("") +
-      variableDeclarations.mkString("") +
-      nonConstantScoreDeclarations.mkString("") +
-      condDeclarations.mkString("") +
-      policyScoreDeclarations.mkString("") +
-      policySetScoreDeclarations.mkString("") +
-      policySetAssertions.mkString("") +
-      policyAssertions.mkString("") +
-      policyScoreAssertions.mkString("") +
-      conditionAssertions.mkString("") +
-      domainSpecifics.mkString("", "\n", "\n") +
-      analysesAssertions.mkString("")
+  private def policySetAssertions = for ((name, pSet) <- pSets) yield {
+    pSet match {
+      case p: BasicPolicySet => "(assert (= " + name + "_score " + p.underlyingPolicyName + "_score))\n"
+      case p: MaxPolicySet => "(assert (= " + name + "_score (ite (> " + p.lhs.getPolicySetName + "_score " + p.rhs.getPolicySetName + "_score) " + p.lhs.getPolicySetName + "_score " + p.rhs.getPolicySetName + "_score)))\n"
+      case p: MinPolicySet => "(assert (= " + name + "_score (ite (> " + p.rhs.getPolicySetName + "_score " + p.lhs.getPolicySetName + "_score) " + p.lhs.getPolicySetName + "_score " + p.rhs.getPolicySetName + "_score)))\n"
+    }
   }
 
-  private def policySetAssertions = {
-    for ((name, pSet) <- pSets) yield {
-      pSet match {
-        case p: BasicPolicySet => "(assert (= " + name + "_score " + p.underlyingPolicyName + "_score))\n"
-        case p: MaxPolicySet => "(assert (= " + name + "_score (ite (> " + p.lhs.getPolicySetName + "_score " + p.rhs.getPolicySetName + "_score) " + p.lhs.getPolicySetName + "_score " + p.rhs.getPolicySetName + "_score)))\n"
-        case p: MinPolicySet => "(assert (= " + name + "_score (ite (> " + p.rhs.getPolicySetName + "_score " + p.lhs.getPolicySetName + "_score) " + p.lhs.getPolicySetName + "_score " + p.rhs.getPolicySetName + "_score)))\n"
+  private def policyAssertions = pols.flatMap {
+    case (name, pol) =>
+      pol.operator match {
+        case Max => pol.rules.map(r =>
+          "(assert (implies " + r.q.name + " (<= " + r.scoreString + " " + name + "_score" + ")))\n")
+        case Min => pol.rules.map(r =>
+          "(assert (implies " + r.q.name + " (<= " + name + "_score" + " " + r.scoreString + ")))\n")
+        case o: OperatorWithUnit => pol.rules.map(r =>
+          "(declare-const " + name + "_score_" + r.q.name + " Real)\n" +
+            "(assert (implies " + r.q.name + " (= " + r.scoreString + " " + name + "_score_" + r.q.name + ")))\n" +
+            "(assert (implies (not (= " + o.unit + " " + name + "_score_" + r.q.name + ")) " + r.q.name + "))\n")
       }
-    }
   }
 
-  private def policyAssertions = {
-    pols.flatMap {
-      case (name, pol) =>
-        pol.operator match {
-          case Max => pol.rules.map(r =>
-            "(assert (implies " + r.q.name + " (<= " + r.scoreString + " " + name + "_score" + ")))\n")
-          case Min => pol.rules.map(r =>
-            "(assert (implies " + r.q.name + " (<= " + name + "_score" + " " + r.scoreString + ")))\n")
-          case o : OperatorWithUnit => pol.rules.map(r =>
-            "(declare-const " + name + "_score_" + r.q.name + " Real)\n" +
-              "(assert (implies " + r.q.name + " (= " + r.scoreString + " " + name + "_score_" + r.q.name + ")))\n" +
-              "(assert (implies (not (= " + o.unit + " " + name + "_score_" + r.q.name + ")) " + r.q.name + "))\n")
-        }
-    }
-  }
-
-  private def defaultCase(p: Pol) = {
-    "(and (not (or " + p.rules.map(_.q.name).mkString(" ") + ")) (= " + p.getPolicyName + "_score " + p.scoreString + "))"
-  }
+  private def defaultCase(p: Pol) = "(and (not (or " + p.rules.map(_.q.name).mkString(" ") + ")) (= " + p.getPolicyName + "_score " + p.scoreString + "))"
 
   private def nonDefaultCase(p: Pol) = {
     val out = for (r <- p.rules) yield {
       "(and " + r.q.name + " (= " + p.policyName + "_score " + r.scoreString + "))"
     }
-    out.mkString("", " ", "")
+    out.mkString(" ")
   }
 
-  private def policyScoreAssertions = {
-    for ((name, pol) <- pols) yield {
-      pol.operator match {
-        case Min | Max => "(assert (or " + defaultCase(pol) + " " + nonDefaultCase(pol) + "))\n"
-        case o => "(assert (= " + name + "_score (ite (not (or " + pol.rules.map(_.q.name).mkString(" ") + ")) " + pol.scoreString + " (" + o + " " + pol.rules.map(name + "_score_" + _.q.name).mkString(" ") + "))))\n"
-      }
+  private def policyScoreAssertions = for ((name, pol) <- pols) yield {
+    pol.operator match {
+      case Min | Max => "(assert (or " + defaultCase(pol) + " " + nonDefaultCase(pol) + "))\n"
+      case o => "(assert (= " + name + "_score (ite (not (or " + pol.rules.map(_.q.name).mkString(" ") + ")) " + pol.scoreString + " (" + o + " " + pol.rules.map(name + "_score_" + _.q.name).mkString(" ") + "))))\n"
     }
   }
 
@@ -152,9 +120,30 @@ class NewSynthesiser(input: String) extends Synthesiser {
     case c: FalseCondition => "false"
   }
 
-  private def conditionAssertions = {
-    conds.flatMap {
-      case (name, cond) => "(assert (= " + name + " " + condString(cond) + "))\n"
-    }
+  private def conditionAssertions = conds.flatMap {
+    case (name, cond) => "(assert (= " + name + " " + condString(cond) + "))\n"
+  }
+
+  def generate() = {
+    val declarations = for (name <- predicateNames) yield "(declare-const " + name + " Bool)\n"
+    val variableDeclarations = for (name <- nonConstantScores) yield "(declare-const " + name + " Real)\n"
+    val nonConstantScoreDeclarations = for (name <- nonConstantDefaultScores) yield "(declare-const " + name + " Real)\n"
+    val policyScoreDeclarations = for (name <- pols.keySet()) yield "(declare-const " + name + "_score" + " Real)\n"
+    val policySetScoreDeclarations = for (name <- pSets.keySet()) yield "(declare-const " + name + "_score" + " Real)\n"
+    val condDeclarations = for (name <- conds.keys) yield "(declare-const " + name + " Bool)\n"
+    val domainSpecifics = input.split("\n").dropWhile(!_.startsWith("DOMAIN_SPECIFICS")).takeWhile(!_.startsWith("ANALYSES")).drop(1)
+
+    declarations.mkString("") +
+      variableDeclarations.mkString("") +
+      nonConstantScoreDeclarations.mkString("") +
+      condDeclarations.mkString("") +
+      policyScoreDeclarations.mkString("") +
+      policySetScoreDeclarations.mkString("") +
+      policySetAssertions.mkString("") +
+      policyAssertions.mkString("") +
+      policyScoreAssertions.mkString("") +
+      conditionAssertions.mkString("") +
+      domainSpecifics.mkString("", "\n", "\n") +
+      analysesAssertions.mkString("")
   }
 }
