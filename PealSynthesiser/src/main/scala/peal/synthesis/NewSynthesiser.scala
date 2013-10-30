@@ -105,7 +105,7 @@ class NewSynthesiser(input: String) extends Synthesiser {
     for ((name, pol) <- pols) yield {
       pol.operator match {
         case Min | Max => "(assert (or " + defaultCase(pol) + " " + nonDefaultCase(pol) + "))\n"
-        case o => "(assert (= " + name + "_score (ite (not (or " + pol.rules.map(_.q.name).mkString(" ") + ")) " + pol.scoreString + " (+ " + pol.rules.map(name + "_score_" + _.q.name).mkString(" ") + "))))\n"
+        case o => "(assert (= " + name + "_score (ite (not (or " + pol.rules.map(_.q.name).mkString(" ") + ")) " + pol.scoreString + " (" + o + " " + pol.rules.map(name + "_score_" + _.q.name).mkString(" ") + "))))\n"
       }
     }
   }
