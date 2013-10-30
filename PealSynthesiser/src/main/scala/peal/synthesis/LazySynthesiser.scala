@@ -119,7 +119,7 @@ class LazySynthesiser(input: String) extends Synthesiser{
     case _ => "(or " + seq.mkString(" ") + ")"
   }
 
-  private def ruleAssert(op: Operators, bName: String) = op match {
+  private def ruleAssert(op: Operator, bName: String) = op match {
     case Plus => pols(bName).rules.size match {
       case 0 => "0.0"
       case _ => "(+ " + pols(bName).rules.map(bName + "_score_" + _.q.name).mkString(" ") + ")"

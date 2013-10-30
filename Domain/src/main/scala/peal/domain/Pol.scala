@@ -1,11 +1,11 @@
 package peal.domain
 
 import scala.collection.JavaConversions._
-import peal.domain.operator.Operators
+import peal.domain.operator.Operator
 
-case class Pol(rules: java.util.List[Rule], operator: Operators, val score: Either[BigDecimal, VariableFormula], policyName: String = "") extends PolicySet {
-  def this(rules: java.util.List[Rule], operator: Operators, doubleScore: Double) = this(rules, operator, Left(BigDecimal.valueOf(doubleScore)))
-  def this(rules: java.util.List[Rule], operator: Operators, scoreString: String) = this(rules, operator, Left(BigDecimal.valueOf(scoreString.toDouble)))
+case class Pol(rules: java.util.List[Rule], operator: Operator, val score: Either[BigDecimal, VariableFormula], policyName: String = "") extends PolicySet {
+  def this(rules: java.util.List[Rule], operator: Operator, doubleScore: Double) = this(rules, operator, Left(BigDecimal.valueOf(doubleScore)))
+  def this(rules: java.util.List[Rule], operator: Operator, scoreString: String) = this(rules, operator, Left(BigDecimal.valueOf(scoreString.toDouble)))
 
   override def toString: String = operator + " (" + rules.mkString(" ") + ") default " + score.fold(score => score.toString(), variable => variable.toZ3Expression)
 

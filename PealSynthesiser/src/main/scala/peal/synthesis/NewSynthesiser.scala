@@ -2,12 +2,15 @@ package peal.synthesis
 
 import peal.antlr.util.ParserHelper
 import scala.collection.JavaConversions._
-import peal.domain.operator.{Mul, Plus, Min, Max}
+import peal.domain.operator._
+import peal.synthesis.analysis.AnalysisGenerator
 import peal.domain.BasicPolicySet
-import peal.synthesis.analysis.{AnalysisGenerator, Different, AlwaysFalse, AlwaysTrue}
-import peal.domain.MaxPolicySet
+import peal.synthesis.analysis.AlwaysFalse
 import peal.domain.MinPolicySet
+import peal.domain.MaxPolicySet
 import peal.domain.Pol
+import peal.synthesis.analysis.Different
+import peal.synthesis.analysis.AlwaysTrue
 
 class NewSynthesiser(input: String) extends Synthesiser {
 
@@ -74,14 +77,10 @@ class NewSynthesiser(input: String) extends Synthesiser {
             "(assert (implies " + r.q.name + " (<= " + r.scoreString + " " + name + "_score" + ")))\n")
           case Min => pol.rules.map(r =>
             "(assert (implies " + r.q.name + " (<= " + name + "_score" + " " + r.scoreString + ")))\n")
-          case Plus => pol.rules.map(r =>
+          case o : OperatorWithUnit => pol.rules.map(r =>
             "(declare-const " + name + "_score_" + r.q.name + " Real)\n" +
               "(assert (implies " + r.q.name + " (= " + r.scoreString + " " + name + "_score_" + r.q.name + ")))\n" +
-              "(assert (implies (not (= 0.0 " + name + "_score_" + r.q.name + ")) " + r.q.name + "))\n")
-          case Mul => pol.rules.map(r =>
-            "(declare-const " + name + "_score_" + r.q.name + " Real)\n" +
-              "(assert (implies " + r.q.name + " (= " + r.scoreString + " " + name + "_score_" + r.q.name + ")))\n" +
-              "(assert (implies (not (= 1.0 " + name + "_score_" + r.q.name + ")) " + r.q.name + "))\n")
+              "(assert (implies (not (= " + o.unit + " " + name + "_score_" + r.q.name + ")) " + r.q.name + "))\n")
         }
     }
   }
@@ -98,10 +97,6 @@ class NewSynthesiser(input: String) extends Synthesiser {
   }
 
   private def policyScoreAssertions = {
-
-    //TODO this is wrong, missing a case for +/*
-    // +    (assert (= b1_score (ite (not (or q1 q2 q3)) (* 0.1 x) (+ b1_score_q1 b1_score_q2 b1_score_q3))))
-    // *   (assert (= b1_score (ite (not (or q1 q2 q3)) 0.1 (* b1_score_q1 b1_score_q2 b1_score_q3))))
     for ((name, pol) <- pols) yield {
       pol.operator match {
         case Min | Max => "(assert (or " + defaultCase(pol) + " " + nonDefaultCase(pol) + "))\n"
