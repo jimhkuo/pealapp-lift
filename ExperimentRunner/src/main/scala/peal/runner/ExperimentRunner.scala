@@ -23,8 +23,6 @@ class TimingOutput(var modelGeneration: Long = 0,
                    var newZ3: Long = 0,
                    var isSameOutput: Boolean = false,
                    var modelResults: ListBuffer[Map[String, String]] = ListBuffer(),
-                   //                   var model2Result: Map[String, String] = Map(),
-                   //                   var model3Result: Map[String, String] = Map(),
                    var pealInput: String = "")
 
 class ExperimentRunner(doDomainSpecifics: Boolean, system: ActorSystem, duration: Long, z3CallerMemoryBound: Long, runModes: RunMode*) {
@@ -115,7 +113,7 @@ class ExperimentRunner(doDomainSpecifics: Boolean, system: ActorSystem, duration
         throw e
     }
     finally {
-      //      randomModelFile.delete()
+      randomModelFile.delete()
     }
   }
 
