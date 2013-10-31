@@ -13,12 +13,12 @@ object RandomModelGenerator {
     generate(n(0).toInt, n(1).toInt, n(2).toInt, n(3).toInt, n(4).toInt, n(5).toInt, n(6).toDouble, n(7).toDouble)
   }
 
-  def generate(doDomainSpecific: Boolean, n: String*): String = {
-    generate(doDomainSpecific, n(0).toInt, n(1).toInt, n(2).toInt, n(3).toInt, n(4).toInt, n(5).toInt, n(6).toDouble, n(7).toDouble)
-  }
-
   def generate(n: Int, m0: Int, m1: Int, m2: Int, m3: Int, k: Int, th: Double, delta: Double): String = {
     generate(false, n, m0, m1, m2, m3, k, th, delta)
+  }
+
+  def generate(doDomainSpecific: Boolean, n: String*): String = {
+    generate(doDomainSpecific, n(0).toInt, n(1).toInt, n(2).toInt, n(3).toInt, n(4).toInt, n(5).toInt, n(6).toDouble, n(7).toDouble)
   }
 
   def generate(doDomainSpecific: Boolean, n: Int, m0: Int, m1: Int, m2: Int, m3: Int, k: Int, th: Double, delta: Double): String = {
@@ -139,7 +139,6 @@ object RandomModelGenerator {
 
     val pealText = "POLICIES\n" + policies.toSeq.mkString("\n") + "\nPOLICY_SETS\n" + pSets.flatten.toSeq.map(c => c._1 + " = " + c._2).mkString("\n") + "\n\n" + reminder.toSeq.map(c => c._1 + " = " + c._2).mkString("\n") + lastBit + "CONDITIONS\n" + cond1 + "\n" + cond2 + "\n"
     val analyses = "analysis1 = always_true? cond1\nanalysis2 = always_false? cond2\nanalysis3 = different? cond1 cond2\n"
-//    val analyses = "analysis1 = always_true? cond1\nanalysis2 = always_true? cond2\n" //for new synthesis
     val domainSpecifics = if (doDomainSpecific) generateDomainSpecifics(k / 3, pealText) else ""
 
     pealText + domainSpecifics + "ANALYSES\n" + analyses
@@ -161,6 +160,5 @@ object RandomModelGenerator {
     val thirdLevel = for (i <- 2 * p until 3 * p if (predicates.contains("q" + i))) yield ("(assert (= q" + i + " (< x" + Random.nextInt(p) + " (* x" + Random.nextInt(p) + " " + "%.4f".format(Random.nextDouble()) + "))))")
 
     "DOMAIN_SPECIFICS\n" + realDeclaration.mkString("", "\n", "\n") + intDeclaration.mkString("", "\n", "\n") + methodName + methodNameDeclaration.mkString("", "\n", "\n") + firstLevel.mkString("", "\n", "\n") + secondLevel.mkString("", "\n", "\n") + thirdLevel.mkString("", "\n", "\n")
-
   }
 }
