@@ -6,7 +6,7 @@ import akka.pattern.ask
 import akka.util.Timeout
 import akka.actor.{ActorRef, Props, ActorSystem}
 import peal.runner.actor._
-import peal.model.{MajorityVotingGenerator, RandomModelGenerator}
+import peal.model.MajorityVotingGenerator
 import java.io.File
 import util.FileUtil
 import scala.sys.process._
@@ -34,8 +34,7 @@ class ExperimentRunner(doDomainSpecifics: Boolean, system: ActorSystem, duration
   }
 
   def runRandomModel(n: Int, min: Int, max: Int, plus: Int, mul: Int, k: Int, th: Double, delta: Double): TimingOutput = {
-    //TODO break this out to a separate JVM
-    val model = RandomModelGenerator.generate(doDomainSpecifics, n, min, max, plus, mul, k, th, delta)
+    val model = Seq("java", "-Xmx15240m", "-Xss32m", "-cp", "./Peal.jar", "peal.runner.ModelGeneratorRunner", doDomainSpecifics.toString, n.toString, min.toString, max.toString, plus.toString, mul.toString, k.toString, th.toString, delta.toString).!!
     runExperiment(model)
   }
 
@@ -50,7 +49,7 @@ class ExperimentRunner(doDomainSpecifics: Boolean, system: ActorSystem, duration
       print("m")
 
       def runSysthesiser(mode: String) {
-        val z3Input = Seq("java", "-Xmx15240m", "-Xss32m", "-cp", "./Peal.jar", "peal.runner.SynthesisRunner", mode, randomModelFile.getAbsolutePath).!!
+        val z3Input = Seq("java", "-Xmx15240m", "-Xss32m", "-cp", "./Peal.jar", "peal.runner.TimeoutSynthesisRunner", mode, randomModelFile.getAbsolutePath).!!
         if (z3Input.trim == "TIMEOUT") {
           throw new TimeoutException("Timeout in " + mode + " Synthesis")
         }
