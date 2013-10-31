@@ -28,13 +28,14 @@ class TimingOutput(var modelGeneration: Long = 0,
 class ExperimentRunner(doDomainSpecifics: Boolean, system: ActorSystem, duration: Long, z3CallerMemoryBound: Long, runModes: RunMode*) {
   implicit val timeout = Timeout(duration, MILLISECONDS)
 
-  def runRandomModel(n: Int, min: Int, max: Int, plus: Int, mul: Int, k: Int, th: Double, delta: Double): TimingOutput = {
-    val model = RandomModelGenerator.generate(doDomainSpecifics, n, min, max, plus, mul, k, th, delta)
+  def runMajorityVoting(n: Int): TimingOutput = {
+    val model = MajorityVotingGenerator.generateForCount(n)
     runExperiment(model)
   }
 
-  def runMajorityVoting(n: Int): TimingOutput = {
-    val model = MajorityVotingGenerator.generateForCount(n)
+  def runRandomModel(n: Int, min: Int, max: Int, plus: Int, mul: Int, k: Int, th: Double, delta: Double): TimingOutput = {
+    //TODO break this out to a separate JVM
+    val model = RandomModelGenerator.generate(doDomainSpecifics, n, min, max, plus, mul, k, th, delta)
     runExperiment(model)
   }
 
