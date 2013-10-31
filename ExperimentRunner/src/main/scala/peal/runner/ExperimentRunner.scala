@@ -41,7 +41,6 @@ class ExperimentRunner(doDomainSpecifics: Boolean, system: ActorSystem, duration
   private def runExperiment(model: String): TimingOutput = {
     val output = new TimingOutput()
     val processKiller = system.actorOf(Props[ProcessKillerActor])
-    var z3Caller: ActorRef = null
     val randomModelFile = File.createTempFile("randomModel", "")
 
     try {
@@ -63,8 +62,9 @@ class ExperimentRunner(doDomainSpecifics: Boolean, system: ActorSystem, duration
         val z3InputFile = File.createTempFile("z3File", "")
         FileUtil.writeToFile(z3InputFile.getAbsolutePath, z3Input)
 
+        val z3Caller = system.actorOf(Props(new Z3CallerActor(z3CallerMemoryBound)))
+
         try {
-          z3Caller = system.actorOf(Props(new Z3CallerActor(z3CallerMemoryBound)))
           val start = System.nanoTime()
           val future = z3Caller ? z3InputFile
           val result = Await.result(future, timeout.duration)
@@ -84,6 +84,8 @@ class ExperimentRunner(doDomainSpecifics: Boolean, system: ActorSystem, duration
         } catch {
           case e: TimeoutException => processKiller ! z3InputFile
             throw e
+        } finally {
+          system.stop(z3Caller)
         }
       }
 
@@ -106,11 +108,6 @@ class ExperimentRunner(doDomainSpecifics: Boolean, system: ActorSystem, duration
         output.pealInput = model
       }
       output
-    }
-    catch {
-      case e: Exception =>
-        if (z3Caller != null) system.stop(z3Caller)
-        throw e
     }
     finally {
       randomModelFile.delete()

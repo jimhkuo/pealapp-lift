@@ -10,25 +10,25 @@ object Main extends App {
   private val timeout = 300000
   private val doDomainSpecifics = false
 
-  println("Picking up z3 from environment PATH: " + System.getenv("PATH"))
+//  println("Picking up z3 from environment PATH: " + System.getenv("PATH"))
   binarySearchOnRuleSize(Explicit, Symbolic, NewSynthesis)
   System.exit(0)
 
   private def binarySearchOnRuleSize(runModes: RunMode*) {
-    val execute: (Int) => Boolean = (x) => executeRunner(1, x, 1, 1, 1, 3 * x, 0.5, 0.1, runModes: _*)
+    val execute: (Int) => Boolean = (x) => executeRunner(1, 1, x, 1, 1, 3 * x, 0.5, 0.1, runModes: _*)
 
-    var lastSuccess = 0
-    var lastFailure = 0
+    var lastSuccess = 1048576
+    var lastFailure = 1114112
     var p = 2
-
-    while (execute(p)) {
-      lastSuccess = p
-      p = p * 2
-    }
-
-    println("############################")
-
-    lastFailure = p
+//
+//    while (execute(p)) {
+//      lastSuccess = p
+//      p = p * 2
+//    }
+//
+//    println("############################")
+//
+//    lastFailure = p
     while (lastFailure - lastSuccess > 10) {
       p = (lastSuccess + lastFailure) / 2
       if (execute(p)) {
