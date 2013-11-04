@@ -7,12 +7,11 @@ import peal.synthesis.{NewSynthesiser, LazySynthesiser, EagerSynthesiser}
 
 object TimeoutSynthesisRunner extends App {
 
-  val inputFileName: String = args(1)
   println(generate())
 
   def generate(): String = {
     try {
-      val input = scala.io.Source.fromFile(inputFileName).mkString
+      val input = scala.io.Source.fromFile(args(1)).mkString
 
       val synthesiser = args(0) match {
         case "explicit" =>  new EagerSynthesiser(input)

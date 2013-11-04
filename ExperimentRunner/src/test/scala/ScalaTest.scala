@@ -1,8 +1,8 @@
 import akka.actor._
-import akka.testkit.TestActorRef
 import akka.util.Timeout
 import java.util.concurrent.TimeoutException
 import org.junit.Test
+import peal.runner.{TimeoutSynthesisRunner, Explicit}
 import scala.concurrent.Await
 import scala.concurrent.duration._
 import akka.pattern.ask
@@ -33,6 +33,17 @@ class ScalaTest {
       case e: TimeoutException =>
         println("TIMEOUT")
     }
+  }
+
+  @Test
+  def testObject() {
+    println(Explicit.toString)
+  }
+
+  @Test
+  def testFindRunningJar() {
+      println(TimeoutSynthesisRunner.getClass.getProtectionDomain().getCodeSource().getLocation().getFile);
+
   }
 }
 

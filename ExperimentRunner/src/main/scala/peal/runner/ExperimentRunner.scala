@@ -4,7 +4,7 @@ import scala.concurrent.Await
 import scala.concurrent.duration._
 import akka.pattern.ask
 import akka.util.Timeout
-import akka.actor.{ActorRef, Props, ActorSystem}
+import akka.actor.{Props, ActorSystem}
 import peal.runner.actor._
 import peal.model.MajorityVotingGenerator
 import java.io.File
@@ -47,16 +47,20 @@ class ExperimentRunner(doDomainSpecifics: Boolean, system: ActorSystem, duration
       FileUtil.writeToFile(randomModelFile.getAbsolutePath, model)
       print("m")
 
-      def runSysthesiser(mode: String) {
-        val z3Input = Seq("java", "-Xmx25600m", "-Xss32m", "-cp", "./Peal.jar", "peal.runner.TimeoutSynthesisRunner", mode, randomModelFile.getAbsolutePath).!!
+      def runSysthesiser(mode: RunMode) {
+        val z3Input = Seq("java", "-Xmx25600m", "-Xss32m", "-cp",
+          TimeoutSynthesisRunner.getClass.getProtectionDomain().getCodeSource().getLocation().getFile,
+          "peal.runner.TimeoutSynthesisRunner",
+          mode.toString,
+          randomModelFile.getAbsolutePath).!!
         if (z3Input.trim == "TIMEOUT") {
           throw new TimeoutException("Timeout in " + mode + " Synthesis")
         }
 
         mode match {
-          case "explicit" => output.eagerSynthesis = z3Input.split("\n")(0).toLong; print("e")
-          case "symbolic" => output.lazySynthesis = z3Input.split("\n")(0).toLong; print("l")
-          case "new" => output.newSynthesis = z3Input.split("\n")(0).toLong; print("n")
+          case Explicit => output.eagerSynthesis = z3Input.split("\n")(0).toLong; print("e")
+          case Symbolic => output.lazySynthesis = z3Input.split("\n")(0).toLong; print("l")
+          case NewSynthesis => output.newSynthesis = z3Input.split("\n")(0).toLong; print("n")
         }
 
         val z3InputFile = File.createTempFile("z3File", "")
@@ -70,9 +74,9 @@ class ExperimentRunner(doDomainSpecifics: Boolean, system: ActorSystem, duration
           val result = Await.result(future, timeout.duration)
           val lapsedTime = System.nanoTime() - start
           mode match {
-            case "explicit" => output.eagerZ3 = lapsedTime
-            case "symbolic" => output.lazyZ3 = lapsedTime
-            case "new" => output.newZ3 = lapsedTime
+            case Explicit => output.eagerZ3 = lapsedTime
+            case Symbolic => output.lazyZ3 = lapsedTime
+            case NewSynthesis => output.newZ3 = lapsedTime
           }
 
           result match {
@@ -90,15 +94,15 @@ class ExperimentRunner(doDomainSpecifics: Boolean, system: ActorSystem, duration
       }
 
       if (runModes.contains(Explicit)) {
-        runSysthesiser("explicit")
+        runSysthesiser(Explicit)
       }
 
       if (runModes.contains(Symbolic)) {
-        runSysthesiser("symbolic")
+        runSysthesiser(Symbolic)
       }
 
       if (runModes.contains(NewSynthesis)) {
-        runSysthesiser("new")
+        runSysthesiser(NewSynthesis)
       }
 
       if (runModes.size == 1 || allEqual(output.modelResults.toList)) {
