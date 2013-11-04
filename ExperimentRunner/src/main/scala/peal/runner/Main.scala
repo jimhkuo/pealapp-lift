@@ -15,7 +15,7 @@ object Main extends App {
   System.exit(0)
 
   private def binarySearch(runModes: RunMode*) {
-    val execute: (Int) => Boolean = (x) => executeRunner(x, 1311840/10, 1, 1, 1, 3 * (1311840/10), 0.5, 0.1, runModes: _*)
+    val execute: (Int) => Boolean = (x) => executeRunner(x, 1, 1261696/10, 1, 1, 3 * (1261696/10), 0.5, 0.1, runModes: _*)
 
     var lastSuccess = 0
     var lastFailure = 0
