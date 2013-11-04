@@ -114,11 +114,6 @@ class ExperimentRunner(doDomainSpecifics: Boolean, system: ActorSystem, duration
     }
   }
 
-//  private def allEqual(list: List[Any]): Boolean = list match {
-//    case x1 :: x2 :: xs => (x1 == x2) && allEqual(x2 :: xs)
-//    case x1 :: Nil => true
-//  }
-
   private def allEqual(list: List[Any]): Boolean = list match {
     case head :: tail => tail.forall(_ == head)
     case Nil => false
