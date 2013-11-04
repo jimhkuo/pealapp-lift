@@ -8,7 +8,7 @@ mainClass in assembly := Some("peal.runner.Main")
 
 name := "ExperimentRunner"
 
-version := "0.3-exp2-nz-max"
+version := "0.3-exp2-nz-plus"
 
 scalaVersion := "2.10.2"
 
