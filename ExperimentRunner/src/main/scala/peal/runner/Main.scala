@@ -11,37 +11,11 @@ object Main extends App {
   private val doDomainSpecifics = false
 
   println("Picking up z3 from environment PATH: " + System.getenv("PATH"))
-  binarySearchOnRuleSize(NewSynthesis)
+  binarySearch(NewSynthesis)
   System.exit(0)
 
-  private def binarySearchOnRuleSize(runModes: RunMode*) {
-    val execute: (Int) => Boolean = (x) => executeRunner(1, 1, 1, 1, x, 3 * x, 0.5, 0.1, runModes: _*)
-
-    var lastSuccess = 0
-    var lastFailure = 0
-    var p = 2
-
-    while (execute(p)) {
-      lastSuccess = p
-      p = p * 2
-    }
-
-    println("############################")
-
-    lastFailure = p
-    while (lastFailure - lastSuccess > 10) {
-      p = (lastSuccess + lastFailure) / 2
-      if (execute(p)) {
-        lastSuccess = p
-      }
-      else {
-        lastFailure = p
-      }
-    }
-  }
-
-  private def binarySearchOnPolicySize(runModes: RunMode*) {
-    val execute: (Int) => Boolean = (x) => executeRunner(x, x, 1, 1, 1, 3 * x, 0.5, 0.1, runModes: _*)
+  private def binarySearch(runModes: RunMode*) {
+    val execute: (Int) => Boolean = (x) => executeRunner(x, 1311840/10, 1, 1, 1, 3 * (1311840/10), 0.5, 0.1, runModes: _*)
 
     var lastSuccess = 0
     var lastFailure = 0
@@ -110,7 +84,7 @@ object Main extends App {
 
         if (!output.isSameOutput) {
           println(output.modelResults)
-          println("syntheses produce different results," + n + "-" + m0 + "-" + m1 + "-" + m2 + "-" + m3 + "-" + th + "-" + delta + "," + timeout + "," + output.pealInput)
+          println("syntheses produce different results," + n + "-" + m0 + "-" + m1 + "-" + m2 + "-" + m3 + "-" + th + "-" + delta + "," + timeout + "," + output.failedPealInput)
         }
       }
 

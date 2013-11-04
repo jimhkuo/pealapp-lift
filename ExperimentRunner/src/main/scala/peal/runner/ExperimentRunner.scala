@@ -23,7 +23,7 @@ class TimingOutput(var modelGeneration: Long = 0,
                    var newZ3: Long = 0,
                    var isSameOutput: Boolean = false,
                    var modelResults: ListBuffer[Map[String, String]] = ListBuffer(),
-                   var pealInput: String = "")
+                   var failedPealInput: String = "")
 
 class ExperimentRunner(doDomainSpecifics: Boolean, system: ActorSystem, duration: Long, z3CallerMemoryBound: Long, runModes: RunMode*) {
   implicit val timeout = Timeout(duration, MILLISECONDS)
@@ -121,7 +121,7 @@ class ExperimentRunner(doDomainSpecifics: Boolean, system: ActorSystem, duration
         output.isSameOutput = true
       }
       else {
-        output.pealInput = model
+        output.failedPealInput = model
       }
       output
     }
