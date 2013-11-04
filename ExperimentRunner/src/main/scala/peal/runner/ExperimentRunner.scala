@@ -37,7 +37,16 @@ class ExperimentRunner(doDomainSpecifics: Boolean, system: ActorSystem, duration
     val model = Seq("java", "-Xmx5120m", "-Xss32m", "-cp",
       ModelGeneratorRunner.getClass.getProtectionDomain.getCodeSource.getLocation.getFile,
       "peal.runner.ModelGeneratorRunner",
-      doDomainSpecifics.toString, n.toString, min.toString, max.toString, plus.toString, mul.toString, k.toString, th.toString, delta.toString).!!
+      doDomainSpecifics.toString,
+      n.toString,
+      min.toString,
+      max.toString,
+      plus.toString,
+      mul.toString,
+      k.toString,
+      th.toString,
+      delta.toString).!!
+
     runExperiment(model)
   }
 
@@ -108,7 +117,7 @@ class ExperimentRunner(doDomainSpecifics: Boolean, system: ActorSystem, duration
         runSysthesiser(NewSynthesis)
       }
 
-      if (runModes.size == 1 || allEqual(output.modelResults.toList)) {
+      if (allEqual(output.modelResults.toList)) {
         output.isSameOutput = true
       }
       else {
@@ -122,7 +131,7 @@ class ExperimentRunner(doDomainSpecifics: Boolean, system: ActorSystem, duration
   }
 
   private def allEqual(list: List[Any]): Boolean = list match {
-    case head :: tail => tail.forall(_ == head)
+    case head :: tail => tail.forall(_ == head) //single item list will return true
     case Nil => false
   }
 }

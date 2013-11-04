@@ -42,8 +42,19 @@ class ScalaTest {
 
   @Test
   def testFindRunningJar() {
-      println(TimeoutSynthesisRunner.getClass.getProtectionDomain().getCodeSource().getLocation().getFile);
+    println(TimeoutSynthesisRunner.getClass.getProtectionDomain().getCodeSource().getLocation().getFile);
+  }
 
+  private def allEqual(list: List[Any]): Boolean = list match {
+    case head :: tail => tail.forall(_ == head)
+    case Nil => false
+  }
+
+  @Test
+  def testListCompare() {
+    println(allEqual(List(1)))
+    println(allEqual(List()))
+    println(List().forall(_ == 1))
   }
 }
 

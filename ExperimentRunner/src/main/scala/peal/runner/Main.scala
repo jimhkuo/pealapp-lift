@@ -14,9 +14,6 @@ object Main extends App {
   binarySearchOnRuleSize(NewSynthesis)
   System.exit(0)
 
-//  println(TimeoutSynthesisRunner.getClass.getProtectionDomain().getCodeSource().getLocation().getFile);
-//    System.exit(0)
-
   private def binarySearchOnRuleSize(runModes: RunMode*) {
     val execute: (Int) => Boolean = (x) => executeRunner(1, 1, 1, 1, x, 3 * x, 0.5, 0.1, runModes: _*)
 
