@@ -34,7 +34,10 @@ class ExperimentRunner(doDomainSpecifics: Boolean, system: ActorSystem, duration
   }
 
   def runRandomModel(n: Int, min: Int, max: Int, plus: Int, mul: Int, k: Int, th: Double, delta: Double): TimingOutput = {
-    val model = Seq("java", "-Xmx5120m", "-Xss32m", "-cp", "./Peal.jar", "peal.runner.ModelGeneratorRunner", doDomainSpecifics.toString, n.toString, min.toString, max.toString, plus.toString, mul.toString, k.toString, th.toString, delta.toString).!!
+    val model = Seq("java", "-Xmx5120m", "-Xss32m", "-cp",
+      ModelGeneratorRunner.getClass.getProtectionDomain.getCodeSource.getLocation.getFile,
+      "peal.runner.ModelGeneratorRunner",
+      doDomainSpecifics.toString, n.toString, min.toString, max.toString, plus.toString, mul.toString, k.toString, th.toString, delta.toString).!!
     runExperiment(model)
   }
 
@@ -49,7 +52,7 @@ class ExperimentRunner(doDomainSpecifics: Boolean, system: ActorSystem, duration
 
       def runSysthesiser(mode: RunMode) {
         val z3Input = Seq("java", "-Xmx25600m", "-Xss32m", "-cp",
-          TimeoutSynthesisRunner.getClass.getProtectionDomain().getCodeSource().getLocation().getFile,
+          TimeoutSynthesisRunner.getClass.getProtectionDomain.getCodeSource.getLocation.getFile,
           "peal.runner.TimeoutSynthesisRunner",
           mode.toString,
           randomModelFile.getAbsolutePath).!!
