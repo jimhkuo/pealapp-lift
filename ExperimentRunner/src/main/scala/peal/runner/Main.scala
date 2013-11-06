@@ -8,14 +8,14 @@ object Main extends App {
   implicit val system = ActorSystem("system")
   private val z3MemoryBound = 20000000
   private val timeout = 300000
-  private val doDomainSpecifics = false
+  private val doDomainSpecifics = true
 
   println("Picking up z3 from environment PATH: " + System.getenv("PATH"))
   binarySearch(NewSynthesis)
   System.exit(0)
 
   private def binarySearch(runModes: RunMode*) {
-    val execute: (Int) => Boolean = (x) => executeRunner(x, 1, 1, 8464/10, 1, 3 * (8464/10), 0.5, 0.1, runModes: _*)
+    val execute: (Int) => Boolean = (x) => executeRunner(1, 1, 1, 1, x, 3 * x, 0.5, 0.1, runModes: _*)
 
     var lastSuccess = 0
     var lastFailure = 0

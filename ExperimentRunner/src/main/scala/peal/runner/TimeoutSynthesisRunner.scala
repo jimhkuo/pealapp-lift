@@ -21,9 +21,9 @@ object TimeoutSynthesisRunner extends App {
 
       val outputFuture = future {
         val start = System.nanoTime()
-        val out = synthesiser.generate()
+        val result = synthesiser.generate()
         val lapseTime = System.nanoTime() - start
-        lapseTime.toString + "\n" + out
+        lapseTime.toString + "\n" + result
       }
 
       Await.result(outputFuture, 300000 millis)
