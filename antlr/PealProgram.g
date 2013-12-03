@@ -90,24 +90,19 @@ pSet
 
 pol	returns [Pol p] 
 @init {l = new ArrayList<Rule>(); }
-	: id1=IDENT '=' o=operator '(' (rule {l.add($rule.r);})* ')' 'default' (n=NUMBER {$p = new Pol(l, OperatorResolver.apply($o.text), new Left<BigDecimal,VariableFormula>(BigDecimal.valueOf(Double.valueOf($n.text))), $id1.text);}
-									|
-s=score {$p = new Pol(l, OperatorResolver.apply($o.text), new Right<BigDecimal,VariableFormula>($s.s), $id1.text);}									
-//									n=NUMBER '*' id2=IDENT {$p = new Pol(l, OperatorResolver.apply($o.text), new Right<BigDecimal,Multiplier>(new Multiplier(BigDecimal.valueOf(Double.valueOf($n.text)), $id2.text)), $id1.text);}
-//									|
-//									id2=IDENT {$p = new Pol(l, OperatorResolver.apply($o.text), new Right<BigDecimal,Multiplier>(new Multiplier(BigDecimal.valueOf(1), $id2.text)), $id1.text);}
-//									|
-//									id2=IDENT '*' n=NUMBER {$p = new Pol(l, OperatorResolver.apply($o.text), new Right<BigDecimal,Multiplier>(new Multiplier(BigDecimal.valueOf(Double.valueOf($n.text)), $id2.text)), $id1.text);}
-									)
+	: id1=IDENT '=' o=operator '(' (rule {l.add($rule.r);})* ')' 'default' 
+	(
+		n=NUMBER {$p = new Pol(l, OperatorResolver.apply($o.text), new Left<BigDecimal,VariableFormula>(BigDecimal.valueOf(Double.valueOf($n.text))), $id1.text);}
+		|
+		s=score {$p = new Pol(l, OperatorResolver.apply($o.text), new Right<BigDecimal,VariableFormula>($s.s), $id1.text);}									
+	)
 	;
 
 rule 	returns [Rule r]
 	:
 	'(' IDENT NUMBER ')' {$r = new Rule(new Predicate($IDENT.text),new Left<BigDecimal,VariableFormula>(BigDecimal.valueOf(Double.valueOf($NUMBER.text))));}
-	//| '(' id0=IDENT id1=IDENT')' {$r = new Rule(new Predicate($id0.text),new Right<BigDecimal,ScoreSum>(new Multiplier(BigDecimal.valueOf(1), $id1.text)));}
 	|
 	'(' id0=IDENT s=score')' {$r = new Rule(new Predicate($id0.text),new Right<BigDecimal,VariableFormula>($s.s));}
-//	| '(' id0=IDENT  ')' //{$r = new Rule(new Predicate($id0.text),new Right<BigDecimal,Variable>(new Variable(BigDecimal.valueOf(Double.valueOf($n.text)), $id1.text)));}
 	;
 	
 score returns [VariableFormula s]
@@ -117,7 +112,6 @@ score returns [VariableFormula s]
 vmult returns [Multiplier m]
 	: id1=IDENT '*' n=NUMBER {$m = new Multiplier(BigDecimal.valueOf(Double.valueOf($n.text)), $id1.text);}
 	| n=NUMBER '*' id1=IDENT {$m = new Multiplier(BigDecimal.valueOf(Double.valueOf($n.text)), $id1.text);}
-//	| n=NUMBER {$m = new Multiplier(BigDecimal.valueOf(Double.valueOf($n.text)), "");}
 	| id1=IDENT {$m = new Multiplier(BigDecimal.valueOf(1), $id1.text);}
 	;
 
