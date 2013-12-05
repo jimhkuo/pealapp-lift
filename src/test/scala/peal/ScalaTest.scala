@@ -11,6 +11,13 @@ import peal.antlr.util.ParserHelper
 
 class ScalaTest extends ShouldMatchersForJUnit {
 
+@Test
+def test() {
+  println(List(1,2,3).toSet)
+  println(List(1,2,3).toSet())
+
+}
+
   @Test
   def testPlus() {
     val i = 0.06d
