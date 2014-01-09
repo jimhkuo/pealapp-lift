@@ -13,4 +13,8 @@ object ExplicitVerifier {
   //different? c1 c2 -> c1, c2 have to be different
   //equivalent? c1 c2 -> c1, c2 have to be same
   //implies? c1 c2 -> c1 has to be true, c2 has to be false
+
+  //looking for q_i not available in I returns bottom
+
+  //need to sets up 3 way truth value, true, false, and bottom
 }
