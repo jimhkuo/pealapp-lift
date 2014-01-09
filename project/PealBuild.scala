@@ -13,6 +13,8 @@ object PealBuild extends Build {
 
   lazy val generator = Project(id = "PealModelGenerator", base = file("PealModelGenerator")) dependsOn (parser, domain % "test->test;compile->compile")
 
+  lazy val verifier = Project(id = "PealResultVerifier", base = file("PealResultVerifier")) dependsOn (parser, domain % "test->test;compile->compile")
+
   lazy val parser = Project(id = "PealParser", base = file("PealParser")) dependsOn (domain % "test->test;compile->compile")
 
   lazy val domain = Project(id = "Domain", base = file("Domain"))
