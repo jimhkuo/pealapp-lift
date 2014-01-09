@@ -17,6 +17,5 @@ class MultiplierTest extends ShouldMatchersForJUnit {
     Multiplier(0.5).name should be ("")
     Multiplier("z").name should be ("z")
     Multiplier(0.6, "z").name should be ("z")
-
   }
 }
