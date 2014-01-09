@@ -4,6 +4,7 @@ import peal.domain._
 import peal.domain.Pol
 import peal.domain.z3.{PealAst, Or, And}
 
+//this is > th
 case class GreaterThanThCondition(lhs: PolicySet, rhs: Either[BigDecimal,PolicySet]) extends Condition {
 
   if (lhs == null) throw new RuntimeException("Referred to undeclared policy set in GreaterThanThCondition")
