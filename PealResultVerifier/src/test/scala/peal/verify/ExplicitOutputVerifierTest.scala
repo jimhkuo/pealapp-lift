@@ -22,8 +22,10 @@ class ExplicitOutputVerifierTest extends ShouldMatchersForJUnit {
 
     println(model)
 
-    println(ExplicitOutputProcessor.assignmentExtractor(model)("name1").defines.toString())
+    val I = ExplicitOutputProcessor.assignmentExtractor(model)("name1").defines.toString
+    println(I)
 
+    //TODO need to pull the following information out of EagerSynthesiser so I don't do the same thing again below
     val pealProgramParser = ParserHelper.getPealParser(input)
     pealProgramParser.program()
 
@@ -31,9 +33,9 @@ class ExplicitOutputVerifierTest extends ShouldMatchersForJUnit {
     println(pealProgramParser.analyses)
 
     pealProgramParser.analyses.foreach {
-      case (k, v) =>
-      v match {
-        case AlwaysTrue(n, c) => println(pealProgramParser.conds(c))
+      case (key, analysis) =>
+      analysis match {
+        case AlwaysTrue(n, c) => println(pealProgramParser.conds(c))     //do verify(cond,I,v) stuff
         case _ => println("not matched")
       }
     }
