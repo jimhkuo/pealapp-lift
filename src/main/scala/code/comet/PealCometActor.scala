@@ -1,6 +1,6 @@
 package code.comet
 
-import _root_.util.FileUtil
+import util.FileUtil
 import net.liftweb._
 import http._
 import net.liftweb.http.js.jquery.JqJE._
@@ -20,12 +20,9 @@ import peal.model.{MajorityVotingGenerator, RandomModelGenerator}
 import peal.domain.PolicySet
 import peal.domain.z3.{PealAst, Term}
 import peal.antlr.util.ParserHelper
+import peal.z3.Z3Caller
 
 class PealCometActor extends CometActor with Loggable {
-  def processLogger(buffer: ListBuffer[String]) = ProcessLogger(
-    (o: String) => buffer.append(o + "\n"),
-    (e: String) => buffer.append(e + "\n")
-  )
 
   val inputForNewSynthesis = "POLICIES\n" +
     "b1 = min ((q1 0.2) (q2 0.4) (q3 0.9)) default 0.4\n" +
@@ -331,38 +328,29 @@ class PealCometActor extends CometActor with Loggable {
     val generatedAnalyses = for (analysis <- sortedAnalyses) yield {"(echo \"Result of analysis [" + analyses(analysis).analysisName + "]:\")\n" + analyses(analysis).z3SMTInput}
 
     val z3SMTInput = declarations.mkString("") +declarations1.mkString("") + body.mkString("") + domainSpecifics.mkString("", "\n","\n") + generatedAnalyses.mkString("")
-    //TODO calling z3
-    val tmp = File.createTempFile("z3file", "")
-    FileUtil.writeToFile(tmp.getAbsolutePath, z3SMTInput)
-    val buffer = ListBuffer[String]()
-    Process(Seq("bash", "-c", "z3 -nw -smt2 " + tmp.getAbsolutePath)) ! processLogger(buffer)
-    tmp.delete()
 
+    val z3Output = Z3Caller.call(z3SMTInput)
     try {
-      val z3OutputParser = ParserHelper.getZ3OutputParser(buffer.mkString(""))
+      val z3OutputParser = ParserHelper.getZ3OutputParser(z3Output)
       val z3Models = z3OutputParser.results().toMap
       val analysedResults = Z3OutputAnalyser.execute(analyses, z3Models, constsMap)
       verbose match {
-        case true => this ! Result(<pre>{z3SMTInput}</pre> <pre>Analysed results:<br/>{analysedResults}</pre><pre>Z3 Raw Output:<br/>{buffer.mkString("")}</pre>)
+        case true => this ! Result(<pre>{z3SMTInput}</pre> <pre>Analysed results:<br/>{analysedResults}</pre><pre>Z3 Raw Output:<br/>{z3Output}</pre>)
         case false => this ! Result(<pre>Analysed results:<br/>{analysedResults}</pre>)
       }
     } catch {
       case e: Exception =>
         verbose match {
-          case true => this ! Result(<pre>{z3SMTInput}</pre> <pre>Z3 Raw Output:<br/>{buffer.mkString("")}</pre>)
-          case false => this ! Result(<pre>Result analysis failed, returned model contains unexpected string:<br/>{buffer.mkString("")}</pre>)
+          case true => this ! Result(<pre>{z3SMTInput}</pre> <pre>Z3 Raw Output:<br/>{z3Output}</pre>)
+          case false => this ! Result(<pre>Result analysis failed, returned model contains unexpected string:<br/>{z3Output}</pre>)
         }
     }
   }
 
   private def onCallLazyZ3(z3SMTInput : String) {
-    val buffer = ListBuffer[String]()
-    val tmp = File.createTempFile("z3file", "")
-    FileUtil.writeToFile(tmp.getAbsolutePath, z3SMTInput)
-    Process(Seq("bash", "-c", "z3 -nw -smt2 " + tmp.getAbsolutePath)) ! processLogger(buffer)
-    tmp.delete()
+
     try {
-      this ! Result(<pre>{z3SMTInput}</pre><pre>Z3 Raw Output:<br/>{buffer.mkString("")}</pre>)
+      this ! Result(<pre>{z3SMTInput}</pre><pre>Z3 Raw Output:<br/>{Z3Caller.call(z3SMTInput)}</pre>)
     } catch {
       case e: Exception =>  dealWithIt(e)
     }
