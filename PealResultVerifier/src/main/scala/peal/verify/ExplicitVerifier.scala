@@ -1,5 +1,9 @@
 package peal.verify
 
+import peal.domain.z3.Model
+import peal.antlr.util.ParserHelper
+import scala.collection.JavaConversions._
+
 object ExplicitVerifier {
 
   //TODO
@@ -16,4 +20,9 @@ object ExplicitVerifier {
   //looking for q_i not available in I returns bottom
 
   //need to sets up 3 way truth value, true, false, and bottom
+
+  def assignmentExtractor(model: String) = {
+    val z3OutputParser = ParserHelper.getZ3OutputParser(model.mkString(""))
+    z3OutputParser.results().toMap
+  }
 }
