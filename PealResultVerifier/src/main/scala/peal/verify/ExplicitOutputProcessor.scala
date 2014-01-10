@@ -1,10 +1,9 @@
 package peal.verify
 
-import peal.domain.z3.Model
 import peal.antlr.util.ParserHelper
 import scala.collection.JavaConversions._
 
-object ExplicitVerifier {
+object ExplicitOutputProcessor {
 
   //TODO
   //extract predicate truth assignments from Z3 model to create I
