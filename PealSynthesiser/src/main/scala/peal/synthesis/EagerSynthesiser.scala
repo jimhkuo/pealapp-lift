@@ -9,6 +9,7 @@ class EagerSynthesiser(input:String) extends Synthesiser{
   def generate(): String = {
     val pealProgramParser = ParserHelper.getPealParser(input)
     pealProgramParser.program()
+    //TODO need to pass the parser out somehow
 
     val predicateNames = pealProgramParser.pols.values().flatMap(pol => pol.rules).map(r => r.q.name).toSet
     val constsMap = predicateNames.map(t => (t, Term(t))).toMap

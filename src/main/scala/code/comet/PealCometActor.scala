@@ -348,7 +348,6 @@ class PealCometActor extends CometActor with Loggable {
   }
 
   private def onCallLazyZ3(z3SMTInput : String) {
-
     try {
       this ! Result(<pre>{z3SMTInput}</pre><pre>Z3 Raw Output:<br/>{Z3Caller.call(z3SMTInput)}</pre>)
     } catch {

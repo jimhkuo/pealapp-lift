@@ -6,7 +6,6 @@ import scala.collection.mutable.ListBuffer
 import util.FileUtil
 
 object Z3Caller {
-
   def processLogger(buffer: ListBuffer[String]) = ProcessLogger(
     (o: String) => buffer.append(o + "\n"),
     (e: String) => buffer.append(e + "\n")

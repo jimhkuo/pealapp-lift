@@ -9,6 +9,7 @@ import peal.runner.ReturnedModelAnalyser
 
 
 class Z3CallerActor(memoryLimit: Long) extends Actor {
+//TODO need to migrate this to the new Z3Caller at some stage
   val resultList = ListBuffer[String]()
   val processLogger = ProcessLogger(
     (o: String) => resultList.append(o + "\n"),
