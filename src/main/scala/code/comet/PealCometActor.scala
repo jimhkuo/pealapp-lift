@@ -1,6 +1,5 @@
 package code.comet
 
-import util.FileUtil
 import net.liftweb._
 import http._
 import net.liftweb.http.js.jquery.JqJE._
@@ -10,10 +9,7 @@ import net.liftweb.common.Loggable
 import scala.collection.JavaConversions._
 import peal.synthesis.{NewSynthesiser, LazySynthesiser, Condition}
 import scala.Predef._
-import scala.sys.process._
-import java.io.File
 import peal.synthesis.analysis._
-import scala.collection.mutable.ListBuffer
 import code.lib._
 import net.liftweb.http.js.jquery.JqJE.JqId
 import peal.model.{MajorityVotingGenerator, RandomModelGenerator}

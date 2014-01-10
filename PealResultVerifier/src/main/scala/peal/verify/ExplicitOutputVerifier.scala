@@ -15,5 +15,6 @@ object ExplicitOutputVerifier {
   //looking for q_i not available in I returns bottom
 
   //need to sets up 3 way truth value, true, false, and bottom
+  //need to pull out the analyses so we can find out what condition needs to be examined
 
 }

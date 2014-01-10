@@ -5,6 +5,8 @@ import org.junit.Test
 import peal.synthesis.EagerSynthesiser
 import peal.z3.Z3Caller
 import peal.antlr.util.ParserHelper
+import scala.collection.JavaConversions._
+import peal.synthesis.analysis.AlwaysTrue
 
 
 class ExplicitOutputVerifierTest extends ShouldMatchersForJUnit {
@@ -26,5 +28,14 @@ class ExplicitOutputVerifierTest extends ShouldMatchersForJUnit {
     pealProgramParser.program()
 
     println(pealProgramParser.conds)
+    println(pealProgramParser.analyses)
+
+    pealProgramParser.analyses.foreach {
+      case (k, v) =>
+      v match {
+        case AlwaysTrue(n, c) => println(pealProgramParser.conds(c))
+        case _ => println("not matched")
+      }
+    }
   }
 }
