@@ -22,10 +22,9 @@ import peal.domain.z3.{PealAst, Term}
 import peal.antlr.util.ParserHelper
 
 class PealCometActor extends CometActor with Loggable {
-  val resultList = ListBuffer[String]()
-  val processLogger = ProcessLogger(
-    (o: String) => resultList.append(o + "\n"),
-    (e: String) => resultList.append(e + "\n")
+  def processLogger(buffer: ListBuffer[String]) = ProcessLogger(
+    (o: String) => buffer.append(o + "\n"),
+    (e: String) => buffer.append(e + "\n")
   )
 
   val inputForNewSynthesis = "POLICIES\n" +
@@ -332,37 +331,38 @@ class PealCometActor extends CometActor with Loggable {
     val generatedAnalyses = for (analysis <- sortedAnalyses) yield {"(echo \"Result of analysis [" + analyses(analysis).analysisName + "]:\")\n" + analyses(analysis).z3SMTInput}
 
     val z3SMTInput = declarations.mkString("") +declarations1.mkString("") + body.mkString("") + domainSpecifics.mkString("", "\n","\n") + generatedAnalyses.mkString("")
+    //TODO calling z3
     val tmp = File.createTempFile("z3file", "")
     FileUtil.writeToFile(tmp.getAbsolutePath, z3SMTInput)
-    resultList.clear()
-    Process(Seq("bash", "-c", "z3 -nw -smt2 " + tmp.getAbsolutePath)) ! processLogger
+    val buffer = ListBuffer[String]()
+    Process(Seq("bash", "-c", "z3 -nw -smt2 " + tmp.getAbsolutePath)) ! processLogger(buffer)
     tmp.delete()
 
     try {
-      val z3OutputParser = ParserHelper.getZ3OutputParser(resultList.mkString(""))
+      val z3OutputParser = ParserHelper.getZ3OutputParser(buffer.mkString(""))
       val z3Models = z3OutputParser.results().toMap
       val analysedResults = Z3OutputAnalyser.execute(analyses, z3Models, constsMap)
       verbose match {
-        case true => this ! Result(<pre>{z3SMTInput}</pre> <pre>Analysed results:<br/>{analysedResults}</pre><pre>Z3 Raw Output:<br/>{resultList.mkString("")}</pre>)
+        case true => this ! Result(<pre>{z3SMTInput}</pre> <pre>Analysed results:<br/>{analysedResults}</pre><pre>Z3 Raw Output:<br/>{buffer.mkString("")}</pre>)
         case false => this ! Result(<pre>Analysed results:<br/>{analysedResults}</pre>)
       }
     } catch {
       case e: Exception =>
         verbose match {
-          case true => this ! Result(<pre>{z3SMTInput}</pre> <pre>Z3 Raw Output:<br/>{resultList.mkString("")}</pre>)
-          case false => this ! Result(<pre>Result analysis failed, returned model contains unexpected string:<br/>{resultList.mkString("")}</pre>)
+          case true => this ! Result(<pre>{z3SMTInput}</pre> <pre>Z3 Raw Output:<br/>{buffer.mkString("")}</pre>)
+          case false => this ! Result(<pre>Result analysis failed, returned model contains unexpected string:<br/>{buffer.mkString("")}</pre>)
         }
     }
   }
 
   private def onCallLazyZ3(z3SMTInput : String) {
+    val buffer = ListBuffer[String]()
     val tmp = File.createTempFile("z3file", "")
     FileUtil.writeToFile(tmp.getAbsolutePath, z3SMTInput)
-    resultList.clear()
-    Process(Seq("bash", "-c", "z3 -nw -smt2 " + tmp.getAbsolutePath)) ! processLogger
+    Process(Seq("bash", "-c", "z3 -nw -smt2 " + tmp.getAbsolutePath)) ! processLogger(buffer)
     tmp.delete()
     try {
-      this ! Result(<pre>{z3SMTInput}</pre><pre>Z3 Raw Output:<br/>{resultList.mkString("")}</pre>)
+      this ! Result(<pre>{z3SMTInput}</pre><pre>Z3 Raw Output:<br/>{buffer.mkString("")}</pre>)
     } catch {
       case e: Exception =>  dealWithIt(e)
     }
