@@ -1,5 +1,10 @@
 package peal.verify
 
+import peal.antlr.util.ParserHelper
+import peal.synthesis.analysis.AlwaysTrue
+import scala.collection.JavaConversions._
+
+
 object ExplicitOutputVerifier {
   //TODO
   //extract predicate truth assignments from Z3 model to create I
@@ -16,5 +21,24 @@ object ExplicitOutputVerifier {
 
   //need to sets up 3 way truth value, true, false, and bottom
   //need to pull out the analyses so we can find out what condition needs to be examined
+
+  def verify(model: String) = {
+
+    val pealProgramParser = ParserHelper.getPealParser(model)
+    pealProgramParser.program()
+
+    println(pealProgramParser.conds)
+    println(pealProgramParser.analyses)
+
+    pealProgramParser.analyses.foreach {
+      case (key, analysis) =>
+        analysis match {
+          case AlwaysTrue(n, c) => println(pealProgramParser.conds(c))     //do verify(cond,I,v) stuff
+          case _ => println("not matched")
+        }
+    }
+
+    false
+  }
 
 }

@@ -4,9 +4,6 @@ import org.scalatest.junit.ShouldMatchersForJUnit
 import org.junit.Test
 import peal.synthesis.EagerSynthesiser
 import peal.z3.Z3Caller
-import peal.antlr.util.ParserHelper
-import scala.collection.JavaConversions._
-import peal.synthesis.analysis.AlwaysTrue
 
 
 class ExplicitOutputVerifierTest extends ShouldMatchersForJUnit {
@@ -25,19 +22,6 @@ class ExplicitOutputVerifierTest extends ShouldMatchersForJUnit {
     val I = ExplicitOutputProcessor.assignmentExtractor(model)("name1").defines.toString
     println(I)
 
-    //TODO need to pull the following information out of EagerSynthesiser so I don't do the same thing again below
-    val pealProgramParser = ParserHelper.getPealParser(input)
-    pealProgramParser.program()
-
-    println(pealProgramParser.conds)
-    println(pealProgramParser.analyses)
-
-    pealProgramParser.analyses.foreach {
-      case (key, analysis) =>
-      analysis match {
-        case AlwaysTrue(n, c) => println(pealProgramParser.conds(c))     //do verify(cond,I,v) stuff
-        case _ => println("not matched")
-      }
-    }
+    ExplicitOutputVerifier.verify(input)
   }
 }
