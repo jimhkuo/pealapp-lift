@@ -3,9 +3,21 @@ package peal.verify
 import peal.antlr.util.ParserHelper
 import peal.synthesis.analysis.AlwaysTrue
 import scala.collection.JavaConversions._
+import peal.synthesis.{GreaterThanThCondition, AndCondition, NotCondition, Condition}
+import peal.domain.{Pol, BasicPolicySet, PolicySet}
+import peal.domain.operator.Plus
+import peal.domain.z3.Term
 
 
-object ExplicitOutputVerifier {
+class ExplicitOutputVerifier(input: String) {
+
+  val pealProgramParser = ParserHelper.getPealParser(input)
+  pealProgramParser.program()
+
+  val conds = pealProgramParser.conds.toMap
+  val analyses = pealProgramParser.analyses
+  val predicateNames: Seq[String] = pealProgramParser.pols.values().flatMap(pol => pol.rules).map(r => r.q.name).toSeq.distinct
+
   //TODO
   //extract predicate truth assignments from Z3 model to create I
   //take v from the truth assignment for the condition in the raw Z3 result, but need to perform external check first, see below (temporarily skipped)
@@ -22,23 +34,37 @@ object ExplicitOutputVerifier {
   //need to sets up 3 way truth value, true, false, and bottom
   //need to pull out the analyses so we can find out what condition needs to be examined
 
-  def verify(model: String) = {
+  def verifyModel(model: String, analysisName: String) = {
 
-    val pealProgramParser = ParserHelper.getPealParser(model)
-    pealProgramParser.program()
+    //this ignores the correct conversion for non boolean types
+    val I = ExplicitOutputProcessor.assignmentExtractor(model)(analysisName).defines.map(d => (d.name, d.value.toBoolean)).toMap
+    println(I)
 
-    println(pealProgramParser.conds)
-    println(pealProgramParser.analyses)
-
+    println(predicateNames)
     pealProgramParser.analyses.foreach {
       case (key, analysis) =>
         analysis match {
-          case AlwaysTrue(n, c) => println(pealProgramParser.conds(c))     //do verify(cond,I,v) stuff
+          //TODO deal with different analyses
+          case AlwaysTrue(n, c) =>
+            //TODO need to check if I(c) is false
+            verify(conds(c), I, I(c))
           case _ => println("not matched")
+            false
         }
     }
+  }
 
-    false
+  def verify(cond: Condition, I: Map[String, Boolean], v: Boolean): Boolean = cond match {
+    case NotCondition(c) => verify(conds(c), I, !v)
+    case GreaterThanThCondition(lhs, rhs) => lhs match {
+      case s: BasicPolicySet => v == evalPol(s.pol, rhs.left.get, I) //this is ok since if rhs is not left then it should fail
+    }
+  }
+
+  def evalPol(pol: PolicySet, th: BigDecimal, I: Map[String, Boolean]) = pol match {
+    case p: Pol => p.operator match {
+      case Plus => //TODO need to pull out predicates only
+    }
   }
 
 }
