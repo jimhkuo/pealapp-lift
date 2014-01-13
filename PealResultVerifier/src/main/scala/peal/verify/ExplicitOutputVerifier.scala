@@ -34,7 +34,7 @@ class ExplicitOutputVerifier(input: String) {
   //need to sets up 3 way truth value, true, false, and bottom
   //need to pull out the analyses so we can find out what condition needs to be examined
 
-  def verifyModel(model: String, analysisName: String) = {
+  def verifyModel(model: String, analysisName: String): Boolean = {
 
     //this ignores the correct conversion for non boolean types
     val I = ExplicitOutputProcessor.assignmentExtractor(model)(analysisName).defines.map(d => (d.name, d.value.toBoolean)).toMap
@@ -44,14 +44,20 @@ class ExplicitOutputVerifier(input: String) {
     pealProgramParser.analyses.foreach {
       case (key, analysis) =>
         analysis match {
-          //TODO deal with different analyses
           case AlwaysTrue(n, c) =>
-            //TODO need to check if I(c) is false
-            verify(conds(c), I, I(c))
-          case _ => println("not matched")
-            false
+            println("##########")
+            println(conds(c))
+            println(I)
+            println(I(c))
+            return verify(conds(c), I, I(c)) //TODO need to check if I(c) is false
+          case _ =>
+            println("not matched")
+            return false
         }
     }
+    println("bottom1")
+
+    false //TODO should be bottom
   }
 
   def verify(cond: Condition, I: Map[String, Boolean], v: Boolean): Boolean = cond match {
@@ -61,9 +67,38 @@ class ExplicitOutputVerifier(input: String) {
     }
   }
 
-  def evalPol(pol: PolicySet, th: BigDecimal, I: Map[String, Boolean]) = pol match {
+  def evalPol(pol: PolicySet, th: BigDecimal, I: Map[String, Boolean]): Boolean = pol match {
     case p: Pol => p.operator match {
-      case Plus => //TODO need to pull out predicates only
+      case Plus =>
+        val rules = p.rules
+        println(rules)
+        val trueRules = rules.filter(r => I(r.q.name))
+        println(trueRules)
+        if (!trueRules.isEmpty) {
+          if (th < trueRules.map(r => r.score).sum) {
+            return true
+          }
+          else if (rules.map(r => r.score).sum <= th) {
+            return false
+          }
+          else {
+            println("bottom2")
+
+            return false //TODO this needs to be bottom
+          }
+        }
+        println(th)
+        println(p.score.left.get)
+        println(rules.map(r => r.score).sum)
+        if (th < p.score.left.get && rules.forall(r => r.score > th)) {
+          return true
+        }
+        if (p.score.left.get <= th && rules.filter(r => I(r.q.name) != true && I(r.q.name) != false).map(r => r.score).sum <= th) {
+          return false
+        }
+
+        println("bottom3")
+        return false //TODO this should be bottom
     }
   }
 
