@@ -86,8 +86,6 @@ class ExplicitOutputVerifier(input: String) {
             return PealFalse
           }
           else {
-            println("bottom2")
-
             return PealBottom
           }
         }
@@ -101,7 +99,6 @@ class ExplicitOutputVerifier(input: String) {
           return PealFalse
         }
 
-        println("bottom3")
         return PealBottom
     }
   }
