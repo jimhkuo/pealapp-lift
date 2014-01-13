@@ -4,6 +4,7 @@ import org.scalatest.junit.ShouldMatchersForJUnit
 import org.junit.Test
 import peal.synthesis.EagerSynthesiser
 import peal.z3.Z3Caller
+import peal.domain.PealTrue
 
 
 class ExplicitOutputVerifierTest extends ShouldMatchersForJUnit {
@@ -17,6 +18,6 @@ class ExplicitOutputVerifierTest extends ShouldMatchersForJUnit {
     val model = Z3Caller.call(z3SMTInput)
     println(model)
 
-    new ExplicitOutputVerifier(input).verifyModel(model, "name1") should be (true)
+    new ExplicitOutputVerifier(input).verifyModel(model, "name1") should be (PealTrue)
   }
 }

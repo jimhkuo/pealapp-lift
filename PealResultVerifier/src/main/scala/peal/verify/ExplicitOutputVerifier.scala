@@ -3,10 +3,14 @@ package peal.verify
 import peal.antlr.util.ParserHelper
 import peal.synthesis.analysis.AlwaysTrue
 import scala.collection.JavaConversions._
-import peal.synthesis.{GreaterThanThCondition, AndCondition, NotCondition, Condition}
-import peal.domain.{Pol, BasicPolicySet, PolicySet}
+import peal.synthesis.{GreaterThanThCondition, NotCondition, Condition}
+import peal.domain._
 import peal.domain.operator.Plus
-import peal.domain.z3.Term
+import peal.domain.BasicPolicySet
+import peal.synthesis.analysis.AlwaysTrue
+import peal.synthesis.NotCondition
+import peal.synthesis.GreaterThanThCondition
+import peal.domain.Pol
 
 
 class ExplicitOutputVerifier(input: String) {
@@ -34,7 +38,7 @@ class ExplicitOutputVerifier(input: String) {
   //need to sets up 3 way truth value, true, false, and bottom
   //need to pull out the analyses so we can find out what condition needs to be examined
 
-  def verifyModel(model: String, analysisName: String): Boolean = {
+  def verifyModel(model: String, analysisName: String): ThreeWayBoolean = {
 
     //this ignores the correct conversion for non boolean types
     val I = ExplicitOutputProcessor.assignmentExtractor(model)(analysisName).defines.map(d => (d.name, d.value.toBoolean)).toMap
@@ -49,25 +53,25 @@ class ExplicitOutputVerifier(input: String) {
             println(conds(c))
             println(I)
             println(I(c))
-            return verify(conds(c), I, I(c)) //TODO need to check if I(c) is false
+            return verify(conds(c), I, ThreeWayBooleanObj.from(I(c))) //TODO need to check if I(c) is false
           case _ =>
             println("not matched")
-            return false
+            return PealFalse
         }
     }
-    println("bottom1")
 
-    false //TODO should be bottom
+    //shouldn't get here
+    throw new RuntimeException("shouldn't get here")
   }
 
-  def verify(cond: Condition, I: Map[String, Boolean], v: Boolean): Boolean = cond match {
+  def verify(cond: Condition, I: Map[String, Boolean], v: ThreeWayBoolean): ThreeWayBoolean = cond match {
     case NotCondition(c) => verify(conds(c), I, !v)
     case GreaterThanThCondition(lhs, rhs) => lhs match {
       case s: BasicPolicySet => v == evalPol(s.pol, rhs.left.get, I) //this is ok since if rhs is not left then it should fail
     }
   }
 
-  def evalPol(pol: PolicySet, th: BigDecimal, I: Map[String, Boolean]): Boolean = pol match {
+  def evalPol(pol: PolicySet, th: BigDecimal, I: Map[String, Boolean]): ThreeWayBoolean = pol match {
     case p: Pol => p.operator match {
       case Plus =>
         val rules = p.rules
@@ -76,30 +80,29 @@ class ExplicitOutputVerifier(input: String) {
         println(trueRules)
         if (!trueRules.isEmpty) {
           if (th < trueRules.map(r => r.score).sum) {
-            return true
+            return PealTrue
           }
           else if (rules.map(r => r.score).sum <= th) {
-            return false
+            return PealFalse
           }
           else {
             println("bottom2")
 
-            return false //TODO this needs to be bottom
+            return PealBottom
           }
         }
         println(th)
         println(p.score.left.get)
         println(rules.map(r => r.score).sum)
         if (th < p.score.left.get && rules.forall(r => r.score > th)) {
-          return true
+          return PealTrue
         }
         if (p.score.left.get <= th && rules.filter(r => I(r.q.name) != true && I(r.q.name) != false).map(r => r.score).sum <= th) {
-          return false
+          return PealFalse
         }
 
         println("bottom3")
-        return false //TODO this should be bottom
+        return PealBottom
     }
   }
-
 }
