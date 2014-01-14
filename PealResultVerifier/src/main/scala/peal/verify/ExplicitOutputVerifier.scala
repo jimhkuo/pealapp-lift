@@ -41,7 +41,7 @@ class ExplicitOutputVerifier(input: String) {
   def verifyModel(model: String, analysisName: String): ThreeWayBoolean = {
 
     //this ignores the correct conversion for non boolean types
-    val I = ExplicitOutputProcessor.assignmentExtractor(model)(analysisName).defines.map(d => (d.name, d.value.toBoolean)).toMap
+    val I = ExplicitOutputProcessor.assignmentExtractor(model)(analysisName).defines.map(d => (d.name, ThreeWayBooleanObj.from(d.value))).toMap
     println(I)
 
     println(predicateNames)
@@ -53,7 +53,7 @@ class ExplicitOutputVerifier(input: String) {
             println(conds(c))
             println(I)
             println(I(c))
-            return verify(conds(c), I, ThreeWayBooleanObj.from(I(c))) //TODO need to check if I(c) is false
+            return verify(conds(c), I, I(c)) //TODO need to check if I(c) is false
           case _ =>
             println("not matched")
             return PealFalse
@@ -64,19 +64,19 @@ class ExplicitOutputVerifier(input: String) {
     throw new RuntimeException("shouldn't get here")
   }
 
-  def verify(cond: Condition, I: Map[String, Boolean], v: ThreeWayBoolean): ThreeWayBoolean = cond match {
+  def verify(cond: Condition, I: Map[String, ThreeWayBoolean], v: ThreeWayBoolean): ThreeWayBoolean = cond match {
     case NotCondition(c) => verify(conds(c), I, !v)
     case GreaterThanThCondition(lhs, rhs) => lhs match {
-      case s: BasicPolicySet => v == evalPol(s.pol, rhs.left.get, I) //this is ok since if rhs is not left then it should fail
+      case s: BasicPolicySet => v === evalPol(s.pol, rhs.left.get, I) //this is ok since if rhs is not left then it should fail
     }
   }
 
-  def evalPol(pol: PolicySet, th: BigDecimal, I: Map[String, Boolean]): ThreeWayBoolean = pol match {
+  def evalPol(pol: PolicySet, th: BigDecimal, I: Map[String, ThreeWayBoolean]): ThreeWayBoolean = pol match {
     case p: Pol => p.operator match {
       case Plus =>
         val rules = p.rules
         println(rules)
-        val trueRules = rules.filter(r => I(r.q.name))
+        val trueRules = rules.filter(r => I(r.q.name) == PealTrue)
         println(trueRules)
         if (!trueRules.isEmpty) {
           if (th < trueRules.map(r => r.score).sum) {
@@ -95,11 +95,11 @@ class ExplicitOutputVerifier(input: String) {
         if (th < p.score.left.get && rules.forall(r => r.score > th)) {
           return PealTrue
         }
-        if (p.score.left.get <= th && rules.filter(r => I(r.q.name) != true && I(r.q.name) != false).map(r => r.score).sum <= th) {
+        if (p.score.left.get <= th && rules.filter(r => I(r.q.name) == PealBottom).map(r => r.score).sum <= th) {
           return PealFalse
         }
 
-        return PealBottom
+        PealBottom
     }
   }
 }
