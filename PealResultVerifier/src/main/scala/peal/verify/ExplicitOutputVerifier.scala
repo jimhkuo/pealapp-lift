@@ -49,7 +49,6 @@ class ExplicitOutputVerifier(input: String) {
       case (key, analysis) =>
         analysis match {
           case AlwaysTrue(n, c) =>
-            println("##########")
             println(conds(c))
             println(I)
             println(I(c))
