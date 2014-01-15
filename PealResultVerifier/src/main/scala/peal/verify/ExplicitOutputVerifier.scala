@@ -79,11 +79,18 @@ class ExplicitOutputVerifier(input: String) {
           case s: MaxPolicySet =>
             val lhsCond = new GreaterThanThCondition(s.lhs, Left(c.getTh))
             val rhsCond = new GreaterThanThCondition(s.rhs, Left(c.getTh))
-
             if (v == PealTrue) {
               verify(lhsCond, I, v) || verify(rhsCond, I, v)
             } else {
               verify(lhsCond, I, v) && verify(rhsCond, I, v)
+            }
+          case s: MinPolicySet =>
+            val lhsCond = new GreaterThanThCondition(s.lhs, Left(c.getTh))
+            val rhsCond = new GreaterThanThCondition(s.rhs, Left(c.getTh))
+            if (v == PealTrue) {
+              verify(lhsCond, I, v) && verify(rhsCond, I, v)
+            } else {
+              verify(lhsCond, I, v) || verify(rhsCond, I, v)
             }
         }
     }
