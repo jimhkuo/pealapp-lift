@@ -40,26 +40,26 @@ class ExplicitOutputVerifier(input: String) {
   def verifyModel(model: String, analysisName: String): ThreeWayBoolean = {
 
     //this ignores the correct conversion for non boolean types
-    val I = ExplicitOutputProcessor.assignmentExtractor(model)(analysisName).defines.map(d => (d.name, ThreeWayBooleanObj.from(d.value))).toMap
-//    println(I)
-//    println(predicateNames)
+    val truthMapping = ExplicitOutputProcessor.assignmentExtractor(model)(analysisName).defines.map(d => (d.name, ThreeWayBooleanObj.from(d.value))).toMap
+    //    println(I)
+    //    println(predicateNames)
 
     pealProgramParser.analyses.foreach {
       case (key, analysis) =>
         analysis match {
           case AlwaysTrue(analysisName, condName) =>
             println(conds(condName))
-            println(I)
-            println(I(condName))
-            if (I(condName) != PealFalse) {
+            println(truthMapping)
+            println(truthMapping(condName))
+            if (truthMapping(condName) != PealFalse) {
               throw new RuntimeException(condName + " should be false but is not")
             }
-            return verify(conds(condName), I, I(condName))
+            return verify(conds(condName), truthMapping, truthMapping(condName))
           case AlwaysFalse(analysisName, condName) =>
-            if (I(condName) != PealTrue) {
+            if (truthMapping(condName) != PealTrue) {
               throw new RuntimeException(condName + " should be true but is not")
             }
-            return verify(conds(condName), I, I(condName))
+            return verify(conds(condName), truthMapping, truthMapping(condName))
           case _ =>
             //shouldn't get here
             throw new RuntimeException("shouldn't get here, no matching analysis found")
@@ -71,18 +71,28 @@ class ExplicitOutputVerifier(input: String) {
 
   def verify(cond: Condition, I: Map[String, ThreeWayBoolean], v: ThreeWayBoolean): ThreeWayBoolean = cond match {
     case NotCondition(c) => verify(conds(c), I, !v)
-    case GreaterThanThCondition(lhs, rhs) => lhs match {
-      case s: BasicPolicySet => v === evalPol(s.pol, rhs.left.get, I) //this is ok since if rhs is not left then it should fail
-    }
+    case c: GreaterThanThCondition =>
+      c.lhs match {
+        case s: BasicPolicySet => v === evalPol(s.pol, c.rhs.left.get, I) //this is ok since if rhs is not left then it should fail
+        case s: MaxPolicySet =>
+          val lhsCond = new GreaterThanThCondition(s.lhs, Left(c.getTh))
+          val rhsCond = new GreaterThanThCondition(s.rhs, Left(c.getTh))
+
+          if (v == PealTrue) {
+            verify(lhsCond, I, v) || verify(rhsCond, I, v)
+          } else {
+            verify(lhsCond, I, v) && verify(rhsCond, I, v)
+          }
+      }
   }
 
   def evalPol(pol: PolicySet, th: BigDecimal, I: Map[String, ThreeWayBoolean]): ThreeWayBoolean = pol match {
     case p: Pol => p.operator match {
       case Plus =>
         val rules = p.rules
-//        println(rules)
-        val trueRules = rules.filter(r => I(r.q.name) == PealTrue)
-//        println(trueRules)
+        //        println(rules)
+        val trueRules = rules.filter(r => I.get(r.q.name) == Some(PealTrue))
+        //        println(trueRules)
         if (!trueRules.isEmpty) {
           if (th < trueRules.map(r => r.score).sum) {
             return PealTrue
@@ -94,13 +104,13 @@ class ExplicitOutputVerifier(input: String) {
             return PealBottom
           }
         }
-//        println(th)
-//        println(p.score.left.get)
-//        println(rules.map(r => r.score).sum)
+        //        println(th)
+        //        println(p.score.left.get)
+        //        println(rules.map(r => r.score).sum)
         if (th < p.score.left.get && rules.forall(r => r.score > th)) {
           return PealTrue
         }
-        if (p.score.left.get <= th && rules.filter(r => I(r.q.name) == PealBottom).map(r => r.score).sum <= th) {
+        if (p.score.left.get <= th && rules.filter(r => I.get(r.q.name) == Some(PealBottom)).map(r => r.score).sum <= th) {
           return PealFalse
         }
 
