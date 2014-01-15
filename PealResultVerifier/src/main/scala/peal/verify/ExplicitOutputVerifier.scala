@@ -3,13 +3,20 @@ package peal.verify
 import peal.antlr.util.ParserHelper
 import peal.synthesis.analysis.{AlwaysFalse, AlwaysTrue}
 import scala.collection.JavaConversions._
-import peal.synthesis.{GreaterThanThCondition, NotCondition, Condition}
+import peal.synthesis._
 import peal.domain._
 import peal.domain.operator.Plus
 import peal.domain.BasicPolicySet
-import peal.synthesis.NotCondition
-import peal.synthesis.GreaterThanThCondition
 import peal.domain.Pol
+import peal.domain.BasicPolicySet
+import peal.synthesis.analysis.AlwaysFalse
+import peal.synthesis.GreaterThanThCondition
+import peal.domain.MinPolicySet
+import peal.domain.MaxPolicySet
+import peal.domain.Pol
+import scala.Some
+import peal.synthesis.analysis.AlwaysTrue
+import peal.synthesis.NotCondition
 
 
 class ExplicitOutputVerifier(input: String) {
@@ -73,6 +80,9 @@ class ExplicitOutputVerifier(input: String) {
     println("verify called with " + cond + ", " + I + ", " + v)
     cond match {
       case NotCondition(c) => verify(conds(c), I, !v)
+      case c: LessThanThCondition =>
+        val reversedCond = new GreaterThanThCondition(c.lhs, Left(c.getTh))
+        verify(reversedCond, I, !v)
       case c: GreaterThanThCondition =>
         c.lhs match {
           case s: BasicPolicySet => v === evalPol(s.pol, c.rhs.left.get, I) //this is ok since if rhs is not left then it should fail
