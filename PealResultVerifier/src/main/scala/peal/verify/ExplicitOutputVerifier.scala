@@ -48,9 +48,9 @@ class ExplicitOutputVerifier(input: String) {
       case (key, analysis) =>
         analysis match {
           case AlwaysTrue(analysisName, condName) =>
-            println(conds(condName))
-            println(truthMapping)
-            println(truthMapping(condName))
+//            println(conds(condName))
+//            println(truthMapping)
+//            println(truthMapping(condName))
             if (truthMapping(condName) != PealFalse) {
               throw new RuntimeException(condName + " should be false but is not")
             }
@@ -69,21 +69,24 @@ class ExplicitOutputVerifier(input: String) {
     throw new RuntimeException("shouldn't get here, no analysis specified")
   }
 
-  def verify(cond: Condition, I: Map[String, ThreeWayBoolean], v: ThreeWayBoolean): ThreeWayBoolean = cond match {
-    case NotCondition(c) => verify(conds(c), I, !v)
-    case c: GreaterThanThCondition =>
-      c.lhs match {
-        case s: BasicPolicySet => v === evalPol(s.pol, c.rhs.left.get, I) //this is ok since if rhs is not left then it should fail
-        case s: MaxPolicySet =>
-          val lhsCond = new GreaterThanThCondition(s.lhs, Left(c.getTh))
-          val rhsCond = new GreaterThanThCondition(s.rhs, Left(c.getTh))
+  def verify(cond: Condition, I: Map[String, ThreeWayBoolean], v: ThreeWayBoolean): ThreeWayBoolean = {
+    println("verify called with " + cond + ", " + I + ", " + v)
+    cond match {
+      case NotCondition(c) => verify(conds(c), I, !v)
+      case c: GreaterThanThCondition =>
+        c.lhs match {
+          case s: BasicPolicySet => v === evalPol(s.pol, c.rhs.left.get, I) //this is ok since if rhs is not left then it should fail
+          case s: MaxPolicySet =>
+            val lhsCond = new GreaterThanThCondition(s.lhs, Left(c.getTh))
+            val rhsCond = new GreaterThanThCondition(s.rhs, Left(c.getTh))
 
-          if (v == PealTrue) {
-            verify(lhsCond, I, v) || verify(rhsCond, I, v)
-          } else {
-            verify(lhsCond, I, v) && verify(rhsCond, I, v)
-          }
-      }
+            if (v == PealTrue) {
+              verify(lhsCond, I, v) || verify(rhsCond, I, v)
+            } else {
+              verify(lhsCond, I, v) && verify(rhsCond, I, v)
+            }
+        }
+    }
   }
 
   def evalPol(pol: PolicySet, th: BigDecimal, I: Map[String, ThreeWayBoolean]): ThreeWayBoolean = pol match {
