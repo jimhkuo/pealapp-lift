@@ -41,9 +41,9 @@ class ExplicitOutputVerifier(input: String) {
 
     //this ignores the correct conversion for non boolean types
     val I = ExplicitOutputProcessor.assignmentExtractor(model)(analysisName).defines.map(d => (d.name, ThreeWayBooleanObj.from(d.value))).toMap
-    println(I)
+//    println(I)
+//    println(predicateNames)
 
-    println(predicateNames)
     pealProgramParser.analyses.foreach {
       case (key, analysis) =>
         analysis match {
@@ -80,9 +80,9 @@ class ExplicitOutputVerifier(input: String) {
     case p: Pol => p.operator match {
       case Plus =>
         val rules = p.rules
-        println(rules)
+//        println(rules)
         val trueRules = rules.filter(r => I(r.q.name) == PealTrue)
-        println(trueRules)
+//        println(trueRules)
         if (!trueRules.isEmpty) {
           if (th < trueRules.map(r => r.score).sum) {
             return PealTrue
@@ -94,9 +94,9 @@ class ExplicitOutputVerifier(input: String) {
             return PealBottom
           }
         }
-        println(th)
-        println(p.score.left.get)
-        println(rules.map(r => r.score).sum)
+//        println(th)
+//        println(p.score.left.get)
+//        println(rules.map(r => r.score).sum)
         if (th < p.score.left.get && rules.forall(r => r.score > th)) {
           return PealTrue
         }
