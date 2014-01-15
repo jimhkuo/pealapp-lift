@@ -44,6 +44,14 @@ class ExplicitOutputVerifierTest extends ShouldMatchersForJUnit {
   }
 
   @Test
+  def testCanVerifyPlusAndAlwaysTrueOrConditions() {
+    val input = "POLICIES\nb1 = + ((q1 0.1) (q2 0.2) (q3 0.5)) default 0\nb2 = + ((q4 0.1) (q5 0.2) (q6 0.5)) default 0.1\nPOLICY_SETS\npSet1 = b1\npSet2 = b2\nCONDITIONS\ncond1 = pSet1 <= 0.7\ncond2 = 0 < pSet2\ncond3 = cond1 && cond2\nANALYSES\nname3 = always_true? cond3"
+    val z3SMTInput = new EagerSynthesiser(input).generate()
+    val model = Z3Caller.call(z3SMTInput)
+    new ExplicitOutputVerifier(input).verifyModel(model, "name3") should be (PealTrue)
+  }
+
+  @Test
   def testCanVerifyPlusAndAlwaysFalse() {
     val input = "POLICIES\nb1 = + ((q1 0.1) (q2 0.2) (q3 0.6)) default 0\nPOLICY_SETS\npSet1 = b1\nCONDITIONS\ncond1 = 0.8 < pSet1\nANALYSES\nname1 = always_false? cond1"
     val z3SMTInput = new EagerSynthesiser(input).generate()

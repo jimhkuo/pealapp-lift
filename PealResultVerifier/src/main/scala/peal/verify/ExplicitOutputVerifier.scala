@@ -1,13 +1,10 @@
 package peal.verify
 
 import peal.antlr.util.ParserHelper
-import peal.synthesis.analysis.{AlwaysFalse, AlwaysTrue}
 import scala.collection.JavaConversions._
 import peal.synthesis._
 import peal.domain._
 import peal.domain.operator.Plus
-import peal.domain.BasicPolicySet
-import peal.domain.Pol
 import peal.domain.BasicPolicySet
 import peal.synthesis.analysis.AlwaysFalse
 import peal.synthesis.GreaterThanThCondition
@@ -80,6 +77,13 @@ class ExplicitOutputVerifier(input: String) {
     println("verify called with " + cond + ", " + I + ", " + v)
     cond match {
       case NotCondition(c) => verify(conds(c), I, !v)
+      case AndCondition(lhs, rhs) =>
+        if (v == PealTrue) {
+          verify(conds(lhs), I, v) && verify(conds(rhs), I, v)
+        }
+        else {
+          verify(conds(lhs), I, v) || verify(conds(rhs), I, v)
+        }
       case c: LessThanThCondition =>
         val reversedCond = new GreaterThanThCondition(c.lhs, Left(c.getTh))
         verify(reversedCond, I, !v)
