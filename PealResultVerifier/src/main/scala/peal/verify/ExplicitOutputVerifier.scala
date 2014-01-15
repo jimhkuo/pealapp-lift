@@ -84,6 +84,13 @@ class ExplicitOutputVerifier(input: String) {
         else {
           verify(conds(lhs), I, v) || verify(conds(rhs), I, v)
         }
+      case OrCondition(lhs, rhs) =>
+        if (v == PealTrue) {
+          verify(conds(lhs), I, v) || verify(conds(rhs), I, v)
+        }
+        else {
+          verify(conds(lhs), I, v) && verify(conds(rhs), I, v)
+        }
       case c: LessThanThCondition =>
         val reversedCond = new GreaterThanThCondition(c.lhs, Left(c.getTh))
         verify(reversedCond, I, !v)
