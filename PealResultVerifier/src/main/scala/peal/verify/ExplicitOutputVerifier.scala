@@ -1,13 +1,12 @@
 package peal.verify
 
 import peal.antlr.util.ParserHelper
-import peal.synthesis.analysis.AlwaysTrue
+import peal.synthesis.analysis.{AlwaysFalse, AlwaysTrue}
 import scala.collection.JavaConversions._
 import peal.synthesis.{GreaterThanThCondition, NotCondition, Condition}
 import peal.domain._
 import peal.domain.operator.Plus
 import peal.domain.BasicPolicySet
-import peal.synthesis.analysis.AlwaysTrue
 import peal.synthesis.NotCondition
 import peal.synthesis.GreaterThanThCondition
 import peal.domain.Pol
@@ -48,19 +47,26 @@ class ExplicitOutputVerifier(input: String) {
     pealProgramParser.analyses.foreach {
       case (key, analysis) =>
         analysis match {
-          case AlwaysTrue(n, c) =>
-            println(conds(c))
+          case AlwaysTrue(analysisName, condName) =>
+            println(conds(condName))
             println(I)
-            println(I(c))
-            return verify(conds(c), I, I(c)) //TODO need to check if I(c) is false
+            println(I(condName))
+            if (I(condName) != PealFalse) {
+              throw new RuntimeException(condName + " should be false but is not")
+            }
+            return verify(conds(condName), I, I(condName))
+          case AlwaysFalse(analysisName, condName) =>
+            if (I(condName) != PealTrue) {
+              throw new RuntimeException(condName + " should be true but is not")
+            }
+            return verify(conds(condName), I, I(condName))
           case _ =>
-            println("not matched")
-            return PealFalse
+            //shouldn't get here
+            throw new RuntimeException("shouldn't get here, no matching analysis found")
         }
     }
-
     //shouldn't get here
-    throw new RuntimeException("shouldn't get here")
+    throw new RuntimeException("shouldn't get here, no analysis specified")
   }
 
   def verify(cond: Condition, I: Map[String, ThreeWayBoolean], v: ThreeWayBoolean): ThreeWayBoolean = cond match {
