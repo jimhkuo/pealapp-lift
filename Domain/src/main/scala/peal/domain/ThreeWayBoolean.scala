@@ -7,7 +7,7 @@ trait ThreeWayBoolean {
     case PealBottom => PealBottom
   }
 
-  def ||(obj: ThreeWayBoolean) : ThreeWayBoolean = this match {
+  def ||(obj: ThreeWayBoolean): ThreeWayBoolean = this match {
     case PealTrue => obj match {
       case PealTrue => PealTrue
       case PealFalse => PealTrue
@@ -21,7 +21,7 @@ trait ThreeWayBoolean {
     case PealBottom => PealBottom
   }
 
-  def &&(obj: ThreeWayBoolean) : ThreeWayBoolean = this match {
+  def &&(obj: ThreeWayBoolean): ThreeWayBoolean = this match {
     case PealTrue => obj match {
       case PealTrue => PealTrue
       case PealFalse => PealFalse
@@ -35,7 +35,7 @@ trait ThreeWayBoolean {
     case PealBottom => PealBottom
   }
 
-  def ===(obj:ThreeWayBoolean) : ThreeWayBoolean = this match {
+  def ===(obj: ThreeWayBoolean): ThreeWayBoolean = this match {
     case PealTrue => obj match {
       case PealTrue => PealTrue
       case PealFalse => PealFalse
@@ -52,18 +52,26 @@ trait ThreeWayBoolean {
 
 
 object ThreeWayBooleanObj {
-  def from(b : Boolean) : ThreeWayBoolean = b match {
+  def from(b: Boolean): ThreeWayBoolean = b match {
     case true => PealTrue
     case false => PealFalse
   }
 
-  def from(s : String) : ThreeWayBoolean = s match {
+  def from(s: String): ThreeWayBoolean = s match {
     case "true" => PealTrue
     case "false" => PealFalse
     case _ => PealBottom
   }
 }
 
-object PealTrue extends ThreeWayBoolean
-object PealFalse extends ThreeWayBoolean
-object PealBottom extends ThreeWayBoolean
+object PealTrue extends ThreeWayBoolean {
+  override def toString = "True"
+}
+
+object PealFalse extends ThreeWayBoolean {
+  override def toString = "False"
+}
+
+object PealBottom extends ThreeWayBoolean {
+  override def toString = "Bottom"
+}
