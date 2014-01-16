@@ -17,6 +17,7 @@ import peal.domain.PolicySet
 import peal.domain.z3.{PealAst, Term}
 import peal.antlr.util.ParserHelper
 import peal.z3.Z3Caller
+import peal.verify.ExplicitOutputVerifier
 
 class PealCometActor extends CometActor with Loggable {
 
@@ -133,7 +134,7 @@ class PealCometActor extends CometActor with Loggable {
           <div class="tab-content">
             <div class="tab-pane active" id="explicit">
               <div class="col-sm-5">
-                {SHtml.ajaxButton("Display results of all analyses in pretty printed form", () => {this ! SynthesisAndCallZ3Quiet; _Noop}, "class" -> "btn btn-success btn-sm", "style" -> "margin:2px;")}
+                {SHtml.ajaxButton("Display results of all analyses in pretty printed form and perform verification", () => {this ! SynthesisAndCallZ3QuietAnalysis; _Noop}, "class" -> "btn btn-success btn-sm", "style" -> "margin:2px;")}
                 {SHtml.ajaxButton("Generate, show, and run Z3 code, display results in pretty-printed and raw form", () => {this ! SynthesisAndCallZ3; _Noop}, "class" -> "btn btn-success btn-sm", "style" -> "margin:2px;")}
                 {SHtml.ajaxButton("Generate and show Z3 code", () => {this ! Display; _Noop}, "class" -> "btn btn-success btn-sm", "style" -> "margin:2px;")}
                 {SHtml.ajaxButton("Generate Z3 code and a link to it below", () => {this ! Prepare; _Noop}, "class" -> "btn btn-success btn-sm", "style" -> "margin:2px;")}
@@ -188,7 +189,7 @@ class PealCometActor extends CometActor with Loggable {
     case SynthesisAndCallZ3 =>
       val (constsMap,  conds, pSets, analyses, domainSpecific) = parseInput(inputPolicies)
       onCallEagerZ3(true, constsMap, conds,  pSets, analyses, domainSpecific)
-    case SynthesisAndCallZ3Quiet =>
+    case SynthesisAndCallZ3QuietAnalysis =>
       val (constsMap,  conds, pSets, analyses, domainSpecific) = parseInput(inputPolicies)
       onCallEagerZ3(false, constsMap, conds,  pSets, analyses, domainSpecific)
     case Display =>
@@ -326,13 +327,17 @@ class PealCometActor extends CometActor with Loggable {
     val z3SMTInput = declarations.mkString("") +declarations1.mkString("") + body.mkString("") + domainSpecifics.mkString("", "\n","\n") + generatedAnalyses.mkString("")
 
     val z3Output = Z3Caller.call(z3SMTInput)
+    val verificationResults = for (analysis <- sortedAnalyses) yield {
+      analysis + " = " + new ExplicitOutputVerifier(inputPolicies).verifyModel(z3Output, analysis) + "\n"
+    }
+    println("results: " + verificationResults)
     try {
       val z3OutputParser = ParserHelper.getZ3OutputParser(z3Output)
       val z3Models = z3OutputParser.results().toMap
       val analysedResults = Z3OutputAnalyser.execute(analyses, z3Models, constsMap)
       verbose match {
         case true => this ! Result(<pre>{z3SMTInput}</pre> <pre>Analysed results:<br/>{analysedResults}</pre><pre>Z3 Raw Output:<br/>{z3Output}</pre>)
-        case false => this ! Result(<pre>Analysed results:<br/>{analysedResults}</pre>)
+        case false => this ! Result(<pre>Analysed results:<br/>{analysedResults}</pre><pre>{verificationResults.mkString("")}</pre>)
       }
     } catch {
       case e: Exception =>

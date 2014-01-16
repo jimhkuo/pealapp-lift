@@ -45,29 +45,27 @@ class ExplicitOutputVerifier(input: String) {
 
     //this ignores the correct conversion for non boolean types
     val truthMapping = ExplicitOutputProcessor.assignmentExtractor(model)(analysisName).defines.map(d => (d.name, ThreeWayBooleanObj.from(d.value))).toMap
-    //    println(I)
-    //    println(predicateNames)
+    println("I: " + truthMapping)
 
-    pealProgramParser.analyses.foreach {
-      case (key, analysis) =>
-        analysis match {
-          case AlwaysTrue(analysisName, condName) =>
-//            println(conds(condName))
-//            println(truthMapping)
-//            println(truthMapping(condName))
-            if (truthMapping(condName) != PealFalse) {
-              throw new RuntimeException(condName + " should be false but is not")
-            }
-            return verify(conds(condName), truthMapping, truthMapping(condName))
-          case AlwaysFalse(analysisName, condName) =>
-            if (truthMapping(condName) != PealTrue) {
-              throw new RuntimeException(condName + " should be true but is not")
-            }
-            return verify(conds(condName), truthMapping, truthMapping(condName))
-          case _ =>
-            //shouldn't get here
-            throw new RuntimeException("shouldn't get here, no matching analysis found")
+    println("########### Doing : " + analysisName)
+
+    analyses(analysisName) match {
+      case AlwaysTrue(analysisName, condName) =>
+        //            println(conds(condName))
+        //            println(truthMapping)
+        //            println(truthMapping(condName))
+        if (truthMapping(condName) != PealFalse) {
+          throw new RuntimeException(condName + " should be false but is not")
         }
+        return verify(conds(condName), truthMapping, truthMapping(condName))
+      case AlwaysFalse(analysisName, condName) =>
+        if (truthMapping(condName) != PealTrue) {
+          throw new RuntimeException(condName + " should be true but is not")
+        }
+        return verify(conds(condName), truthMapping, truthMapping(condName))
+      case _ =>
+        //shouldn't get here
+        throw new RuntimeException("shouldn't get here, no matching analysis found")
     }
     //shouldn't get here
     throw new RuntimeException("shouldn't get here, no analysis specified")

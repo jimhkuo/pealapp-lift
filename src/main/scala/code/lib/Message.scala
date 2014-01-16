@@ -48,7 +48,7 @@ case object Analysis1
 
 case object SynthesisAndCallZ3
 
-case object SynthesisAndCallZ3Quiet
+case object SynthesisAndCallZ3QuietAnalysis
 
 case object LazySynthesisAndCallZ3
 
