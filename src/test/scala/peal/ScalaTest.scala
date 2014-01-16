@@ -11,12 +11,22 @@ import peal.antlr.util.ParserHelper
 
 class ScalaTest extends ShouldMatchersForJUnit {
 
-@Test
-def test() {
-  println(List(1,2,3).toSet)
-  println(List(1,2,3).toSet())
+  @Test
+  def testEmptySum() {
+      List[Int]().sum should be (0)
+  }
 
-}
+  @Test
+  def testEmptyProduct() {
+      List[Int]().product should be (1)
+  }
+
+  @Test
+  def test() {
+    println(List(1, 2, 3).toSet)
+    println(List(1, 2, 3).toSet())
+
+  }
 
   @Test
   def testPlus() {
