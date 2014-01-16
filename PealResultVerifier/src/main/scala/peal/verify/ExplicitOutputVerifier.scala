@@ -51,9 +51,6 @@ class ExplicitOutputVerifier(input: String) {
 
     analyses(analysisName) match {
       case AlwaysTrue(analysisName, condName) =>
-        //            println(conds(condName))
-        //            println(truthMapping)
-        //            println(truthMapping(condName))
         if (truthMapping(condName) != PealFalse) {
           throw new RuntimeException(condName + " should be false but is not")
         }

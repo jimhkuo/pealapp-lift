@@ -327,11 +327,12 @@ class PealCometActor extends CometActor with Loggable {
     val z3SMTInput = declarations.mkString("") +declarations1.mkString("") + body.mkString("") + domainSpecifics.mkString("", "\n","\n") + generatedAnalyses.mkString("")
 
     val z3Output = Z3Caller.call(z3SMTInput)
-    val verificationResults = for (analysis <- sortedAnalyses) yield {
-      analysis + " = " + new ExplicitOutputVerifier(inputPolicies).verifyModel(z3Output, analysis) + "\n"
-    }
-    println("results: " + verificationResults)
     try {
+      val verificationResults = for (analysis <- sortedAnalyses) yield {
+        analysis + " = " + new ExplicitOutputVerifier(inputPolicies).verifyModel(z3Output, analysis) + "\n"
+      }
+      println("results: " + verificationResults)
+
       val z3OutputParser = ParserHelper.getZ3OutputParser(z3Output)
       val z3Models = z3OutputParser.results().toMap
       val analysedResults = Z3OutputAnalyser.execute(analyses, z3Models, constsMap)
@@ -343,7 +344,7 @@ class PealCometActor extends CometActor with Loggable {
       case e: Exception =>
         verbose match {
           case true => this ! Result(<pre>{z3SMTInput}</pre> <pre>Z3 Raw Output:<br/>{z3Output}</pre>)
-          case false => this ! Result(<pre>Result analysis failed, returned model contains unexpected string:<br/>{z3Output}</pre>)
+          case false => this ! Result(<pre>Result analysis failed, returned model contains unexpected string:<br/>{z3Output}</pre><pre>{e.getMessage}</pre>)
         }
     }
   }
