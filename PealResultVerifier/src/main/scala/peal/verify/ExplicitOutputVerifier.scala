@@ -51,12 +51,12 @@ class ExplicitOutputVerifier(input: String) {
 
     analyses(analysisName) match {
       case AlwaysTrue(analysisName, condName) =>
-        if (truthMapping(condName) == PealFalse) {
+        if (truthMapping.get(condName) == Some(PealFalse)) {
           return verify(conds(condName), truthMapping, truthMapping(condName))
         }
         throw new RuntimeException(condName + " should be false but is not")
       case AlwaysFalse(analysisName, condName) =>
-        if (truthMapping(condName) == PealTrue) {
+        if (truthMapping.get(condName) == Some(PealTrue)) {
           return verify(conds(condName), truthMapping, truthMapping(condName))
         }
         throw new RuntimeException(condName + " should be true but is not")
