@@ -10,6 +10,14 @@ import peal.domain.PealTrue
 class ExplicitOutputVerifierTest extends ShouldMatchersForJUnit {
 
   @Test
+  def testBrokenModelBottom() {
+    val input = "POLICIES\nb0 = min () default 0.4942\nb1 = + ((q3 0.2134)) default 0.6567\nPOLICY_SETS\np0_1 = min(b0,b1)\nCONDITIONS\ncond1 = 0.50 < p0_1\nANALYSES\nanalysis1 = always_true? cond1"
+//    val model = "Result of analysis [analysis1 = always_true? cond1]:\nsat\n(model \n  (define-fun cond1 () Bool\n    false)\n  (define-fun always_true_analysis1 () Bool\n    false)\n  (define-fun q3 () Bool\n    true)\n)"
+    val model = "Result of analysis [analysis1 = always_true? cond1]:\nsat\n(model \n  (define-fun cond1 () Bool\n    false)\n  (define-fun always_true_analysis1 () Bool\n    false)\n)"
+    new ExplicitOutputVerifier(input).verifyModel(model, "analysis1") should be (PealTrue)
+  }
+
+  @Test
   def testCanVerifyPlusAndAlwaysTrueGreaterThanTh() {
     val input = "POLICIES\nb1 = + ((q1 0.1) (q2 0.2) (q3 0.6)) default 0\nPOLICY_SETS\npSet1 = b1\nCONDITIONS\ncond1 = 0.8 < pSet1\nANALYSES\nname1 = always_true? cond1\nname2 = always_false? cond1"
     val z3SMTInput = new EagerSynthesiser(input).generate()

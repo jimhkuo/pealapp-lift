@@ -12,6 +12,11 @@ import peal.antlr.util.ParserHelper
 class ScalaTest extends ShouldMatchersForJUnit {
 
   @Test
+  def testEmptySet() {
+      println(List[Int]().filter(_<0).forall(_ > 0))
+  }
+
+  @Test
   def testEmptySum() {
       List[Int]().sum should be (0)
   }

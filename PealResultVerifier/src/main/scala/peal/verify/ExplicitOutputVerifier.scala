@@ -68,7 +68,7 @@ class ExplicitOutputVerifier(input: String) {
   }
 
   def verify(cond: Condition, I: Map[String, ThreeWayBoolean], v: ThreeWayBoolean): ThreeWayBoolean = {
-    println("verify called with " + cond + ", " + I + ", " + v)
+    println("### Verify called with " + cond + ", " + I + ", " + v)
     cond match {
       case NotCondition(c) => verify(conds(c), I, !v)
       case AndCondition(lhs, rhs) =>
@@ -90,7 +90,11 @@ class ExplicitOutputVerifier(input: String) {
         verify(reversedCond, I, !v)
       case c: GreaterThanThCondition =>
         c.lhs match {
-          case s: BasicPolicySet => v === evalPol(s.pol, c.rhs.left.get, I) //this is ok since if rhs is not left then it should fail
+          case s: BasicPolicySet =>
+            //this is ok since if rhs is not left then it should fail
+            val out = v === evalPol(s.pol, c.rhs.left.get, I)
+             println ("XXXXXXX Out: " + out)
+            out
           case s: MaxPolicySet =>
             val lhsCond = new GreaterThanThCondition(s.lhs, Left(c.getTh))
             val rhsCond = new GreaterThanThCondition(s.rhs, Left(c.getTh))
@@ -114,7 +118,11 @@ class ExplicitOutputVerifier(input: String) {
   def evalPol(pol: PolicySet, th: BigDecimal, I: Map[String, ThreeWayBoolean]): ThreeWayBoolean = pol match {
     case p: Pol =>
       val nonFalseRules = p.rules.filterNot(r => I.get(r.q.name) == Some(PealFalse))
-      val trueRules = nonFalseRules.filter(r => I.get(r.q.name) == Some(PealTrue))
+      val trueRules = nonFalseRules //.filter(r => I.get(r.q.name) == Some(PealTrue))
+
+    println("All: " + p.rules)
+    println("Non: " + nonFalseRules)
+    println("True: " + trueRules)
 
       p.operator match {
         case Plus =>
