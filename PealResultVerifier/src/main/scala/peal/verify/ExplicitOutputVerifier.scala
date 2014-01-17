@@ -4,7 +4,7 @@ import peal.antlr.util.ParserHelper
 import scala.collection.JavaConversions._
 import peal.synthesis._
 import peal.domain._
-import peal.domain.operator.{Min, Plus}
+import peal.domain.operator.{Max, Min, Plus}
 import peal.domain.BasicPolicySet
 import peal.synthesis.analysis.AlwaysFalse
 import peal.synthesis.GreaterThanThCondition
@@ -133,6 +133,25 @@ class ExplicitOutputVerifier(input: String) {
             return PealTrue
           }
           if (p.score.left.get <= th && nonFalseRules.filter(r => I.get(r.q.name) == Some(PealBottom)).map(r => r.score).sum <= th) {
+            return PealFalse
+          }
+
+          PealBottom
+        case Max =>
+          if (!trueRules.isEmpty) {
+            if (th < trueRules.map(r => r.score).max) {
+              return PealTrue
+            }
+            else if (nonFalseRules.map(r => r.score).max <= th) {
+              return PealFalse
+            }
+            return PealBottom
+          }
+
+          if (th < p.score.left.get && nonFalseRules.forall(r => r.score > th)) {
+            return PealTrue
+          }
+          else if (p.score.left.get <= th && nonFalseRules.forall(r => r.score <= th)) {
             return PealFalse
           }
 
