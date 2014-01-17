@@ -4,7 +4,7 @@ import peal.antlr.util.ParserHelper
 import scala.collection.JavaConversions._
 import peal.synthesis._
 import peal.domain._
-import peal.domain.operator.Plus
+import peal.domain.operator.{Min, Plus}
 import peal.domain.BasicPolicySet
 import peal.synthesis.analysis.AlwaysFalse
 import peal.synthesis.GreaterThanThCondition
@@ -51,21 +51,20 @@ class ExplicitOutputVerifier(input: String) {
 
     analyses(analysisName) match {
       case AlwaysTrue(analysisName, condName) =>
-        if (truthMapping(condName) != PealFalse) {
-          throw new RuntimeException(condName + " should be false but is not")
+        if (truthMapping(condName) == PealFalse) {
+          return verify(conds(condName), truthMapping, truthMapping(condName))
         }
-        return verify(conds(condName), truthMapping, truthMapping(condName))
+        throw new RuntimeException(condName + " should be false but is not")
       case AlwaysFalse(analysisName, condName) =>
-        if (truthMapping(condName) != PealTrue) {
-          throw new RuntimeException(condName + " should be true but is not")
+        if (truthMapping(condName) == PealTrue) {
+          return verify(conds(condName), truthMapping, truthMapping(condName))
         }
-        return verify(conds(condName), truthMapping, truthMapping(condName))
+        throw new RuntimeException(condName + " should be true but is not")
       case _ =>
-        //shouldn't get here
         throw new RuntimeException("shouldn't get here, no matching analysis found")
     }
-    //shouldn't get here
-    throw new RuntimeException("shouldn't get here, no analysis specified")
+
+    throw new RuntimeException("shouldn't get here, no supported analysis specified")
   }
 
   def verify(cond: Condition, I: Map[String, ThreeWayBoolean], v: ThreeWayBoolean): ThreeWayBoolean = {
@@ -113,34 +112,50 @@ class ExplicitOutputVerifier(input: String) {
   }
 
   def evalPol(pol: PolicySet, th: BigDecimal, I: Map[String, ThreeWayBoolean]): ThreeWayBoolean = pol match {
-    case p: Pol => p.operator match {
-      case Plus =>
-        val rules = p.rules
-        //        println(rules)
-        val trueRules = rules.filter(r => I.get(r.q.name) == Some(PealTrue))
-        //        println(trueRules)
-        if (!trueRules.isEmpty) {
-          if (th < trueRules.map(r => r.score).sum) {
+    case p: Pol =>
+      val nonFalseRules = p.rules.filterNot(r => I.get(r.q.name) == Some(PealFalse))
+      val trueRules = nonFalseRules.filter(r => I.get(r.q.name) == Some(PealTrue))
+
+      p.operator match {
+        case Plus =>
+          if (!trueRules.isEmpty) {
+            if (th < trueRules.map(r => r.score).sum) {
+              return PealTrue
+            }
+            else if (nonFalseRules.map(r => r.score).sum <= th) {
+              return PealFalse
+            }
+            else {
+              return PealBottom
+            }
+          }
+          if (th < p.score.left.get && nonFalseRules.forall(r => r.score > th)) {
             return PealTrue
           }
-          else if (rules.map(r => r.score).sum <= th) {
+          if (p.score.left.get <= th && nonFalseRules.filter(r => I.get(r.q.name) == Some(PealBottom)).map(r => r.score).sum <= th) {
             return PealFalse
           }
-          else {
+
+          PealBottom
+        case Min =>
+          if (!trueRules.isEmpty) {
+            if (trueRules.map(r => r.score).min <= th) {
+              return PealFalse
+            }
+            else if (th < nonFalseRules.map(r => r.score).min) {
+              return PealTrue
+            }
             return PealBottom
           }
-        }
-        //        println(th)
-        //        println(p.score.left.get)
-        //        println(rules.map(r => r.score).sum)
-        if (th < p.score.left.get && rules.forall(r => r.score > th)) {
-          return PealTrue
-        }
-        if (p.score.left.get <= th && rules.filter(r => I.get(r.q.name) == Some(PealBottom)).map(r => r.score).sum <= th) {
-          return PealFalse
-        }
 
-        PealBottom
-    }
+          if (th < p.score.left.get && nonFalseRules.forall(r => r.score > th)) {
+            return PealTrue
+          }
+          else if (p.score.left.get <= th && nonFalseRules.forall(r => r.score <= th)) {
+            return PealFalse
+          }
+
+          PealBottom
+      }
   }
 }
