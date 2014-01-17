@@ -149,7 +149,7 @@ class ExplicitOutputVerifier(input: String) {
               return PealBottom
             }
           }
-          if (th < p.score.left.get && nonFalseRules.filter(r => I.get(r.q.name) == Some(PealBottom)).map(r => r.score).product > th) {
+          if (th < p.score.left.get && nonFalseRules.map(r => r.score).product > th) {
             return PealTrue
           }
           if (p.score.left.get <= th && nonFalseRules.forall(r => r.score <= th)) {
