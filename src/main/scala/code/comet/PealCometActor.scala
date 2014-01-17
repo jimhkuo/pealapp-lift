@@ -13,7 +13,7 @@ import peal.synthesis.analysis._
 import code.lib._
 import net.liftweb.http.js.jquery.JqJE.JqId
 import peal.model.{MajorityVotingGenerator, RandomModelGenerator}
-import peal.domain.PolicySet
+import peal.domain.{PealFalse, PealBottom, PealTrue, PolicySet}
 import peal.domain.z3.{PealAst, Term}
 import peal.antlr.util.ParserHelper
 import peal.z3.Z3Caller
@@ -329,7 +329,12 @@ class PealCometActor extends CometActor with Loggable {
     val z3Output = Z3Caller.call(z3SMTInput)
     try {
       val verificationResults = for (analysis <- sortedAnalyses) yield {
-        analysis + " = " + new ExplicitOutputVerifier(inputPolicies).verifyModel(z3Output, analysis) + "\n"
+        val result = new ExplicitOutputVerifier(inputPolicies).verifyModel(z3Output, analysis) match {
+          case PealTrue => "succeeded"
+          case PealFalse => "failed"
+          case PealBottom => "was inconclusive"
+        }
+        "Independent verification of correctness of scenario [" + analysis + "] " + result + "\n"
       }
       println("results: " + verificationResults)
 
