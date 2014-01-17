@@ -14,7 +14,7 @@ import code.lib._
 import net.liftweb.http.js.jquery.JqJE.JqId
 import peal.model.{MajorityVotingGenerator, RandomModelGenerator}
 import peal.domain.{PealFalse, PealBottom, PealTrue, PolicySet}
-import peal.domain.z3.{PealAst, Term}
+import peal.domain.z3.{Sat, PealAst, Term}
 import peal.antlr.util.ParserHelper
 import peal.z3.Z3Caller
 import peal.verify.ExplicitOutputVerifier
@@ -326,30 +326,33 @@ class PealCometActor extends CometActor with Loggable {
 
     val z3SMTInput = declarations.mkString("") +declarations1.mkString("") + body.mkString("") + domainSpecifics.mkString("", "\n","\n") + generatedAnalyses.mkString("")
 
-    val z3Output = Z3Caller.call(z3SMTInput)
+    val z3RawOutput = Z3Caller.call(z3SMTInput)
     try {
-      val verificationResults = for (analysis <- sortedAnalyses) yield {
-        val result = new ExplicitOutputVerifier(inputPolicies).verifyModel(z3Output, analysis) match {
+      val z3OutputParser = ParserHelper.getZ3OutputParser(z3RawOutput)
+      val z3OutputModels = z3OutputParser.results().toMap
+
+      println(z3OutputModels)
+
+      val verificationResults = for (analysis <- sortedAnalyses if (z3OutputModels(analysis).satResult == Sat)) yield {
+        val result = new ExplicitOutputVerifier(inputPolicies).verifyModel(z3RawOutput, analysis) match {
           case PealTrue => "succeeded"
           case PealFalse => "failed"
           case PealBottom => "was inconclusive"
         }
         "Independent verification of correctness of scenario [" + analysis + "] " + result + "\n"
       }
-      println("results: " + verificationResults)
 
-      val z3OutputParser = ParserHelper.getZ3OutputParser(z3Output)
-      val z3Models = z3OutputParser.results().toMap
-      val analysedResults = Z3OutputAnalyser.execute(analyses, z3Models, constsMap)
+      val analysedResults = Z3OutputAnalyser.execute(analyses, z3OutputModels, constsMap)
+
       verbose match {
-        case true => this ! Result(<pre>{z3SMTInput}</pre> <pre>Analysed results:<br/>{analysedResults}</pre><pre>Z3 Raw Output:<br/>{z3Output}</pre>)
+        case true => this ! Result(<pre>{z3SMTInput}</pre> <pre>Analysed results:<br/>{analysedResults}</pre><pre>Z3 Raw Output:<br/>{z3RawOutput}</pre>)
         case false => this ! Result(<pre>Analysed results:<br/>{analysedResults}</pre><pre>{verificationResults.mkString("")}</pre>)
       }
     } catch {
       case e: Exception =>
         verbose match {
-          case true => this ! Result(<pre>{z3SMTInput}</pre> <pre>Z3 Raw Output:<br/>{z3Output}</pre>)
-          case false => this ! Result(<pre>Result analysis failed, returned model contains unexpected string:<br/>{z3Output}</pre><pre>{e.getMessage}</pre>)
+          case true => this ! Result(<pre>{z3SMTInput}</pre> <pre>Z3 Raw Output:<br/>{z3RawOutput}</pre>)
+          case false => this ! Result(<pre>Result analysis failed, returned model contains unexpected string:<br/>{z3RawOutput}</pre><pre>{e.getMessage}</pre>)
         }
     }
   }

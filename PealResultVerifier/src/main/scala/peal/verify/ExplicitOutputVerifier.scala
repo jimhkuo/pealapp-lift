@@ -14,6 +14,7 @@ import peal.domain.Pol
 import scala.Some
 import peal.synthesis.analysis.AlwaysTrue
 import peal.synthesis.NotCondition
+import peal.domain.z3.Sat
 
 
 class ExplicitOutputVerifier(input: String) {
@@ -41,10 +42,10 @@ class ExplicitOutputVerifier(input: String) {
   //need to sets up 3 way truth value, true, false, and bottom
   //need to pull out the analyses so we can find out what condition needs to be examined
 
-  def verifyModel(model: String, analysisName: String): ThreeWayBoolean = {
+  def verifyModel(rawModel: String, analysisName: String): ThreeWayBoolean = {
 
     //this ignores the correct conversion for non boolean types
-    val truthMapping = ExplicitOutputProcessor.assignmentExtractor(model)(analysisName).defines.map(d => (d.name, ThreeWayBooleanObj.from(d.value))).toMap
+    val truthMapping = ExplicitOutputProcessor.assignmentExtractor(rawModel)(analysisName).defines.map(d => (d.name, ThreeWayBooleanObj.from(d.value))).toMap
     println("I: " + truthMapping)
 
     println("########### Doing : " + analysisName)
