@@ -331,8 +331,6 @@ class PealCometActor extends CometActor with Loggable {
       val z3OutputParser = ParserHelper.getZ3OutputParser(z3RawOutput)
       val z3OutputModels = z3OutputParser.results().toMap
 
-      println(z3OutputModels)
-
       val verificationResults = for (analysis <- sortedAnalyses if (z3OutputModels(analysis).satResult == Sat)) yield {
         val result = new ExplicitOutputVerifier(inputPolicies).verifyModel(z3RawOutput, analysis) match {
           case PealTrue => "succeeded"

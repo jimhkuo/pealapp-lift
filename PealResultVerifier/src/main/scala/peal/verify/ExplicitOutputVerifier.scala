@@ -46,9 +46,8 @@ class ExplicitOutputVerifier(input: String) {
 
     //this ignores the correct conversion for non boolean types
     val truthMapping = ExplicitOutputProcessor.assignmentExtractor(rawModel)(analysisName).defines.map(d => (d.name, ThreeWayBooleanObj.from(d.value))).toMap
-    println("I: " + truthMapping)
-
-    println("########### Doing : " + analysisName)
+//    println("I: " + truthMapping)
+//    println("########### Doing : " + analysisName)
 
     analyses(analysisName) match {
       case AlwaysTrue(analysisName, condName) =>
