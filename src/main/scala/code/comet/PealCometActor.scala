@@ -343,7 +343,7 @@ class PealCometActor extends CometActor with Loggable {
       val analysedResults = Z3OutputAnalyser.execute(analyses, z3OutputModels, constsMap)
 
       verbose match {
-        case true => this ! Result(<pre>{z3SMTInput}</pre> <pre>Analysed results:<br/>{analysedResults}</pre><pre>Z3 Raw Output:<br/>{z3RawOutput}</pre>)
+        case true => this ! Result(<pre>{z3SMTInput}</pre> <pre>Analysed results:<br/>{analysedResults}</pre><pre>{verificationResults.mkString("")}</pre><pre>Z3 Raw Output:<br/>{z3RawOutput}</pre>)
         case false => this ! Result(<pre>Analysed results:<br/>{analysedResults}</pre><pre>{verificationResults.mkString("")}</pre>)
       }
     } catch {
