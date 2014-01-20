@@ -7,7 +7,7 @@ trait ThreeWayBoolean {
     case PealBottom => PealBottom
   }
 
-  //updated to correct disjunction
+  //intentionally spell all cases out
   def ||(obj: ThreeWayBoolean): ThreeWayBoolean = this match {
     case PealTrue => obj match {
       case PealTrue => PealTrue
@@ -22,7 +22,7 @@ trait ThreeWayBoolean {
     case PealBottom => obj match {
       case PealTrue => PealTrue
       case PealFalse => PealBottom
-      case _ => PealBottom
+      case PealBottom => PealBottom
     }
   }
 
