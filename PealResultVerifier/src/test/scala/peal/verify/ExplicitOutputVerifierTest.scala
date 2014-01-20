@@ -131,4 +131,12 @@ class ExplicitOutputVerifierTest extends ShouldMatchersForJUnit {
     val model = Z3Caller.call(z3SMTInput)
     new ExplicitOutputVerifier(input).verifyModel(model, "name1") should be (PealTrue)
   }
+
+  @Test
+  def testBroken() {
+    val input = "POLICIES\nb0 = * ((q0 0.9416) (q5 0.2881)) default 0.7321\nb1 = max ((q1 0.953) (q6 0.8343) (q2 0.8586) (q3 0.3076)) default 0.7995\nb2 = min ((q3 0.1408)) default 0.5171\nb3 = + ((q2 0.9152) (q4 0.9161) (q6 0.521)) default 0.9626\nPOLICY_SETS\np0_1 = min(b0,b1)\np2_3 = min(b2,b3)\np0_3 = max(p0_1,p2_3)\n\nCONDITIONS\ncond1 = 0.50 < p0_3\ncond2 = 0.60 < p0_3\nANALYSES\nanalysis1 = always_true? cond1\nanalysis2 = always_false? cond2"
+    val z3SMTInput = new EagerSynthesiser(input).generate()
+    val model = Z3Caller.call(z3SMTInput)
+    new ExplicitOutputVerifier(input).verifyModel(model, "analysis1") should be (PealTrue)
+  }
 }

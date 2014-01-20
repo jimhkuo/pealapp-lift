@@ -118,11 +118,11 @@ class ExplicitOutputVerifier(input: String) {
   def evalPol(pol: PolicySet, th: BigDecimal, I: Map[String, ThreeWayBoolean]): ThreeWayBoolean = pol match {
     case p: Pol =>
       val nonFalseRules = p.rules.filterNot(r => I.get(r.q.name) == Some(PealFalse))
-      val trueRules = nonFalseRules //.filter(r => I.get(r.q.name) == Some(PealTrue))
+      val trueRules = nonFalseRules.filter(r => I.get(r.q.name) == Some(PealTrue))
 
     println("All: " + p.rules)
-    println("Non: " + nonFalseRules)
-    println("True: " + trueRules)
+    println("nonFalseRules: " + nonFalseRules)
+    println("trueRules: " + trueRules)
 
       p.operator match {
         case Plus =>
