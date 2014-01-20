@@ -55,7 +55,6 @@ trait ThreeWayBoolean {
   }
 }
 
-
 object ThreeWayBooleanObj {
   def from(b: Boolean): ThreeWayBoolean = b match {
     case true => PealTrue
