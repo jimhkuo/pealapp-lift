@@ -43,12 +43,12 @@ class ExplicitOutputVerifier(input: String) {
     analyses(analysisName) match {
       case AlwaysTrue(analysisName, condName) =>
         if (truthMapping.get(condName) == Some(PealFalse)) {
-          return verify(conds(condName), truthMapping, truthMapping(condName))
+          return verify(conds(condName), truthMapping, truthMapping(condName), (s: String) => truthMapping.get(s) == Some(PealFalse))
         }
         throw new RuntimeException(condName + " should be false but is not")
       case AlwaysFalse(analysisName, condName) =>
         if (truthMapping.get(condName) == Some(PealTrue)) {
-          return verify(conds(condName), truthMapping, truthMapping(condName))
+          return verify(conds(condName), truthMapping, truthMapping(condName), (s: String) => truthMapping.get(s) == Some(PealFalse))
         }
         throw new RuntimeException(condName + " should be true but is not")
       case _ =>
@@ -58,61 +58,62 @@ class ExplicitOutputVerifier(input: String) {
     throw new RuntimeException("shouldn't get here, no supported analysis specified")
   }
 
-  def verify(cond: Condition, I: Map[String, ThreeWayBoolean], v: ThreeWayBoolean): ThreeWayBoolean = {
+  def verify(cond: Condition, I: Map[String, ThreeWayBoolean], v: ThreeWayBoolean, filteringRule: String => Boolean): ThreeWayBoolean = {
     println("### Verify called with " + cond + ", " + I + ", " + v)
     cond match {
-      case NotCondition(c) => verify(conds(c), I, !v)
+      case NotCondition(c) => verify(conds(c), I, !v, filteringRule)
       case AndCondition(lhs, rhs) =>
         if (v == PealTrue) {
-          verify(conds(lhs), I, v) && verify(conds(rhs), I, v)
+          verify(conds(lhs), I, v, filteringRule) && verify(conds(rhs), I, v, filteringRule)
         }
         else {
-          verify(conds(lhs), I, v) || verify(conds(rhs), I, v)
+          verify(conds(lhs), I, v, filteringRule) || verify(conds(rhs), I, v, filteringRule)
         }
       case OrCondition(lhs, rhs) =>
         if (v == PealTrue) {
-          verify(conds(lhs), I, v) || verify(conds(rhs), I, v)
+          verify(conds(lhs), I, v, filteringRule) || verify(conds(rhs), I, v, filteringRule)
         }
         else {
-          verify(conds(lhs), I, v) && verify(conds(rhs), I, v)
+          verify(conds(lhs), I, v, filteringRule) && verify(conds(rhs), I, v, filteringRule)
         }
       case c: LessThanThCondition =>
         val reversedCond = new GreaterThanThCondition(c.lhs, Left(c.getTh))
-        verify(reversedCond, I, !v)
+        verify(reversedCond, I, !v, filteringRule)
       case c: GreaterThanThCondition =>
         c.lhs match {
           case s: BasicPolicySet =>
             //this is ok since if rhs is not left then it should fail
-            val out = v === evalPol(s.pol, c.rhs.left.get, I)
+            val out = v === evalPol(s.pol, c.rhs.left.get, I, filteringRule)
              println ("XXXXXXX Out: " + out)
             out
           case s: MaxPolicySet =>
             val lhsCond = new GreaterThanThCondition(s.lhs, Left(c.getTh))
             val rhsCond = new GreaterThanThCondition(s.rhs, Left(c.getTh))
             if (v == PealTrue) {
-              verify(lhsCond, I, v) || verify(rhsCond, I, v)
+              verify(lhsCond, I, v, filteringRule) || verify(rhsCond, I, v, filteringRule)
             } else {
-              verify(lhsCond, I, v) && verify(rhsCond, I, v)
+              verify(lhsCond, I, v, filteringRule) && verify(rhsCond, I, v, filteringRule)
             }
           case s: MinPolicySet =>
             val lhsCond = new GreaterThanThCondition(s.lhs, Left(c.getTh))
             val rhsCond = new GreaterThanThCondition(s.rhs, Left(c.getTh))
             if (v == PealTrue) {
-              verify(lhsCond, I, v) && verify(rhsCond, I, v)
+              verify(lhsCond, I, v, filteringRule) && verify(rhsCond, I, v, filteringRule)
             } else {
-              verify(lhsCond, I, v) || verify(rhsCond, I, v)
+              verify(lhsCond, I, v, filteringRule) || verify(rhsCond, I, v, filteringRule)
             }
         }
     }
   }
 
-  def evalPol(pol: PolicySet, th: BigDecimal, I: Map[String, ThreeWayBoolean]): ThreeWayBoolean = pol match {
+  def evalPol(pol: PolicySet, th: BigDecimal, I: Map[String, ThreeWayBoolean], filteringRule: String => Boolean): ThreeWayBoolean = pol match {
     case p: Pol =>
-      val nonFalseRules = p.rules.filterNot(r => I.get(r.q.name) == Some(PealFalse))
-      val trueRules = nonFalseRules.filter(r => I.get(r.q.name) == Some(PealTrue))
+      val rulesToProcess = p.rules.filterNot(r => filteringRule(r.q.name))
+//      val rulesToProcess = p.rules.filterNot(r => I.get(r.q.name) == Some(PealFalse))
+      val trueRules = rulesToProcess.filter(r => I.get(r.q.name) == Some(PealTrue))
 
     println("All: " + p.rules)
-    println("nonFalseRules: " + nonFalseRules)
+    println("nonFalseRules: " + rulesToProcess)
     println("trueRules: " + trueRules)
 
       p.operator match {
@@ -121,17 +122,17 @@ class ExplicitOutputVerifier(input: String) {
             if (th < trueRules.map(r => r.score).sum) {
               return PealTrue
             }
-            else if (nonFalseRules.map(r => r.score).sum <= th) {
+            else if (rulesToProcess.map(r => r.score).sum <= th) {
               return PealFalse
             }
             else {
               return PealBottom
             }
           }
-          if (th < p.score.left.get && nonFalseRules.forall(r => r.score > th)) {
+          if (th < p.score.left.get && rulesToProcess.forall(r => r.score > th)) {
             return PealTrue
           }
-          if (p.score.left.get <= th && nonFalseRules.filter(r => I.get(r.q.name) == Some(PealBottom)).map(r => r.score).sum <= th) {
+          if (p.score.left.get <= th && rulesToProcess.filter(r => I.get(r.q.name) == Some(PealBottom)).map(r => r.score).sum <= th) {
             return PealFalse
           }
 
@@ -141,17 +142,17 @@ class ExplicitOutputVerifier(input: String) {
             if (trueRules.map(r => r.score).product <= th) {
               return PealFalse
             }
-            else if (th < nonFalseRules.map(r => r.score).product) {
+            else if (th < rulesToProcess.map(r => r.score).product) {
               return PealTrue
             }
             else {
               return PealBottom
             }
           }
-          if (th < p.score.left.get && nonFalseRules.map(r => r.score).product > th) {
+          if (th < p.score.left.get && rulesToProcess.map(r => r.score).product > th) {
             return PealTrue
           }
-          if (p.score.left.get <= th && nonFalseRules.forall(r => r.score <= th)) {
+          if (p.score.left.get <= th && rulesToProcess.forall(r => r.score <= th)) {
             return PealFalse
           }
 
@@ -161,16 +162,16 @@ class ExplicitOutputVerifier(input: String) {
             if (th < trueRules.map(r => r.score).max) {
               return PealTrue
             }
-            else if (nonFalseRules.map(r => r.score).max <= th) {
+            else if (rulesToProcess.map(r => r.score).max <= th) {
               return PealFalse
             }
             return PealBottom
           }
 
-          if (th < p.score.left.get && nonFalseRules.forall(r => r.score > th)) {
+          if (th < p.score.left.get && rulesToProcess.forall(r => r.score > th)) {
             return PealTrue
           }
-          else if (p.score.left.get <= th && nonFalseRules.forall(r => r.score <= th)) {
+          else if (p.score.left.get <= th && rulesToProcess.forall(r => r.score <= th)) {
             return PealFalse
           }
 
@@ -180,16 +181,16 @@ class ExplicitOutputVerifier(input: String) {
             if (trueRules.map(r => r.score).min <= th) {
               return PealFalse
             }
-            else if (th < nonFalseRules.map(r => r.score).min) {
+            else if (th < rulesToProcess.map(r => r.score).min) {
               return PealTrue
             }
             return PealBottom
           }
 
-          if (th < p.score.left.get && nonFalseRules.forall(r => r.score > th)) {
+          if (th < p.score.left.get && rulesToProcess.forall(r => r.score > th)) {
             return PealTrue
           }
-          else if (p.score.left.get <= th && nonFalseRules.forall(r => r.score <= th)) {
+          else if (p.score.left.get <= th && rulesToProcess.forall(r => r.score <= th)) {
             return PealFalse
           }
 
