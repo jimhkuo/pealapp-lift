@@ -34,36 +34,50 @@ class ExplicitOutputVerifier(input: String) {
 
   //looking for q_i not available in I returns bottom
 
-  //TODO keep stages and bottom->false predicates here
   def verifyModel(rawModel: String, analysisName: String): (ThreeWayBoolean, Set[String]) = {
-    verifyModel(rawModel, analysisName, Set())
+
+    val truthMapping = ExplicitOutputProcessor.assignmentExtractor(rawModel)(analysisName).defines.map(d => (d.name, ThreeWayBooleanObj.from(d.value))).toMap
+    println("P: " + predicateNames)
+
+    verifyModel(rawModel, analysisName, truthMapping, Set())
   }
 
-  def verifyModel(rawModel: String, analysisName: String, reMappedPredicates: Set[String]): (ThreeWayBoolean, Set[String]) = {
+  def verifyModel(rawModel: String, analysisName: String, I: Map[String, ThreeWayBoolean], reMappedPredicates: Set[String]): (ThreeWayBoolean, Set[String]) = {
+    println("I: " + I)
 
-    var truthMapping = ExplicitOutputProcessor.assignmentExtractor(rawModel)(analysisName).defines.map(d => (d.name, ThreeWayBooleanObj.from(d.value))).toMap
-    val bottomPredicates = predicateNames.filterNot(truthMapping.contains(_)).filterNot(reMappedPredicates.contains(_))
-    println("I: " + truthMapping)
-    println("P: " + predicateNames)
-    println("B: " + bottomPredicates)
+    doAnalysis(analysisName, I, reMappedPredicates) match {
+      case (PealBottom, s) =>
 
-    reMappedPredicates.foreach(truthMapping += _ -> PealFalse)
+        println("YYYYYYY Bottom received, Modified Set: " + s)
 
-    println("I': " + truthMapping)
-    //TODO set predicates in predicateNames but not in I to bottom
-    //TODO change bottom to false when necessary here!
+        var truthMapping = I
+        val bottomPredicates = predicateNames.filterNot(truthMapping.contains(_)).filterNot(s.contains(_))
+        if (bottomPredicates.isEmpty) {
+          return (PealBottom, s)
+        }
+        println("Remaining bottoms: " + bottomPredicates)
+        (s + bottomPredicates.head).foreach(truthMapping += _ -> PealFalse)
+        println("Adding " + bottomPredicates.head)
+        println("I': " + truthMapping)
+        verifyModel(rawModel, analysisName, truthMapping, s + bottomPredicates.head)
 
-//    println("########### Doing : " + analysisName)
+      case (r, s) => (r, s)
+    }
+  }
+
+  def doAnalysis(analysisName: String, truthMapping: Map[String, ThreeWayBoolean], reMappedPredicates: Set[String]): (ThreeWayBoolean, Set[String]) = {
+
+    //    println("########### Doing : " + analysisName)
 
     analyses(analysisName) match {
       case AlwaysTrue(analysisName, condName) =>
         if (truthMapping.get(condName) == Some(PealFalse)) {
-          return (verify(conds(condName), truthMapping, truthMapping(condName)), bottomPredicates.toSet)
+          return (verify(conds(condName), truthMapping, truthMapping(condName)), reMappedPredicates)
         }
         throw new RuntimeException(condName + " should be false but is not")
       case AlwaysFalse(analysisName, condName) =>
         if (truthMapping.get(condName) == Some(PealTrue)) {
-          return (verify(conds(condName), truthMapping, truthMapping(condName)), bottomPredicates.toSet)
+          return (verify(conds(condName), truthMapping, truthMapping(condName)), reMappedPredicates)
         }
         throw new RuntimeException(condName + " should be true but is not")
       case _ =>
@@ -99,7 +113,7 @@ class ExplicitOutputVerifier(input: String) {
           case s: BasicPolicySet =>
             //this is ok since if rhs is not left then it should fail
             val out = v === evalPol(s.pol, c.rhs.left.get, I)
-             println ("XXXXXXX Out: " + out)
+            println("XXXXXXX Out: " + out)
             out
           case s: MaxPolicySet =>
             val lhsCond = new GreaterThanThCondition(s.lhs, Left(c.getTh))
@@ -126,9 +140,9 @@ class ExplicitOutputVerifier(input: String) {
       val rulesToProcess = p.rules.filterNot(r => I.get(r.q.name) == Some(PealFalse))
       val trueRules = rulesToProcess.filter(r => I.get(r.q.name) == Some(PealTrue))
 
-    println("All: " + p.rules)
-    println("nonFalseRules: " + rulesToProcess)
-    println("trueRules: " + trueRules)
+      println("All: " + p.rules)
+      println("nonFalseRules: " + rulesToProcess)
+      println("trueRules: " + trueRules)
 
       p.operator match {
         case Plus =>

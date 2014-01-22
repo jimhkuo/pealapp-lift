@@ -146,15 +146,15 @@ class ExplicitOutputVerifierTest extends ShouldMatchersForJUnit {
     val z3SMTInput = new EagerSynthesiser(input).generate()
     val model = Z3Caller.call(z3SMTInput)
     var verifyModel = new ExplicitOutputVerifier(input).verifyModel(model, "analysis1")
-    println("@@@@@@@@ Bottom predicates: " + verifyModel._2)
-    verifyModel._1 should be(PealBottom)
-
-    verifyModel = new ExplicitOutputVerifier(input).verifyModel(model, "analysis1", Set("q5"))
-    println("@@@@@@@@ Bottom predicates: " + verifyModel._2)
-    verifyModel._1 should be(PealBottom)
-
-    verifyModel = new ExplicitOutputVerifier(input).verifyModel(model, "analysis1", Set("q5", "q2"))
-    println("@@@@@@@@ Bottom predicates: " + verifyModel._2)
+    println("@@@@@@@@ Modified predicates: " + verifyModel._2)
     verifyModel._1 should be(PealTrue)
+
+//    verifyModel = new ExplicitOutputVerifier(input).verifyModel(model, "analysis1", Set("q5"))
+//    println("@@@@@@@@ Bottom predicates: " + verifyModel._2)
+//    verifyModel._1 should be(PealBottom)
+//
+//    verifyModel = new ExplicitOutputVerifier(input).verifyModel(model, "analysis1", Set("q5", "q2"))
+//    println("@@@@@@@@ Bottom predicates: " + verifyModel._2)
+//    verifyModel._1 should be(PealTrue)
   }
 }
