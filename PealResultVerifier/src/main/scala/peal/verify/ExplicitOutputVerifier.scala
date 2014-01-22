@@ -36,10 +36,25 @@ class ExplicitOutputVerifier(input: String) {
 
   //TODO keep stages and bottom->false predicates here
   def verifyModel(rawModel: String, analysisName: String): (ThreeWayBoolean, Set[String]) = {
+    verifyModel(rawModel, analysisName, Set())
+  }
 
-    val truthMapping = ExplicitOutputProcessor.assignmentExtractor(rawModel)(analysisName).defines.map(d => (d.name, ThreeWayBooleanObj.from(d.value))).toMap
+  def verifyModel(rawModel: String, analysisName: String, reMappedPredicates: Set[String]): (ThreeWayBoolean, Set[String]) = {
+
+    var truthMapping = ExplicitOutputProcessor.assignmentExtractor(rawModel)(analysisName).defines.map(d => (d.name, ThreeWayBooleanObj.from(d.value))).toMap
+    val bottomPredicates = predicateNames.filterNot(truthMapping.contains(_)).filterNot(reMappedPredicates.contains(_))
     println("I: " + truthMapping)
     println("P: " + predicateNames)
+    println("B: " + bottomPredicates)
+    //    val modifiedPredicates = reMappedPredicates + bottomPredicates.head
+    //    println("M: " + modifiedPredicates)
+
+    reMappedPredicates.foreach {
+      q =>
+        truthMapping += q -> PealFalse
+    }
+
+    println("I': " + truthMapping)
     //TODO set predicates in predicateNames but not in I to bottom
     //TODO change bottom to false when necessary here!
 
@@ -48,12 +63,12 @@ class ExplicitOutputVerifier(input: String) {
     analyses(analysisName) match {
       case AlwaysTrue(analysisName, condName) =>
         if (truthMapping.get(condName) == Some(PealFalse)) {
-          return (verify(conds(condName), truthMapping, truthMapping(condName)), Set())
+          return (verify(conds(condName), truthMapping, truthMapping(condName)), bottomPredicates.toSet)
         }
         throw new RuntimeException(condName + " should be false but is not")
       case AlwaysFalse(analysisName, condName) =>
         if (truthMapping.get(condName) == Some(PealTrue)) {
-          return (verify(conds(condName), truthMapping, truthMapping(condName)), Set())
+          return (verify(conds(condName), truthMapping, truthMapping(condName)), bottomPredicates.toSet)
         }
         throw new RuntimeException(condName + " should be true but is not")
       case _ =>

@@ -4,7 +4,7 @@ import org.scalatest.junit.ShouldMatchersForJUnit
 import org.junit.Test
 import peal.synthesis.EagerSynthesiser
 import peal.z3.Z3Caller
-import peal.domain.PealTrue
+import peal.domain.{PealBottom, PealTrue}
 
 
 class ExplicitOutputVerifierTest extends ShouldMatchersForJUnit {
@@ -145,6 +145,16 @@ class ExplicitOutputVerifierTest extends ShouldMatchersForJUnit {
     val input = "POLICIES\nb16 = min ((q2 0.0046) (q6 0.5937) (q1 0.3835) (q0 0.8867)) default 0.3731\nb17 = max ((q5 0.0179) (q2 0.7602) (q1 0.2951)) default 0.1127\nPOLICY_SETS\np16_17 = min(b16, b17)\nCONDITIONS\ncond1 = 0.50 < p16_17\nANALYSES\nanalysis1 = always_true? cond1"
     val z3SMTInput = new EagerSynthesiser(input).generate()
     val model = Z3Caller.call(z3SMTInput)
-    new ExplicitOutputVerifier(input).verifyModel(model, "analysis1")._1 should be(PealTrue)
+    var verifyModel = new ExplicitOutputVerifier(input).verifyModel(model, "analysis1")
+    println("@@@@@@@@ Bottom predicates: " + verifyModel._2)
+    verifyModel._1 should be(PealBottom)
+
+    verifyModel = new ExplicitOutputVerifier(input).verifyModel(model, "analysis1", Set("q5"))
+    println("@@@@@@@@ Bottom predicates: " + verifyModel._2)
+    verifyModel._1 should be(PealBottom)
+
+    verifyModel = new ExplicitOutputVerifier(input).verifyModel(model, "analysis1", Set("q5", "q2"))
+    println("@@@@@@@@ Bottom predicates: " + verifyModel._2)
+    verifyModel._1 should be(PealTrue)
   }
 }
