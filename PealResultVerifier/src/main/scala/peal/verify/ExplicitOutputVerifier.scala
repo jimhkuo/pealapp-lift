@@ -43,12 +43,12 @@ class ExplicitOutputVerifier(input: String) {
     analyses(analysisName) match {
       case AlwaysTrue(analysisName, condName) =>
         if (truthMapping.get(condName) == Some(PealFalse)) {
-          return verify(conds(condName), truthMapping, truthMapping(condName), (s: String) => truthMapping.get(s) == Some(PealFalse))
+          return verify(conds(condName), truthMapping, truthMapping(condName))
         }
         throw new RuntimeException(condName + " should be false but is not")
       case AlwaysFalse(analysisName, condName) =>
         if (truthMapping.get(condName) == Some(PealTrue)) {
-          return verify(conds(condName), truthMapping, truthMapping(condName), (s: String) => truthMapping.get(s) == Some(PealFalse))
+          return verify(conds(condName), truthMapping, truthMapping(condName))
         }
         throw new RuntimeException(condName + " should be true but is not")
       case _ =>
@@ -58,58 +58,57 @@ class ExplicitOutputVerifier(input: String) {
     throw new RuntimeException("shouldn't get here, no supported analysis specified")
   }
 
-  def verify(cond: Condition, I: Map[String, ThreeWayBoolean], v: ThreeWayBoolean, filteringRule: String => Boolean): ThreeWayBoolean = {
+  def verify(cond: Condition, I: Map[String, ThreeWayBoolean], v: ThreeWayBoolean): ThreeWayBoolean = {
     println("### Verify called with " + cond + ", " + I + ", " + v)
     cond match {
-      case NotCondition(c) => verify(conds(c), I, !v, filteringRule)
+      case NotCondition(c) => verify(conds(c), I, !v)
       case AndCondition(lhs, rhs) =>
         if (v == PealTrue) {
-          verify(conds(lhs), I, v, filteringRule) && verify(conds(rhs), I, v, filteringRule)
+          verify(conds(lhs), I, v) && verify(conds(rhs), I, v)
         }
         else {
-          verify(conds(lhs), I, v, filteringRule) || verify(conds(rhs), I, v, filteringRule)
+          verify(conds(lhs), I, v) || verify(conds(rhs), I, v)
         }
       case OrCondition(lhs, rhs) =>
         if (v == PealTrue) {
-          verify(conds(lhs), I, v, filteringRule) || verify(conds(rhs), I, v, filteringRule)
+          verify(conds(lhs), I, v) || verify(conds(rhs), I, v)
         }
         else {
-          verify(conds(lhs), I, v, filteringRule) && verify(conds(rhs), I, v, filteringRule)
+          verify(conds(lhs), I, v) && verify(conds(rhs), I, v)
         }
       case c: LessThanThCondition =>
         val reversedCond = new GreaterThanThCondition(c.lhs, Left(c.getTh))
-        verify(reversedCond, I, !v, filteringRule)
+        verify(reversedCond, I, !v)
       case c: GreaterThanThCondition =>
         c.lhs match {
           case s: BasicPolicySet =>
             //this is ok since if rhs is not left then it should fail
-            val out = v === evalPol(s.pol, c.rhs.left.get, I, filteringRule)
+            val out = v === evalPol(s.pol, c.rhs.left.get, I)
              println ("XXXXXXX Out: " + out)
             out
           case s: MaxPolicySet =>
             val lhsCond = new GreaterThanThCondition(s.lhs, Left(c.getTh))
             val rhsCond = new GreaterThanThCondition(s.rhs, Left(c.getTh))
             if (v == PealTrue) {
-              verify(lhsCond, I, v, filteringRule) || verify(rhsCond, I, v, filteringRule)
+              verify(lhsCond, I, v) || verify(rhsCond, I, v)
             } else {
-              verify(lhsCond, I, v, filteringRule) && verify(rhsCond, I, v, filteringRule)
+              verify(lhsCond, I, v) && verify(rhsCond, I, v)
             }
           case s: MinPolicySet =>
             val lhsCond = new GreaterThanThCondition(s.lhs, Left(c.getTh))
             val rhsCond = new GreaterThanThCondition(s.rhs, Left(c.getTh))
             if (v == PealTrue) {
-              verify(lhsCond, I, v, filteringRule) && verify(rhsCond, I, v, filteringRule)
+              verify(lhsCond, I, v) && verify(rhsCond, I, v)
             } else {
-              verify(lhsCond, I, v, filteringRule) || verify(rhsCond, I, v, filteringRule)
+              verify(lhsCond, I, v) || verify(rhsCond, I, v)
             }
         }
     }
   }
 
-  def evalPol(pol: PolicySet, th: BigDecimal, I: Map[String, ThreeWayBoolean], filteringRule: String => Boolean): ThreeWayBoolean = pol match {
+  def evalPol(pol: PolicySet, th: BigDecimal, I: Map[String, ThreeWayBoolean]): ThreeWayBoolean = pol match {
     case p: Pol =>
-      val rulesToProcess = p.rules.filterNot(r => filteringRule(r.q.name))
-//      val rulesToProcess = p.rules.filterNot(r => I.get(r.q.name) == Some(PealFalse))
+      val rulesToProcess = p.rules.filterNot(r => I.get(r.q.name) == Some(PealFalse))
       val trueRules = rulesToProcess.filter(r => I.get(r.q.name) == Some(PealTrue))
 
     println("All: " + p.rules)
