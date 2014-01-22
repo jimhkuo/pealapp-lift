@@ -46,13 +46,8 @@ class ExplicitOutputVerifier(input: String) {
     println("I: " + truthMapping)
     println("P: " + predicateNames)
     println("B: " + bottomPredicates)
-    //    val modifiedPredicates = reMappedPredicates + bottomPredicates.head
-    //    println("M: " + modifiedPredicates)
 
-    reMappedPredicates.foreach {
-      q =>
-        truthMapping += q -> PealFalse
-    }
+    reMappedPredicates.foreach(truthMapping += _ -> PealFalse)
 
     println("I': " + truthMapping)
     //TODO set predicates in predicateNames but not in I to bottom
