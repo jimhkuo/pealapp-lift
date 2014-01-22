@@ -14,7 +14,6 @@ import peal.domain.Pol
 import scala.Some
 import peal.synthesis.analysis.AlwaysTrue
 import peal.synthesis.NotCondition
-import peal.domain.z3.Sat
 
 
 class ExplicitOutputVerifier(input: String) {
@@ -59,7 +58,6 @@ class ExplicitOutputVerifier(input: String) {
         println("Adding " + bottomPredicates.head)
         println("I': " + truthMapping)
         verifyModel(rawModel, analysisName, truthMapping, s + bottomPredicates.head)
-
       case (r, s) => (r, s)
     }
   }
