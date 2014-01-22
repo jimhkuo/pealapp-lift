@@ -47,11 +47,10 @@ class ExplicitOutputVerifier(input: String) {
 
     doAnalysis(analysisName, I, reMappedPredicates) match {
       case (PealBottom, s) =>
-
         println("YYYYYYY Bottom received, Modified Set: " + s)
 
         var truthMapping = I
-        val bottomPredicates = predicateNames.filterNot(truthMapping.contains(_)).filterNot(s.contains(_))
+        val bottomPredicates = predicateNames.filterNot(truthMapping.contains).filterNot(s.contains)
         if (bottomPredicates.isEmpty) {
           return (PealBottom, s)
         }
