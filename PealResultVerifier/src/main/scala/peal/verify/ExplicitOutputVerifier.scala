@@ -34,10 +34,8 @@ class ExplicitOutputVerifier(input: String) {
   //looking for q_i not available in I returns bottom
 
   def verifyModel(rawModel: String, analysisName: String): (ThreeWayBoolean, Set[String]) = {
-
-    val truthMapping = ExplicitOutputProcessor.assignmentExtractor(rawModel)(analysisName).defines.map(d => (d.name, ThreeWayBooleanObj.from(d.value))).toMap
     println("P: " + predicateNames)
-
+    val truthMapping = ExplicitOutputProcessor.assignmentExtractor(rawModel)(analysisName).defines.map(d => (d.name, ThreeWayBooleanObj.from(d.value))).toMap
     verifyModel(rawModel, analysisName, truthMapping, Set())
   }
 
