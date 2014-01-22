@@ -34,21 +34,26 @@ class ExplicitOutputVerifier(input: String) {
 
   //looking for q_i not available in I returns bottom
 
-  def verifyModel(rawModel: String, analysisName: String): ThreeWayBoolean = {
+  //TODO keep stages and bottom->false predicates here
+  def verifyModel(rawModel: String, analysisName: String): (ThreeWayBoolean, Set[String]) = {
 
     val truthMapping = ExplicitOutputProcessor.assignmentExtractor(rawModel)(analysisName).defines.map(d => (d.name, ThreeWayBooleanObj.from(d.value))).toMap
-//    println("I: " + truthMapping)
+    println("I: " + truthMapping)
+    println("P: " + predicateNames)
+    //TODO set predicates in predicateNames but not in I to bottom
+    //TODO change bottom to false when necessary here!
+
 //    println("########### Doing : " + analysisName)
 
     analyses(analysisName) match {
       case AlwaysTrue(analysisName, condName) =>
         if (truthMapping.get(condName) == Some(PealFalse)) {
-          return verify(conds(condName), truthMapping, truthMapping(condName))
+          return (verify(conds(condName), truthMapping, truthMapping(condName)), Set())
         }
         throw new RuntimeException(condName + " should be false but is not")
       case AlwaysFalse(analysisName, condName) =>
         if (truthMapping.get(condName) == Some(PealTrue)) {
-          return verify(conds(condName), truthMapping, truthMapping(condName))
+          return (verify(conds(condName), truthMapping, truthMapping(condName)), Set())
         }
         throw new RuntimeException(condName + " should be true but is not")
       case _ =>
