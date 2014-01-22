@@ -65,9 +65,6 @@ class ExplicitOutputVerifier(input: String) {
   }
 
   def doAnalysis(analysisName: String, truthMapping: Map[String, ThreeWayBoolean], reMappedPredicates: Set[String]): (ThreeWayBoolean, Set[String]) = {
-
-    //    println("########### Doing : " + analysisName)
-
     analyses(analysisName) match {
       case AlwaysTrue(analysisName, condName) =>
         if (truthMapping.get(condName) == Some(PealFalse)) {
