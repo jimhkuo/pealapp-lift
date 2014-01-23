@@ -6,7 +6,7 @@ import peal.synthesis._
 import peal.domain._
 import peal.domain.operator.{Mul, Max, Min, Plus}
 import peal.domain.BasicPolicySet
-import peal.synthesis.analysis.{Different, AlwaysFalse, AlwaysTrue}
+import peal.synthesis.analysis.{Equivalent, Different, AlwaysFalse, AlwaysTrue}
 import peal.synthesis.GreaterThanThCondition
 import peal.domain.MinPolicySet
 import peal.domain.MaxPolicySet
@@ -70,6 +70,11 @@ class ExplicitOutputVerifier(input: String) {
         }
         throw new RuntimeException(condName + " should be true but is not")
       case Different(analysisName, lhs, rhs) =>
+        if (truthMapping.get(lhs) != truthMapping.get(rhs)) {
+          return (verify(conds(lhs), truthMapping, truthMapping(lhs)) && verify(conds(rhs), truthMapping, truthMapping(rhs)), reMappedPredicates)
+        }
+        throw new RuntimeException(lhs + " and " + rhs + " should be different but are not")
+      case Equivalent(analysisName, lhs, rhs) =>
         if (truthMapping.get(lhs) != truthMapping.get(rhs)) {
           return (verify(conds(lhs), truthMapping, truthMapping(lhs)) && verify(conds(rhs), truthMapping, truthMapping(rhs)), reMappedPredicates)
         }
