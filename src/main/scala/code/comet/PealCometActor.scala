@@ -168,7 +168,7 @@ class PealCometActor extends CometActor with Loggable {
       this ! DownloadNew
     case DownloadNew =>
       val start = System.nanoTime()
-      var newSynthesis = performNewSynthesis(inputPolicies)
+      val newSynthesis = performNewSynthesis(inputPolicies)
       val lapseTime = System.nanoTime() - start
       this ! SaveFile(newSynthesis, lapseTime)
     case DisplayLazy => this ! Result(<pre>{performLazySynthesis(inputPolicies)}</pre>)
@@ -178,7 +178,7 @@ class PealCometActor extends CometActor with Loggable {
       this ! DownloadLazy
     case DownloadLazy =>
       val start = System.nanoTime()
-      var lazySynthesis = performLazySynthesis(inputPolicies)
+      val lazySynthesis = performLazySynthesis(inputPolicies)
       val lapseTime = System.nanoTime() - start
       this ! SaveFile(lazySynthesis, lapseTime)
     case SynthesisAndCallZ3 =>
@@ -267,7 +267,6 @@ class PealCometActor extends CometActor with Loggable {
       val constsMap = predicateNames.toSeq.distinct.map(t => (t, Term(t))).toMap
       val domainSpecifics = input.split("\n").dropWhile(!_.startsWith("DOMAIN_SPECIFICS")).takeWhile(!_.startsWith("ANALYSES")).drop(1)
 
-//      println((constsMap, pealProgramParser.conds.toMap, pealProgramParser.pSets.toMap, pealProgramParser.analyses.toMap, domainSpecifics))
       (constsMap, pealProgramParser.conds.toMap, pealProgramParser.pSets.toMap, pealProgramParser.analyses.toMap, domainSpecifics)
     } catch {
       case e: Exception =>

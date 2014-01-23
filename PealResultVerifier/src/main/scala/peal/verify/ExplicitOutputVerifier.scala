@@ -57,8 +57,8 @@ class ExplicitOutputVerifier(input: String) {
           return (PealBottom, s)
         }
         println("Remaining bottoms: " + bottomPredicates)
-        (s + bottomPredicates.head).foreach(truthMapping += _ -> PealFalse)
         println("Adding " + bottomPredicates.head)
+        (s + bottomPredicates.head).foreach(truthMapping += _ -> PealFalse)
         println("I': " + truthMapping)
         verifyModel(rawModel, analysisName, truthMapping, s + bottomPredicates.head)
       case (r, s) => (r, s)
