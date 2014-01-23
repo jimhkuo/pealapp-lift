@@ -6,13 +6,12 @@ import peal.synthesis._
 import peal.domain._
 import peal.domain.operator.{Mul, Max, Min, Plus}
 import peal.domain.BasicPolicySet
-import peal.synthesis.analysis.AlwaysFalse
+import peal.synthesis.analysis.{Different, AlwaysFalse, AlwaysTrue}
 import peal.synthesis.GreaterThanThCondition
 import peal.domain.MinPolicySet
 import peal.domain.MaxPolicySet
 import peal.domain.Pol
 import scala.Some
-import peal.synthesis.analysis.AlwaysTrue
 import peal.synthesis.NotCondition
 
 
@@ -70,6 +69,11 @@ class ExplicitOutputVerifier(input: String) {
           return (verify(conds(condName), truthMapping, truthMapping(condName)), reMappedPredicates)
         }
         throw new RuntimeException(condName + " should be true but is not")
+      case Different(analysisName, lhs, rhs) =>
+        if (truthMapping.get(lhs) != truthMapping.get(rhs)) {
+          return (verify(conds(lhs), truthMapping, truthMapping(lhs)) && verify(conds(rhs), truthMapping, truthMapping(rhs)), reMappedPredicates)
+        }
+        throw new RuntimeException(lhs + " and " + rhs + " should be different but are not")
       case _ =>
         throw new RuntimeException("shouldn't get here, no matching analysis found")
     }
