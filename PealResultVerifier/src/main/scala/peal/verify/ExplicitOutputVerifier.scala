@@ -25,14 +25,6 @@ class ExplicitOutputVerifier(input: String) {
   val analyses = pealProgramParser.analyses
   val predicateNames: Seq[String] = pealProgramParser.pols.values().flatMap(pol => pol.rules).map(r => r.q.name).toSeq.distinct
 
-  //always_true? c1 -> c1 has to be false
-  //always_false? c1 -> c1 has to be true
-  //different? c1 c2 -> c1, c2 have to be different
-  //equivalent? c1 c2 -> c1, c2 have to be same
-  //implies? c1 c2 -> c1 has to be true, c2 has to be false
-
-  //looking for q_i not available in I returns bottom
-
   def verifyModel(rawModel: String, analysisName: String): (ThreeWayBoolean, Set[String]) = {
     println("P: " + predicateNames)
     val truthMapping = ExplicitOutputProcessor.assignmentExtractor(rawModel)(analysisName).defines.map(d => (d.name, ThreeWayBooleanObj.from(d.value))).toMap
@@ -59,6 +51,12 @@ class ExplicitOutputVerifier(input: String) {
       case (r, s) => (r, s)
     }
   }
+
+  //always_true? c1 -> c1 has to be false
+  //always_false? c1 -> c1 has to be true
+  //different? c1 c2 -> c1, c2 have to be different
+  //equivalent? c1 c2 -> c1, c2 have to be same
+  //implies? c1 c2 -> c1 has to be true, c2 has to be false
 
   def doAnalysis(analysisName: String, truthMapping: Map[String, ThreeWayBoolean], reMappedPredicates: Set[String]): (ThreeWayBoolean, Set[String]) = {
     analyses(analysisName) match {
