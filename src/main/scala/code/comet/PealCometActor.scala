@@ -48,8 +48,6 @@ class PealCometActor extends CometActor with Loggable {
     "cond3 = cond1 && cond2\n" +
     "cond4 = cond1 || cond2\n" +
     "cond5 = !cond4\n" +
-    "cond6 = true\n" +
-    "cond7 = false\n" +
     "DOMAIN_SPECIFICS\n" +
     "(declare-const a Real)\n" +
     "(declare-const b Real)\n" +
@@ -58,12 +56,9 @@ class PealCometActor extends CometActor with Loggable {
     "name1 = always_true? cond1\n" +
     "name2 = equivalent? cond1 cond2\n" +
     "name3 = different? cond1 cond2\n" +
-    "name4 = implies? cond3 cond4\n" +
-    "name5 = always_true? cond3\n" +
-    "name6 = always_true? cond4\n" +
-    "name7 = always_true? cond5\n" +
-    "name8 = always_true? cond6\n" +
-    "name9 = always_false? cond7\n"
+    "name4 = implies? cond4 cond3\n" +
+    "name5 = always_false? cond2\n" +
+    "name6 = satisfiable? cond4\n"
 
   val nonConstantDefaultInput = "POLICIES\n" +
     "b1 = min ((q1 0.2) (q2 0.4) (q3 0.9)) default 0.8*z\n" +
