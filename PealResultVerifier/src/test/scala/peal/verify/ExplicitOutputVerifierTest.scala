@@ -172,4 +172,23 @@ class ExplicitOutputVerifierTest extends ShouldMatchersForJUnit {
     verifyModel._1 should be(PealTrue)
     println("Modified predicates: " + verifyModel._2)
   }
+
+  @Test
+  def testImplies() {
+    val input = "POLICIES\nb16 = max ((q2 0.0046) (q6 0.5937) (q1 0.3835) (q0 0.8867)) default 0.3731\nb17 = + ((q5 0.0179) (q2 0.7602) (q1 0.2951)) default 0.1127\nPOLICY_SETS\np16_17 = min(b16, b17)\nCONDITIONS\ncond1 = 0.50 < p16_17\ncond2 = p16_17 <= 0.5\nANALYSES\nanalysis1 = implies? cond1 cond2"
+    println(input)
+    val z3SMTInput = new EagerSynthesiser(input).generate()
+    val model = Z3Caller.call(z3SMTInput)
+    val verifyModel = new ExplicitOutputVerifier(input).verifyModel(model, "analysis1")
+    verifyModel._1 should be(PealTrue)
+    println("Modified predicates: " + verifyModel._2)
+  }
+
+  @Test
+  def testSatisfiable() {
+    val input = "POLICIES\nb1 = + ((q1 0.1) (q2 0.2) (q3 0.6)) default 0\nPOLICY_SETS\npSet1 = b1\nCONDITIONS\ncond1 = 0.8 < pSet1\nANALYSES\nname1 = satisfiable? cond1"
+    val z3SMTInput = new EagerSynthesiser(input).generate()
+    val model = Z3Caller.call(z3SMTInput)
+    new ExplicitOutputVerifier(input).verifyModel(model, "name1")._1 should be(PealTrue)
+  }
 }

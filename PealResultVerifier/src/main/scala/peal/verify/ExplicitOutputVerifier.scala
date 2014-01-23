@@ -6,12 +6,26 @@ import peal.synthesis._
 import peal.domain._
 import peal.domain.operator.{Mul, Max, Min, Plus}
 import peal.domain.BasicPolicySet
-import peal.synthesis.analysis.{Equivalent, Different, AlwaysFalse, AlwaysTrue}
+import peal.synthesis.analysis._
 import peal.synthesis.GreaterThanThCondition
 import peal.domain.MinPolicySet
 import peal.domain.MaxPolicySet
 import peal.domain.Pol
 import scala.Some
+import peal.synthesis.NotCondition
+import peal.synthesis.AndCondition
+import peal.domain.BasicPolicySet
+import peal.synthesis.analysis.AlwaysFalse
+import peal.synthesis.GreaterThanThCondition
+import peal.synthesis.LessThanThCondition
+import peal.domain.MinPolicySet
+import peal.domain.MaxPolicySet
+import peal.domain.Pol
+import scala.Some
+import peal.synthesis.analysis.Different
+import peal.synthesis.analysis.Equivalent
+import peal.synthesis.analysis.AlwaysTrue
+import peal.synthesis.OrCondition
 import peal.synthesis.NotCondition
 
 
@@ -54,7 +68,7 @@ class ExplicitOutputVerifier(input: String) {
   //always_true? c1 -> c1 has to be false
   //always_false? c1 -> c1 has to be true
   //different? c1 c2 -> c1, c2 have to be different
-  //equivalent? c1 c2 -> c1, c2 have to be same
+  //equivalent? is the same as different?
   //implies? c1 c2 -> c1 has to be true, c2 has to be false
 
   def doAnalysis(analysisName: String, truthMapping: Map[String, ThreeWayBoolean], reMappedPredicates: Set[String]): (ThreeWayBoolean, Set[String]) = {
@@ -69,6 +83,11 @@ class ExplicitOutputVerifier(input: String) {
           return (verify(conds(condName), truthMapping, truthMapping(condName)), reMappedPredicates)
         }
         throw new RuntimeException(condName + " should be true but is not")
+      case Satisfiable(analysisName, condName) =>
+        if (truthMapping.get(condName) == Some(PealTrue)) {
+          return (verify(conds(condName), truthMapping, truthMapping(condName)), reMappedPredicates)
+        }
+        throw new RuntimeException(condName + " should be true but is not")
       case Different(analysisName, lhs, rhs) =>
         if (truthMapping.get(lhs) != truthMapping.get(rhs)) {
           return (verify(conds(lhs), truthMapping, truthMapping(lhs)) && verify(conds(rhs), truthMapping, truthMapping(rhs)), reMappedPredicates)
@@ -79,6 +98,11 @@ class ExplicitOutputVerifier(input: String) {
           return (verify(conds(lhs), truthMapping, truthMapping(lhs)) && verify(conds(rhs), truthMapping, truthMapping(rhs)), reMappedPredicates)
         }
         throw new RuntimeException(lhs + " and " + rhs + " should be different but are not")
+      case Implies(analysisName, lhs, rhs) =>
+        if (truthMapping.get(lhs) == Some(PealTrue) && truthMapping.get(rhs) == Some(PealFalse)) {
+          return (verify(conds(lhs), truthMapping, truthMapping(lhs)) && verify(conds(rhs), truthMapping, truthMapping(rhs)), reMappedPredicates)
+        }
+        throw new RuntimeException(lhs + " should be true and " + rhs + " should be false, but are not")
       case _ =>
         throw new RuntimeException("shouldn't get here, no matching analysis found")
     }
