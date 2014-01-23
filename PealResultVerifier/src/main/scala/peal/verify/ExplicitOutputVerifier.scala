@@ -65,12 +65,6 @@ class ExplicitOutputVerifier(input: String) {
     }
   }
 
-  //always_true? c1 -> c1 has to be false
-  //always_false? c1 -> c1 has to be true
-  //different? c1 c2 -> c1, c2 have to be different
-  //equivalent? is the same as different?
-  //implies? c1 c2 -> c1 has to be true, c2 has to be false
-
   def doAnalysis(analysisName: String, truthMapping: Map[String, ThreeWayBoolean], reMappedPredicates: Set[String]): (ThreeWayBoolean, Set[String]) = {
     analyses(analysisName) match {
       case AlwaysTrue(analysisName, condName) =>
