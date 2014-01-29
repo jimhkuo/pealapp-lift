@@ -1,3 +1,3 @@
 package peal.domain
 
-class Score (val underlyingScore: Either[BigDecimal, VariableFormula], val range: Option[Range])
+class Score (val underlyingScore: Either[BigDecimal, VariableFormula], val scoreRange: Option[ScoreRange])

@@ -4,7 +4,6 @@ package peal.antlr;
 import java.util.*;
 import peal.domain.*;
 import peal.antlr.util.*;
-import peal.*;
 import org.antlr.runtime.BitSet;
 import peal.synthesis.*;
 import peal.synthesis.analysis.*;
@@ -14,7 +13,7 @@ import scala.util.*;
 
 
 import org.antlr.runtime.*;
-import java.util.Stack;
+
 import java.util.List;
 import java.util.ArrayList;
 
@@ -937,7 +936,7 @@ public class PealProgramParser extends Parser {
 					r=raw_score();
 					state._fsp--;
 
-					 s = new Score(new Right<BigDecimal,VariableFormula>(r), scala.Option.apply((Range) null));
+					 s = new Score(new Right<BigDecimal,VariableFormula>(r), scala.Option.apply((ScoreRange) null));
 					}
 					break;
 				case 2 :
@@ -952,14 +951,14 @@ public class PealProgramParser extends Parser {
 					match(input,13,FOLLOW_13_in_score679); 
 					n2=(Token)match(input,NUMBER,FOLLOW_NUMBER_in_score683); 
 					match(input,23,FOLLOW_23_in_score685); 
-					 s = new Score(new Right<BigDecimal,VariableFormula>(r), scala.Option.apply(new Range(BigDecimal.valueOf(Double.valueOf((n1!=null?n1.getText():null))), BigDecimal.valueOf(Double.valueOf((n2!=null?n2.getText():null))))));
+					 s = new Score(new Right<BigDecimal,VariableFormula>(r), scala.Option.apply(new ScoreRange(BigDecimal.valueOf(Double.valueOf((n1!=null?n1.getText():null))), BigDecimal.valueOf(Double.valueOf((n2!=null?n2.getText():null))))));
 					}
 					break;
 				case 3 :
 					// /Users/jkuo/PealApp-lift/antlr/PealProgram.g:113:4: n= NUMBER
 					{
 					n=(Token)match(input,NUMBER,FOLLOW_NUMBER_in_score694); 
-					s = new Score(new Left<BigDecimal,VariableFormula>(BigDecimal.valueOf(Double.valueOf((n!=null?n.getText():null)))), scala.Option.apply((Range) null));
+					s = new Score(new Left<BigDecimal,VariableFormula>(BigDecimal.valueOf(Double.valueOf((n!=null?n.getText():null)))), scala.Option.apply((ScoreRange) null));
 					}
 					break;
 				case 4 :
@@ -971,7 +970,7 @@ public class PealProgramParser extends Parser {
 					match(input,13,FOLLOW_13_in_score710); 
 					n2=(Token)match(input,NUMBER,FOLLOW_NUMBER_in_score714); 
 					match(input,23,FOLLOW_23_in_score716); 
-					s = new Score(new Left<BigDecimal,VariableFormula>(BigDecimal.valueOf(Double.valueOf((n!=null?n.getText():null)))), scala.Option.apply(new Range(BigDecimal.valueOf(Double.valueOf((n1!=null?n1.getText():null))), BigDecimal.valueOf(Double.valueOf((n2!=null?n2.getText():null))))));
+					s = new Score(new Left<BigDecimal,VariableFormula>(BigDecimal.valueOf(Double.valueOf((n!=null?n.getText():null)))), scala.Option.apply(new ScoreRange(BigDecimal.valueOf(Double.valueOf((n1!=null?n1.getText():null))), BigDecimal.valueOf(Double.valueOf((n2!=null?n2.getText():null))))));
 					}
 					break;
 
