@@ -105,7 +105,7 @@ rule 	returns [Rule r]
 	:
 	'(' IDENT NUMBER ')' {$r = new Rule(new Predicate($IDENT.text),new Left<BigDecimal,VariableFormula>(BigDecimal.valueOf(Double.valueOf($NUMBER.text))));}
 	|
-	'(' id0=IDENT s=raw_score')' {$r = new Rule(new Predicate($id0.text),new Right<BigDecimal,VariableFormula>($s.s));}
+	'(' id0=IDENT s=score')' {$r = new Rule(new Predicate($id0.text),new Right<BigDecimal,VariableFormula>($s.s));}
 	;
 	
 score   returns [VariableFormula s]

@@ -15,7 +15,21 @@ class PealProgramParserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
 
   @Test
   def testCanDealWithNewScoreType() {
+    val input =
+      "b1 = + ((q1 x [0.1,0.2]) (q2 0.5) (q3 0.4)) default 1\n" +
+        "pSet = b1\n" +
+        "cond = pSet <= 0.5"
 
+    val pealProgramParser = ParserHelper.getPealParser(input)
+    pealProgramParser.program()
+
+    val allRules = pealProgramParser.pols.values().flatMap(pol => pol.rules)
+    val predicateNames = allRules.foldLeft(Set[String]())((acc, rule) => {
+      def addVariables(set: Set[String]) = rule.attribute.fold(left => set, right => set ++ right.names)
+      addVariables(acc + rule.q.name)
+    })
+
+    predicateNames should be(Set("x", "q1", "q2", "q3"))
   }
 
   @Test

@@ -1,4 +1,4 @@
-// $ANTLR 3.5.1 /Users/jkuo/PealApp-lift/antlr/PealProgram.g 2014-01-29 09:09:28
+// $ANTLR 3.5.1 /Users/jkuo/PealApp-lift/antlr/PealProgram.g 2014-01-29 09:17:44
 
 package peal.antlr;
 import java.util.*;
@@ -878,7 +878,7 @@ public class PealProgramParser extends Parser {
 
 
 	// $ANTLR start "rule"
-	// /Users/jkuo/PealApp-lift/antlr/PealProgram.g:104:1: rule returns [Rule r] : ( '(' IDENT NUMBER ')' | '(' id0= IDENT s= raw_score ')' );
+	// /Users/jkuo/PealApp-lift/antlr/PealProgram.g:104:1: rule returns [Rule r] : ( '(' IDENT NUMBER ')' | '(' id0= IDENT s= score ')' );
 	public final Rule rule() throws RecognitionException {
 		Rule r = null;
 
@@ -889,7 +889,7 @@ public class PealProgramParser extends Parser {
 		VariableFormula s =null;
 
 		try {
-			// /Users/jkuo/PealApp-lift/antlr/PealProgram.g:105:2: ( '(' IDENT NUMBER ')' | '(' id0= IDENT s= raw_score ')' )
+			// /Users/jkuo/PealApp-lift/antlr/PealProgram.g:105:2: ( '(' IDENT NUMBER ')' | '(' id0= IDENT s= score ')' )
 			int alt14=2;
 			int LA14_0 = input.LA(1);
 			if ( (LA14_0==9) ) {
@@ -972,12 +972,12 @@ public class PealProgramParser extends Parser {
 					}
 					break;
 				case 2 :
-					// /Users/jkuo/PealApp-lift/antlr/PealProgram.g:108:2: '(' id0= IDENT s= raw_score ')'
+					// /Users/jkuo/PealApp-lift/antlr/PealProgram.g:108:2: '(' id0= IDENT s= score ')'
 					{
 					match(input,9,FOLLOW_9_in_rule645); 
 					id0=(Token)match(input,IDENT,FOLLOW_IDENT_in_rule649); 
-					pushFollow(FOLLOW_raw_score_in_rule653);
-					s=raw_score();
+					pushFollow(FOLLOW_score_in_rule653);
+					s=score();
 					state._fsp--;
 
 					match(input,10,FOLLOW_10_in_rule654); 
@@ -1134,7 +1134,7 @@ public class PealProgramParser extends Parser {
 				if ( (LA17_1==11) ) {
 					alt17=1;
 				}
-				else if ( (LA17_1==EOF||LA17_1==IDENT||LA17_1==10||LA17_1==12||(LA17_1 >= 21 && LA17_1 <= 22)) ) {
+				else if ( (LA17_1==IDENT||LA17_1==10||LA17_1==12||(LA17_1 >= 21 && LA17_1 <= 22)) ) {
 					alt17=3;
 				}
 
@@ -1221,7 +1221,7 @@ public class PealProgramParser extends Parser {
 				if ( (LA18_1==11) ) {
 					alt18=1;
 				}
-				else if ( (LA18_1==EOF||LA18_1==IDENT||LA18_1==10||LA18_1==12||(LA18_1 >= 21 && LA18_1 <= 22)) ) {
+				else if ( (LA18_1==IDENT||LA18_1==10||LA18_1==12||(LA18_1 >= 21 && LA18_1 <= 22)) ) {
 					alt18=4;
 				}
 
@@ -1243,7 +1243,7 @@ public class PealProgramParser extends Parser {
 				if ( (LA18_2==11) ) {
 					alt18=2;
 				}
-				else if ( (LA18_2==EOF||LA18_2==IDENT||LA18_2==10||LA18_2==12||(LA18_2 >= 21 && LA18_2 <= 22)) ) {
+				else if ( (LA18_2==IDENT||LA18_2==10||LA18_2==12||(LA18_2 >= 21 && LA18_2 <= 22)) ) {
 					alt18=3;
 				}
 
@@ -1465,7 +1465,7 @@ public class PealProgramParser extends Parser {
 	public static final BitSet FOLLOW_10_in_rule637 = new BitSet(new long[]{0x0000000000000002L});
 	public static final BitSet FOLLOW_9_in_rule645 = new BitSet(new long[]{0x0000000000000010L});
 	public static final BitSet FOLLOW_IDENT_in_rule649 = new BitSet(new long[]{0x0000000000000030L});
-	public static final BitSet FOLLOW_raw_score_in_rule653 = new BitSet(new long[]{0x0000000000000400L});
+	public static final BitSet FOLLOW_score_in_rule653 = new BitSet(new long[]{0x0000000000000400L});
 	public static final BitSet FOLLOW_10_in_rule654 = new BitSet(new long[]{0x0000000000000002L});
 	public static final BitSet FOLLOW_raw_score_in_score676 = new BitSet(new long[]{0x0000000000400002L});
 	public static final BitSet FOLLOW_22_in_score679 = new BitSet(new long[]{0x0000000000000020L});
