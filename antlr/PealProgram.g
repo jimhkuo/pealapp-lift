@@ -102,24 +102,14 @@ pol	returns [Pol p]
 	;
 
 rule 	returns [Rule r]
-	:
-	//need to fix this so new score format can be supported
-//	'(' IDENT NUMBER ')' {$r = new Rule(new Predicate($IDENT.text),new Left<BigDecimal,VariableFormula>(BigDecimal.valueOf(Double.valueOf($NUMBER.text))));}
-//	|
-//	'(' id0=IDENT n=NUMBER '[' n1=NUMBER ',' n2=NUMBER ']' ')' 
-//	|
-//	'(' id0=IDENT s=score')' {$r = new Rule(new Predicate($id0.text),new Right<BigDecimal,VariableFormula>($s.s));}
-//	|
-	'(' id0=IDENT s=score')' {$r = new Rule(new Predicate($id0.text),$s.s);}
-
+	: '(' id0=IDENT s=score')' {$r = new Rule(new Predicate($id0.text),$s.s);}
 	;
 
-	//add a new class to capture the range	
-//score   returns [Either<BigDecimal,VariableFormula> s]
 score   returns [Score s]
-	: r=raw_score ('['n1=NUMBER ',' n2=NUMBER ']')? { $s = new Score(new Right<BigDecimal,VariableFormula>($r.s), scala.Option.apply((Range) null));}
+	: r=raw_score { $s = new Score(new Right<BigDecimal,VariableFormula>($r.s), scala.Option.apply((Range) null));}
+	| r=raw_score '['n1=NUMBER ',' n2=NUMBER ']' { $s = new Score(new Right<BigDecimal,VariableFormula>($r.s), scala.Option.apply(new Range(BigDecimal.valueOf(Double.valueOf($n1.text)), BigDecimal.valueOf(Double.valueOf($n2.text)))));}
 	| n=NUMBER {$s = new Score(new Left<BigDecimal,VariableFormula>(BigDecimal.valueOf(Double.valueOf($n.text))), scala.Option.apply((Range) null));}
-	| n=NUMBER '['n1=NUMBER ',' n2=NUMBER ']' {$s = new Score(new Left<BigDecimal,VariableFormula>(BigDecimal.valueOf(Double.valueOf($n.text))), scala.Option.apply((Range) null));}
+	| n=NUMBER '['n1=NUMBER ',' n2=NUMBER ']' {$s = new Score(new Left<BigDecimal,VariableFormula>(BigDecimal.valueOf(Double.valueOf($n.text))), scala.Option.apply(new Range(BigDecimal.valueOf(Double.valueOf($n1.text)), BigDecimal.valueOf(Double.valueOf($n2.text)))));}
 	;
 	
 raw_score returns [VariableFormula s]
