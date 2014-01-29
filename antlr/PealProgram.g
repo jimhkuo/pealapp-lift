@@ -103,13 +103,22 @@ pol	returns [Pol p]
 
 rule 	returns [Rule r]
 	:
-	'(' IDENT NUMBER ')' {$r = new Rule(new Predicate($IDENT.text),new Left<BigDecimal,VariableFormula>(BigDecimal.valueOf(Double.valueOf($NUMBER.text))));}
-	|
-	'(' id0=IDENT s=score')' {$r = new Rule(new Predicate($id0.text),new Right<BigDecimal,VariableFormula>($s.s));}
+	//need to fix this so new score format can be supported
+//	'(' IDENT NUMBER ')' {$r = new Rule(new Predicate($IDENT.text),new Left<BigDecimal,VariableFormula>(BigDecimal.valueOf(Double.valueOf($NUMBER.text))));}
+//	|
+//	'(' id0=IDENT n=NUMBER '[' n1=NUMBER ',' n2=NUMBER ']' ')' 
+//	|
+//	'(' id0=IDENT s=score')' {$r = new Rule(new Predicate($id0.text),new Right<BigDecimal,VariableFormula>($s.s));}
+//	|
+	'(' id0=IDENT s=score')' {$r = new Rule(new Predicate($id0.text),$s.s);}
+
 	;
-	
-score   returns [VariableFormula s]
-	: r=raw_score ('['n1=NUMBER ',' n2=NUMBER ']')? { $s = $r.s;}
+
+	//add a new class to capture the range	
+score   returns [Either<BigDecimal,VariableFormula> s]
+	: r=raw_score ('['n1=NUMBER ',' n2=NUMBER ']')? { $s = new Right<BigDecimal,VariableFormula>($r.s);}
+	| n=NUMBER {$s = new Left<BigDecimal,VariableFormula>(BigDecimal.valueOf(Double.valueOf($n.text)));}
+	| n=NUMBER '['n1=NUMBER ',' n2=NUMBER ']' {$s = new Left<BigDecimal,VariableFormula>(BigDecimal.valueOf(Double.valueOf($n.text)));}
 	;
 	
 raw_score returns [VariableFormula s]

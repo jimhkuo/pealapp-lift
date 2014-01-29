@@ -164,78 +164,78 @@ class ExplicitOutputVerifier(input: String) {
       p.operator match {
         case Plus =>
           if (!trueRules.isEmpty) {
-            if (th < trueRules.map(r => r.score).sum) {
+            if (th < trueRules.map(r => r.numberScore).sum) {
               return PealTrue
             }
-            else if (rulesToProcess.map(r => r.score).sum <= th) {
+            else if (rulesToProcess.map(r => r.numberScore).sum <= th) {
               return PealFalse
             }
             else {
               return PealBottom
             }
           }
-          if (th < p.score.left.get && rulesToProcess.forall(r => r.score > th)) {
+          if (th < p.score.left.get && rulesToProcess.forall(r => r.numberScore > th)) {
             return PealTrue
           }
-          if (p.score.left.get <= th && rulesToProcess.filter(r => I.get(r.q.name) == Some(PealBottom)).map(r => r.score).sum <= th) {
+          if (p.score.left.get <= th && rulesToProcess.filter(r => I.get(r.q.name) == Some(PealBottom)).map(r => r.numberScore).sum <= th) {
             return PealFalse
           }
 
           PealBottom
         case Mul =>
           if (!trueRules.isEmpty) {
-            if (trueRules.map(r => r.score).product <= th) {
+            if (trueRules.map(r => r.numberScore).product <= th) {
               return PealFalse
             }
-            else if (th < rulesToProcess.map(r => r.score).product) {
+            else if (th < rulesToProcess.map(r => r.numberScore).product) {
               return PealTrue
             }
             else {
               return PealBottom
             }
           }
-          if (th < p.score.left.get && rulesToProcess.map(r => r.score).product > th) {
+          if (th < p.score.left.get && rulesToProcess.map(r => r.numberScore).product > th) {
             return PealTrue
           }
-          if (p.score.left.get <= th && rulesToProcess.forall(r => r.score <= th)) {
+          if (p.score.left.get <= th && rulesToProcess.forall(r => r.numberScore <= th)) {
             return PealFalse
           }
 
           PealBottom
         case Max =>
           if (!trueRules.isEmpty) {
-            if (th < trueRules.map(r => r.score).max) {
+            if (th < trueRules.map(r => r.numberScore).max) {
               return PealTrue
             }
-            else if (rulesToProcess.map(r => r.score).max <= th) {
+            else if (rulesToProcess.map(r => r.numberScore).max <= th) {
               return PealFalse
             }
             return PealBottom
           }
 
-          if (th < p.score.left.get && rulesToProcess.forall(r => r.score > th)) {
+          if (th < p.score.left.get && rulesToProcess.forall(r => r.numberScore > th)) {
             return PealTrue
           }
-          else if (p.score.left.get <= th && rulesToProcess.forall(r => r.score <= th)) {
+          else if (p.score.left.get <= th && rulesToProcess.forall(r => r.numberScore <= th)) {
             return PealFalse
           }
 
           PealBottom
         case Min =>
           if (!trueRules.isEmpty) {
-            if (trueRules.map(r => r.score).min <= th) {
+            if (trueRules.map(r => r.numberScore).min <= th) {
               return PealFalse
             }
-            else if (th < rulesToProcess.map(r => r.score).min) {
+            else if (th < rulesToProcess.map(r => r.numberScore).min) {
               return PealTrue
             }
             return PealBottom
           }
 
-          if (th < p.score.left.get && rulesToProcess.forall(r => r.score > th)) {
+          if (th < p.score.left.get && rulesToProcess.forall(r => r.numberScore > th)) {
             return PealTrue
           }
-          else if (p.score.left.get <= th && rulesToProcess.forall(r => r.score <= th)) {
+          else if (p.score.left.get <= th && rulesToProcess.forall(r => r.numberScore <= th)) {
             return PealFalse
           }
 

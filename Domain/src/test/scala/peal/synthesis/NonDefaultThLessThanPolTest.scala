@@ -101,7 +101,7 @@ class NonDefaultThLessThanPolTest extends ShouldMatchersForJUnit with Z3ModelMat
       new Rule(new Predicate("q3"), 0.2),
       new Rule(new Predicate("q1"), 0.1)), Plus, 1)
 
-    val sortedP = p.rules.sortBy(_.score).map(_.q.name).mkString(",")
+    val sortedP = p.rules.sortBy(_.numberScore).map(_.q.name).mkString(",")
 
     sortedP should beZ3Model("q1,q2,q3,q4,q5")
   }

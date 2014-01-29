@@ -51,7 +51,7 @@ class LazySynthesiser(input: String) extends Synthesiser{
         val genFormula = conds(condName) match {
             //if we support pSet < pSet, then cond type is no longer associated with cond name
           case cond: LessThanThCondition =>
-            val filtered = pols(bName).rules.filter(_.score <= cond.getTh)
+            val filtered = pols(bName).rules.filter(_.numberScore <= cond.getTh)
             if (filtered.size > 0) {
               "(or (and (<= " + pols(bName).scoreString + " " + cond.getTh + ") (not " + constructOr(pols(bName).rules.map(_.q.name))  + "))\n" +
                 "(or " + filtered.map(_.q.name).mkString(" ") + ")))"
@@ -62,7 +62,7 @@ class LazySynthesiser(input: String) extends Synthesiser{
 
             }
           case cond: GreaterThanThCondition =>
-            val filtered = pols(bName).rules.filter(_.score <= cond.getTh)
+            val filtered = pols(bName).rules.filter(_.numberScore <= cond.getTh)
             if (filtered.size > 0) {
               "(or (and (< " + cond.getTh + " " + pols(bName).scoreString + ") (not " + constructOr(pols(bName).rules.map(_.q.name)) + "))\n" +
                 "(and " + constructOr(pols(bName).rules.map(_.q.name)) + " " + "(not (or " + filtered.map(_.q.name).mkString(" ") + ")))))"
@@ -76,7 +76,7 @@ class LazySynthesiser(input: String) extends Synthesiser{
       case Max =>
         val genFormula = conds(condName) match {
           case cond: LessThanThCondition =>
-            val filtered = pols(bName).rules.filter(_.score <= cond.getTh)
+            val filtered = pols(bName).rules.filter(_.numberScore <= cond.getTh)
             if (filtered.size > 0) {
               "(or (and (<= " + pols(bName).scoreString + " " + cond.getTh + ") (not " + constructOr(pols(bName).rules.map(_.q.name)) + "))\n" +
                 "(and " + constructOr(pols(bName).rules.map(_.q.name)) + " (not " + "(or " + filtered.map(_.q.name).mkString(" ") + ")" + "))))"
@@ -86,7 +86,7 @@ class LazySynthesiser(input: String) extends Synthesiser{
                 "(and " + constructOr(pols(bName).rules.map(_.q.name)) + " (not false))))"
             }
           case cond: GreaterThanThCondition =>
-            val filtered = pols(bName).rules.filter(cond.getTh < _.score)
+            val filtered = pols(bName).rules.filter(cond.getTh < _.numberScore)
             if (filtered.size > 0) {
               "(or (and (< " + cond.getTh + " " + pols(bName).scoreString + ") (not " + constructOr(pols(bName).rules.map(_.q.name)) + "))\n" +
                 "(or " + filtered.map(_.q.name).mkString(" ") + ")))"

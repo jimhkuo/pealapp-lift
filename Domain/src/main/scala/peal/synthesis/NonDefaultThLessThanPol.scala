@@ -32,7 +32,7 @@ class NonDefaultThLessThanPol(pol: Pol, th: BigDecimal) extends NonDefaultSet {
       }
     }
     case Max => {
-      val rules = pol.rules.filter(th < _.score)
+      val rules = pol.rules.filter(th < _.numberScore)
       rules.size match {
         case 0 => False() // "false"
         case 1 => consts(rules(0).q.name) //rules.map(_.q.name).mkString("")
@@ -44,8 +44,8 @@ class NonDefaultThLessThanPol(pol: Pol, th: BigDecimal) extends NonDefaultSet {
   }
 
   def enumOneForPlus(): ListBuffer[List[Rule]] = {
-    val sortedRulesByScore = pol.rules.sortBy(_.score)
-    val t = sortedRulesByScore.map(_.score).scanLeft(BigDecimal.valueOf(0.00))((remaining, score) => remaining + score).drop(1)
+    val sortedRulesByScore = pol.rules.sortBy(_.numberScore)
+    val t = sortedRulesByScore.map(_.numberScore).scanLeft(BigDecimal.valueOf(0.00))((remaining, score) => remaining + score).drop(1)
     var m1 = ListBuffer[List[Rule]]()
 
     def enumOne(x: List[Rule], sum: BigDecimal, index: Integer) {
@@ -55,7 +55,7 @@ class NonDefaultThLessThanPol(pol: Pol, th: BigDecimal) extends NonDefaultSet {
       else {
         var j = index - 1
         while ((j > -1) && (th < (t(j) + sum))) {
-          enumOne(x :+ sortedRulesByScore(j), sum + sortedRulesByScore(j).score, j)
+          enumOne(x :+ sortedRulesByScore(j), sum + sortedRulesByScore(j).numberScore, j)
           j -= 1
         }
       }

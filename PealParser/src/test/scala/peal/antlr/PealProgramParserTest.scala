@@ -7,7 +7,7 @@ import peal.synthesis.analysis.AlwaysTrue
 import peal.util.Z3ModelMatcher
 import peal.domain.z3.{PealAst, Term}
 import peal.antlr.util.ParserHelper
-import peal.domain.Pol
+import peal.domain.{Score, Pol}
 
 
 class PealProgramParserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
@@ -16,20 +16,21 @@ class PealProgramParserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
   @Test
   def testCanDealWithNewScoreType() {
     val input =
-      "b1 = + ((q1 x [0.1,0.2]) (q2 0.5) (q3 0.4)) default 1\n" +
+      "b1 = + ((q1 x [0.1,0.2])) default 1\n" +
         "pSet = b1\n" +
         "cond = pSet <= 0.5"
 
     val pealProgramParser = ParserHelper.getPealParser(input)
     pealProgramParser.program()
 
-    val allRules = pealProgramParser.pols.values().flatMap(pol => pol.rules)
-    val predicateNames = allRules.foldLeft(Set[String]())((acc, rule) => {
-      def addVariables(set: Set[String]) = rule.attribute.fold(left => set, right => set ++ right.names)
-      addVariables(acc + rule.q.name)
-    })
-
-    predicateNames should be(Set("x", "q1", "q2", "q3"))
+    val allRules = pealProgramParser.pols.values().flatMap(pol => pol.rules).toSeq
+//    allRules(0).attribute.right.get should be (new Score())
+//    val predicateNames = allRules.foldLeft(Set[String]())((acc, rule) => {
+//      def addVariables(set: Set[String]) = rule.attribute.fold(left => set, right => set ++ right.names)
+//      addVariables(acc + rule.q.name)
+//    })
+//
+//    predicateNames should be(Set("x", "q1", "q2", "q3"))
   }
 
   @Test
@@ -88,9 +89,9 @@ class PealProgramParserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
     pealProgrmParser.program()
 
     val pols = pealProgrmParser.pols
-    pols("b1").rules(0).score should be(BigDecimal.valueOf(-0.2))
-    pols("b1").rules(1).score should be(BigDecimal.valueOf(-0.4))
-    pols("b1").rules(2).score should be(BigDecimal.valueOf(-0.9))
+    pols("b1").rules(0).numberScore should be(BigDecimal.valueOf(-0.2))
+    pols("b1").rules(1).numberScore should be(BigDecimal.valueOf(-0.4))
+    pols("b1").rules(2).numberScore should be(BigDecimal.valueOf(-0.9))
   }
 
   @Test(expected = classOf[RuntimeException])

@@ -8,7 +8,7 @@ import peal.domain.z3.{PealAst, Or, False, And}
 class NonDefaultPolLessThanTh(pol: Pol, th: BigDecimal) extends NonDefaultSet {
   def synthesis(consts: Map[String, PealAst]): PealAst = pol.operator match {
     case Min => {
-      val rules = pol.rules.filter(th >= _.score)
+      val rules = pol.rules.filter(th >= _.numberScore)
       rules.size match {
         case 0 => False()
         case _ => Or(rules.map(r => consts(r.q.name)): _*)//z3.mkOr(rules.map(r => z3.mkBoolConst(r.q.name)): _*) //rules.map(_.q.name).mkString("(or ", " ", ")")
@@ -40,8 +40,8 @@ class NonDefaultPolLessThanTh(pol: Pol, th: BigDecimal) extends NonDefaultSet {
   }
 
   def enumTwoForMul(): Set[Set[Rule]] = {
-    val sortedRulesByScoreDesc = pol.rules.sortWith(_.score > _.score)
-    val t = sortedRulesByScoreDesc.map(_.score).scanLeft(BigDecimal.valueOf(1.0))((remaining, score) => remaining * score).drop(1)
+    val sortedRulesByScoreDesc = pol.rules.sortWith(_.numberScore > _.numberScore)
+    val t = sortedRulesByScoreDesc.map(_.numberScore).scanLeft(BigDecimal.valueOf(1.0))((remaining, score) => remaining * score).drop(1)
     var m2 = Set[Set[Rule]]()
 
     def enumTwo(x: Set[Rule], sum: BigDecimal, index: Integer) {
@@ -51,7 +51,7 @@ class NonDefaultPolLessThanTh(pol: Pol, th: BigDecimal) extends NonDefaultSet {
       else {
         var j = index - 1
         while ((j > -1) && ((t(j) * sum) <= th)) {
-          enumTwo(x + sortedRulesByScoreDesc(j), sum * sortedRulesByScoreDesc(j).score, j)
+          enumTwo(x + sortedRulesByScoreDesc(j), sum * sortedRulesByScoreDesc(j).numberScore, j)
           j -= 1
         }
       }
