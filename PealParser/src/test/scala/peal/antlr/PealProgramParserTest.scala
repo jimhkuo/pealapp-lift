@@ -14,6 +14,11 @@ class PealProgramParserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
   val consts = Map[String, PealAst]("q0" -> Term("q0"), "q1" -> Term("q1"), "q2" -> Term("q2"), "q3" -> Term("q3"), "q4" -> Term("q4"), "q5" -> Term("q5"), "q6" -> Term("q6"))
 
   @Test
+  def testCanDealWithNewScoreType() {
+
+  }
+
+  @Test
   def testNonConstantDefaultScores() {
     val input =
       "b1 = + ((q1 x) (q2 0.5) (q3 0.4)) default x\n" +

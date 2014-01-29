@@ -68,6 +68,7 @@ program
 	id0 =IDENT '=' 'true' {Condition cond = new TrueCondition(); conds.put($id0.text, cond);}
 	|
 	id0 =IDENT '=' 'false' {Condition cond = new FalseCondition(); conds.put($id0.text, cond);}
+	//need to support cond = q
 	)+
 	('DOMAIN_SPECIFICS' {ignore = true;}
 	(IDENT | NUMBER | '+' | '*' | '=' | '(' | ')' | '<' | '<=' )*)?
@@ -86,6 +87,8 @@ pSet
 	:id0=IDENT '=' id1=IDENT {PolicySet p = new BasicPolicySet(pols.get($id1.text), $id0.text); pSets.put($id0.text, p);}
 	|id0=IDENT '=' 'max' '(' id1=IDENT ',' id2=IDENT ')' {PolicySet p = new MaxPolicySet(PolicyResolver.getFromOr(pols, pSets, $id1.text), PolicyResolver.getFromOr(pols, pSets, $id2.text), $id0.text); pSets.put($id0.text, p);}
 	|id0=IDENT '=' 'min' '(' id1=IDENT ',' id2=IDENT ')' {PolicySet p = new MinPolicySet(PolicyResolver.getFromOr(pols, pSets, $id1.text), PolicyResolver.getFromOr(pols, pSets, $id2.text), $id0.text); pSets.put($id0.text, p);}
+	//need to support + and *
+	//need to support pSet = score
 	;
 
 pol	returns [Pol p] 
@@ -94,7 +97,7 @@ pol	returns [Pol p]
 	(
 		n=NUMBER {$p = new Pol(l, OperatorResolver.apply($o.text), new Left<BigDecimal,VariableFormula>(BigDecimal.valueOf(Double.valueOf($n.text))), $id1.text);}
 		|
-		s=score {$p = new Pol(l, OperatorResolver.apply($o.text), new Right<BigDecimal,VariableFormula>($s.s), $id1.text);}									
+		s=raw_score {$p = new Pol(l, OperatorResolver.apply($o.text), new Right<BigDecimal,VariableFormula>($s.s), $id1.text);}									
 	)
 	;
 
@@ -102,10 +105,14 @@ rule 	returns [Rule r]
 	:
 	'(' IDENT NUMBER ')' {$r = new Rule(new Predicate($IDENT.text),new Left<BigDecimal,VariableFormula>(BigDecimal.valueOf(Double.valueOf($NUMBER.text))));}
 	|
-	'(' id0=IDENT s=score')' {$r = new Rule(new Predicate($id0.text),new Right<BigDecimal,VariableFormula>($s.s));}
+	'(' id0=IDENT s=raw_score')' {$r = new Rule(new Predicate($id0.text),new Right<BigDecimal,VariableFormula>($s.s));}
 	;
 	
-score returns [VariableFormula s]
+score   returns [VariableFormula s]
+	: r=raw_score ('['n1=NUMBER ',' n2=NUMBER ']')? { $s = $r.s;}
+	;
+	
+raw_score returns [VariableFormula s]
 	: m0=vmult {$s = new VariableFormula().add($m0.m);} ('+' m=mult {$s.add($m.m);})* 
 	;	
 	
@@ -128,4 +135,3 @@ NUMBER : ('.'|'0'..'9'|'-'|'E')+ {if(ignore) skip();};
 IDENT : ('a'..'z' | 'A'..'Z')('a'..'z' | 'A'..'Z' | '0'..'9' | '_')* {if(ignore) skip();};
 WS : (' ' | '\t' | '\n' | '\r' | '\f')+ { $channel = HIDDEN;};
 	
-//NEWLINE:'\r'? '\n' { $channel = HIDDEN;};
