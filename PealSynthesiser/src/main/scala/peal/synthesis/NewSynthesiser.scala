@@ -30,7 +30,7 @@ class NewSynthesiser(input: String) extends Synthesiser {
     }
   })
   val nonConstantScores = allRules.foldLeft(Set[String]())((acc, rule) => {
-    def addVariables(set: Set[String]) = rule.attribute.fold(score => set, variable => set ++ variable.names)
+    def addVariables(set: Set[String]) = rule.score.underlyingScore.fold(score => set, variable => set ++ variable.names)
     addVariables(acc)
   })
   val analyses = pealProgramParser.analyses

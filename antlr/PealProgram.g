@@ -115,10 +115,11 @@ rule 	returns [Rule r]
 	;
 
 	//add a new class to capture the range	
-score   returns [Either<BigDecimal,VariableFormula> s]
-	: r=raw_score ('['n1=NUMBER ',' n2=NUMBER ']')? { $s = new Right<BigDecimal,VariableFormula>($r.s);}
-	| n=NUMBER {$s = new Left<BigDecimal,VariableFormula>(BigDecimal.valueOf(Double.valueOf($n.text)));}
-	| n=NUMBER '['n1=NUMBER ',' n2=NUMBER ']' {$s = new Left<BigDecimal,VariableFormula>(BigDecimal.valueOf(Double.valueOf($n.text)));}
+//score   returns [Either<BigDecimal,VariableFormula> s]
+score   returns [Score s]
+	: r=raw_score ('['n1=NUMBER ',' n2=NUMBER ']')? { $s = new Score(new Right<BigDecimal,VariableFormula>($r.s), scala.Option.apply((Range) null));}
+	| n=NUMBER {$s = new Score(new Left<BigDecimal,VariableFormula>(BigDecimal.valueOf(Double.valueOf($n.text))), scala.Option.apply((Range) null));}
+	| n=NUMBER '['n1=NUMBER ',' n2=NUMBER ']' {$s = new Score(new Left<BigDecimal,VariableFormula>(BigDecimal.valueOf(Double.valueOf($n.text))), scala.Option.apply((Range) null));}
 	;
 	
 raw_score returns [VariableFormula s]
