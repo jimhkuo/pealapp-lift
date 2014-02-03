@@ -16,10 +16,10 @@ class PealProgramParserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
   @Test
   def testCanAggregratePolicySetUsingPlus() {
     val input =
-      "b1 = + ((q1 x) (q2 0.9)) default 1\n" +
+      "POLICIES\nb1 = + ((q1 x) (q2 0.9)) default 1\n" +
       "b2 = + ((q3 x) (q4 0.9)) default 1\n" +
-        "pSet = + (b1,b2)\n" +
-        "cond = pSet <= 0.5"
+        "POLICY_SETS\npSet = + (b1,b2)\n" +
+        "CONDITIONS\ncond = pSet <= 0.5"
 
     val pealProgramParser = ParserHelper.getPealParser(input)
     pealProgramParser.program()
@@ -32,10 +32,10 @@ class PealProgramParserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
   @Test
   def testCanAggregratePolicySetUsingMul() {
     val input =
-      "b1 = + ((q1 x) (q2 0.9)) default 1\n" +
+      "POLICIES\nb1 = + ((q1 x) (q2 0.9)) default 1\n" +
       "b2 = + ((q3 x) (q4 0.9)) default 1\n" +
-        "pSet = * (b1,b2)\n" +
-        "cond = pSet <= 0.5"
+        "POLICY_SETS\npSet = * (b1,b2)\n" +
+        "CONDITIONS\ncond = pSet <= 0.5"
 
     val pealProgramParser = ParserHelper.getPealParser(input)
     pealProgramParser.program()
@@ -48,9 +48,9 @@ class PealProgramParserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
   @Test
   def testCanDealWithNewScoreType() {
     val input =
-      "b1 = + ((q1 x [0.1,0.2]) (q2 0.9 [-0.1,0.2])) default 1\n" +
-        "pSet = b1\n" +
-        "cond = pSet <= 0.5"
+      "POLICIES\nb1 = + ((q1 x [0.1,0.2]) (q2 0.9 [-0.1,0.2])) default 1\n" +
+        "POLICY_SETS\npSet = b1\n" +
+        "CONDITIONS\ncond = pSet <= 0.5"
 
     val pealProgramParser = ParserHelper.getPealParser(input)
     pealProgramParser.program()
@@ -67,12 +67,12 @@ class PealProgramParserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
   @Test
   def testNonConstantDefaultScores() {
     val input =
-      "b1 = + ((q1 x) (q2 0.5) (q3 0.4)) default x\n" +
+      "POLICIES\nb1 = + ((q1 x) (q2 0.5) (q3 0.4)) default x\n" +
         "b2 = min ((q1 x) (q2 0.5) (q3 0.4)) default y\n" +
         "b3 = * ((q1 x) (q2 0.5) (q3 0.4)) default 1.1*x\n" +
         "b4 = max ((q1 x) (q2 0.5) (q3 0.4)) default z * 2.9\n" +
-        "pSet = max(b1, b2)\n" +
-        "cond = pSet <= 0.5"
+        "POLICY_SETS\npSet = max(b1, b2)\n" +
+        "CONDITIONS\ncond = pSet <= 0.5"
 
     val pealProgramParser = ParserHelper.getPealParser(input)
     pealProgramParser.program()
@@ -93,9 +93,9 @@ class PealProgramParserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
   @Test
   def testCanNonConstantFromRules() {
     val input =
-      "b1 = + ((q1 x) (q2 0.5) (q3 0.4)) default 1\n" +
-        "pSet = b1\n" +
-        "cond = pSet <= 0.5"
+      "POLICIES\nb1 = + ((q1 x) (q2 0.5) (q3 0.4)) default 1\n" +
+        "POLICY_SETS\npSet = b1\n" +
+        "CONDITIONS\ncond = pSet <= 0.5"
 
     val pealProgramParser = ParserHelper.getPealParser(input)
     pealProgramParser.program()
@@ -112,9 +112,9 @@ class PealProgramParserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
   @Test
   def testCanHandleNegativeScores() {
     val input =
-      "b1 = min ((q1 -0.2) (q2 -0.4) (q3 -0.9)) default 1\n" +
-        "pSet = b1\n" +
-        "cond = pSet <= 0.5"
+      "POLICIES\nb1 = min ((q1 -0.2) (q2 -0.4) (q3 -0.9)) default 1\n" +
+        "POLICY_SETS\npSet = b1\n" +
+        "CONDITIONS\ncond = pSet <= 0.5"
 
     val pealProgrmParser = ParserHelper.getPealParser(input)
     pealProgrmParser.program()
@@ -127,9 +127,9 @@ class PealProgramParserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
 
   @Test(expected = classOf[RuntimeException])
   def testInValidInput() {
-    val input = "co" +
+    val input = "POLICIES\nco" +
       "b2 = + ((q4 0.1) (q5 0.2) (q6 0.2)) default 0 " +
-      "pSet = max(b1, b2)"
+      "POLICY_SETS\npSet = max(b1, b2)"
 
     val pealProgrmParser = ParserHelper.getPealParser(input)
     pealProgrmParser.program()
@@ -232,10 +232,10 @@ class PealProgramParserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
   @Test
   def testCanParseDefaultInputInWebapp() {
     val input =
-      "b1 = min ((q1 0.2) (q2 0.4) (q3 0.9)) default 1" +
+      "POLICIES\nb1 = min ((q1 0.2) (q2 0.4) (q3 0.9)) default 1" +
         "b2 = + ((q4 0.1) (q5 0.2) (q6 0.2)) default 0 " +
-        "pSet = max(b1, b2)" +
-        "cond = pSet <= 0.5"
+        "POLICY_SETS\npSet = max(b1, b2)" +
+        "CONDITIONS\ncond = pSet <= 0.5"
 
     val pealProgrmParser = ParserHelper.getPealParser(input)
     pealProgrmParser.program()
@@ -250,10 +250,10 @@ class PealProgramParserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
   @Test
   def testDealWithMin() {
     val input =
-      "b1 = min ((q1 0.2) (q2 0.4) (q3 0.9)) default 1" +
+      "POLICIES\nb1 = min ((q1 0.2) (q2 0.4) (q3 0.9)) default 1" +
         "b2 = + ((q4 0.1) (q5 0.2) (q6 0.2)) default 0 " +
-        "pSet = min(b1, b2)" +
-        "cond = pSet <= 0.5"
+        "POLICY_SETS\npSet = min(b1, b2)" +
+        "CONDITIONS\ncond = pSet <= 0.5"
 
     val pealProgrmParser = ParserHelper.getPealParser(input)
     pealProgrmParser.program()
@@ -268,10 +268,10 @@ class PealProgramParserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
   @Test
   def testDealWithMinAndGreaterThanTh() {
     val input =
-      "b1 = min ((q1 0.2) (q2 0.4) (q3 0.9)) default 1" +
+      "POLICIES\nb1 = min ((q1 0.2) (q2 0.4) (q3 0.9)) default 1" +
         "b2 = + ((q4 0.1) (q5 0.2) (q6 0.2)) default 0 " +
-        "pSet = min(b1, b2)" +
-        "cond = 0.5 < pSet "
+        "POLICY_SETS\npSet = min(b1, b2)" +
+        "CONDITIONS\ncond = 0.5 < pSet "
 
     val pealProgrmParser = ParserHelper.getPealParser(input)
     pealProgrmParser.program()
@@ -285,11 +285,11 @@ class PealProgramParserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
 
   @Test
   def testDealWithMultipleConditions() {
-    val input = "b1 = min ((q1 0.2) (q2 0.4) (q3 0.9)) default 1" +
+    val input = "POLICIES\nb1 = min ((q1 0.2) (q2 0.4) (q3 0.9)) default 1" +
       "b2 = + ((q4 0.1) (q5 0.2) (q6 0.2)) default 0 " +
-      "pSet1 = min(b1, b2)" +
+      "POLICY_SETS\npSet1 = min(b1, b2)" +
       "pSet2 = min(b1, b2)" +
-      "cond1 = 0.5 < pSet1 " +
+      "CONDITIONS\ncond1 = 0.5 < pSet1 " +
       "cond2 = pSet2 <= 0.5 "
 
     val pealProgrmParser = ParserHelper.getPealParser(input)
@@ -302,9 +302,9 @@ class PealProgramParserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
   @Test
   def testCanDoExample1InEmail() {
     val input =
-      "b2 = + ((q4 0.2) (q5 0.2) (q6 0.1)) default 0.6\n" +
-        "pSet = b2\n" +
-        "cond = pSet <= 0.5\n"
+      "POLICIES\nb2 = + ((q4 0.2) (q5 0.2) (q6 0.1)) default 0.6\n" +
+        "POLICY_SETS\npSet = b2\n" +
+        "CONDITIONS\ncond = pSet <= 0.5\n"
 
     val pealProgrmParser = ParserHelper.getPealParser(input)
     pealProgrmParser.program()
@@ -313,7 +313,7 @@ class PealProgramParserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
 
   @Test
   def testCanDoExample2InEmail() {
-    val input = "b2 = + ((q4 0.2) (q5 0.2) (q6 0.3)) default 0\npSet = b2\ncond = pSet <= 0.5\n"
+    val input = "POLICIES\nb2 = + ((q4 0.2) (q5 0.2) (q6 0.3)) default 0\nPOLICY_SETS\npSet = b2\nCONDITIONS\ncond = pSet <= 0.5\n"
 
     val pealProgrmParser = ParserHelper.getPealParser(input)
     pealProgrmParser.program()
@@ -322,7 +322,7 @@ class PealProgramParserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
 
   @Test
   def testCanDoExample3InEmail() {
-    val input = "b2 = + ((q4 0.2) (q5 0.2) (q6 0.3)) default 0\npSet = b2\ncond = pSet <= 0.2"
+    val input = "POLICIES\nb2 = + ((q4 0.2) (q5 0.2) (q6 0.3)) default 0\nPOLICY_SETS\npSet = b2\nCONDITIONS\ncond = pSet <= 0.2"
 
     val pealProgrmParser = ParserHelper.getPealParser(input)
     pealProgrmParser.program()

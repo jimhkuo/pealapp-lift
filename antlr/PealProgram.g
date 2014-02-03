@@ -45,11 +45,11 @@ private boolean ignore = false;
 
 program	
 	: 
-	('POLICIES')?
+	('POLICIES')
 	(pol {pols.put($pol.p.getPolicyName(), $pol.p);})*
-	('POLICY_SETS')?
+	('POLICY_SETS')
 	(pSet)+
-	('CONDITIONS')?
+	('CONDITIONS')
 	(
 	id0=IDENT '=' id2=IDENT '<=' num=NUMBER {Condition cond = new LessThanThCondition(pSets.get($id2.text), new Left<BigDecimal,PolicySet>(BigDecimal.valueOf(Double.valueOf($num.text)))); conds.put($id0.text, cond);}
     	|
@@ -68,7 +68,8 @@ program
 	id0 =IDENT '=' 'true' {Condition cond = new TrueCondition(); conds.put($id0.text, cond);}
 	|
 	id0 =IDENT '=' 'false' {Condition cond = new FalseCondition(); conds.put($id0.text, cond);}
-	//need to support cond = q
+	|
+	id0 =IDENT '=' id1=IDENT {Condition cond = new PredicateCondition($id1.text); conds.put($id0.text, cond);}
 	)+
 	('DOMAIN_SPECIFICS' {ignore = true;}
 	(IDENT | NUMBER | '+' | '*' | '=' | '(' | ')' | '<' | '<=' )*)?
