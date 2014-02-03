@@ -14,6 +14,38 @@ class PealProgramParserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
   val consts = Map[String, PealAst]("q0" -> Term("q0"), "q1" -> Term("q1"), "q2" -> Term("q2"), "q3" -> Term("q3"), "q4" -> Term("q4"), "q5" -> Term("q5"), "q6" -> Term("q6"))
 
   @Test
+  def testCanAggregratePolicySetUsingPlus() {
+    val input =
+      "b1 = + ((q1 x) (q2 0.9)) default 1\n" +
+      "b2 = + ((q3 x) (q4 0.9)) default 1\n" +
+        "pSet = + (b1,b2)\n" +
+        "cond = pSet <= 0.5"
+
+    val pealProgramParser = ParserHelper.getPealParser(input)
+    pealProgramParser.program()
+
+    val allRules = pealProgramParser.pols.values().flatMap(pol => pol.rules).toSeq
+    allRules(0).score.underlyingScore.right.get.toZ3Expression should be ("x")
+    allRules(1).score.underlyingScore.left.get should be (BigDecimal(0.9))
+  }
+
+  @Test
+  def testCanAggregratePolicySetUsingMul() {
+    val input =
+      "b1 = + ((q1 x) (q2 0.9)) default 1\n" +
+      "b2 = + ((q3 x) (q4 0.9)) default 1\n" +
+        "pSet = * (b1,b2)\n" +
+        "cond = pSet <= 0.5"
+
+    val pealProgramParser = ParserHelper.getPealParser(input)
+    pealProgramParser.program()
+
+    val allRules = pealProgramParser.pols.values().flatMap(pol => pol.rules).toSeq
+    allRules(0).score.underlyingScore.right.get.toZ3Expression should be ("x")
+    allRules(1).score.underlyingScore.left.get should be (BigDecimal(0.9))
+  }
+
+  @Test
   def testCanDealWithNewScoreType() {
     val input =
       "b1 = + ((q1 x [0.1,0.2]) (q2 0.9 [-0.1,0.2])) default 1\n" +

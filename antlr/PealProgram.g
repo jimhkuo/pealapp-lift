@@ -87,8 +87,8 @@ pSet
 	:id0=IDENT '=' id1=IDENT {PolicySet p = new BasicPolicySet(pols.get($id1.text), $id0.text); pSets.put($id0.text, p);}
 	|id0=IDENT '=' 'max' '(' id1=IDENT ',' id2=IDENT ')' {PolicySet p = new MaxPolicySet(PolicyResolver.getFromOr(pols, pSets, $id1.text), PolicyResolver.getFromOr(pols, pSets, $id2.text), $id0.text); pSets.put($id0.text, p);}
 	|id0=IDENT '=' 'min' '(' id1=IDENT ',' id2=IDENT ')' {PolicySet p = new MinPolicySet(PolicyResolver.getFromOr(pols, pSets, $id1.text), PolicyResolver.getFromOr(pols, pSets, $id2.text), $id0.text); pSets.put($id0.text, p);}
-	//need to support + and *
-	//need to support pSet = score
+	|id0=IDENT '=' '+' '(' id1=IDENT ',' id2=IDENT ')' {PolicySet p = new PlusPolicySet(PolicyResolver.getFromOr(pols, pSets, $id1.text), PolicyResolver.getFromOr(pols, pSets, $id2.text), $id0.text); pSets.put($id0.text, p);}
+	|id0=IDENT '=' '*' '(' id1=IDENT ',' id2=IDENT ')' {PolicySet p = new MulPolicySet(PolicyResolver.getFromOr(pols, pSets, $id1.text), PolicyResolver.getFromOr(pols, pSets, $id2.text), $id0.text); pSets.put($id0.text, p);}
 	;
 
 pol	returns [Pol p] 
@@ -106,10 +106,10 @@ rule 	returns [Rule r]
 	;
 
 score   returns [Score s]
-	: r=raw_score { $s = new Score(new Right<BigDecimal,VariableFormula>($r.s), scala.Option.apply((Range) null));}
-	| r=raw_score '['n1=NUMBER ',' n2=NUMBER ']' { $s = new Score(new Right<BigDecimal,VariableFormula>($r.s), scala.Option.apply(new Range(BigDecimal.valueOf(Double.valueOf($n1.text)), BigDecimal.valueOf(Double.valueOf($n2.text)))));}
-	| n=NUMBER {$s = new Score(new Left<BigDecimal,VariableFormula>(BigDecimal.valueOf(Double.valueOf($n.text))), scala.Option.apply((Range) null));}
-	| n=NUMBER '['n1=NUMBER ',' n2=NUMBER ']' {$s = new Score(new Left<BigDecimal,VariableFormula>(BigDecimal.valueOf(Double.valueOf($n.text))), scala.Option.apply(new Range(BigDecimal.valueOf(Double.valueOf($n1.text)), BigDecimal.valueOf(Double.valueOf($n2.text)))));}
+	: r=raw_score { $s = new Score(new Right<BigDecimal,VariableFormula>($r.s), scala.Option.apply((ScoreRange) null));}
+	| r=raw_score '['n1=NUMBER ',' n2=NUMBER ']' { $s = new Score(new Right<BigDecimal,VariableFormula>($r.s), scala.Option.apply(new ScoreRange(BigDecimal.valueOf(Double.valueOf($n1.text)), BigDecimal.valueOf(Double.valueOf($n2.text)))));}
+	| n=NUMBER {$s = new Score(new Left<BigDecimal,VariableFormula>(BigDecimal.valueOf(Double.valueOf($n.text))), scala.Option.apply((ScoreRange) null));}
+	| n=NUMBER '['n1=NUMBER ',' n2=NUMBER ']' {$s = new Score(new Left<BigDecimal,VariableFormula>(BigDecimal.valueOf(Double.valueOf($n.text))), scala.Option.apply(new ScoreRange(BigDecimal.valueOf(Double.valueOf($n1.text)), BigDecimal.valueOf(Double.valueOf($n2.text)))));}
 	;
 	
 raw_score returns [VariableFormula s]
