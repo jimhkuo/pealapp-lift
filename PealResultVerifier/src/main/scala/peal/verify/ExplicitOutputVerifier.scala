@@ -174,10 +174,10 @@ class ExplicitOutputVerifier(input: String) {
               return PealBottom
             }
           }
-          if (th < p.score.left.get && rulesToProcess.forall(r => r.numberScore > th)) {
+          if (th < p.score.underlyingScore.left.get && rulesToProcess.forall(r => r.numberScore > th)) {
             return PealTrue
           }
-          if (p.score.left.get <= th && rulesToProcess.filter(r => I.get(r.q.name) == Some(PealBottom)).map(r => r.numberScore).sum <= th) {
+          if (p.score.underlyingScore.left.get <= th && rulesToProcess.filter(r => I.get(r.q.name) == Some(PealBottom)).map(r => r.numberScore).sum <= th) {
             return PealFalse
           }
 
@@ -194,10 +194,10 @@ class ExplicitOutputVerifier(input: String) {
               return PealBottom
             }
           }
-          if (th < p.score.left.get && rulesToProcess.map(r => r.numberScore).product > th) {
+          if (th < p.score.underlyingScore.left.get && rulesToProcess.map(r => r.numberScore).product > th) {
             return PealTrue
           }
-          if (p.score.left.get <= th && rulesToProcess.forall(r => r.numberScore <= th)) {
+          if (p.score.underlyingScore.left.get <= th && rulesToProcess.forall(r => r.numberScore <= th)) {
             return PealFalse
           }
 
@@ -213,10 +213,10 @@ class ExplicitOutputVerifier(input: String) {
             return PealBottom
           }
 
-          if (th < p.score.left.get && rulesToProcess.forall(r => r.numberScore > th)) {
+          if (th < p.score.underlyingScore.left.get && rulesToProcess.forall(r => r.numberScore > th)) {
             return PealTrue
           }
-          else if (p.score.left.get <= th && rulesToProcess.forall(r => r.numberScore <= th)) {
+          else if (p.score.underlyingScore.left.get <= th && rulesToProcess.forall(r => r.numberScore <= th)) {
             return PealFalse
           }
 
@@ -232,10 +232,10 @@ class ExplicitOutputVerifier(input: String) {
             return PealBottom
           }
 
-          if (th < p.score.left.get && rulesToProcess.forall(r => r.numberScore > th)) {
+          if (th < p.score.underlyingScore.left.get && rulesToProcess.forall(r => r.numberScore > th)) {
             return PealTrue
           }
-          else if (p.score.left.get <= th && rulesToProcess.forall(r => r.numberScore <= th)) {
+          else if (p.score.underlyingScore.left.get <= th && rulesToProcess.forall(r => r.numberScore <= th)) {
             return PealFalse
           }
 

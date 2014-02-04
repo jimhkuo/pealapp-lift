@@ -31,6 +31,6 @@ class PolTest extends ShouldMatchersForJUnit {
 
   @Test
   def testCanTakeVariable() {
-    new Pol(List(new Rule(new Predicate("q1"), 0.5)), Min, Right(VariableFormula("x")))
+    new Pol(List(new Rule(new Predicate("q1"), 0.5)), Min, new Score(Right(VariableFormula("x")), None))
   }
 }

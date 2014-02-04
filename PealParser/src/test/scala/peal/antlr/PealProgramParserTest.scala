@@ -81,6 +81,18 @@ class PealProgramParserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
   }
 
   @Test
+  def testCanDealWithNewScoreTypeForDefault() {
+    val input =
+      "POLICIES\nb1 = + ((q1 x) (q2 0.9)) default 1 [-0.2, 0.3]\n" +
+        "POLICY_SETS\npSet = b1\n" +
+        "CONDITIONS\ncond = pSet <= 0.5"
+
+    val pealProgramParser = ParserHelper.getPealParser(input)
+    pealProgramParser.program()
+
+  }
+
+  @Test
   def testNonConstantDefaultScores() {
     val input =
       "POLICIES\nb1 = + ((q1 x) (q2 0.5) (q3 0.4)) default x\n" +
@@ -97,7 +109,7 @@ class PealProgramParserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
     val nonConstantDefaultScores = pols.foldLeft(Set[String]())((acc, tuple) => {
       tuple._2 match {
         case p: Pol =>
-          def addVariables(set: Set[String]) = p.score.fold(score => set, variable => set ++ variable.names)
+          def addVariables(set: Set[String]) = p.score.underlyingScore.fold(score => set, variable => set ++ variable.names)
           addVariables(acc)
         case _ => acc
       }

@@ -2,15 +2,7 @@ package peal.synthesis
 
 import peal.antlr.util.ParserHelper
 import scala.collection.JavaConversions._
-import peal.domain.operator._
-import peal.synthesis.analysis.AnalysisGenerator
-import peal.domain.BasicPolicySet
-import peal.synthesis.analysis.AlwaysFalse
-import peal.domain.MinPolicySet
-import peal.domain.MaxPolicySet
 import peal.domain.Pol
-import peal.synthesis.analysis.Different
-import peal.synthesis.analysis.AlwaysTrue
 
 class ExendedSynthesiser(input: String) extends Synthesiser {
 
@@ -24,7 +16,7 @@ class ExendedSynthesiser(input: String) extends Synthesiser {
   val nonConstantDefaultScores = pols.foldLeft(Set[String]())((acc, tuple) => {
     tuple._2 match {
       case p: Pol =>
-        def addVariables(set: Set[String]) = p.score.fold(score => set, variable => set ++ variable.names)
+        def addVariables(set: Set[String]) = p.score.underlyingScore.fold(score => set, variable => set ++ variable.names)
         addVariables(acc)
       case _ => acc
     }
@@ -44,12 +36,16 @@ class ExendedSynthesiser(input: String) extends Synthesiser {
     val condDeclarations = for (name <- conds.keys) yield "(declare-const " + name + " Bool)\n"
     val domainSpecifics = input.split("\n").dropWhile(!_.startsWith("DOMAIN_SPECIFICS")).takeWhile(!_.startsWith("ANALYSES")).drop(1)
 
+    println(pols)
+    println(pSets)
+
     declarations.mkString("") +
       variableDeclarations.mkString("") +
       nonConstantScoreDeclarations.mkString("") +
       condDeclarations.mkString("") +
       policyScoreDeclarations.mkString("") +
       policySetScoreDeclarations.mkString("") +
-      domainSpecifics.mkString("", "\n", "\n")
+      domainSpecifics.mkString("", "\n", "\n") //+
+//    predicateDeclaration
   }
 }
