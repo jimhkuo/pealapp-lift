@@ -9,7 +9,7 @@ class ExtendedSynthesiserTest extends ShouldMatchersForJUnit with Z3ModelMatcher
   @Test
   def testCanGeneratePolDeclarations() {
     val input = "POLICIES\n" +
-      "b1 = + () default 1\n" +
+      "b1 = + ((q1 0.1)) default 1\n" +
       "POLICY_SETS\n" +
       "pSet1 = b1\n" +
       "CONDITIONS\n" +
