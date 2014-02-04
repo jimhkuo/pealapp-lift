@@ -90,6 +90,8 @@ class PealProgramParserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
     val pealProgramParser = ParserHelper.getPealParser(input)
     pealProgramParser.program()
 
+    pealProgramParser.pols("b1").score.scoreRange.get.minValue should be (BigDecimal(-0.2))
+    pealProgramParser.pols("b1").score.scoreRange.get.maxValue should be (BigDecimal(0.3))
   }
 
   @Test
