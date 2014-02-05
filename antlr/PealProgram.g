@@ -96,11 +96,6 @@ pol	returns [Pol p]
 @init {l = new ArrayList<Rule>(); }
 	: id1=IDENT '=' o=operator '(' (rule {l.add($rule.r);})* ')' 'default' s=score
 	{$p = new Pol(l, OperatorResolver.apply($o.text), $s.s, $id1.text);}
-//	(
-//		n=NUMBER {$p = new Pol(l, OperatorResolver.apply($o.text), new Left<BigDecimal,VariableFormula>(BigDecimal.valueOf(Double.valueOf($n.text))), $id1.text);}
-//		|
-//		s=raw_score {$p = new Pol(l, OperatorResolver.apply($o.text), new Right<BigDecimal,VariableFormula>($s.s), $id1.text);}									
-//	)
 	;
 
 rule 	returns [Rule r]
