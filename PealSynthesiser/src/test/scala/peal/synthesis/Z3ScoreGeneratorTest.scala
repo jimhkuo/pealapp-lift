@@ -2,7 +2,7 @@ package peal.synthesis
 
 import org.scalatest.junit.ShouldMatchersForJUnit
 import org.junit.Test
-import peal.domain.{Multiplier, VariableFormula, Score}
+import peal.domain.{ScoreRange, Multiplier, VariableFormula, Score}
 
 class Z3ScoreGeneratorTest extends ShouldMatchersForJUnit {
 
@@ -14,6 +14,16 @@ class Z3ScoreGeneratorTest extends ShouldMatchersForJUnit {
   @Test
   def testDealWithVariable() {
     Z3ScoreGenerator.generate(new Score(Right(VariableFormula("x")), None)) should be ("x")
+  }
+
+  @Test
+  def testUncertaintyNameIsIgnoredIfNoRange() {
+    Z3ScoreGenerator.generate(new Score(Right(VariableFormula("x")), None), "X") should be ("x")
+  }
+
+  @Test
+  def testDealWithVariableAndRange() {
+    Z3ScoreGenerator.generate(new Score(Right(VariableFormula("x")), Some(new ScoreRange(-0.3, 0.7))), "U") should be ("(+ x U)")
   }
 
   @Test
