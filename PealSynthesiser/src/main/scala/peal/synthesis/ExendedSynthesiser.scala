@@ -28,14 +28,21 @@ class ExendedSynthesiser(input: String) extends Synthesiser {
   val analyses = pealProgramParser.analyses
 
   private def predicateDeclaration = {
-
     for {
       p <- pols
       r <- p._2.rules if r.score.scoreRange != None
-//      r <- p._2.score.scoreRange if p._2.score.scoreRange != None
     } yield {
       "(declare-const " + p._1 + "_" + r.q.name + "_U Real)\n" +
       "(assert (and (<= " + p._1 + "_" + r.q.name + "_U " + r.score.scoreRange.get.maxValue + ") (<= " + r.score.scoreRange.get.minValue + " " + p._1 + "_" + r.q.name + "_U)))"
+    }
+  }
+
+  private def policyDefaultDeclaration = {
+    for {
+      p <- pols if p._2.score.scoreRange != None
+    } yield {
+      "(declare-const " + p._1 + "_default_U Real)\n" +
+      "(assert (and (<= " + p._1 + "_default_U " + p._2.score.scoreRange.get.maxValue + ") (<= " + p._2.score.scoreRange.get.minValue + " " + p._1 + "_default_U)))"
     }
   }
 
@@ -48,9 +55,6 @@ class ExendedSynthesiser(input: String) extends Synthesiser {
     val condDeclarations = for (name <- conds.keys) yield "(declare-const " + name + " Bool)\n"
     val domainSpecifics = input.split("\n").dropWhile(!_.startsWith("DOMAIN_SPECIFICS")).takeWhile(!_.startsWith("ANALYSES")).drop(1)
 
-//    println(pols)
-//    println(pSets)
-
     declarations.mkString("") +
       variableDeclarations.mkString("") +
       nonConstantScoreDeclarations.mkString("") +
@@ -58,6 +62,7 @@ class ExendedSynthesiser(input: String) extends Synthesiser {
       policyScoreDeclarations.mkString("") +
       policySetScoreDeclarations.mkString("") +
       domainSpecifics.mkString("", "\n", "\n") +
-      predicateDeclaration.mkString("")
+      predicateDeclaration.mkString("","\n","\n")  +
+      policyDefaultDeclaration.mkString("","\n","\n")
   }
 }
