@@ -3,6 +3,7 @@ package peal.synthesis
 import peal.antlr.util.ParserHelper
 import scala.collection.JavaConversions._
 import peal.domain.Pol
+import peal.domain.operator.Plus
 
 class ExendedSynthesiser(input: String) extends Synthesiser {
 
@@ -46,6 +47,28 @@ class ExendedSynthesiser(input: String) extends Synthesiser {
     }
   }
 
+  private def ruleDisjunction(pol : Pol) = pol.rules.size match {
+    case 0 => "false"
+    case 1 => pol.rules(0).q.name
+    case _ => "(or "  + pol.rules.map(_.q.name).mkString(" ") + ")"
+  }
+
+  private def ruleScoreDisjunction(pol : Pol) = pol.rules.size match {
+    case 0 => "false"
+    case 1 => pol.rules(0).q.name
+    case _ => "(or "  + pol.rules.map(_.q.name).mkString(" ") + ")"
+  }
+
+  private def policyComposition = {
+    pols.foreach{
+      case (k,p) =>
+        p.operator match {
+          case Plus => "(assert (= " + k + "_score (ite " + ruleDisjunction(p) + " (+ (ite )))))"
+          case _ => "Not done"
+        }
+    }
+  }
+
   def generate() = {
     val declarations = for (name <- predicateNames) yield "(declare-const " + name + " Bool)\n"
     val variableDeclarations = for (name <- nonConstantScores) yield "(declare-const " + name + " Real)\n"
@@ -63,6 +86,7 @@ class ExendedSynthesiser(input: String) extends Synthesiser {
       policySetScoreDeclarations.mkString("") +
       domainSpecifics.mkString("", "\n", "\n") +
       predicateDeclaration.mkString("","\n","\n")  +
-      policyDefaultDeclaration.mkString("","\n","\n")
+      policyDefaultDeclaration.mkString("","\n","\n") //+
+//      policyComposition.mkString("","\n","\n")
   }
 }

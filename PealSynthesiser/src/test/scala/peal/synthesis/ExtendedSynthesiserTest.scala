@@ -1,10 +1,26 @@
 package peal.synthesis
 
 import org.scalatest.junit.ShouldMatchersForJUnit
-import org.junit.Test
+import org.junit.{Ignore, Test}
 import peal.util.Z3ModelMatcher
 
 class ExtendedSynthesiserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
+
+  @Ignore("not done")
+  @Test
+  def testCanGeneratePolCompositionWithPlus() {
+    val input = "POLICIES\n" +
+      "b1 = + ((q1 0.5 [-0.1,0.1])) default 1 [-0.2,0.2]\n" +
+      "POLICY_SETS\n" +
+      "pSet1 = b1\n" +
+      "CONDITIONS\n" +
+      "cond1 = pSet1 <= 0.5\n" +
+      "ANALYSES\nname1 = always_true? cond1\n"
+
+    val generator = new ExendedSynthesiser(input)
+    println(generator.generate())
+    generator.generate().contains("(assert (= b1_score (ite q1 (+ (ite q1 (+ 0.5 b1_q1_U) 0)) (+ 1 b1_default_U))))") should be (true)
+  }
 
   @Test
   def testCanGeneratePolDeclarationsWithRangeInDefault() {
