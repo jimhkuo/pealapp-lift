@@ -30,4 +30,9 @@ class Z3ScoreGeneratorTest extends ShouldMatchersForJUnit {
   def testDealWithVariableWithMultiplier() {
     Z3ScoreGenerator.generate(new Score(Right(VariableFormula(Multiplier(0.5, "y"))), None)) should be ("(* 0.5 y)")
   }
+
+  @Test
+  def testDealWithVariableWithMultiplierAndRange() {
+    Z3ScoreGenerator.generate(new Score(Right(VariableFormula(Multiplier(0.5, "y"))), Some(new ScoreRange(-0.3, 0.7))), "R") should be ("(+ (* 0.5 y) R)")
+  }
 }

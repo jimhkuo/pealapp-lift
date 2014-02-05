@@ -13,5 +13,4 @@ object Z3ScoreGenerator {
     case _ if uncertaintyName == "" =>  generate(score)
     case _ =>  "(+ " + generate(score, "") + " " + uncertaintyName + ")"
   }
-
 }
