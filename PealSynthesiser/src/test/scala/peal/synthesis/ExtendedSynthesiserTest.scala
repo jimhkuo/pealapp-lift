@@ -24,16 +24,16 @@ class ExtendedSynthesiserTest extends ShouldMatchersForJUnit with Z3ModelMatcher
   @Test
   def testCanGeneratePolCompositionWithPlusAndNoRule() {
     val input = "POLICIES\n" +
-      "b1 = + () default 1 [-0.2,0.2]\n" +
+      "b2 = + () default 0.3 [-0.5,0.2]\n" +
       "POLICY_SETS\n" +
-      "pSet1 = b1\n" +
+      "pSet1 = b2\n" +
       "CONDITIONS\n" +
       "cond1 = pSet1 <= 0.5\n" +
       "ANALYSES\nname1 = always_true? cond1\n"
 
     val generator = new ExendedSynthesiser(input)
     println(generator.generate())
-    generator.generate().contains("(assert (= b1_score (+ 1.0 b1_default_U)))") should be (true)
+    generator.generate().contains("(assert (= b2_score (+ 0.3 b2_default_U)))") should be (true)
   }
 
   @Test

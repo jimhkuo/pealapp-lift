@@ -67,9 +67,8 @@ class ExendedSynthesiser(input: String) extends Synthesiser {
       p.operator match {
         case Plus =>
           p.rules.size match {
+            case 0 => "(assert (= " + k + "_score " + Z3ScoreGenerator.generate(p.score, k + "_default_U") + ")))"
             case 1 => "(assert (= " + k + "_score (ite " + p.rules(0).q.name + " " + Z3ScoreGenerator.generate(p.rules(0).score, k + "_" + p.rules(0).q.name + "_U") + " " + Z3ScoreGenerator.generate(p.score, k + "_default_U") + ")))"
-            case 0 => "(assert (= b1_score (+ 1.0 b1_default_U)))"
-            case _ => "not done"
           }
         case _ => "Not done"
       }
