@@ -56,7 +56,7 @@ class ExendedSynthesiser(input: String) extends Synthesiser {
   private def ruleScoreDisjunction(pol: Pol) = pol.rules.size match {
     case 0 => "false"
     case 1 => pol.rules(0).q.name
-    case _ => "(or " + pol.rules.map(_.q.name).mkString(" ") + ")"
+    case _ => "(+ " + pol.rules.map(r => "(ite " + r.q.name + " " + Z3ScoreGenerator.generate(r.score, pol.policyName + "_" + r.q.name + "_U") + " 0)").mkString(" ") + ")"
   }
 
   private def policyComposition = {
@@ -69,6 +69,7 @@ class ExendedSynthesiser(input: String) extends Synthesiser {
           p.rules.size match {
             case 0 => "(assert (= " + k + "_score " + Z3ScoreGenerator.generate(p.score, k + "_default_U") + ")))"
             case 1 => "(assert (= " + k + "_score (ite " + p.rules(0).q.name + " " + Z3ScoreGenerator.generate(p.rules(0).score, k + "_" + p.rules(0).q.name + "_U") + " " + Z3ScoreGenerator.generate(p.score, k + "_default_U") + ")))"
+            case _ => "(assert (= " + k + "_score (ite " + ruleDisjunction(p) + " " + ruleScoreDisjunction(p) + " " + Z3ScoreGenerator.generate(p.score, k + "_default_U") + ")))"
           }
         case _ => "Not done"
       }
