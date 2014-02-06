@@ -94,7 +94,7 @@ class ExtendedSynthesiserTest extends ShouldMatchersForJUnit with Z3ModelMatcher
     val generator = new ExendedSynthesiser(input)
     println(generator.generate())
     generator.generate().contains("(assert (= b2_score (ite q1 0.2 (+ 0.3 b2_default_U))))") should be (true)
-    generator.generate().contains("(assert (implies q1 (and q1 (= b2_score (+ 0.3 b2_default_U)))))") should be (true)
+    generator.generate().contains("(assert (implies q1 (and q1 (= b2_score (+ 0.3 b2_default_U)))))") should be (false)
   }
 
   @Test
@@ -110,7 +110,7 @@ class ExtendedSynthesiserTest extends ShouldMatchersForJUnit with Z3ModelMatcher
     val generator = new ExendedSynthesiser(input)
     println(generator.generate())
     generator.generate().contains("(assert (= b2_score (ite q1 0.2 (+ 0.3 b2_default_U))))") should be (true)
-    generator.generate().contains("(assert (implies q1 (and q1 (= b2_score (+ 0.3 b2_default_U)))))") should be (true)
+    generator.generate().contains("(assert (implies q1 (and q1 (= b2_score (+ 0.3 b2_default_U)))))") should be (false)
   }
 
   @Test
