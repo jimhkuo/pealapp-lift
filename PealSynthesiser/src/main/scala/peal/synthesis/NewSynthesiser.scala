@@ -50,7 +50,7 @@ class NewSynthesiser(input: String) extends Synthesiser {
           "(assert (implies " + r.q.name + " (<= " + r.scoreString + " " + name + "_score" + ")))\n")
         case Min => pol.rules.map(r =>
           "(assert (implies " + r.q.name + " (<= " + name + "_score" + " " + r.scoreString + ")))\n")
-        case o: OperatorWithUnit => pol.rules.map(r =>
+        case o: Operator => pol.rules.map(r =>
           "(declare-const " + name + "_score_" + r.q.name + " Real)\n" +
             "(assert (implies " + r.q.name + " (= " + r.scoreString + " " + name + "_score_" + r.q.name + ")))\n" +
             "(assert (implies (not (= " + o.unit + " " + name + "_score_" + r.q.name + ")) " + r.q.name + "))\n")

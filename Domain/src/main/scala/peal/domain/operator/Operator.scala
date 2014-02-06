@@ -1,8 +1,7 @@
 package peal.domain.operator
 
-trait Operator
-trait OperatorWithUnit extends Operator {
-  def unit : String
+trait Operator {
+  def unit : String = ""
 }
 
 object OperatorResolver extends Operator {
@@ -14,14 +13,14 @@ object OperatorResolver extends Operator {
   }
 }
 
-object Plus extends OperatorWithUnit {
+object Plus extends Operator {
   override def toString = "+"
-  def unit = "0.0"
+  override def unit = "0.0"
 }
 
-object Mul extends OperatorWithUnit {
+object Mul extends Operator {
   override def toString = "*"
-  def unit = "1.0"
+  override def unit = "1.0"
 }
 
 object Min extends Operator {

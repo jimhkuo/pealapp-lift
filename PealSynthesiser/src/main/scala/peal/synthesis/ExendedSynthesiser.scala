@@ -3,7 +3,7 @@ package peal.synthesis
 import peal.antlr.util.ParserHelper
 import scala.collection.JavaConversions._
 import peal.domain.Pol
-import peal.domain.operator.Plus
+import peal.domain.operator.{Operator, Mul, Plus}
 
 class ExendedSynthesiser(input: String) extends Synthesiser {
 
@@ -56,16 +56,15 @@ class ExendedSynthesiser(input: String) extends Synthesiser {
   private def ruleScoreDisjunction(pol: Pol) = pol.rules.size match {
     case 0 => "false"
     case 1 => pol.rules(0).q.name
-    case _ => "(+ " + pol.rules.map(r => "(ite " + r.q.name + " " + Z3ScoreGenerator.generate(r.score, pol.policyName + "_" + r.q.name + "_U") + " 0)").mkString(" ") + ")"
+    case _ => "(" + pol.operator + " " + pol.rules.map(r => "(ite " + r.q.name + " " + Z3ScoreGenerator.generate(r.score, pol.policyName + "_" + r.q.name + "_U") + " " + pol.operator.unit + ")").mkString(" ") + ")"
   }
 
   private def policyComposition = {
-
     for (
       (k, p) <- pols
     ) yield {
       p.operator match {
-        case Plus =>
+        case Plus | Mul =>
           p.rules.size match {
             case 0 => "(assert (= " + k + "_score " + Z3ScoreGenerator.generate(p.score, k + "_default_U") + ")))"
             case 1 => "(assert (= " + k + "_score (ite " + p.rules(0).q.name + " " + Z3ScoreGenerator.generate(p.rules(0).score, k + "_" + p.rules(0).q.name + "_U") + " " + Z3ScoreGenerator.generate(p.score, k + "_default_U") + ")))"
