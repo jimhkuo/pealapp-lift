@@ -64,9 +64,14 @@ class ExendedSynthesiser(input: String) extends Synthesiser {
     "(or " + pol.rules.map(r => "(and " + r.q.name + " (= " + pol.policyName + "_score " + Z3ScoreGenerator.generate(r.score, pol.policyName + "_" + r.q.name + "_U") + "))").mkString(" ") + ")"
   }
 
+  private def cop (pol:Pol) = pol.operator match {
+    case Max => ">="
+    case Min => "<="
+  }
+
   private def firstCase(pol: Pol) = {
     for (r <- pol.rules) yield {
-      "(assert (implies " + r.q.name + " (>= " + pol.policyName + "_score " + Z3ScoreGenerator.generate(r.score, pol.policyName + "_" + r.q.name + "_U") + ")))"
+      "(assert (implies " + r.q.name + " (" + cop(pol) + " " + pol.policyName + "_score " + Z3ScoreGenerator.generate(r.score, pol.policyName + "_" + r.q.name + "_U") + ")))"
     }
   }
 
@@ -84,7 +89,7 @@ class ExendedSynthesiser(input: String) extends Synthesiser {
         case _ =>
           p.operator match {
             case Plus | Mul => "(assert (= " + k + "_score (ite " + ruleDisjunction(p) + " " + ruleScoreDisjunction(p) + " " + Z3ScoreGenerator.generate(p.score, k + "_default_U") + ")))"
-            case Max => firstCase(p).mkString("", "\n", "\n") + secondCase(p) + "\n" + thirdCase(p)
+            case Max | Min => firstCase(p).mkString("", "\n", "\n") + secondCase(p) + "\n" + thirdCase(p)
           }
       }
     }

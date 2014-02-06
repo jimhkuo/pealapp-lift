@@ -179,6 +179,24 @@ class ExtendedSynthesiserTest extends ShouldMatchersForJUnit with Z3ModelMatcher
   }
 
   @Test
+  def testCanGeneratePolCompositionWithMinAndMoreThanOneRule() {
+    val input = "POLICIES\n" +
+      "b2 = min ((q1 0.5 [-0.1,0.11]) (q2 0.7 [-0.2,0.4])) default 0.3 [-0.5,0.2]\n" +
+      "POLICY_SETS\n" +
+      "pSet1 = b2\n" +
+      "CONDITIONS\n" +
+      "cond1 = pSet1 <= 0.5\n" +
+      "ANALYSES\nname1 = always_true? cond1\n"
+
+    val generator = new ExendedSynthesiser(input)
+    println(generator.generate())
+    generator.generate().contains("(assert (implies q1 (<= b2_score (+ 0.5 b2_q1_U))))") should be (true)
+    generator.generate().contains("(assert (implies q2 (<= b2_score (+ 0.7 b2_q2_U))))") should be (true)
+    generator.generate().contains("(assert (implies (not (or q1 q2)) (= b2_score (+ 0.3 b2_default_U))))") should be (true)
+    generator.generate().contains("(assert (implies (or q1 q2) (or (and q1 (= b2_score (+ 0.5 b2_q1_U))) (and q2 (= b2_score (+ 0.7 b2_q2_U))))))") should be (true)
+  }
+
+  @Test
   def testCanGeneratePolDeclarationsWithRangeInDefault() {
     val input = "POLICIES\n" +
       "b1 = + ((q1 0.5 [-0.1,0.1])) default 1 [-0.2,0.2]\n" +
