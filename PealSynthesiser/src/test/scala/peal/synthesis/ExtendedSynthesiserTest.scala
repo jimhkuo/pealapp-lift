@@ -175,7 +175,7 @@ class ExtendedSynthesiserTest extends ShouldMatchersForJUnit with Z3ModelMatcher
     generator.generate().contains("(assert (implies q1 (>= b2_score (+ 0.5 b2_q1_U))))") should be (true)
     generator.generate().contains("(assert (implies q2 (>= b2_score (+ 0.7 b2_q2_U))))") should be (true)
     generator.generate().contains("(assert (implies (not (or q1 q2)) (= b2_score (+ 0.3 b2_default_U))))") should be (true)
-    //TODO one more case
+    generator.generate().contains("(assert (implies (or q1 q2) (or (and q1 (= b2_score (+ 0.5 b2_q1_U))) (and q2 (= b2_score (+ 0.7 b2_q2_U))))))") should be (true)
   }
 
   @Test

@@ -71,7 +71,8 @@ class ExendedSynthesiser(input: String) extends Synthesiser {
   }
 
   private def secondCase(pol: Pol) = "(assert (implies (not " + ruleDisjunction(pol) + ") (= " + pol.policyName + "_score " + Z3ScoreGenerator.generate(pol.score, pol.policyName + "_default_U") + ")))"
-//  private def secondCase(pol: Pol) = "(assert (implies (not " + ruleDisjunction(pol) + " " + ruleImplicationDisjunction(pol) + ")))"
+
+  private def thirdCase(pol: Pol) = "(assert (implies " + ruleDisjunction(pol) + " " + ruleImplicationDisjunction(pol) + "))"
 
   private def policyComposition = {
     for (
@@ -83,7 +84,7 @@ class ExendedSynthesiser(input: String) extends Synthesiser {
         case _ =>
           p.operator match {
             case Plus | Mul => "(assert (= " + k + "_score (ite " + ruleDisjunction(p) + " " + ruleScoreDisjunction(p) + " " + Z3ScoreGenerator.generate(p.score, k + "_default_U") + ")))"
-            case Max => firstCase(p).mkString("", "\n", "\n") + secondCase(p)
+            case Max => firstCase(p).mkString("", "\n", "\n") + secondCase(p) + "\n" + thirdCase(p)
           }
       }
     }
