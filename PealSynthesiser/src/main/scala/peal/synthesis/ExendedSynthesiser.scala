@@ -34,7 +34,7 @@ class ExendedSynthesiser(input: String) extends Synthesiser {
       r <- p._2.rules if r.score.scoreRange != None
     } yield {
       "(declare-const " + p._1 + "_" + r.q.name + "_U Real)\n" +
-      "(assert (and (<= " + p._1 + "_" + r.q.name + "_U " + r.score.scoreRange.get.maxValue + ") (<= " + r.score.scoreRange.get.minValue + " " + p._1 + "_" + r.q.name + "_U)))"
+        "(assert (and (<= " + p._1 + "_" + r.q.name + "_U " + r.score.scoreRange.get.maxValue + ") (<= " + r.score.scoreRange.get.minValue + " " + p._1 + "_" + r.q.name + "_U)))"
     }
   }
 
@@ -43,29 +43,35 @@ class ExendedSynthesiser(input: String) extends Synthesiser {
       p <- pols if p._2.score.scoreRange != None
     } yield {
       "(declare-const " + p._1 + "_default_U Real)\n" +
-      "(assert (and (<= " + p._1 + "_default_U " + p._2.score.scoreRange.get.maxValue + ") (<= " + p._2.score.scoreRange.get.minValue + " " + p._1 + "_default_U)))"
+        "(assert (and (<= " + p._1 + "_default_U " + p._2.score.scoreRange.get.maxValue + ") (<= " + p._2.score.scoreRange.get.minValue + " " + p._1 + "_default_U)))"
     }
   }
 
-  private def ruleDisjunction(pol : Pol) = pol.rules.size match {
+  private def ruleDisjunction(pol: Pol) = pol.rules.size match {
     case 0 => "false"
     case 1 => pol.rules(0).q.name
-    case _ => "(or "  + pol.rules.map(_.q.name).mkString(" ") + ")"
+    case _ => "(or " + pol.rules.map(_.q.name).mkString(" ") + ")"
   }
 
-  private def ruleScoreDisjunction(pol : Pol) = pol.rules.size match {
+  private def ruleScoreDisjunction(pol: Pol) = pol.rules.size match {
     case 0 => "false"
     case 1 => pol.rules(0).q.name
-    case _ => "(or "  + pol.rules.map(_.q.name).mkString(" ") + ")"
+    case _ => "(or " + pol.rules.map(_.q.name).mkString(" ") + ")"
   }
 
   private def policyComposition = {
-    pols.foreach{
-      case (k,p) =>
-        p.operator match {
-          case Plus => "(assert (= " + k + "_score (ite " + ruleDisjunction(p) + " (+ (ite )))))"
-          case _ => "Not done"
-        }
+
+    for (
+      (k, p) <- pols
+    ) yield {
+      p.operator match {
+        case Plus =>
+          p.rules.size match {
+            case 1 => "(assert (= " + k + "_score (ite " + p.rules(0).q.name + " " + Z3ScoreGenerator.generate(p.rules(0).score, k + "_" + p.rules(0).q.name + "_U") + " " + Z3ScoreGenerator.generate(p.score, k + "_default_U") + ")))"
+            case _ => "not done"
+          }
+        case _ => "Not done"
+      }
     }
   }
 
@@ -85,8 +91,8 @@ class ExendedSynthesiser(input: String) extends Synthesiser {
       policyScoreDeclarations.mkString("") +
       policySetScoreDeclarations.mkString("") +
       domainSpecifics.mkString("", "\n", "\n") +
-      predicateDeclaration.mkString("","\n","\n")  +
-      policyDefaultDeclaration.mkString("","\n","\n") //+
-//      policyComposition.mkString("","\n","\n")
+      predicateDeclaration.mkString("", "\n", "\n") +
+      policyDefaultDeclaration.mkString("", "\n", "\n") +
+      policyComposition.mkString("", "\n", "\n")
   }
 }

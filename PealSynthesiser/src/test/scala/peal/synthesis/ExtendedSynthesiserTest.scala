@@ -6,9 +6,8 @@ import peal.util.Z3ModelMatcher
 
 class ExtendedSynthesiserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
 
-  @Ignore("not done")
   @Test
-  def testCanGeneratePolCompositionWithPlus() {
+  def testCanGeneratePolCompositionWithPlusAndOneRule() {
     val input = "POLICIES\n" +
       "b1 = + ((q1 0.5 [-0.1,0.1])) default 1 [-0.2,0.2]\n" +
       "POLICY_SETS\n" +
@@ -19,7 +18,8 @@ class ExtendedSynthesiserTest extends ShouldMatchersForJUnit with Z3ModelMatcher
 
     val generator = new ExendedSynthesiser(input)
     println(generator.generate())
-    generator.generate().contains("(assert (= b1_score (ite q1 (+ (ite q1 (+ 0.5 b1_q1_U) 0)) (+ 1 b1_default_U))))") should be (true)
+//    (assert (= bi_score (ite q1 T(s1) T(s))))
+    generator.generate().contains("(assert (= b1_score (ite q1 (+ 0.5 b1_q1_U) (+ 1.0 b1_default_U))))") should be (true)
   }
 
   @Test
