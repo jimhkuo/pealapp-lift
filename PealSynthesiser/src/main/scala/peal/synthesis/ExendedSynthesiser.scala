@@ -63,14 +63,14 @@ class ExendedSynthesiser(input: String) extends Synthesiser {
     for (
       (k, p) <- pols
     ) yield {
-      p.operator match {
-        case Plus | Mul =>
-          p.rules.size match {
-            case 0 => "(assert (= " + k + "_score " + Z3ScoreGenerator.generate(p.score, k + "_default_U") + ")))"
-            case 1 => "(assert (= " + k + "_score (ite " + p.rules(0).q.name + " " + Z3ScoreGenerator.generate(p.rules(0).score, k + "_" + p.rules(0).q.name + "_U") + " " + Z3ScoreGenerator.generate(p.score, k + "_default_U") + ")))"
-            case _ => "(assert (= " + k + "_score (ite " + ruleDisjunction(p) + " " + ruleScoreDisjunction(p) + " " + Z3ScoreGenerator.generate(p.score, k + "_default_U") + ")))"
+      p.rules.size match {
+        case 0 => "(assert (= " + k + "_score " + Z3ScoreGenerator.generate(p.score, k + "_default_U") + ")))"
+        case 1 => "(assert (= " + k + "_score (ite " + p.rules(0).q.name + " " + Z3ScoreGenerator.generate(p.rules(0).score, k + "_" + p.rules(0).q.name + "_U") + " " + Z3ScoreGenerator.generate(p.score, k + "_default_U") + ")))"
+        case _ =>
+          p.operator match {
+            case Plus | Mul =>
+              "(assert (= " + k + "_score (ite " + ruleDisjunction(p) + " " + ruleScoreDisjunction(p) + " " + Z3ScoreGenerator.generate(p.score, k + "_default_U") + ")))"
           }
-        case _ => "Not done"
       }
     }
   }
