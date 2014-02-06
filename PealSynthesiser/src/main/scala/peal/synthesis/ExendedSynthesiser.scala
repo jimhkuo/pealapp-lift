@@ -3,7 +3,8 @@ package peal.synthesis
 import peal.antlr.util.ParserHelper
 import scala.collection.JavaConversions._
 import peal.domain.Pol
-import peal.domain.operator.{Operator, Mul, Plus}
+import peal.domain.operator._
+import peal.domain.Pol
 
 class ExendedSynthesiser(input: String) extends Synthesiser {
 
@@ -65,7 +66,13 @@ class ExendedSynthesiser(input: String) extends Synthesiser {
     ) yield {
       p.rules.size match {
         case 0 => "(assert (= " + k + "_score " + Z3ScoreGenerator.generate(p.score, k + "_default_U") + ")))"
-        case 1 => "(assert (= " + k + "_score (ite " + p.rules(0).q.name + " " + Z3ScoreGenerator.generate(p.rules(0).score, k + "_" + p.rules(0).q.name + "_U") + " " + Z3ScoreGenerator.generate(p.score, k + "_default_U") + ")))"
+        case 1 =>
+          val additional = p.operator match {
+            case Plus | Mul => ""
+            case Max | Min => "(assert (implies " + p.rules(0).q.name + " (and " + p.rules(0).q.name + " (= " + p.policyName + "_score " + Z3ScoreGenerator.generate(p.score, k + "_default_U") + "))))"
+          }
+
+          "(assert (= " + k + "_score (ite " + p.rules(0).q.name + " " + Z3ScoreGenerator.generate(p.rules(0).score, k + "_" + p.rules(0).q.name + "_U") + " " + Z3ScoreGenerator.generate(p.score, k + "_default_U") + ")))\n" + additional
         case _ =>
           p.operator match {
             case Plus | Mul =>
