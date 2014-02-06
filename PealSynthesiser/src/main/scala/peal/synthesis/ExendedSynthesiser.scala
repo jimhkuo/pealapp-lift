@@ -60,6 +60,19 @@ class ExendedSynthesiser(input: String) extends Synthesiser {
     case _ => "(" + pol.operator + " " + pol.rules.map(r => "(ite " + r.q.name + " " + Z3ScoreGenerator.generate(r.score, pol.policyName + "_" + r.q.name + "_U") + " " + pol.operator.unit + ")").mkString(" ") + ")"
   }
 
+  private def ruleImplicationDisjunction(pol: Pol) = {
+    "(or " + pol.rules.map(r => "(and " + r.q.name + " (= " + pol.policyName + "_score " + Z3ScoreGenerator.generate(r.score, pol.policyName + "_" + r.q.name + "_U") + "))").mkString(" ") + ")"
+  }
+
+  private def firstCase(pol: Pol) = {
+    for (r <- pol.rules) yield {
+      "(assert (implies " + r.q.name + " (>= " + pol.policyName + "_score " + Z3ScoreGenerator.generate(r.score, pol.policyName + "_" + r.q.name + "_U") + ")))"
+    }
+  }
+
+  private def secondCase(pol: Pol) = "(assert (implies (not " + ruleDisjunction(pol) + ") (= " + pol.policyName + "_score " + Z3ScoreGenerator.generate(pol.score, pol.policyName + "_default_U") + ")))"
+//  private def secondCase(pol: Pol) = "(assert (implies (not " + ruleDisjunction(pol) + " " + ruleImplicationDisjunction(pol) + ")))"
+
   private def policyComposition = {
     for (
       (k, p) <- pols
@@ -69,8 +82,8 @@ class ExendedSynthesiser(input: String) extends Synthesiser {
         case 1 => "(assert (= " + k + "_score (ite " + p.rules(0).q.name + " " + Z3ScoreGenerator.generate(p.rules(0).score, k + "_" + p.rules(0).q.name + "_U") + " " + Z3ScoreGenerator.generate(p.score, k + "_default_U") + ")))"
         case _ =>
           p.operator match {
-            case Plus | Mul =>
-              "(assert (= " + k + "_score (ite " + ruleDisjunction(p) + " " + ruleScoreDisjunction(p) + " " + Z3ScoreGenerator.generate(p.score, k + "_default_U") + ")))"
+            case Plus | Mul => "(assert (= " + k + "_score (ite " + ruleDisjunction(p) + " " + ruleScoreDisjunction(p) + " " + Z3ScoreGenerator.generate(p.score, k + "_default_U") + ")))"
+            case Max => firstCase(p).mkString("", "\n", "\n") + secondCase(p)
           }
       }
     }
