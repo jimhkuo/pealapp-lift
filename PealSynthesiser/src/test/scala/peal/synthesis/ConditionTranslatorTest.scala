@@ -2,6 +2,9 @@ package peal.synthesis
 
 import org.scalatest.junit.ShouldMatchersForJUnit
 import org.junit.Test
+import scala.collection.JavaConversions._
+import peal.domain.{Score, Rule, Pol, BasicPolicySet}
+import peal.domain.operator.Min
 
 class ConditionTranslatorTest extends ShouldMatchersForJUnit {
 
@@ -26,5 +29,10 @@ class ConditionTranslatorTest extends ShouldMatchersForJUnit {
   @Test
   def testAnd() {
     ConditionTranslator.translate(new AndCondition("cond1", "cond2"), conds) should be("(and q (not q))")
+  }
+
+  @Test
+  def testLessThan() {
+    ConditionTranslator.translate(new LessThanThCondition(new BasicPolicySet(new Pol(List[Rule](), Min, new Score(Left(0.6), None), "b1")), Right(new BasicPolicySet(new Pol(List[Rule](), Min, new Score(Left(0.4), None), "b2")))), conds) should be("(<= b1_score b2_score)")
   }
 }
