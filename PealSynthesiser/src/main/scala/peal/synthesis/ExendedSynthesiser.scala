@@ -2,7 +2,6 @@ package peal.synthesis
 
 import peal.antlr.util.ParserHelper
 import scala.collection.JavaConversions._
-import peal.domain.Pol
 import peal.domain.operator._
 import peal.domain.Pol
 
