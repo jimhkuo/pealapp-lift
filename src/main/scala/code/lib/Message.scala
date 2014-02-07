@@ -42,6 +42,8 @@ case object Display
 
 case object DisplayLazy
 
+case object DisplayExtended
+
 case object DisplayNew
 
 case object Analysis1
@@ -51,6 +53,8 @@ case object SynthesisAndCallZ3
 case object SynthesisAndCallZ3QuietAnalysis
 
 case object LazySynthesisAndCallZ3
+
+case object ExtendedSynthesisAndCallZ3
 
 case object NewSynthesisAndCallZ3
 
