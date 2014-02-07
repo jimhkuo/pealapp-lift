@@ -10,6 +10,7 @@ object ConditionTranslator {
     case c: OrCondition => "(or " + translate(conds(c.lhs), conds) + " " + translate(conds(c.rhs), conds) + ")"
     case c: AndCondition => "(and " + translate(conds(c.lhs), conds) + " " + translate(conds(c.rhs), conds) + ")"
     case c: LessThanThCondition => "(<= " + translatePolicySet(c.lhs) + " " + c.rhs.fold(lhs => lhs.toString(), rhs => translatePolicySet(rhs)) + ")"
+    case c: GreaterThanThCondition => "(< " + c.rhs.fold(lhs => lhs.toString(), rhs => translatePolicySet(rhs)) + " " + translatePolicySet(c.lhs) + ")"
     case _ => "not done"
   }
 
