@@ -4,14 +4,14 @@ import peal.domain._
 
 object ConditionTranslator {
 
-  def translate(cond: Condition, conds: Map[String, Condition]): String = cond match {
+  def translate(condName: String, conds: Map[String, Condition]): String = conds(condName) match {
     case c: PredicateCondition => c.predicateName
-    case c: NotCondition => "(not " + translate(conds(c.condName), conds) + ")"
-    case c: OrCondition => "(or " + translate(conds(c.lhs), conds) + " " + translate(conds(c.rhs), conds) + ")"
-    case c: AndCondition => "(and " + translate(conds(c.lhs), conds) + " " + translate(conds(c.rhs), conds) + ")"
+    case c: NotCondition => "(not " + translate(c.condName, conds) + ")"
+    case c: OrCondition => "(or " + translate(c.lhs, conds) + " " + translate(c.rhs, conds) + ")"
+    case c: AndCondition => "(and " + translate(c.lhs, conds) + " " + translate(c.rhs, conds) + ")"
     case c: LessThanThCondition => "(<= " + translatePolicySet(c.lhs) + " " + c.rhs.fold(lhs => lhs.toString(), rhs => translatePolicySet(rhs)) + ")"
     case c: GreaterThanThCondition => "(< " + c.rhs.fold(lhs => lhs.toString(), rhs => translatePolicySet(rhs)) + " " + translatePolicySet(c.lhs) + ")"
-    case _ => "Not supported condition " + cond
+    case _ => "Not supported condition " + condName
   }
 
   private def translatePolicySet(pSet: PolicySet): String = pSet match {

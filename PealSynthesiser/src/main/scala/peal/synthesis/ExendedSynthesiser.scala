@@ -63,7 +63,7 @@ class ExendedSynthesiser(input: String) extends Synthesiser {
     "(or " + pol.rules.map(r => "(and " + r.q.name + " (= " + pol.policyName + "_score " + Z3ScoreGenerator.generate(r.score, pol.policyName + "_" + r.q.name + "_U") + "))").mkString(" ") + ")"
   }
 
-  private def cop (pol:Pol) = pol.operator match {
+  private def cop(pol: Pol) = pol.operator match {
     case Max => ">="
     case Min => "<="
   }
@@ -103,6 +103,16 @@ class ExendedSynthesiser(input: String) extends Synthesiser {
     val condDeclarations = for (name <- conds.keys) yield "(declare-const " + name + " Bool)\n"
     val domainSpecifics = input.split("\n").dropWhile(!_.startsWith("DOMAIN_SPECIFICS")).takeWhile(!_.startsWith("ANALYSES")).drop(1)
 
+//    val condDetails = for (name <- conds.keys) yield {
+//
+//    }
+
+    val sortedAnalyses = analyses.keys.toSeq.sortWith(_ < _)
+    val generatedAnalyses = for (analysis <- sortedAnalyses) yield {
+      "(echo \"Result of analysis [" + analyses(analysis).analysisName + "]:\")\n" + analyses(analysis).z3SMTInput
+    }
+
+
     declarations.mkString("") +
       variableDeclarations.mkString("") +
       nonConstantScoreDeclarations.mkString("") +
@@ -112,6 +122,7 @@ class ExendedSynthesiser(input: String) extends Synthesiser {
       domainSpecifics.mkString("", "\n", "\n") +
       predicateDeclaration.mkString("", "\n", "\n") +
       policyDefaultDeclaration.mkString("", "\n", "\n") +
-      policyComposition.mkString("", "\n", "\n")
+      policyComposition.mkString("", "\n", "\n") +
+      generatedAnalyses.mkString("")
   }
 }

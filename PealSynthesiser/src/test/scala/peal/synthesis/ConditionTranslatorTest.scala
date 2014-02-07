@@ -8,51 +8,57 @@ import peal.domain.operator.Min
 import peal.antlr.util.ParserHelper
 import peal.domain.BasicPolicySet
 import peal.domain.Pol
-import scala.Some
 
 class ConditionTranslatorTest extends ShouldMatchersForJUnit {
 
   val conds = Map("cond1" -> PredicateCondition("q"),
-    "cond2" -> NotCondition("cond1"))
+    "cond2" -> NotCondition("cond1"),
+    "cond3" -> new OrCondition("cond1", "cond2"),
+    "cond4" -> new AndCondition("cond1", "cond2"),
+    "cond5" -> new LessThanThCondition(new BasicPolicySet(new Pol(List[Rule](), Min, new Score(Left(0.6), None), "b1")), Right(new BasicPolicySet(new Pol(List[Rule](), Min, new Score(Left(0.4), None), "b2")))),
+    "cond6" -> new GreaterThanThCondition(new BasicPolicySet(new Pol(List[Rule](), Min, new Score(Left(0.6), None), "b1")), Right(new BasicPolicySet(new Pol(List[Rule](), Min, new Score(Left(0.4), None), "b2")))),
+    "cond7" -> new LessThanThCondition(new BasicPolicySet(new Pol(List[Rule](), Min, new Score(Left(0.6), None), "b1")), Left(0.5)),
+    "cond8" -> new GreaterThanThCondition(new BasicPolicySet(new Pol(List[Rule](), Min, new Score(Left(0.6), None), "b1")), Left(0.5))
+  )
 
   @Test
   def testPredicate() {
-    ConditionTranslator.translate(new PredicateCondition("q"), conds) should be("q")
+    ConditionTranslator.translate("cond1", conds) should be("q")
   }
 
   @Test
   def testNot() {
-    ConditionTranslator.translate(new NotCondition("cond1"), conds) should be("(not q)")
+    ConditionTranslator.translate("cond2", conds) should be("(not q)")
   }
 
   @Test
   def testOr() {
-    ConditionTranslator.translate(new OrCondition("cond1", "cond2"), conds) should be("(or q (not q))")
+    ConditionTranslator.translate("cond3", conds) should be("(or q (not q))")
   }
 
   @Test
   def testAnd() {
-    ConditionTranslator.translate(new AndCondition("cond1", "cond2"), conds) should be("(and q (not q))")
+    ConditionTranslator.translate("cond4", conds) should be("(and q (not q))")
   }
 
   @Test
   def testLessThanForPolicySets() {
-    ConditionTranslator.translate(new LessThanThCondition(new BasicPolicySet(new Pol(List[Rule](), Min, new Score(Left(0.6), None), "b1")), Right(new BasicPolicySet(new Pol(List[Rule](), Min, new Score(Left(0.4), None), "b2")))), conds) should be("(<= b1_score b2_score)")
+    ConditionTranslator.translate("cond5", conds) should be("(<= b1_score b2_score)")
   }
 
   @Test
   def testGreaterThanForPolicySets() {
-    ConditionTranslator.translate(new GreaterThanThCondition(new BasicPolicySet(new Pol(List[Rule](), Min, new Score(Left(0.6), None), "b1")), Right(new BasicPolicySet(new Pol(List[Rule](), Min, new Score(Left(0.4), None), "b2")))), conds) should be("(< b2_score b1_score)")
+    ConditionTranslator.translate("cond6", conds) should be("(< b2_score b1_score)")
   }
 
   @Test
   def testLessThanForPolicySetAndNumber() {
-    ConditionTranslator.translate(new LessThanThCondition(new BasicPolicySet(new Pol(List[Rule](), Min, new Score(Left(0.6), None), "b1")), Left(0.5)), conds) should be("(<= b1_score 0.5)")
+    ConditionTranslator.translate("cond7", conds) should be("(<= b1_score 0.5)")
   }
 
   @Test
   def testGreaterThanForPolicySetAndNumber() {
-    ConditionTranslator.translate(new GreaterThanThCondition(new BasicPolicySet(new Pol(List[Rule](), Min, new Score(Left(0.6), None), "b1")), Left(0.5)), conds) should be("(< 0.5 b1_score)")
+    ConditionTranslator.translate("cond8", conds) should be("(< 0.5 b1_score)")
   }
 
   @Test
@@ -62,10 +68,10 @@ class ConditionTranslatorTest extends ShouldMatchersForJUnit {
     val pealProgramParser = ParserHelper.getPealParser(input)
     pealProgramParser.program()
 
-    pealProgramParser.pols("b2").score.underlyingScore should be (Left(BigDecimal(0.4)))
-    pealProgramParser.pols("b2").score.scoreRange.get.minValue should be (BigDecimal(-0.1))
-    pealProgramParser.pols("b2").score.scoreRange.get.maxValue should be (BigDecimal(0.3))
-    ConditionTranslator.translate(pealProgramParser.conds("cond1"), pealProgramParser.conds.toMap) should be("(<= b1_score b2_score)")
+    pealProgramParser.pols("b2").score.underlyingScore should be(Left(BigDecimal(0.4)))
+    pealProgramParser.pols("b2").score.scoreRange.get.minValue should be(BigDecimal(-0.1))
+    pealProgramParser.pols("b2").score.scoreRange.get.maxValue should be(BigDecimal(0.3))
+    ConditionTranslator.translate("cond1", pealProgramParser.conds.toMap) should be("(<= b1_score b2_score)")
   }
 
   @Test
@@ -75,10 +81,10 @@ class ConditionTranslatorTest extends ShouldMatchersForJUnit {
     val pealProgramParser = ParserHelper.getPealParser(input)
     pealProgramParser.program()
 
-    pealProgramParser.pols("b2").score.underlyingScore should be (Left(BigDecimal(0.4)))
-    pealProgramParser.pols("b2").score.scoreRange.get.minValue should be (BigDecimal(-0.1))
-    pealProgramParser.pols("b2").score.scoreRange.get.maxValue should be (BigDecimal(0.3))
-    ConditionTranslator.translate(pealProgramParser.conds("cond1"), pealProgramParser.conds.toMap) should be("(< b2_score b1_score)")
+    pealProgramParser.pols("b2").score.underlyingScore should be(Left(BigDecimal(0.4)))
+    pealProgramParser.pols("b2").score.scoreRange.get.minValue should be(BigDecimal(-0.1))
+    pealProgramParser.pols("b2").score.scoreRange.get.maxValue should be(BigDecimal(0.3))
+    ConditionTranslator.translate("cond1", pealProgramParser.conds.toMap) should be("(< b2_score b1_score)")
   }
 
   @Test
@@ -88,7 +94,7 @@ class ConditionTranslatorTest extends ShouldMatchersForJUnit {
     val pealProgramParser = ParserHelper.getPealParser(input)
     pealProgramParser.program()
 
-    ConditionTranslator.translate(pealProgramParser.conds("cond1"), pealProgramParser.conds.toMap) should be("(< 0.5 (ite (< b1_score b2_score) b2_score b1_score))")
+    ConditionTranslator.translate("cond1", pealProgramParser.conds.toMap) should be("(< 0.5 (ite (< b1_score b2_score) b2_score b1_score))")
   }
 
   @Test
@@ -98,7 +104,7 @@ class ConditionTranslatorTest extends ShouldMatchersForJUnit {
     val pealProgramParser = ParserHelper.getPealParser(input)
     pealProgramParser.program()
 
-    ConditionTranslator.translate(pealProgramParser.conds("cond1"), pealProgramParser.conds.toMap) should be("(< 0.5 (ite (< b1_score b2_score) b1_score b2_score))")
+    ConditionTranslator.translate("cond1", pealProgramParser.conds.toMap) should be("(< 0.5 (ite (< b1_score b2_score) b1_score b2_score))")
   }
 
   @Test
@@ -108,7 +114,7 @@ class ConditionTranslatorTest extends ShouldMatchersForJUnit {
     val pealProgramParser = ParserHelper.getPealParser(input)
     pealProgramParser.program()
 
-    ConditionTranslator.translate(pealProgramParser.conds("cond1"), pealProgramParser.conds.toMap) should be("(< 0.5 (+ b1_score b2_score))")
+    ConditionTranslator.translate("cond1", pealProgramParser.conds.toMap) should be("(< 0.5 (+ b1_score b2_score))")
   }
 
   @Test
@@ -118,6 +124,6 @@ class ConditionTranslatorTest extends ShouldMatchersForJUnit {
     val pealProgramParser = ParserHelper.getPealParser(input)
     pealProgramParser.program()
 
-    ConditionTranslator.translate(pealProgramParser.conds("cond1"), pealProgramParser.conds.toMap) should be("(< 0.5 (* b1_score b2_score))")
+    ConditionTranslator.translate("cond1", pealProgramParser.conds.toMap) should be("(< 0.5 (* b1_score b2_score))")
   }
 }
