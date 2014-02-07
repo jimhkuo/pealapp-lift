@@ -1,8 +1,6 @@
 package peal.synthesis
 
 import peal.domain._
-import peal.domain.BasicPolicySet
-import peal.domain.MaxPolicySet
 
 object ConditionTranslator {
 
@@ -20,6 +18,7 @@ object ConditionTranslator {
     case s: BasicPolicySet => s.underlyingPolicyName + "_score"
     case s: MaxPolicySet => "(ite (< " + translatePolicySet(s.lhs) + " " + translatePolicySet(s.rhs) + ") " + translatePolicySet(s.rhs) + " " + translatePolicySet(s.lhs) + ")"
     case s: MinPolicySet => "(ite (< " + translatePolicySet(s.lhs) + " " + translatePolicySet(s.rhs) + ") " + translatePolicySet(s.lhs) + " " + translatePolicySet(s.rhs) + ")"
+    case s: PlusPolicySet => "(+ " + translatePolicySet(s.lhs) + " " + translatePolicySet(s.rhs) + ")"
     case _ => "Unsupported Policy Set " + pSet
   }
 }

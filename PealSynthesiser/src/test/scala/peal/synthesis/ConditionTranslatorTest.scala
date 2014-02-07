@@ -100,4 +100,14 @@ class ConditionTranslatorTest extends ShouldMatchersForJUnit {
 
     ConditionTranslator.translate(pealProgramParser.conds("cond1"), pealProgramParser.conds.toMap) should be("(< 0.5 (ite (< b1_score b2_score) b1_score b2_score))")
   }
+
+  @Test
+  def testPlus() {
+    val input = "POLICIES\nb1 = + () default 0.5\nb2 = +() default 0.4 [-0.1, 0.3]\nPOLICY_SETS\npSet1 = + (b1, b2)\nCONDITIONS\ncond1 = 0.5 < pSet1"
+    println(input)
+    val pealProgramParser = ParserHelper.getPealParser(input)
+    pealProgramParser.program()
+
+    ConditionTranslator.translate(pealProgramParser.conds("cond1"), pealProgramParser.conds.toMap) should be("(< 0.5 (+ b1_score b2_score))")
+  }
 }
