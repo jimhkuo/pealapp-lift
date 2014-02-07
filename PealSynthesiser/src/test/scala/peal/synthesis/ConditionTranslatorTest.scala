@@ -1,10 +1,14 @@
 package peal.synthesis
 
 import org.scalatest.junit.ShouldMatchersForJUnit
-import org.junit.{Ignore, Test}
+import org.junit.Test
 import scala.collection.JavaConversions._
-import peal.domain.{Score, Rule, Pol, BasicPolicySet}
+import peal.domain._
 import peal.domain.operator.Min
+import peal.antlr.util.ParserHelper
+import peal.domain.BasicPolicySet
+import peal.domain.Pol
+import scala.Some
 
 class ConditionTranslatorTest extends ShouldMatchersForJUnit {
 
@@ -39,5 +43,18 @@ class ConditionTranslatorTest extends ShouldMatchersForJUnit {
   @Test
   def testLessThanForPolicySetAndNumber() {
     ConditionTranslator.translate(new LessThanThCondition(new BasicPolicySet(new Pol(List[Rule](), Min, new Score(Left(0.6), None), "b1")), Left(0.5)), conds) should be("(<= b1_score 0.5)")
+  }
+
+  @Test
+  def testLessThanForPolicySetAndNumberFromInput() {
+    val input = "POLICIES\nb1 = + () default 0.5\nb2 = +() default 0.4 [-0.1, 0.3]\nPOLICY_SETS\npSet1 = b1\npSet2 = b2\nCONDITIONS\ncond1 = pSet1 <= pSet2"
+    println(input)
+    val pealProgramParser = ParserHelper.getPealParser(input)
+    pealProgramParser.program()
+
+    pealProgramParser.pols("b2").score.underlyingScore should be (Left(BigDecimal(0.4)))
+    pealProgramParser.pols("b2").score.scoreRange.get.minValue should be (BigDecimal(-0.1))
+    pealProgramParser.pols("b2").score.scoreRange.get.maxValue should be (BigDecimal(0.3))
+    ConditionTranslator.translate(pealProgramParser.conds("cond1"), pealProgramParser.conds.toMap) should be("(<= b1_score b2_score)")
   }
 }
