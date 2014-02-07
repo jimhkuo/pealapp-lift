@@ -5,15 +5,22 @@ import org.junit.Test
 
 class ConditionTranslatorTest extends ShouldMatchersForJUnit {
 
-  val conds = Map("cond1" -> PredicateCondition("q"))
+  val conds = Map("cond1" -> PredicateCondition("q"),
+    "cond2" -> NotCondition("cond1"))
 
   @Test
   def testPredicate() {
-     ConditionTranslator.translate(new PredicateCondition("q"), conds) should be ("q")
+    ConditionTranslator.translate(new PredicateCondition("q"), conds) should be("q")
   }
 
   @Test
   def testNot() {
-    ConditionTranslator.translate(new NotCondition("cond1"), conds) should be ("(not q)")
+    ConditionTranslator.translate(new NotCondition("cond1"), conds) should be("(not q)")
+  }
+
+  @Test
+  def testOr() {
+    ConditionTranslator.translate(new OrCondition("cond1", "cond2"), conds) should be("(or q (not q))")
+
   }
 }
