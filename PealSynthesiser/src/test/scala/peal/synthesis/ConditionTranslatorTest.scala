@@ -21,6 +21,10 @@ class ConditionTranslatorTest extends ShouldMatchersForJUnit {
   @Test
   def testOr() {
     ConditionTranslator.translate(new OrCondition("cond1", "cond2"), conds) should be("(or q (not q))")
+  }
 
+  @Test
+  def testAnd() {
+    ConditionTranslator.translate(new AndCondition("cond1", "cond2"), conds) should be("(and q (not q))")
   }
 }
