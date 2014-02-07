@@ -67,4 +67,17 @@ class ConditionTranslatorTest extends ShouldMatchersForJUnit {
     pealProgramParser.pols("b2").score.scoreRange.get.maxValue should be (BigDecimal(0.3))
     ConditionTranslator.translate(pealProgramParser.conds("cond1"), pealProgramParser.conds.toMap) should be("(<= b1_score b2_score)")
   }
+
+  @Test
+  def testGreaterThanForPolicySetAndNumberFromInput() {
+    val input = "POLICIES\nb1 = + () default 0.5\nb2 = +() default 0.4 [-0.1, 0.3]\nPOLICY_SETS\npSet1 = b1\npSet2 = b2\nCONDITIONS\ncond1 = pSet2 < pSet1"
+    println(input)
+    val pealProgramParser = ParserHelper.getPealParser(input)
+    pealProgramParser.program()
+
+    pealProgramParser.pols("b2").score.underlyingScore should be (Left(BigDecimal(0.4)))
+    pealProgramParser.pols("b2").score.scoreRange.get.minValue should be (BigDecimal(-0.1))
+    pealProgramParser.pols("b2").score.scoreRange.get.maxValue should be (BigDecimal(0.3))
+    ConditionTranslator.translate(pealProgramParser.conds("cond1"), pealProgramParser.conds.toMap) should be("(< b2_score b1_score)")
+  }
 }
