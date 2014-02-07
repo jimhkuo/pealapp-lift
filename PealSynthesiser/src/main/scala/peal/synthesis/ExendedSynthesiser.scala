@@ -103,9 +103,9 @@ class ExendedSynthesiser(input: String) extends Synthesiser {
     val condDeclarations = for (name <- conds.keys) yield "(declare-const " + name + " Bool)\n"
     val domainSpecifics = input.split("\n").dropWhile(!_.startsWith("DOMAIN_SPECIFICS")).takeWhile(!_.startsWith("ANALYSES")).drop(1)
 
-//    val condDetails = for (name <- conds.keys) yield {
-//
-//    }
+    val condDetails = for (name <- conds.keys) yield {
+      "(assert (= " + name + " " + ConditionTranslator.translate(name, conds.toMap) + "))"
+    }
 
     val sortedAnalyses = analyses.keys.toSeq.sortWith(_ < _)
     val generatedAnalyses = for (analysis <- sortedAnalyses) yield {
@@ -123,6 +123,7 @@ class ExendedSynthesiser(input: String) extends Synthesiser {
       predicateDeclaration.mkString("", "\n", "\n") +
       policyDefaultDeclaration.mkString("", "\n", "\n") +
       policyComposition.mkString("", "\n", "\n") +
+      condDetails.mkString("", "\n", "\n") +
       generatedAnalyses.mkString("")
   }
 }
