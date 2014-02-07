@@ -19,6 +19,7 @@ object ConditionTranslator {
     case s: MaxPolicySet => "(ite (< " + translatePolicySet(s.lhs) + " " + translatePolicySet(s.rhs) + ") " + translatePolicySet(s.rhs) + " " + translatePolicySet(s.lhs) + ")"
     case s: MinPolicySet => "(ite (< " + translatePolicySet(s.lhs) + " " + translatePolicySet(s.rhs) + ") " + translatePolicySet(s.lhs) + " " + translatePolicySet(s.rhs) + ")"
     case s: PlusPolicySet => "(+ " + translatePolicySet(s.lhs) + " " + translatePolicySet(s.rhs) + ")"
+    case s: MulPolicySet => "(* " + translatePolicySet(s.lhs) + " " + translatePolicySet(s.rhs) + ")"
     case _ => "Unsupported Policy Set " + pSet
   }
 }
