@@ -51,6 +51,11 @@ class ConditionTranslatorTest extends ShouldMatchersForJUnit {
   }
 
   @Test
+  def testGreaterThanForPolicySetAndNumber() {
+    ConditionTranslator.translate(new GreaterThanThCondition(new BasicPolicySet(new Pol(List[Rule](), Min, new Score(Left(0.6), None), "b1")), Left(0.5)), conds) should be("(< 0.5 b1_score)")
+  }
+
+  @Test
   def testLessThanForPolicySetAndNumberFromInput() {
     val input = "POLICIES\nb1 = + () default 0.5\nb2 = +() default 0.4 [-0.1, 0.3]\nPOLICY_SETS\npSet1 = b1\npSet2 = b2\nCONDITIONS\ncond1 = pSet1 <= pSet2"
     println(input)
