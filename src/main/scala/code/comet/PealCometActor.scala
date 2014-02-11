@@ -7,7 +7,7 @@ import net.liftweb.http.js.JsCmds._
 import scala.xml.Text
 import net.liftweb.common.Loggable
 import scala.collection.JavaConversions._
-import peal.synthesis.{ExendedSynthesiser, NewSynthesiser, LazySynthesiser, Condition}
+import peal.synthesis.{ExtendedSynthesiser, NewSynthesiser, LazySynthesiser, Condition}
 import scala.Predef._
 import peal.synthesis.analysis._
 import code.lib._
@@ -257,7 +257,7 @@ class PealCometActor extends CometActor with Loggable {
 
   private def performExtendedSynthesis(policies: String): String = {
     try {
-      new ExendedSynthesiser(policies).generate()
+      new ExtendedSynthesiser(policies).generate()
     } catch {
       case e: Exception =>
         e.printStackTrace()

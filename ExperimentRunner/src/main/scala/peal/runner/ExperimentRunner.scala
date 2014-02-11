@@ -21,6 +21,8 @@ class TimingOutput(var modelGeneration: Long = 0,
                    var lazyZ3: Long = 0,
                    var newSynthesis: Long = 0,
                    var newZ3: Long = 0,
+                   var extendedSynthesis: Long = 0,
+                   var extendedZ3: Long = 0,
                    var isSameOutput: Boolean = false,
                    var modelResults: ListBuffer[Map[String, String]] = ListBuffer(),
                    var failedPealInput: String = "")
@@ -60,11 +62,7 @@ class ExperimentRunner(doDomainSpecifics: Boolean, system: ActorSystem, duration
       print("m")
 
       def runSysthesiser(mode: RunMode) {
-        val z3Input = Seq("java", "-Xmx25600m", "-Xss32m", "-cp",
-          TimeoutSynthesisRunner.getClass.getProtectionDomain.getCodeSource.getLocation.getFile,
-          "peal.runner.TimeoutSynthesisRunner",
-          mode.toString,
-          randomModelFile.getAbsolutePath).!!
+        val z3Input = Seq("java", "-Xmx25600m", "-Xss32m", "-cp", TimeoutSynthesisRunner.getClass.getProtectionDomain.getCodeSource.getLocation.getFile, "peal.runner.TimeoutSynthesisRunner", mode.toString, randomModelFile.getAbsolutePath).!!
         if (z3Input.trim == "TIMEOUT") {
           throw new TimeoutException("Timeout in " + mode + " Synthesis")
         }
@@ -73,6 +71,7 @@ class ExperimentRunner(doDomainSpecifics: Boolean, system: ActorSystem, duration
           case Explicit => output.eagerSynthesis = z3Input.split("\n")(0).toLong; print("e")
           case Symbolic => output.lazySynthesis = z3Input.split("\n")(0).toLong; print("l")
           case NewSynthesis => output.newSynthesis = z3Input.split("\n")(0).toLong; print("n")
+          case Extended => output.extendedSynthesis = z3Input.split("\n")(0).toLong; print("x")
         }
 
         val z3InputFile = File.createTempFile("z3File", "")
@@ -89,6 +88,7 @@ class ExperimentRunner(doDomainSpecifics: Boolean, system: ActorSystem, duration
             case Explicit => output.eagerZ3 = lapsedTime
             case Symbolic => output.lazyZ3 = lapsedTime
             case NewSynthesis => output.newZ3 = lapsedTime
+            case Extended => output.extendedZ3 = lapsedTime
           }
 
           result match {
@@ -115,6 +115,10 @@ class ExperimentRunner(doDomainSpecifics: Boolean, system: ActorSystem, duration
 
       if (runModes.contains(NewSynthesis)) {
         runSysthesiser(NewSynthesis)
+      }
+
+      if (runModes.contains(Extended)) {
+        runSysthesiser(Extended)
       }
 
       if (allEqual(output.modelResults.toList)) {

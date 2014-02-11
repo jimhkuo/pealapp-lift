@@ -5,7 +5,7 @@ import scala.collection.JavaConversions._
 import peal.domain.operator._
 import peal.domain.Pol
 
-class ExendedSynthesiser(input: String) extends Synthesiser {
+class ExtendedSynthesiser(input: String) extends Synthesiser {
 
   val pealProgramParser = ParserHelper.getPealParser(input)
   pealProgramParser.program()

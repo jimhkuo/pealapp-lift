@@ -11,11 +11,11 @@ object Main extends App {
   private val doDomainSpecifics = true
 
   println("Picking up z3 from environment PATH: " + System.getenv("PATH"))
-  binarySearch(NewSynthesis)
+  binarySearch(Explicit, Extended)
   System.exit(0)
 
   private def binarySearch(runModes: RunMode*) {
-    val execute: (Int) => Boolean = (x) => executeRunner(1, 1, 1, 1, x, 3 * x, 0.5, 0.1, runModes: _*)
+    val execute: (Int) => Boolean = (x) => executeRunner(1, x, 1, 1, 1, 3 * x, 0.5, 0.1, runModes: _*)
 
     var lastSuccess = 0
     var lastFailure = 0
@@ -67,6 +67,8 @@ object Main extends App {
     var lzt = 0l
     var nt = 0l
     var nzt = 0l
+    var xt = 0l
+    var xzt = 0l
 
     try {
       print(n + "-" + m0 + "-" + m1 + "-" + m2 + "-" + m3 + "-" + th + "-" + delta + "," + timeout + ",")
@@ -81,6 +83,8 @@ object Main extends App {
         lzt += output.lazyZ3
         nt += output.newSynthesis
         nzt += output.newZ3
+        xt += output.extendedSynthesis
+        xzt += output.extendedZ3
 
         if (!output.isSameOutput) {
           println(output.modelResults)
@@ -88,7 +92,7 @@ object Main extends App {
         }
       }
 
-      println("," + milliTime(mt / iterations) + "," + milliTime(et / iterations) + "," + milliTime(ezt / iterations) + "," + milliTime(lt / iterations) + "," + milliTime(lzt / iterations) + "," + milliTime(nt / iterations) + "," + milliTime(nzt / iterations))
+      println("," + milliTime(mt / iterations) + "," + milliTime(et / iterations) + "," + milliTime(ezt / iterations) + "," + milliTime(lt / iterations) + "," + milliTime(lzt / iterations) + "," + milliTime(nt / iterations) + "," + milliTime(nzt / iterations)+ "," + milliTime(xt / iterations) + "," + milliTime(xzt / iterations))
       true
     } catch {
       case e: TimeoutException =>
