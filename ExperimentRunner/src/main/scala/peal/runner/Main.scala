@@ -14,6 +14,13 @@ object Main extends App {
   binarySearch(Explicit, Extended)
   System.exit(0)
 
+  //TODO new experiment setup
+  //generate model
+  //do explicit, call Z3
+  //call verifier
+  //record verifier results
+  //check #in rhs of output tuple to count the number of iterations
+
   private def binarySearch(runModes: RunMode*) {
     val execute: (Int) => Boolean = (x) => executeRunner(1, x, 1, 1, 1, 3 * x, 0.5, 0.1, runModes: _*)
 
