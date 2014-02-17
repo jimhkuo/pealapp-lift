@@ -78,6 +78,7 @@ class ExperimentRunner(doDomainSpecifics: Boolean, system: ActorSystem, duration
         FileUtil.writeToFile(z3InputFile.getAbsolutePath, z3Input)
 
         val z3Caller = system.actorOf(Props(new Z3CallerActor(z3CallerMemoryBound)))
+        //TODO may consider to simply return raw Z3 output and extract Sat/Unsat results here
 
         try {
           val start = System.nanoTime()
