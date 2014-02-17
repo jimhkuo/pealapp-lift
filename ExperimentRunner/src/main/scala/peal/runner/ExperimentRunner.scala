@@ -82,20 +82,21 @@ class ExperimentRunner(doDomainSpecifics: Boolean, system: ActorSystem, duration
         try {
           val start = System.nanoTime()
           val future = z3Caller ? z3InputFile
-          val result = Await.result(future, timeout.duration)
+          val rawZ3Result = Await.result(future, timeout.duration)
           val lapsedTime = System.nanoTime() - start
+
+          val resultsMap = ReturnedModelAnalyser.execute(rawZ3Result.asInstanceOf[String])
+
+          resultsMap.size match {
+            case 0 => throw new RuntimeException("Z3 caller aborted")
+            case _ => output.modelResults.append(resultsMap)
+          }
+
           mode match {
             case Explicit => output.eagerZ3 = lapsedTime
             case Symbolic => output.lazyZ3 = lapsedTime
             case NewSynthesis => output.newZ3 = lapsedTime
             case Extended => output.extendedZ3 = lapsedTime
-          }
-
-          val resultsMap = ReturnedModelAnalyser.execute(result.asInstanceOf[String])
-
-          resultsMap.size match {
-            case 0 => throw new RuntimeException("Z3 caller aborted")
-            case _ => output.modelResults.append(resultsMap)
           }
 
           print("z")
