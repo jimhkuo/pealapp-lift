@@ -69,6 +69,9 @@ object Main extends App {
     var nzt = 0l
     var xt = 0l
     var xzt = 0l
+    var v1 = 0l
+    var v2 = 0l
+    var v3 = 0l
 
     try {
       print(n + "-" + m0 + "-" + m1 + "-" + m2 + "-" + m3 + "-" + th + "-" + delta + "," + timeout + ",")

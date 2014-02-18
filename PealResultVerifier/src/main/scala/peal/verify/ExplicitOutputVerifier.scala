@@ -68,35 +68,35 @@ class ExplicitOutputVerifier(input: String) {
   def doAnalysis(analysisName: String, truthMapping: Map[String, ThreeWayBoolean], reMappedPredicates: Set[String]): (ThreeWayBoolean, Set[String]) = {
     analyses(analysisName) match {
       case AlwaysTrue(analysisName, condName) =>
-        if (truthMapping.get(condName) == Some(PealFalse)) {
+        if (truthMapping(condName) == Some(PealFalse)) {
           return (verify(conds(condName), truthMapping, truthMapping(condName)), reMappedPredicates)
         }
-        throw new RuntimeException(condName + " should be false but is not")
+        throw new RuntimeException(condName + " should be false but is not in " + analysisName)
       case AlwaysFalse(analysisName, condName) =>
-        if (truthMapping.get(condName) == Some(PealTrue)) {
+        if (truthMapping(condName) == Some(PealTrue)) {
           return (verify(conds(condName), truthMapping, truthMapping(condName)), reMappedPredicates)
         }
-        throw new RuntimeException(condName + " should be true but is not")
+        throw new RuntimeException(condName + " should be true but is not in " + analysisName)
       case Satisfiable(analysisName, condName) =>
-        if (truthMapping.get(condName) == Some(PealTrue)) {
+        if (truthMapping(condName) == Some(PealTrue)) {
           return (verify(conds(condName), truthMapping, truthMapping(condName)), reMappedPredicates)
         }
-        throw new RuntimeException(condName + " should be true but is not")
+        throw new RuntimeException(condName + " should be true but is not in " + analysisName)
       case Different(analysisName, lhs, rhs) =>
-        if (truthMapping.get(lhs) != truthMapping.get(rhs)) {
+        if (truthMapping(lhs) != truthMapping.get(rhs)) {
           return (verify(conds(lhs), truthMapping, truthMapping(lhs)) && verify(conds(rhs), truthMapping, truthMapping(rhs)), reMappedPredicates)
         }
-        throw new RuntimeException(lhs + " and " + rhs + " should be different but are not")
+        throw new RuntimeException(lhs + " and " + rhs + " should be different but are not in " + analysisName)
       case Equivalent(analysisName, lhs, rhs) =>
-        if (truthMapping.get(lhs) != truthMapping.get(rhs)) {
+        if (truthMapping(lhs) != truthMapping.get(rhs)) {
           return (verify(conds(lhs), truthMapping, truthMapping(lhs)) && verify(conds(rhs), truthMapping, truthMapping(rhs)), reMappedPredicates)
         }
-        throw new RuntimeException(lhs + " and " + rhs + " should be different but are not")
+        throw new RuntimeException(lhs + " and " + rhs + " should be different but are not in " + analysisName)
       case Implies(analysisName, lhs, rhs) =>
-        if (truthMapping.get(lhs) == Some(PealTrue) && truthMapping.get(rhs) == Some(PealFalse)) {
+        if (truthMapping(lhs) == Some(PealTrue) && truthMapping.get(rhs) == Some(PealFalse)) {
           return (verify(conds(lhs), truthMapping, truthMapping(lhs)) && verify(conds(rhs), truthMapping, truthMapping(rhs)), reMappedPredicates)
         }
-        throw new RuntimeException(lhs + " should be true and " + rhs + " should be false, but are not")
+        throw new RuntimeException(lhs + " should be true and " + rhs + " should be false, but are not in " + analysisName)
       case _ =>
         throw new RuntimeException("shouldn't get here, no matching analysis found")
     }

@@ -82,14 +82,20 @@ class VerificationExperimentRunner(doDomainSpecifics: Boolean, system: ActorSyst
 
         val verifier = new ExplicitOutputVerifier(model)
 
-        pealProgramParser.analyses.keys.toSeq.sortWith(_ < _).foreach{
+        pealProgramParser.analyses.keys.toSeq.sortWith(_ < _).foreach {
           k =>
-            val verificationResult = verifier.verifyModel(rawZ3Result.asInstanceOf[String], k)
+            try {
+              val start = System.nanoTime()
+              val verificationResult = verifier.verifyModel(rawZ3Result.asInstanceOf[String], k)
+              val lapse = System.nanoTime() - start
 
-            verificationResult._1 match {
-              case PealTrue => print("t")
-              case PealFalse => print("f")
-              case PealBottom => print("b")
+              verificationResult._1 match {
+                case PealTrue => print("t" + "%.2f".format(lapse.toDouble / 1000000))
+                case PealFalse => print("F" + "%.2f".format(lapse.toDouble / 1000000))
+                case PealBottom => print("B" + "%.2f".format(lapse.toDouble / 1000000))
+              }
+            } catch {
+              case e: Exception => print("u")
             }
         }
       } catch {
