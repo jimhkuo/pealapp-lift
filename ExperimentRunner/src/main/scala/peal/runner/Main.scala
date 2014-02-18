@@ -8,10 +8,10 @@ object Main extends App {
   implicit val system = ActorSystem("system")
   private val z3MemoryBound = 20000000
   private val timeout = 300000
-  private val doDomainSpecifics = true
+  private val doDomainSpecifics = false
 
   println("Picking up z3 from environment PATH: " + System.getenv("PATH"))
-  binarySearch(Explicit, Extended)
+  binarySearch(Explicit)
   System.exit(0)
 
   private def binarySearch(runModes: RunMode*) {
@@ -74,8 +74,8 @@ object Main extends App {
       print(n + "-" + m0 + "-" + m1 + "-" + m2 + "-" + m3 + "-" + th + "-" + delta + "," + timeout + ",")
 
       for (i <- 1 to iterations) {
-        val output = new ExperimentRunner(doDomainSpecifics, system, timeout, z3MemoryBound, runModes: _*).runRandomModel(n, m0, m1, m2, m3, k, th, delta)
-        //        val output = new ExperimentRunner(runModes, doDomainSpecifics, system, timeout, z3MemoryBound).runMajorityVoting(n)
+//        val output = new ExperimentRunner(doDomainSpecifics, system, timeout, z3MemoryBound, runModes: _*).runRandomModel(n, m0, m1, m2, m3, k, th, delta)
+        val output = new VerificationExperimentRunner(doDomainSpecifics, system, timeout, z3MemoryBound).runRandomModel(n, m0, m1, m2, m3, k, th, delta)
         mt += output.modelGeneration
         et += output.eagerSynthesis
         ezt += output.eagerZ3

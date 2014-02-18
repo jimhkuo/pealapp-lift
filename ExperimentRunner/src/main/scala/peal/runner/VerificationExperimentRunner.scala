@@ -13,9 +13,10 @@ import scala.sys.process._
 import java.util.concurrent.TimeoutException
 import peal.verify.ExplicitOutputVerifier
 import peal.antlr.util.ParserHelper
+import peal.domain.{PealBottom, PealFalse, PealTrue}
 
 
-class VerificationExperimentRunner(doDomainSpecifics: Boolean, system: ActorSystem, duration: Long, z3CallerMemoryBound: Long, runModes: RunMode*) {
+class VerificationExperimentRunner(doDomainSpecifics: Boolean, system: ActorSystem, duration: Long, z3CallerMemoryBound: Long) {
   implicit val timeout = Timeout(duration, MILLISECONDS)
 
   def runRandomModel(n: Int, min: Int, max: Int, plus: Int, mul: Int, k: Int, th: Double, delta: Double): TimingOutput = {
@@ -53,7 +54,7 @@ class VerificationExperimentRunner(doDomainSpecifics: Boolean, system: ActorSyst
       print("e")
 
       val z3InputFile = File.createTempFile("z3File", "")
-      FileUtil.writeToFile(z3InputFile.getAbsolutePath, z3Input)
+      FileUtil.writeToFile(z3InputFile.getAbsolutePath, z3Input.split("\n").drop(1).mkString("\n"))
 
       val z3Caller = system.actorOf(Props(new Z3CallerActor(z3CallerMemoryBound)))
 
@@ -62,6 +63,7 @@ class VerificationExperimentRunner(doDomainSpecifics: Boolean, system: ActorSyst
         val future = z3Caller ? z3InputFile
         val rawZ3Result = Await.result(future, timeout.duration)
         val lapsedTime = System.nanoTime() - start
+
 
         val resultsMap = ReturnedModelAnalyser.execute(rawZ3Result.asInstanceOf[String])
 
@@ -78,14 +80,18 @@ class VerificationExperimentRunner(doDomainSpecifics: Boolean, system: ActorSyst
         val pealProgramParser = ParserHelper.getPealParser(model)
         pealProgramParser.program()
 
-        pealProgramParser.analyses.keys.foreach{
+        val verifier = new ExplicitOutputVerifier(model)
+
+        pealProgramParser.analyses.keys.toSeq.sortWith(_ < _).foreach{
           k =>
-          new ExplicitOutputVerifier(model).verifyModel(rawZ3Result.asInstanceOf[String], k)
+            val verificationResult = verifier.verifyModel(rawZ3Result.asInstanceOf[String], k)
 
+            verificationResult._1 match {
+              case PealTrue => print("t")
+              case PealFalse => print("f")
+              case PealBottom => print("b")
+            }
         }
-
-
-
       } catch {
         case e: TimeoutException => processKiller ! z3InputFile
           throw e

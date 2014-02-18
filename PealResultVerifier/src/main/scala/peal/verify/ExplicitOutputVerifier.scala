@@ -39,27 +39,27 @@ class ExplicitOutputVerifier(input: String) {
   val predicateNames: Seq[String] = pealProgramParser.pols.values().flatMap(pol => pol.rules).map(r => r.q.name).toSeq.distinct
 
   def verifyModel(rawModel: String, analysisName: String): (ThreeWayBoolean, Set[String]) = {
-    println("P: " + predicateNames)
+//    println("P: " + predicateNames)
     val truthMapping = ExplicitOutputProcessor.assignmentExtractor(rawModel)(analysisName).defines.map(d => (d.name, ThreeWayBooleanObj.from(d.value))).toMap
     verifyModel(rawModel, analysisName, truthMapping, Set())
   }
 
   def verifyModel(rawModel: String, analysisName: String, I: Map[String, ThreeWayBoolean], reMappedPredicates: Set[String]): (ThreeWayBoolean, Set[String]) = {
-    println("I: " + I)
+//    println("I: " + I)
 
     doAnalysis(analysisName, I, reMappedPredicates) match {
       case (PealBottom, s) =>
-        println("YYYYYYY Bottom received, Modified Set: " + s)
+//        println("YYYYYYY Bottom received, Modified Set: " + s)
 
         var truthMapping = I
         val bottomPredicates = predicateNames.filterNot(truthMapping.contains).filterNot(s.contains)
         if (bottomPredicates.isEmpty) {
           return (PealBottom, s)
         }
-        println("Remaining bottoms: " + bottomPredicates)
-        println("Adding " + bottomPredicates.head)
+//        println("Remaining bottoms: " + bottomPredicates)
+//        println("Adding " + bottomPredicates.head)
         (s + bottomPredicates.head).foreach(truthMapping += _ -> PealFalse)
-        println("I': " + truthMapping)
+//        println("I': " + truthMapping)
         verifyModel(rawModel, analysisName, truthMapping, s + bottomPredicates.head)
       case (r, s) => (r, s)
     }
@@ -105,7 +105,7 @@ class ExplicitOutputVerifier(input: String) {
   }
 
   def verify(cond: Condition, I: Map[String, ThreeWayBoolean], v: ThreeWayBoolean): ThreeWayBoolean = {
-    println("### Verify called with " + cond + ", " + I + ", " + v)
+//    println("### Verify called with " + cond + ", " + I + ", " + v)
     cond match {
       case NotCondition(c) => verify(conds(c), I, !v)
       case AndCondition(lhs, rhs) =>
@@ -130,7 +130,7 @@ class ExplicitOutputVerifier(input: String) {
           case s: BasicPolicySet =>
             //this is ok since if rhs is not left then it should fail
             val out = v === evalPol(s.pol, c.rhs.left.get, I)
-            println("XXXXXXX Out: " + out)
+//            println("XXXXXXX Out: " + out)
             out
           case s: MaxPolicySet =>
             val lhsCond = new GreaterThanThCondition(s.lhs, Left(c.getTh))
@@ -157,9 +157,9 @@ class ExplicitOutputVerifier(input: String) {
       val rulesToProcess = p.rules.filterNot(r => I.get(r.q.name) == Some(PealFalse))
       val trueRules = rulesToProcess.filter(r => I.get(r.q.name) == Some(PealTrue))
 
-      println("All: " + p.rules)
-      println("nonFalseRules: " + rulesToProcess)
-      println("trueRules: " + trueRules)
+//      println("All: " + p.rules)
+//      println("nonFalseRules: " + rulesToProcess)
+//      println("trueRules: " + trueRules)
 
       p.operator match {
         case Plus =>
