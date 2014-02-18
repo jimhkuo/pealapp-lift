@@ -23,7 +23,7 @@ class Z3CallerActor(memoryLimit: Long) extends Actor {
       FileUtil.writeToFile(execTmp.getAbsolutePath, script)
       val returnCode = Seq(execTmp.getAbsolutePath) ! processLogger
       execTmp.delete()
-
+      inputFile.delete()
       sender ! resultList.mkString("\n")
   }
 }

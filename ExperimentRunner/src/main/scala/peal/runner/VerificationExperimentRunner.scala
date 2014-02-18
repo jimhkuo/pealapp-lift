@@ -94,6 +94,13 @@ class VerificationExperimentRunner(doDomainSpecifics: Boolean, system: ActorSyst
                 case PealFalse => print("F" + "%.2f".format(lapse.toDouble / 1000000))
                 case PealBottom => print("B" + "%.2f".format(lapse.toDouble / 1000000))
               }
+
+              verificationResult._2.size match {
+                case 0 =>
+                case _ => print("*")
+                  val input = File.createTempFile("pealInput-", "")
+                  FileUtil.writeToFile(input.getAbsolutePath, model)
+              }
             } catch {
               case e: Exception => print("u")
             }
