@@ -89,20 +89,21 @@ class VerificationExperimentRunner(doDomainSpecifics: Boolean, system: ActorSyst
               val verificationResult = verifier.verifyModel(rawZ3Result.asInstanceOf[String], k)
               val lapse = System.nanoTime() - start
 
-              verificationResult._1 match {
-                case PealTrue => print("t" + "%.2f".format(lapse.toDouble / 1000000))
-                case PealFalse => print("F" + "%.2f".format(lapse.toDouble / 1000000))
-                case PealBottom => print("B" + "%.2f".format(lapse.toDouble / 1000000))
-              }
-
               verificationResult._2.size match {
                 case 0 =>
                 case _ => print("*")
-                  val input = File.createTempFile("pealInput-", "")
+                  val input = File.createTempFile("pealInput-recursive-verification", "")
                   FileUtil.writeToFile(input.getAbsolutePath, model)
               }
+
+              verificationResult._1 match {
+                case PealTrue => print("t," + "%.2f".format(lapse.toDouble / 1000000) + ",")
+                case PealFalse => print("F," + "%.2f".format(lapse.toDouble / 1000000) + ",")
+                case PealBottom => print("B," + "%.2f".format(lapse.toDouble / 1000000) + ",")
+              }
+
             } catch {
-              case e: Exception => print("u")
+              case e: Exception => print("u,0,")
             }
         }
       } catch {
