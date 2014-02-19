@@ -1,7 +1,13 @@
 package peal.domain.z3
 
-trait SatResult
+trait SatResult {
+  def toString : String
+}
 
-object Unsat extends SatResult
+object Unsat extends SatResult {
+  override def toString = "Unsat"
+}
 
-object Sat extends SatResult
+object Sat extends SatResult  {
+  override def toString = "Sat"
+}

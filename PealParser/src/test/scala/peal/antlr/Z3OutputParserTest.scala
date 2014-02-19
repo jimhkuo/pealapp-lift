@@ -22,6 +22,14 @@ class Z3OutputParserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
   }
 
   @Test
+  def testBroken() {
+    val input = "Result of analysis [analysis1 = always_true? cond1]:\nsat\n(model \n  (define-fun cond1 () Bool\n    false)\n  (define-fun q360 () Bool\n    true)\n  (define-fun always_true_analysis1 () Bool\n    false)\n  (define-fun cond2 () Bool\n    false)\n)"
+    val parser = ParserHelper.getZ3OutputParser(input)
+
+    println(parser.results())
+  }
+
+  @Test
   def testSimpleUnsatInput() {
     val input = "Result of analysis [name7 = different? cond2 cond3]:\n" +
       "unsat\n" +
