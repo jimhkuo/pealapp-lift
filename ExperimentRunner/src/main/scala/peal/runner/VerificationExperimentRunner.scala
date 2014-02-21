@@ -91,7 +91,7 @@ class VerificationExperimentRunner(doDomainSpecifics: Boolean, system: ActorSyst
 
               verificationResult._2.size match {
                 case 0 =>
-                case _ => print("*")
+                case _ => print("*" + verificationResult._2.size)
                   val input = File.createTempFile("pealInput-recursive-verification", "")
                   FileUtil.writeToFile(input.getAbsolutePath, model)
               }

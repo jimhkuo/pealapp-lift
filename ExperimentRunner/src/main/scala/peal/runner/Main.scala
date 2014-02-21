@@ -11,11 +11,17 @@ object Main extends App {
   private val doDomainSpecifics = false
 
   println("Picking up z3 from environment PATH: " + System.getenv("PATH"))
-  binarySearch(Explicit)
+  constantRun(Explicit)
   System.exit(0)
 
+  private def constantRun(runModes: RunMode*) {
+    for (i <- 0 until 1000) {
+      executeRunner(16, 4, 4, 4, 4, 3 * 10, 0.5, 0.1, runModes: _*)
+    }
+  }
+
   private def binarySearch(runModes: RunMode*) {
-    val execute: (Int) => Boolean = (x) => executeRunner(1, 1, x, 1, 1, 3 * x, 0.5, 0.1, runModes: _*)
+    val execute: (Int) => Boolean = (x) => executeRunner(10, 10, 1, 1, 1, 3 * 10, 0.5, 0.1, runModes: _*)
 
     var lastSuccess = 0
     var lastFailure = 0
