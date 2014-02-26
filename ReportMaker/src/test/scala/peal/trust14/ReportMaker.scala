@@ -37,21 +37,21 @@ class ReportMaker extends ShouldMatchersForJUnit {
     var syn = 0d
     var z3 = 0d
 
-    val a = ListBuffer(0d, 0d, 0d)
-    val satACount = ListBuffer(0, 0, 0)
-    val unsatACount = ListBuffer(0, 0, 0)
+    val verificationTime = ListBuffer(0d, 0d, 0d)
+    val satResultCount = ListBuffer(0, 0, 0)
+    val unsatResultCount = ListBuffer(0, 0, 0)
     val maxACount = ListBuffer(0, 0, 0)
 
     def processAnalysis(i: Int, token: String, timing: String) {
       checkSat(token) match {
         case (Sat, r) =>
-          a(i) += timing.toDouble
-          satACount(i) += 1
+          verificationTime(i) += timing.toDouble
+          satResultCount(i) += 1
           r match {
             case Some(count) if count > maxACount(i) => maxACount(i) = count
             case _ =>
           }
-        case (Unsat, _) => unsatACount(i) += 1
+        case (Unsat, _) => unsatResultCount(i) += 1
         case (_, _) =>
       }
     }
@@ -83,7 +83,7 @@ class ReportMaker extends ShouldMatchersForJUnit {
       }
     }
 
-    println(formatTime(a(0) / satACount(0)) + " " + satACount(0) + " " + unsatACount(0) + " " + maxACount(0) + " " + formatTime(a(1) / satACount(1)) + " " + satACount(1) + " " + unsatACount(1) + " " + maxACount(1) + " " + formatTime(a(2) / satACount(2)) + " " + satACount(2) + " " + unsatACount(2) + " " + maxACount(2) + " " + formatTime(syn / 1000) + " " + formatTime(z3 / 1000))
+    println(formatTime(verificationTime(0) / satResultCount(0)) + " " + satResultCount(0) + " " + unsatResultCount(0) + " " + maxACount(0) + " " + formatTime(verificationTime(1) / satResultCount(1)) + " " + satResultCount(1) + " " + unsatResultCount(1) + " " + maxACount(1) + " " + formatTime(verificationTime(2) / satResultCount(2)) + " " + satResultCount(2) + " " + unsatResultCount(2) + " " + maxACount(2) + " " + formatTime(syn / 1000) + " " + formatTime(z3 / 1000))
   }
 
   private def formatTime(t: Double) = {
