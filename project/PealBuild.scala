@@ -5,6 +5,8 @@ import Keys._
 
 object PealBuild extends Build {
 
+  lazy val reporter = Project(id = "ReportMaker", base = file("ReportMaker"))
+
   lazy val runner = Project(id = "ExperimentRunner", base = file("ExperimentRunner")) dependsOn(verifier, generator, synthesiser, z3)
 
   lazy val root = Project(id = "PealApp-lift", base = file(".")) aggregate (generator, domain, parser, synthesiser, verifier) dependsOn(verifier, generator, synthesiser, domain % "test->test;compile->compile", z3)
