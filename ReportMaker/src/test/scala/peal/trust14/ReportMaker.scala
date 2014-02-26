@@ -4,10 +4,11 @@ import scala.io.Source
 import org.junit.Test
 import peal.domain.z3.{SatResult, Unsat, Sat}
 import org.scalatest.junit.ShouldMatchersForJUnit
+import scala.collection.mutable.ListBuffer
 
 class ReportMaker extends ShouldMatchersForJUnit {
   val validResultLine = """([\d]+)-([\d]+)-.*""".r
-  val satToken = """mez[*]?([\d]+)?t""".r
+  val satToken = """m?e?z?[*]?(\d+)?t""".r
   val unsatToken = """(.*)u""".r
 
   val source1 = Source.fromURL("http://www.doc.ic.ac.uk/~hk2109/peal_results/300000-verify-exp3-1000-min.out", "UTF-8")
@@ -32,41 +33,48 @@ class ReportMaker extends ShouldMatchersForJUnit {
   }
 
   private def computeAverage(inputs: Seq[String]) {
-    var a1 = 0d
-    var sA1 = 0
-    var sA2 = 0
-    var sA3 = 0
-    var uA1 = 0
-    var uA2 = 0
-    var uA3 = 0
-    var numRecA1 = 0
-    var numRecA2 = 0
-    var numRecA3 = 0
-    var a2 = 0d
-    var a3 = 0d
     var syn = 0d
     var z3 = 0d
 
+    val a = ListBuffer(0d, 0d, 0d)
+    val satACount = ListBuffer(0, 0, 0)
+    val unsatACount = ListBuffer(0, 0, 0)
+    val maxACount = ListBuffer(0, 0, 0)
+
+    def processAnalysis(i: Int, token: String, timing: String) {
+      checkSat(token) match {
+        case (Sat, r) =>
+          a(i) += timing.toDouble
+          satACount(i) += 1
+          r match {
+            case Some(count) if count > maxACount(i) => maxACount(i) = count
+            case _ =>
+          }
+        case (Unsat, _) => unsatACount(i) += 1
+        case (_, _) =>
+      }
+    }
 
     inputs.foreach {
       line => line match {
         case validResultLine(x, y) =>
           val tokens = line.split(",")
-          a1 += tokens(3).toDouble
-          a2 += tokens(5).toDouble
-          a3 += tokens(7).toDouble
-          a1 += tokens(9).toDouble
-          a2 += tokens(11).toDouble
-          a3 += tokens(13).toDouble
-          a1 += tokens(15).toDouble
-          a2 += tokens(17).toDouble
-          a3 += tokens(19).toDouble
-          a1 += tokens(21).toDouble
-          a2 += tokens(23).toDouble
-          a3 += tokens(25).toDouble
-          a1 += tokens(27).toDouble
-          a2 += tokens(29).toDouble
-          a3 += tokens(31).toDouble
+
+          processAnalysis(0, tokens(2), tokens(3))
+          processAnalysis(1, tokens(4), tokens(5))
+          processAnalysis(2, tokens(6), tokens(7))
+          processAnalysis(0, tokens(8), tokens(9))
+          processAnalysis(1, tokens(10), tokens(11))
+          processAnalysis(2, tokens(12), tokens(13))
+          processAnalysis(0, tokens(14), tokens(15))
+          processAnalysis(1, tokens(16), tokens(17))
+          processAnalysis(2, tokens(18), tokens(19))
+          processAnalysis(0, tokens(20), tokens(21))
+          processAnalysis(1, tokens(22), tokens(23))
+          processAnalysis(2, tokens(24), tokens(25))
+          processAnalysis(0, tokens(26), tokens(27))
+          processAnalysis(1, tokens(28), tokens(29))
+          processAnalysis(2, tokens(30), tokens(31))
 
           syn += tokens(34).toDouble
           z3 += tokens(35).toDouble
@@ -74,14 +82,14 @@ class ReportMaker extends ShouldMatchersForJUnit {
       }
     }
 
-    println(formatTime(a1 / 5000) + " " + formatTime(a2 / 5000) + " " + formatTime(a3 / 5000) + " " + formatTime(syn / 1000) + " " + formatTime(z3 / 1000))
+    println(formatTime(a(0) / satACount(0)) + " " + satACount(0) + " " + unsatACount(0) + " " + maxACount(0) + " " + formatTime(a(1) / satACount(1)) + " " + satACount(1) + " " + unsatACount(1) + " " + maxACount(1) + " " + formatTime(a(2) / satACount(2)) + " " + satACount(2) + " " + unsatACount(2) + " " + maxACount(2) + " " + formatTime(syn / 1000) + " " + formatTime(z3 / 1000))
   }
 
   private def formatTime(t: Double) = {
     "%.4f".format(t)
   }
 
-  private def checkSat(s: String) : (SatResult, Option[Int]) = s match {
+  private def checkSat(s: String): (SatResult, Option[Int]) = s match {
     case satToken(r) if r == null => (Sat, None)
     case satToken(r) => (Sat, Some(r.toInt))
     case unsatToken(_) => (Unsat, None)
@@ -89,6 +97,7 @@ class ReportMaker extends ShouldMatchersForJUnit {
 
   @Test
   def testReg() {
+    val satToken(u) = "t"
     val validResultLine(i, j) = "10-1-10-1-1-0.5-0.1,300000,mezt,23.85,t,8.45,t,10.61,mezt,5.78,t,4.71,u,0,mezt,5.90,t,5.68,t,6.65,mezt,3.21,t,2.99,t,4.79,mezt,3.10,t,2.93,t,4.98,,0.00,139.97,20.34,0.00,0.00,0.00,0.00,0.00,0.00"
     val satToken(r) = "mezt"
     val satToken(s) = "mez*11t"
@@ -100,6 +109,7 @@ class ReportMaker extends ShouldMatchersForJUnit {
   @Test
   def testCanCheckSat() {
     checkSat("mezt")._1 should be(Sat)
+    checkSat("t")._1 should be(Sat)
     checkSat("mezu")._1 should be(Unsat)
   }
 
