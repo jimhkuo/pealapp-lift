@@ -5,7 +5,7 @@ import Keys._
 
 object PealBuild extends Build {
 
-  lazy val reporter = Project(id = "ReportMaker", base = file("ReportMaker"))
+  lazy val reporter = Project(id = "ReportMaker", base = file("ReportMaker")) dependsOn (domain % "test->test;compile->compile")
 
   lazy val runner = Project(id = "ExperimentRunner", base = file("ExperimentRunner")) dependsOn(verifier, generator, synthesiser, z3)
 
