@@ -1,7 +1,7 @@
 package peal.trust14
 
 import scala.io.Source
-import org.junit.Test
+import org.junit.{Ignore, Test}
 import peal.domain.z3.{SatResult, Unsat, Sat}
 import org.scalatest.junit.ShouldMatchersForJUnit
 import scala.collection.mutable.ListBuffer
@@ -17,6 +17,7 @@ class ReportMaker extends ShouldMatchersForJUnit {
   val source4 = Source.fromURL("http://www.doc.ic.ac.uk/~hk2109/peal_results/300000-verify-exp3-1000-mul.out", "UTF-8")
   val source5 = Source.fromURL("http://www.doc.ic.ac.uk/~hk2109/peal_results/300000-verify-exp3-1000-all.out", "UTF-8")
 
+  @Ignore("don't always run")
   @Test
   def testGenerate() {
     process(source1)
@@ -97,11 +98,11 @@ class ReportMaker extends ShouldMatchersForJUnit {
 
   @Test
   def testReg() {
-    val satToken(u) = "t"
+    val satToken(_) = "t"
     val validResultLine(i, j) = "10-1-10-1-1-0.5-0.1,300000,mezt,23.85,t,8.45,t,10.61,mezt,5.78,t,4.71,u,0,mezt,5.90,t,5.68,t,6.65,mezt,3.21,t,2.99,t,4.79,mezt,3.10,t,2.93,t,4.98,,0.00,139.97,20.34,0.00,0.00,0.00,0.00,0.00,0.00"
     val satToken(r) = "mezt"
     val satToken(s) = "mez*11t"
-    val unsatToken(t) = "mezu"
+    val unsatToken(_) = "mezu"
     println(r)
     println(s)
   }
