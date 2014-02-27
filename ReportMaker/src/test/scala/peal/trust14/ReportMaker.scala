@@ -20,20 +20,20 @@ class ReportMaker extends ShouldMatchersForJUnit {
   @Ignore("don't always run")
   @Test
   def testGenerate() {
-    process(source1)
-    process(source2)
-    process(source3)
-    process(source4)
-    process(source5)
+    process("10-10-1-1-1-0.5-0.1",source1)
+    process("10-1-10-1-1-0.5-0.1",source2)
+    process("10-1-1-10-1-0.5-0.1",source3)
+    process("10-1-1-1-10-0.5-0.1",source4)
+    process("16-4-4-4-4-0.5-0.1",source5)
   }
 
-  private def process(source: Source) {
+  private def process(header:String, source: Source) {
     val content = source.mkString
     source.close()
-    computeAverage(content.split("\n"))
+    computeAverage(header, content.split("\n"))
   }
 
-  private def computeAverage(inputs: Seq[String]) {
+  private def computeAverage(header:String, inputs: Seq[String]) {
     var syn = 0d
     var z3 = 0d
 
@@ -83,11 +83,12 @@ class ReportMaker extends ShouldMatchersForJUnit {
       }
     }
 
-    println(formatTime(verificationTime(0) / satResultCount(0)) + " " + satResultCount(0) + " " + unsatResultCount(0) + " " + maxACount(0) + " " + formatTime(verificationTime(1) / satResultCount(1)) + " " + satResultCount(1) + " " + unsatResultCount(1) + " " + maxACount(1) + " " + formatTime(verificationTime(2) / satResultCount(2)) + " " + satResultCount(2) + " " + unsatResultCount(2) + " " + maxACount(2) + " " + formatTime(syn / 1000) + " " + formatTime(z3 / 1000))
+    println(header + " & " + formatTime(verificationTime(0) / satResultCount(0)) + " & " + satResultCount(0) + " & " + maxACount(0) + " & " + formatTime(verificationTime(1) / satResultCount(1)) + " & " + satResultCount(1) + " & " + maxACount(1) + " & " + formatTime(verificationTime(2) / satResultCount(2)) + " & " + satResultCount(2) + " & " + maxACount(2) + " & " + formatTime(syn / 1000) + " & " + formatTime(z3 / 1000) + "\\\\ \\hline")
+//    println(formatTime(verificationTime(0) / satResultCount(0)) + " " + satResultCount(0) + " " + unsatResultCount(0) + " " + maxACount(0) + " " + formatTime(verificationTime(1) / satResultCount(1)) + " " + satResultCount(1) + " " + unsatResultCount(1) + " " + maxACount(1) + " " + formatTime(verificationTime(2) / satResultCount(2)) + " " + satResultCount(2) + " " + unsatResultCount(2) + " " + maxACount(2) + " " + formatTime(syn / 1000) + " " + formatTime(z3 / 1000))
   }
 
   private def formatTime(t: Double) = {
-    "%.4f".format(t)
+    "%.2f".format(t)
   }
 
   private def checkSat(s: String): (SatResult, Option[Int]) = s match {

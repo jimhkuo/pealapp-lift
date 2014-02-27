@@ -16,7 +16,7 @@ object Main extends App {
 
   private def constantRun(runModes: RunMode*) {
     for (i <- 0 until 1000) {
-      executeRunner(16, 4, 4, 4, 4, 3 * 10, 0.5, 0.1, runModes: _*)
+      executeRunner(10, 10, 10, 10, 10, 3 * 10, 0.5, 0.1, runModes: _*)
     }
   }
 
