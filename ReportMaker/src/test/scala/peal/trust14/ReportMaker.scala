@@ -15,16 +15,18 @@ class ReportMaker extends ShouldMatchersForJUnit {
   val source2 = Source.fromURL("http://www.doc.ic.ac.uk/~hk2109/peal_results/300000-verify-exp3-1000-max.out", "UTF-8")
   val source3 = Source.fromURL("http://www.doc.ic.ac.uk/~hk2109/peal_results/300000-verify-exp3-1000-plus.out", "UTF-8")
   val source4 = Source.fromURL("http://www.doc.ic.ac.uk/~hk2109/peal_results/300000-verify-exp3-1000-mul.out", "UTF-8")
-  val source5 = Source.fromURL("http://www.doc.ic.ac.uk/~hk2109/peal_results/300000-verify-exp3-1000-all.out", "UTF-8")
+  val source5 = Source.fromURL("http://www.doc.ic.ac.uk/~hk2109/peal_results/300000-verify-exp3-1000-all2.out", "UTF-8")
+  val source6 = Source.fromURL("http://www.doc.ic.ac.uk/~hk2109/peal_results/300000-verify-exp3-1000-all.out", "UTF-8")
 
   @Ignore("don't always run")
   @Test
   def testGenerate() {
-    process("10-10-1-1-1-0.5-0.1",source1)
-    process("10-1-10-1-1-0.5-0.1",source2)
-    process("10-1-1-10-1-0.5-0.1",source3)
-    process("10-1-1-1-10-0.5-0.1",source4)
-    process("16-4-4-4-4-0.5-0.1",source5)
+    process("10-10-1-1-1-30-0.5-0.1",source1)
+    process("10-1-10-1-1-30-0.5-0.1",source2)
+    process("10-1-1-10-1-30-0.5-0.1",source3)
+    process("10-1-1-1-10-30-0.5-0.1",source4)
+    process("10-10-10-10-10-30-0.5-0.1",source5)
+    process("16-4-4-4-4-12-0.5-0.1",source6)
   }
 
   private def process(header:String, source: Source) {
@@ -41,6 +43,7 @@ class ReportMaker extends ShouldMatchersForJUnit {
     val satResultCount = ListBuffer(0, 0, 0)
     val unsatResultCount = ListBuffer(0, 0, 0)
     val maxACount = ListBuffer(0, 0, 0)
+    val recursiveACount = ListBuffer(0, 0, 0)
 
     def processAnalysis(i: Int, token: String, timing: String) {
       checkSat(token) match {
@@ -48,7 +51,11 @@ class ReportMaker extends ShouldMatchersForJUnit {
           verificationTime(i) += timing.toDouble
           satResultCount(i) += 1
           r match {
-            case Some(count) if count > maxACount(i) => maxACount(i) = count
+            case Some(count) =>
+              recursiveACount(i) += 1
+              if (count > maxACount(i)) {
+                maxACount(i) = count
+              }
             case _ =>
           }
         case (Unsat, _) => unsatResultCount(i) += 1
@@ -83,7 +90,7 @@ class ReportMaker extends ShouldMatchersForJUnit {
       }
     }
 
-    println(header + " & " + formatTime(verificationTime(0) / satResultCount(0)) + " & " + satResultCount(0) + " & " + maxACount(0) + " & " + formatTime(verificationTime(1) / satResultCount(1)) + " & " + satResultCount(1) + " & " + maxACount(1) + " & " + formatTime(verificationTime(2) / satResultCount(2)) + " & " + satResultCount(2) + " & " + maxACount(2) + " & " + formatTime(syn / 1000) + " & " + formatTime(z3 / 1000) + "\\\\ \\hline")
+    println(header + " & " + formatTime(verificationTime(0) / satResultCount(0)) + " & " + satResultCount(0) + " & " + recursiveACount(0) + " & " + maxACount(0) + " & " + formatTime(verificationTime(1) / satResultCount(1)) + " & " + satResultCount(1) + " & " + recursiveACount(1) +" & " + maxACount(1) + " & " + formatTime(verificationTime(2) / satResultCount(2)) + " & " + satResultCount(2) + " & " + recursiveACount(2) +" & " + maxACount(2) + " & " + formatTime(syn / 1000) + " & " + formatTime(z3 / 1000) + "\\\\ \\hline")
 //    println(formatTime(verificationTime(0) / satResultCount(0)) + " " + satResultCount(0) + " " + unsatResultCount(0) + " " + maxACount(0) + " " + formatTime(verificationTime(1) / satResultCount(1)) + " " + satResultCount(1) + " " + unsatResultCount(1) + " " + maxACount(1) + " " + formatTime(verificationTime(2) / satResultCount(2)) + " " + satResultCount(2) + " " + unsatResultCount(2) + " " + maxACount(2) + " " + formatTime(syn / 1000) + " " + formatTime(z3 / 1000))
   }
 
