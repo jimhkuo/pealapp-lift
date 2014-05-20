@@ -20,6 +20,7 @@ import peal.synthesis.analysis.Equivalent
 import peal.synthesis.analysis.AlwaysTrue
 import peal.synthesis.OrCondition
 import peal.synthesis.NotCondition
+import peal.verifier.OutputProcessor
 
 
 class ExplicitOutputVerifier(input: String) {
@@ -33,7 +34,7 @@ class ExplicitOutputVerifier(input: String) {
 
   def verifyModel(rawModel: String, analysisName: String): (ThreeWayBoolean, Set[String]) = {
 //    println("P: " + predicateNames)
-    val truthMapping = ExplicitOutputProcessor.assignmentExtractor(rawModel)(analysisName).defines.map(d => (d.name, ThreeWayBooleanObj.from(d.value))).toMap
+    val truthMapping = OutputProcessor.assignmentExtractor(rawModel)(analysisName).defines.map(d => (d.name, ThreeWayBooleanObj.from(d.value))).toMap
     verifyModel(rawModel, analysisName, truthMapping, Set())
   }
 

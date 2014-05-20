@@ -1,13 +1,14 @@
-package peal.explicit
+package peal.verifier
 
 import org.scalatest.junit.ShouldMatchersForJUnit
 import org.junit.Test
 import peal.synthesis.EagerSynthesiser
 import peal.z3.Z3Caller
 import peal.domain.PealTrue
+import peal.explicit.ExplicitOutputVerifier
 
 
-class ExplicitOutputVerifierTest extends ShouldMatchersForJUnit {
+class OutputVerifierTest extends ShouldMatchersForJUnit {
 
   @Test
   def testBrokenModelBottom() {
