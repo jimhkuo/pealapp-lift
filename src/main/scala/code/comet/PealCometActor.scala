@@ -17,7 +17,7 @@ import peal.domain.{PealFalse, PealBottom, PealTrue, PolicySet}
 import peal.domain.z3.{Sat, PealAst, Term}
 import peal.antlr.util.ParserHelper
 import peal.z3.Z3Caller
-import peal.verify.ExplicitOutputVerifier
+import peal.explicit.ExplicitOutputVerifier
 
 class PealCometActor extends CometActor with Loggable {
 

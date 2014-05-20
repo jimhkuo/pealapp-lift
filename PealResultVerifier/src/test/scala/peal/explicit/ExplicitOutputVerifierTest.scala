@@ -1,10 +1,10 @@
-package peal.verify
+package peal.explicit
 
 import org.scalatest.junit.ShouldMatchersForJUnit
 import org.junit.Test
 import peal.synthesis.EagerSynthesiser
 import peal.z3.Z3Caller
-import peal.domain.{PealBottom, PealTrue}
+import peal.domain.PealTrue
 
 
 class ExplicitOutputVerifierTest extends ShouldMatchersForJUnit {

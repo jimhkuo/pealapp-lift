@@ -1,4 +1,4 @@
-package peal.verify
+package peal.explicit
 
 import org.scalatest.junit.ShouldMatchersForJUnit
 import org.junit.Test

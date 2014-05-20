@@ -1,4 +1,4 @@
-package peal.verify
+package peal.explicit
 
 import peal.antlr.util.ParserHelper
 import scala.collection.JavaConversions._

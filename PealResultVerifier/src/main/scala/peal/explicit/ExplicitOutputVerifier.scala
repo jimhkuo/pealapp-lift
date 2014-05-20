@@ -1,18 +1,11 @@
-package peal.verify
+package peal.explicit
 
 import peal.antlr.util.ParserHelper
 import scala.collection.JavaConversions._
 import peal.synthesis._
 import peal.domain._
 import peal.domain.operator.{Mul, Max, Min, Plus}
-import peal.domain.BasicPolicySet
 import peal.synthesis.analysis._
-import peal.synthesis.GreaterThanThCondition
-import peal.domain.MinPolicySet
-import peal.domain.MaxPolicySet
-import peal.domain.Pol
-import scala.Some
-import peal.synthesis.NotCondition
 import peal.synthesis.AndCondition
 import peal.domain.BasicPolicySet
 import peal.synthesis.analysis.AlwaysFalse

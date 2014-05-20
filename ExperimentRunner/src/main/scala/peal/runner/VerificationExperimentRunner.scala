@@ -11,9 +11,9 @@ import java.io.File
 import util.FileUtil
 import scala.sys.process._
 import java.util.concurrent.TimeoutException
-import peal.verify.ExplicitOutputVerifier
 import peal.antlr.util.ParserHelper
 import peal.domain.{PealBottom, PealFalse, PealTrue}
+import peal.explicit.ExplicitOutputVerifier
 
 
 class VerificationExperimentRunner(doDomainSpecifics: Boolean, system: ActorSystem, duration: Long, z3CallerMemoryBound: Long) {
