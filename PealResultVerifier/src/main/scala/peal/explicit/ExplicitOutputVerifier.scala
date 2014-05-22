@@ -38,7 +38,7 @@ class ExplicitOutputVerifier(input: String) {
     verifyModel(rawModel, analysisName, truthMapping, Set())
   }
 
-  def verifyModel(rawModel: String, analysisName: String, I: Map[String, ThreeWayBoolean], reMappedPredicates: Set[String]): (ThreeWayBoolean, Set[String]) = {
+  def verifyModel(rawModel: String, analysisName: String, I: Map[String, Either[BigDecimal, ThreeWayBoolean]], reMappedPredicates: Set[String]): (ThreeWayBoolean, Set[String]) = {
 //    println("I: " + I)
 
     doAnalysis(analysisName, I, reMappedPredicates) match {
@@ -52,43 +52,43 @@ class ExplicitOutputVerifier(input: String) {
         }
 //        println("Remaining bottoms: " + bottomPredicates)
 //        println("Adding " + bottomPredicates.head)
-        (s + bottomPredicates.head).foreach(truthMapping += _ -> PealFalse)
+        (s + bottomPredicates.head).foreach(truthMapping += _ -> Right(PealFalse))
 //        println("I': " + truthMapping)
         verifyModel(rawModel, analysisName, truthMapping, s + bottomPredicates.head)
       case (r, s) => (r, s)
     }
   }
 
-  def doAnalysis(analysisName: String, truthMapping: Map[String, ThreeWayBoolean], reMappedPredicates: Set[String]): (ThreeWayBoolean, Set[String]) = {
+  def doAnalysis(analysisName: String, truthMapping: Map[String, Either[BigDecimal, ThreeWayBoolean]], reMappedPredicates: Set[String]): (ThreeWayBoolean, Set[String]) = {
     analyses(analysisName) match {
       case AlwaysTrue(analysisName, condName) =>
-        if (truthMapping(condName) == PealFalse) {
-          return (verify(conds(condName), truthMapping, truthMapping(condName)), reMappedPredicates)
+        if (truthMapping(condName) == Right(PealFalse)) {
+          return (verify(conds(condName), truthMapping, truthMapping(condName).right.get), reMappedPredicates)
         }
         throw new RuntimeException(condName + " should be false but is not in " + analysisName)
       case AlwaysFalse(analysisName, condName) =>
-        if (truthMapping(condName) == PealTrue) {
-          return (verify(conds(condName), truthMapping, truthMapping(condName)), reMappedPredicates)
+        if (truthMapping(condName) == Right(PealTrue)) {
+          return (verify(conds(condName), truthMapping, truthMapping(condName).right.get), reMappedPredicates)
         }
         throw new RuntimeException(condName + " should be true but is not in " + analysisName)
       case Satisfiable(analysisName, condName) =>
-        if (truthMapping(condName) == PealTrue) {
-          return (verify(conds(condName), truthMapping, truthMapping(condName)), reMappedPredicates)
+        if (truthMapping(condName) == Right(PealTrue)) {
+          return (verify(conds(condName), truthMapping, truthMapping(condName).right.get), reMappedPredicates)
         }
         throw new RuntimeException(condName + " should be true but is not in " + analysisName)
       case Different(analysisName, lhs, rhs) =>
         if (truthMapping(lhs) != truthMapping.get(rhs)) {
-          return (verify(conds(lhs), truthMapping, truthMapping(lhs)) && verify(conds(rhs), truthMapping, truthMapping(rhs)), reMappedPredicates)
+          return (verify(conds(lhs), truthMapping, truthMapping(lhs).right.get) && verify(conds(rhs), truthMapping, truthMapping(rhs).right.get), reMappedPredicates)
         }
         throw new RuntimeException(lhs + " and " + rhs + " should be different but are not in " + analysisName)
       case Equivalent(analysisName, lhs, rhs) =>
         if (truthMapping(lhs) != truthMapping.get(rhs)) {
-          return (verify(conds(lhs), truthMapping, truthMapping(lhs)) && verify(conds(rhs), truthMapping, truthMapping(rhs)), reMappedPredicates)
+          return (verify(conds(lhs), truthMapping, truthMapping(lhs).right.get) && verify(conds(rhs), truthMapping, truthMapping(rhs).right.get), reMappedPredicates)
         }
         throw new RuntimeException(lhs + " and " + rhs + " should be different but are not in " + analysisName)
       case Implies(analysisName, lhs, rhs) =>
-        if (truthMapping(lhs) == PealTrue && truthMapping(rhs) == PealFalse) {
-          return (verify(conds(lhs), truthMapping, truthMapping(lhs)) && verify(conds(rhs), truthMapping, truthMapping(rhs)), reMappedPredicates)
+        if (truthMapping(lhs) == Right(PealTrue) && truthMapping(rhs) == Right(PealFalse)) {
+          return (verify(conds(lhs), truthMapping, truthMapping(lhs).right.get) && verify(conds(rhs), truthMapping, truthMapping(rhs).right.get), reMappedPredicates)
         }
         throw new RuntimeException(lhs + " should be true and " + rhs + " should be false, but are not in " + analysisName)
       case _ =>
@@ -98,7 +98,7 @@ class ExplicitOutputVerifier(input: String) {
     throw new RuntimeException("shouldn't get here, no supported analysis specified")
   }
 
-  def verify(cond: Condition, I: Map[String, ThreeWayBoolean], v: ThreeWayBoolean): ThreeWayBoolean = {
+  def verify(cond: Condition, I: Map[String, Either[BigDecimal, ThreeWayBoolean]], v: ThreeWayBoolean): ThreeWayBoolean = {
 //    println("### Verify called with " + cond + ", " + I + ", " + v)
     cond match {
       case NotCondition(c) => verify(conds(c), I, !v)
@@ -146,10 +146,10 @@ class ExplicitOutputVerifier(input: String) {
     }
   }
 
-  def evalPol(pol: PolicySet, th: BigDecimal, I: Map[String, ThreeWayBoolean]): ThreeWayBoolean = pol match {
+  def evalPol(pol: PolicySet, th: BigDecimal, I: Map[String, Either[BigDecimal, ThreeWayBoolean]]): ThreeWayBoolean = pol match {
     case p: Pol =>
-      val rulesToProcess = p.rules.filterNot(r => I.get(r.q.name) == Some(PealFalse))
-      val trueRules = rulesToProcess.filter(r => I.get(r.q.name) == Some(PealTrue))
+      val rulesToProcess = p.rules.filterNot(r => I.get(r.q.name) == Some(Right(PealFalse)))
+      val trueRules = rulesToProcess.filter(r => I.get(r.q.name) == Some(Right(PealTrue)))
 
 //      println("All: " + p.rules)
 //      println("nonFalseRules: " + rulesToProcess)

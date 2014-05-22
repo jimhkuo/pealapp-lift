@@ -81,7 +81,7 @@ class Z3OutputParserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
     results("name8").assignments(0).value should be("0.0")
     results("name8").assignments(1).name should be("q6")
     results("name8").assignments(1).objectType should be("Real")
-    results("name8").assignments(1).value should be("(- 1.0)")
+    results("name8").assignments(1).value should be("-1.0")
   }
 
   @Test
@@ -96,6 +96,6 @@ class Z3OutputParserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
 
     val results = parser.results()
 
-    results("name8").assignments(0).value should be("(- (/ 1.0 2.0))")
+    results("name8").assignments(0).value should be("-1.0/2.0")
   }
 }

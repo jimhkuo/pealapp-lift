@@ -11,13 +11,13 @@ class Z3ModelExtractorTest extends ShouldMatchersForJUnit {
   @Test
   def testCanExtractSimpleModel() {
     val model = "Result of analysis [name1 = always_true? cond1]:\nsat\n(model \n  (define-fun cond1 () Bool\n    false)\n  (define-fun q1 () Bool\n    false)\n  (define-fun q3 () Bool\n    false)\n  (define-fun q2 () Bool\n    false)\n  (define-fun always_true_name1 () Bool\n    false)\n)"
-    Z3ModelExtractor.extractI(model)("name1") should be(Map("q1" -> PealFalse, "q2" -> PealFalse, "q3" -> PealFalse, "cond1" -> PealFalse, "always_true_name1" -> PealFalse))
+    Z3ModelExtractor.extractI(model)("name1") should be(Map("q1" -> Right(PealFalse), "q2" -> Right(PealFalse), "q3" -> Right(PealFalse), "cond1" -> Right(PealFalse), "always_true_name1" -> Right(PealFalse)))
   }
 
   @Test
   def testCanExtractBrokenModel() {
     val model = "Result of analysis [analysis1 = always_true? cond1]:\n\nsat\n\n(model \n\n  (define-fun cond1 () Bool\n\n    false)\n\n  (define-fun always_true_analysis1 () Bool\n\n    false)\n\n  (define-fun cond2 () Bool\n\n    false)\n\n)\n\nResult of analysis [analysis2 = always_false? cond2]:\n\nunsat\n\n(error \"line 25 column 10: model is not available\")\n\nResult of analysis [analysis3 = different? cond1 cond2]:\n\nunsat\n\n(error \"line 33 column 10: model is not available\")"
-    Z3ModelExtractor.extractI(model)("analysis1") should be(Map("cond2" -> PealFalse, "always_true_analysis1" -> PealFalse, "cond1" -> PealFalse))
+    Z3ModelExtractor.extractI(model)("analysis1") should be(Map("cond2" -> Right(PealFalse), "always_true_analysis1" -> Right(PealFalse), "cond1" -> Right(PealFalse)))
   }
 
   @Test
