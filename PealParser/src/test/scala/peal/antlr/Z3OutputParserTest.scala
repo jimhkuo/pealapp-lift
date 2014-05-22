@@ -55,11 +55,11 @@ class Z3OutputParserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
     val results = parser.results()
     results should contain key ("name8")
     results("name8").satResult should be(Sat)
-    results("name8").assignment(0).name should be("q5")
-    results("name8").assignment(0).objectType should be("Bool")
-    results("name8").assignment(0).value should be("true")
-    results("name8").assignment(1).name should be("different_name8")
-    results("name8").assignment(2).name should be("q6")
+    results("name8").assignments(0).name should be("q5")
+    results("name8").assignments(0).objectType should be("Bool")
+    results("name8").assignments(0).value should be("true")
+    results("name8").assignments(1).name should be("different_name8")
+    results("name8").assignments(2).name should be("q6")
   }
 
   @Test
@@ -76,12 +76,12 @@ class Z3OutputParserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
     val results = parser.results()
     results should contain key ("name8")
     results("name8").satResult should be(Sat)
-    results("name8").assignment(0).name should be("q5")
-    results("name8").assignment(0).objectType should be("Real")
-    results("name8").assignment(0).value should be("0.0")
-    results("name8").assignment(1).name should be("q6")
-    results("name8").assignment(1).objectType should be("Real")
-    results("name8").assignment(1).value should be("(- 1.0)")
+    results("name8").assignments(0).name should be("q5")
+    results("name8").assignments(0).objectType should be("Real")
+    results("name8").assignments(0).value should be("0.0")
+    results("name8").assignments(1).name should be("q6")
+    results("name8").assignments(1).objectType should be("Real")
+    results("name8").assignments(1).value should be("(- 1.0)")
   }
 
   @Test
@@ -96,6 +96,6 @@ class Z3OutputParserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
 
     val results = parser.results()
 
-    results("name8").assignment(0).value should be("(- (/ 1.0 2.0))")
+    results("name8").assignments(0).value should be("(- (/ 1.0 2.0))")
   }
 }
