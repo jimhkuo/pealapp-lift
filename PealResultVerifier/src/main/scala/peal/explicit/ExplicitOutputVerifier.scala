@@ -34,7 +34,7 @@ class ExplicitOutputVerifier(input: String) {
 
   def verifyModel(rawModel: String, analysisName: String): (ThreeWayBoolean, Set[String]) = {
 //    println("P: " + predicateNames)
-    val truthMapping = Z3ModelExtractor.extractAssignments(rawModel)(analysisName)
+    val truthMapping = Z3ModelExtractor.extractI(rawModel)(analysisName)
     verifyModel(rawModel, analysisName, truthMapping, Set())
   }
 

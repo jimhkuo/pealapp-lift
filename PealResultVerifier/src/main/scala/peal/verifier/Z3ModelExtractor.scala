@@ -6,10 +6,10 @@ import peal.domain.ThreeWayBooleanObj
 
 object Z3ModelExtractor {
 
-  def extractAssignments(model: String) = {
+  def extractI(model: String) = {
     val z3OutputParser = ParserHelper.getZ3OutputParser(model.mkString(""))
-    z3OutputParser.results().toMap.map {
-      case (name, model) => (name, model.assignments.map(d => (d.name, ThreeWayBooleanObj.from(d.value))).toMap)
+    z3OutputParser.results().map {
+      case (name, z3Model) => (name, z3Model.assignments.map(assignment => (assignment.name, ThreeWayBooleanObj.from(assignment.value))).toMap)
     }
   }
 }
