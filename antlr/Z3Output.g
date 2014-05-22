@@ -53,8 +53,8 @@ assignment 	returns [Assignment a]
 value returns [String s]
 	: IDENT {$s = $IDENT.text;}
 	| NUMBER {$s = $NUMBER.text;}
-	| '(' '-' unary ')' {$s = "(- " + $unary.s + ")";}
-	| '(' '/' lhs=NUMBER rhs=NUMBER ')' {$s = "(/ " + $lhs.text + " " + $rhs.text + ")";}
+	| '(' '-' unary ')' {$s = "-" + $unary.s;}
+	| '(' '/' lhs=NUMBER rhs=NUMBER ')' {$s = $lhs.text + "/" + $rhs.text;}
 	;	
 
 unary returns [String s]

@@ -1,4 +1,4 @@
-// $ANTLR 3.5.1 /Users/jkuo/PealApp-lift/antlr/Z3Output.g 2014-05-22 10:13:20
+// $ANTLR 3.5.1 /Users/jkuo/PealApp-lift/antlr/Z3Output.g 2014-05-22 11:37:57
 
 package peal.antlr;
 import java.util.*;
@@ -401,7 +401,7 @@ public class Z3OutputParser extends Parser {
 					state._fsp--;
 
 					match(input,13,FOLLOW_13_in_value223); 
-					s = "(- " + unary4 + ")";
+					s = "-" + unary4;
 					}
 					break;
 				case 4 :
@@ -412,7 +412,7 @@ public class Z3OutputParser extends Parser {
 					lhs=(Token)match(input,NUMBER,FOLLOW_NUMBER_in_value236); 
 					rhs=(Token)match(input,NUMBER,FOLLOW_NUMBER_in_value240); 
 					match(input,13,FOLLOW_13_in_value242); 
-					s = "(/ " + (lhs!=null?lhs.getText():null) + " " + (rhs!=null?rhs.getText():null) + ")";
+					s = (lhs!=null?lhs.getText():null) + "/" + (rhs!=null?rhs.getText():null);
 					}
 					break;
 
