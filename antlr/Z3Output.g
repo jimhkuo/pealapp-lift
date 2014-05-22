@@ -13,6 +13,7 @@ import org.antlr.runtime.BitSet;
 import peal.synthesis.*;
 import peal.synthesis.analysis.*;
 import peal.domain.operator.*;
+import peal.verifier.util.*;
 }
 
 @members {
@@ -50,6 +51,7 @@ assignment 	returns [Assignment a]
 	|'(declare-fun' id0=IDENT '()' id1=IDENT')' {$a = new Assignment($id0.text, $id1.text, "");}	
 	;	
 
+//should consider using Rational number class here
 value returns [String s]
 	: IDENT {$s = $IDENT.text;}
 	| NUMBER {$s = $NUMBER.text;}

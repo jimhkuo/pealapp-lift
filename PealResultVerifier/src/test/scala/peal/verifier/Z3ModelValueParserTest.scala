@@ -13,9 +13,14 @@ class Z3ModelValueParserTest extends ShouldMatchersForJUnit {
      Z3ModelValueParser.parse("true") should be (Right(PealTrue))
    }
 
+  @Test
+  def testCanParseNegNumber() {
+    Z3ModelValueParser.parse("-1.0") should be (Left(BigDecimal(-1)))
+  }
+
   @Ignore("wip")
   @Test
-  def testCanParseNumber() {
-    Z3ModelValueParser.parse("(/ 1.0 2.0)") should be (Left(BigDecimal(0.5)))
+  def testCanParseRationalNumber() {
+    Z3ModelValueParser.parse("1.0/2.0") should be (Left(BigDecimal(0.5)))
   }
  }

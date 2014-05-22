@@ -7,7 +7,11 @@ object Z3ModelValueParser {
   def parse(value: String): Either[BigDecimal, ThreeWayBoolean] = {
     ThreeWayBooleanObj.from(value) match {
       case PealTrue | PealFalse => Right(ThreeWayBooleanObj.from(value))
-      case _ => Left(-1)
+      case _ => Left(BigDecimal.valueOf(convertToDouble(value)))
     }
+  }
+
+  private def convertToDouble(v : String) = {
+    v.toDouble
   }
 }
