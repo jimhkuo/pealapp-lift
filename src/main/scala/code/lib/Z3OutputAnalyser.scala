@@ -1,7 +1,7 @@
 package code.lib
 
 import peal.synthesis.analysis._
-import peal.domain.z3.{PealAst, Define, Unsat, Model}
+import peal.domain.z3.{PealAst, Assignment, Unsat, Model}
 import peal.synthesis.analysis.AlwaysFalse
 import peal.synthesis.analysis.AlwaysTrue
 import peal.synthesis.analysis.Different
@@ -73,15 +73,15 @@ object Z3OutputAnalyser {
 
 
   private def getReasons(model: Model, includeNames: Set[String], excludeNames: Set[String], constsMap: Map[String, PealAst]) = {
-    val predicates = for (define: Define <- model.defines if constsMap.contains(define.name)) yield {
+    val predicates = for (define: Assignment <- model.assignment if constsMap.contains(define.name)) yield {
       define.name + " is " + define.value
     }
 
-    val conds = for (define: Define <- model.defines if includeNames.contains(define.name)) yield {
+    val conds = for (define: Assignment <- model.assignment if includeNames.contains(define.name)) yield {
       define.name + " is " + define.value
     }
 
-    val additionals = for (define: Define <- model.defines if !includeNames.contains(define.name) && !constsMap.contains(define.name) && excludeNames.filter(define.name.startsWith(_)).isEmpty) yield {
+    val additionals = for (define: Assignment <- model.assignment if !includeNames.contains(define.name) && !constsMap.contains(define.name) && excludeNames.filter(define.name.startsWith(_)).isEmpty) yield {
       define.name + " is " + define.value
     }
 

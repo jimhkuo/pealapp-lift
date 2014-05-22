@@ -39,15 +39,15 @@ results returns	[Map<String, Model> r]
 	;
 	
 model returns [Model m]
-@init{ List<Define> l = new ArrayList<Define>(); }
-	: 'sat' '(model' (define {l.add($define.d);})+ ')' { $m = new Model(Sat$.MODULE$, l);}
+@init{ List<Assignment> l = new ArrayList<Assignment>(); }
+	: 'sat' '(model' (assignment {l.add($assignment.a);})+ ')' { $m = new Model(Sat$.MODULE$, l);}
 	| 'unsat' Z3ERROR { $m = new Model(Unsat$.MODULE$, l);}
 //	: '(model' (define[$m])+ ')'
 	;
 
-define 	returns [Define d]
-	:'(define-fun' id0=IDENT '()' id1=IDENT id2=value')' {$d = new Define($id0.text, $id1.text, $id2.s);}	
-	|'(declare-fun' id0=IDENT '()' id1=IDENT')' {$d = new Define($id0.text, $id1.text, "");}	
+assignment 	returns [Assignment a]
+	:'(define-fun' id0=IDENT '()' id1=IDENT id2=value')' {$a = new Assignment($id0.text, $id1.text, $id2.s);}	
+	|'(declare-fun' id0=IDENT '()' id1=IDENT')' {$a = new Assignment($id0.text, $id1.text, "");}	
 	;	
 
 value returns [String s]
