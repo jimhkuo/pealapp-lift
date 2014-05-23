@@ -5,7 +5,7 @@ import peal.verifier.util.Rational
 
 
 object Z3ModelValueParser {
-  val rational = """([\d.]+)/([\d.]+)""".r
+  val rational = """([-\d.]+)/([\d.]+)""".r
 
   def parse(value: String): Either[BigDecimal, ThreeWayBoolean] = {
     ThreeWayBooleanObj.from(value) match {

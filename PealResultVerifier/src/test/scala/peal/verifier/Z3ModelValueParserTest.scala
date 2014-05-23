@@ -22,4 +22,9 @@ class Z3ModelValueParserTest extends ShouldMatchersForJUnit {
   def testCanParseRationalNumber() {
     Z3ModelValueParser.parse("1.0/2.0") should be (Left(BigDecimal(0.5)))
   }
+
+  @Test
+  def testCanParseNegRationalNumber() {
+    Z3ModelValueParser.parse("-1.0/2.0") should be (Left(BigDecimal(-0.5)))
+  }
  }
