@@ -1,7 +1,7 @@
 package peal.verifier.util
 
-class Rational(numerator: BigDecimal, denominator: BigDecimal) {
+class Rational(numerator: String, denominator: String) {
 
-  def value = numerator / denominator
+  def value = BigDecimal.valueOf(numerator.toDouble / denominator.toDouble)
 
 }
