@@ -10,7 +10,7 @@ import peal.synthesis.analysis.AlwaysTrue
 import peal.synthesis.analysis.Different
 import peal.synthesis.analysis.Satisfiable
 import peal.synthesis.analysis.Equivalent
-import peal.synthesis.Condition
+import peal.synthesis.{OrCondition, AndCondition, NotCondition, Condition}
 
 
 class ExtendedOutputVerifier(input: String) {
@@ -29,32 +29,32 @@ class ExtendedOutputVerifier(input: String) {
 
   def doAnalysis(analysisName: String, truthMapping: Map[String, Either[BigDecimal, ThreeWayBoolean]]): ThreeWayBoolean = {
     analyses(analysisName) match {
-      case AlwaysTrue(analysisName, condName) =>
+      case AlwaysTrue(_, condName) =>
         if (truthMapping(condName) == Right(PealFalse)) {
           return cert(conds(condName), truthMapping, truthMapping(condName).right.get)
         }
         throw new RuntimeException(condName + " should be false but is not in " + analysisName)
-      case AlwaysFalse(analysisName, condName) =>
+      case AlwaysFalse(_, condName) =>
         if (truthMapping(condName) == Right(PealTrue)) {
           return cert(conds(condName), truthMapping, truthMapping(condName).right.get)
         }
         throw new RuntimeException(condName + " should be true but is not in " + analysisName)
-      case Satisfiable(analysisName, condName) =>
+      case Satisfiable(_, condName) =>
         if (truthMapping(condName) == Right(PealTrue)) {
           return cert(conds(condName), truthMapping, truthMapping(condName).right.get)
         }
         throw new RuntimeException(condName + " should be true but is not in " + analysisName)
-      case Different(analysisName, lhs, rhs) =>
-        if (truthMapping(lhs) != truthMapping.get(rhs)) {
+      case Different(_, lhs, rhs) =>
+        if (truthMapping.get(lhs) != truthMapping.get(rhs)) {
           return cert(conds(lhs), truthMapping, truthMapping(lhs).right.get) && cert(conds(rhs), truthMapping, truthMapping(rhs).right.get)
         }
         throw new RuntimeException(lhs + " and " + rhs + " should be different but are not in " + analysisName)
-      case Equivalent(analysisName, lhs, rhs) =>
-        if (truthMapping(lhs) != truthMapping.get(rhs)) {
+      case Equivalent(_, lhs, rhs) =>
+        if (truthMapping.get(lhs) != truthMapping.get(rhs)) {
           return cert(conds(lhs), truthMapping, truthMapping(lhs).right.get) && cert(conds(rhs), truthMapping, truthMapping(rhs).right.get)
         }
         throw new RuntimeException(lhs + " and " + rhs + " should be different but are not in " + analysisName)
-      case Implies(analysisName, lhs, rhs) =>
+      case Implies(_, lhs, rhs) =>
         if (truthMapping(lhs) == Right(PealTrue) && truthMapping(rhs) == Right(PealFalse)) {
           return cert(conds(lhs), truthMapping, truthMapping(lhs).right.get) && cert(conds(rhs), truthMapping, truthMapping(rhs).right.get)
         }
@@ -67,7 +67,23 @@ class ExtendedOutputVerifier(input: String) {
   }
 
   def cert(cond: Condition, I: Map[String, Either[BigDecimal, ThreeWayBoolean]], v: ThreeWayBoolean): ThreeWayBoolean = {
-    PealFalse
+    cond match {
+      case NotCondition(c) => cert(conds(c), I, !v)
+      case AndCondition(lhs, rhs) =>
+        if (v == PealTrue) {
+          cert(conds(lhs), I, v) && cert(conds(rhs), I, v)
+        }
+        else {
+          cert(conds(lhs), I, v) || cert(conds(rhs), I, v)
+        }
+      case OrCondition(lhs, rhs) =>
+        if (v == PealTrue) {
+          cert(conds(lhs), I, v) || cert(conds(rhs), I, v)
+        }
+        else {
+          cert(conds(lhs), I, v) && cert(conds(rhs), I, v)
+        }
+      //TODO two more cases
+    }
   }
-
 }
