@@ -13,8 +13,8 @@ class ExtendedOutputVerifier(input: String) {
   val analyses = pealProgramParser.analyses
   val predicateNames: Seq[String] = pealProgramParser.pols.values().flatMap(pol => pol.rules).map(r => r.q.name).toSeq.distinct
 
-  def cert(rawModel: String) {
-    val truthMapping = Z3ModelExtractor.extractI(rawModel)
+  def verifyModel(rawModel: String, analysisName: String) {
+    val truthMapping = Z3ModelExtractor.extractI(rawModel)(analysisName)
     println(truthMapping)
   }
 
