@@ -37,7 +37,11 @@ trait ThreeWayBoolean {
       case PealFalse => PealFalse
       case PealBottom => PealFalse
     }
-    case PealBottom => PealBottom
+    case PealBottom => obj match {
+      case PealTrue => PealBottom
+      case PealFalse => PealFalse
+      case PealBottom => PealBottom
+    }
   }
 
   def ===(obj: ThreeWayBoolean): ThreeWayBoolean = this match {

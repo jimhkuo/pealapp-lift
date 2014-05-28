@@ -22,9 +22,9 @@ class ThreeWayBooleanTest extends ShouldMatchersForJUnit {
     PealFalse && PealFalse should be(PealFalse)
     PealBottom && PealBottom should be(PealBottom)
     PealBottom && PealTrue should be(PealBottom)
-    PealBottom && PealFalse should be(PealBottom)
+    PealBottom && PealFalse should be(PealFalse)
     PealTrue && PealBottom should be(PealBottom)
-    PealFalse && PealBottom should be(PealBottom)
+    PealFalse && PealBottom should be(PealFalse)
   }
 
   @Test
