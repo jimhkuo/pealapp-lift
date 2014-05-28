@@ -99,6 +99,7 @@ class ExtendedOutputVerifier(input: String) {
         } else {
           ThreeWayBooleanObj.from(certValue(c.rhs, I) <= certValue(Right(c.lhs), I))
         }
+        //TODO PredicateCondition needs to return a real number
     }
   }
 
