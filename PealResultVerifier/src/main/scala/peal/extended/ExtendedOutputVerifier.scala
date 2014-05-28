@@ -93,12 +93,17 @@ class ExtendedOutputVerifier(input: String) {
         } else {
           ThreeWayBooleanObj.from(certValue(c.rhs, I) < certValue(Right(c.lhs), I))
         }
-
-      //TODO one more case
+      case c: GreaterThanThCondition =>
+        if (v == PealTrue) {
+          ThreeWayBooleanObj.from(certValue(Right(c.lhs), I) < certValue(c.rhs, I))
+        } else {
+          ThreeWayBooleanObj.from(certValue(c.rhs, I) <= certValue(Right(c.lhs), I))
+        }
     }
   }
 
   private def certValue(pSet: Either[BigDecimal,PolicySet], I: Map[String, Either[BigDecimal, ThreeWayBoolean]]) ={
+    //TODO not done
     -999
   }
 }
