@@ -99,11 +99,11 @@ class ExtendedOutputVerifier(input: String) {
         } else {
           ThreeWayBooleanObj.from(certValue(c.rhs, I) <= certValue(Right(c.lhs), I))
         }
-        //TODO PredicateCondition needs to return a real number
+      case c: PredicateCondition => I(c.predicateName).right.getOrElse(PealBottom) === v
     }
   }
 
-  private def certValue(pSet: Either[BigDecimal,PolicySet], I: Map[String, Either[BigDecimal, ThreeWayBoolean]]) ={
+  private def certValue(pSet: Either[BigDecimal, PolicySet], I: Map[String, Either[BigDecimal, ThreeWayBoolean]]) = {
     //TODO not done
     -999
   }
