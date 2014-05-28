@@ -3,14 +3,18 @@ package peal.extended
 import peal.antlr.util.ParserHelper
 import scala.collection.JavaConversions._
 import peal.verifier.Z3ModelExtractor
-import peal.domain.{PealTrue, PealFalse, ThreeWayBoolean}
-import peal.synthesis.analysis._
+import peal.domain._
+import peal.synthesis._
+import peal.synthesis.AndCondition
 import peal.synthesis.analysis.AlwaysFalse
 import peal.synthesis.analysis.AlwaysTrue
+import peal.synthesis.OrCondition
+import peal.synthesis.NotCondition
+import peal.synthesis.LessThanThCondition
 import peal.synthesis.analysis.Different
+import peal.synthesis.analysis.Implies
 import peal.synthesis.analysis.Satisfiable
 import peal.synthesis.analysis.Equivalent
-import peal.synthesis.{OrCondition, AndCondition, NotCondition, Condition}
 
 
 class ExtendedOutputVerifier(input: String) {
@@ -21,9 +25,9 @@ class ExtendedOutputVerifier(input: String) {
   val analyses = pealProgramParser.analyses
   val predicateNames: Seq[String] = pealProgramParser.pols.values().flatMap(pol => pol.rules).map(r => r.q.name).toSeq.distinct
 
-  def verifyModel(rawModel: String, analysisName: String) {
+  def verifyModel(rawModel: String, analysisName: String) = {
     val I = Z3ModelExtractor.extractI(rawModel)(analysisName)
-    println(I)
+    I.foreach(i => println(i._1 + " -> " + i._2.fold(s => s.toString(), b => b.toString)))
     doAnalysis(analysisName, I)
   }
 
@@ -83,7 +87,18 @@ class ExtendedOutputVerifier(input: String) {
         else {
           cert(conds(lhs), I, v) && cert(conds(rhs), I, v)
         }
-      //TODO two more cases
+      case c: LessThanThCondition =>
+        if (v == PealTrue) {
+          ThreeWayBooleanObj.from(certValue(Right(c.lhs), I) <= certValue(c.rhs, I))
+        } else {
+          ThreeWayBooleanObj.from(certValue(c.rhs, I) < certValue(Right(c.lhs), I))
+        }
+
+      //TODO one more case
     }
+  }
+
+  private def certValue(pSet: Either[BigDecimal,PolicySet], I: Map[String, Either[BigDecimal, ThreeWayBoolean]]) ={
+    -999
   }
 }
