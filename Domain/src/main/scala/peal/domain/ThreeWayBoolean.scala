@@ -55,7 +55,11 @@ trait ThreeWayBoolean {
       case PealFalse => PealTrue
       case PealBottom => PealBottom
     }
-    case PealBottom => PealBottom
+    case PealBottom => obj match {
+      case PealTrue => PealBottom
+      case PealFalse => PealBottom
+      case PealBottom => throw new RuntimeException("shouldn't get in this case")
+    }
   }
 }
 

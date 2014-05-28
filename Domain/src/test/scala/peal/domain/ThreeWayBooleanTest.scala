@@ -11,7 +11,9 @@ class ThreeWayBooleanTest extends ShouldMatchersForJUnit {
     PealTrue === PealFalse should be(PealFalse)
     PealFalse === PealTrue should be(PealFalse)
     PealFalse === PealFalse should be(PealTrue)
-    PealBottom === PealBottom should be(PealBottom)
+    intercept[RuntimeException] {
+      PealBottom === PealBottom
+    }
   }
 
   @Test
