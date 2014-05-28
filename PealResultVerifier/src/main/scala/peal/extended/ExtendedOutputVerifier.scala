@@ -88,6 +88,7 @@ class ExtendedOutputVerifier(input: String) {
           cert(conds(lhs), I, v) && cert(conds(rhs), I, v)
         }
       case c: LessThanThCondition =>
+        //TODO if certValue is bottom, returns bottom
         if (v == PealTrue) {
           ThreeWayBooleanObj.from(certValue(Right(c.lhs), I) <= certValue(c.rhs, I))
         } else {
