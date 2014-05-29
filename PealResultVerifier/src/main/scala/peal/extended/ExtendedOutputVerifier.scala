@@ -156,7 +156,7 @@ class ExtendedOutputVerifier(input: String) {
             println("op X: " + decimal)
             decimal
           }
-        case MaxPolicySet(lhs, rhs, n) => ???
+        case MaxPolicySet(lhs, rhs, n) => extractScore(lhs).max(extractScore(rhs))
         case MinPolicySet(lhs, rhs, n) => ???
         case MulPolicySet(lhs, rhs, n) => ???
         case PlusPolicySet(lhs, rhs, n) => ???
