@@ -121,7 +121,8 @@ class ExtendedOutputVerifier(input: String) {
             score.underlyingScore.fold(s => s, f => evaluateFormula(f))
           }
           else {
-            println(rules.filter(r => I(r.q.name).fold(score => PealBottom, bool => bool) == PealTrue))
+            val okRules = rules.filter(r => I(r.q.name).fold(score => PealBottom, bool => bool) == PealTrue)
+            println(okRules)
             throw new RuntimeException("op X is not done")
           }
         case _ => //Deal with other operators
