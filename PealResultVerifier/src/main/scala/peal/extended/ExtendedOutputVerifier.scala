@@ -16,7 +16,7 @@ import peal.synthesis.analysis.Implies
 import peal.synthesis.analysis.Satisfiable
 import peal.synthesis.analysis.Equivalent
 
-
+//TODO setting bottom to false in iterations is still required
 class ExtendedOutputVerifier(input: String) {
   val pealProgramParser = ParserHelper.getPealParser(input)
   pealProgramParser.program()
@@ -125,10 +125,11 @@ class ExtendedOutputVerifier(input: String) {
     }
 
     def extractScore(pSet: PolicySet): BigDecimal = {
+      println("extracting score")
       pSet match {
         case BasicPolicySet(pol, name) => extractScore(pol)
         case Pol(rules, op, score, name) =>
-          if (rules.exists(r => I(r.q.name).fold(score => PealBottom, bool => bool) == PealBottom)) {
+          if (rules.exists(r => I.getOrElse(r.q.name, Right(PealBottom)).fold(score => PealBottom, pealBool => pealBool) == PealBottom)) {
             //log
             throw new RuntimeException("Bottom reached")
           }
@@ -147,7 +148,7 @@ class ExtendedOutputVerifier(input: String) {
     }
 
     val fold: BigDecimal = pSet.fold(score => score, pSet => extractScore(pSet))
-    println("fold: " + fold)
+    println("extractScore: " + fold)
     fold
   }
 }
