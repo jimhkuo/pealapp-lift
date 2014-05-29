@@ -15,6 +15,7 @@ import peal.synthesis.analysis.Different
 import peal.synthesis.analysis.Implies
 import peal.synthesis.analysis.Satisfiable
 import peal.synthesis.analysis.Equivalent
+import peal.domain.operator.{Min, Plus}
 
 //TODO setting bottom to false in iterations is still required
 class ExtendedOutputVerifier(input: String) {
@@ -133,14 +134,17 @@ class ExtendedOutputVerifier(input: String) {
             throw new RuntimeException("Bottom reached in certValue")
           }
           else if (!rules.exists(r => I(r.q.name).fold(score => PealBottom, bool => bool) == PealTrue)) {
-            println(score.underlyingScore.fold(s => s, f => f.toZ3Expression))
             score.underlyingScore.fold(s => s, f => evaluateFormula(f))
           }
           else {
             val okRules = rules.filter(r => I(r.q.name).fold(score => PealBottom, bool => bool) == PealTrue)
             println(okRules)
+            val decimal: BigDecimal = op match {
+              case Min => okRules.foldLeft(BigDecimal.valueOf(1d))((acc, rule) => acc.min(rule.score.underlyingScore.fold(s => s, f => evaluateFormula(f))))
+            }
+            println("op X: " + decimal)
+            decimal
 //            throw new RuntimeException("op X is not done")
-            ???
           }
         case _ => //Deal with other operators
 //          throw new RuntimeException("other pSet operators not supported")

@@ -66,7 +66,6 @@ class ExtendedOutputVerifierTest extends ShouldMatchersForJUnit {
     println(new ExtendedOutputVerifier(input).verifyModel(model, "name1"))
   }
 
-  @Ignore("wip")
   @Test
   def testOpX() {
     val input = "POLICIES\nb1 = min ((q1 0.2) (q2 0.4) (q3 0.9)) default 1\n" +
@@ -76,8 +75,8 @@ class ExtendedOutputVerifierTest extends ShouldMatchersForJUnit {
       "cond1 = pSet1 <= 0.5\n" +
       "ANALYSES\nname1 = always_true? cond1"
     val model = "Result of analysis [name1 = always_true? cond1]:\nsat\n(model \n  (define-fun cond1 () Bool\n    false)\n  (define-fun b1_score () Real\n    (/ 9.0 10.0))\n  (define-fun q1 () Bool\n    false)\n  (define-fun q3 () Bool\n    true)\n  (define-fun q2 () Bool\n    false)\n  (define-fun always_true_name1 () Bool\n    false)\n)"
-    //    println(input)
-    //    println(model)
+        println(input)
+        println(model)
     println(new ExtendedOutputVerifier(input).verifyModel(model, "name1"))
   }
 
