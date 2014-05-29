@@ -157,9 +157,9 @@ class ExtendedOutputVerifier(input: String) {
             decimal
           }
         case MaxPolicySet(lhs, rhs, n) => extractScore(lhs).max(extractScore(rhs))
-        case MinPolicySet(lhs, rhs, n) => ???
-        case MulPolicySet(lhs, rhs, n) => ???
+        case MinPolicySet(lhs, rhs, n) => extractScore(lhs).min(extractScore(rhs))
         case PlusPolicySet(lhs, rhs, n) => ???
+        case MulPolicySet(lhs, rhs, n) => ???
       }
     }
 
