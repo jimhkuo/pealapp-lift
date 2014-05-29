@@ -10,7 +10,7 @@ class VariableFormulaTest extends ShouldMatchersForJUnit {
     VariableFormula(Multiplier(0.5, "y")).toZ3Expression should be("(* 0.5 y)")
     VariableFormula(Multiplier(0.5, "y")).add(Multiplier(0.4, "x")).toZ3Expression should be("(+ (* 0.5 y) (* 0.4 x))")
     VariableFormula(Multiplier(0.5, "y")).add(Multiplier(0.4, "x")).add(Multiplier(0.1, "z")).toZ3Expression should be("(+ (* 0.5 y) (* 0.4 x) (* 0.1 z))")
-    VariableFormula(Multiplier(0.5, "y")).add(Multiplier(0.4, "x")).add(Multiplier(1, "")).toZ3Expression should be("(+ (* 0.5 y) (* 0.4 x) 1)")
+    VariableFormula(Multiplier(0.5, "y")).add(Multiplier(0.4, "x")).add(Multiplier(1)).toZ3Expression should be("(+ (* 0.5 y) (* 0.4 x) 1)")
   }
 
   @Test

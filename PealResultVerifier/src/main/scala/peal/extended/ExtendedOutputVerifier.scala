@@ -107,9 +107,21 @@ class ExtendedOutputVerifier(input: String) {
   //TODO if certValue is not BigDecimal, throw exception for now
   private def certValue(pSet: Either[BigDecimal, PolicySet], I: Map[String, Either[BigDecimal, ThreeWayBoolean]]): BigDecimal = {
 
+    def eval(e: Multiplier): BigDecimal = {
+      print("eval: " + e.toZ3Expression)
+      val a = e.name match {
+        case "" => e.multiplier
+        case _ if I(e.name).isLeft => e.multiplier * I(e.name).fold(s => s, vf => -999)
+        case _ => throw new RuntimeException("invalid eval case")
+      }
+      println(" result: " + a)
+
+      a
+    }
+
     //Decide to evaluate score here (instead of in Score) because it has access to I
-    def evaluateFormula(vf: VariableFormula) : BigDecimal = {
-      throw new RuntimeException("evaluateFormula is not done")
+    def evaluateFormula(vf: VariableFormula): BigDecimal = {
+      vf.operations.foldLeft(BigDecimal.valueOf(0.toDouble))(_ + eval(_))
     }
 
     def extractScore(pSet: PolicySet): BigDecimal = {
