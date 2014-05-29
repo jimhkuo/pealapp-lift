@@ -15,7 +15,7 @@ import peal.synthesis.analysis.Different
 import peal.synthesis.analysis.Implies
 import peal.synthesis.analysis.Satisfiable
 import peal.synthesis.analysis.Equivalent
-import peal.domain.operator.{Max, Min, Plus}
+import peal.domain.operator.{Mul, Max, Min, Plus}
 
 //TODO setting bottom to false in iterations is still required
 class ExtendedOutputVerifier(input: String) {
@@ -151,6 +151,7 @@ class ExtendedOutputVerifier(input: String) {
               case Min => okRules.foldLeft(BigDecimal.valueOf(1d))((acc, rule) => acc.min(rule.score.underlyingScore.fold(s => s, f => evaluateFormula(f))))
               case Max => okRules.foldLeft(BigDecimal.valueOf(0d))((acc, rule) => acc.max(rule.score.underlyingScore.fold(s => s, f => evaluateFormula(f))))
               case Plus => okRules.foldLeft(BigDecimal.valueOf(0d))((acc, rule) => acc + rule.score.underlyingScore.fold(s => s, f => evaluateFormula(f)))
+              case Mul => okRules.foldLeft(BigDecimal.valueOf(1d))((acc, rule) => acc * rule.score.underlyingScore.fold(s => s, f => evaluateFormula(f)))
             }
             println("op X: " + decimal)
             decimal
