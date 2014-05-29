@@ -139,10 +139,12 @@ class ExtendedOutputVerifier(input: String) {
           else {
             val okRules = rules.filter(r => I(r.q.name).fold(score => PealBottom, bool => bool) == PealTrue)
             println(okRules)
-            throw new RuntimeException("op X is not done")
+//            throw new RuntimeException("op X is not done")
+            ???
           }
         case _ => //Deal with other operators
-          throw new RuntimeException("other pSet operators not supported")
+//          throw new RuntimeException("other pSet operators not supported")
+          ???
       }
     }
 
