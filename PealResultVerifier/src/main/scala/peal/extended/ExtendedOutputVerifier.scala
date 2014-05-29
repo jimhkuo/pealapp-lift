@@ -27,6 +27,7 @@ class ExtendedOutputVerifier(input: String) {
 
   def verifyModel(rawModel: String, analysisName: String) = {
     val I = Z3ModelExtractor.extractI(rawModel)(analysisName)
+    println("I:")
     I.foreach(i => println(i._1 + " -> " + i._2.fold(s => s.toString(), b => b.toString)))
     doAnalysis(analysisName, I)
   }
@@ -103,13 +104,12 @@ class ExtendedOutputVerifier(input: String) {
     }
   }
 
-
   //TODO if certValue is not BigDecimal, throw exception for now
   private def certValue(pSet: Either[BigDecimal, PolicySet], I: Map[String, Either[BigDecimal, ThreeWayBoolean]]): BigDecimal = {
-    def evaluateFormula(vf : VariableFormula): BigDecimal = {
+    def evaluateFormula(vf: VariableFormula): BigDecimal = {
       throw new RuntimeException("evaluateFormula is not done")
     }
-    def extractScore(pSet : PolicySet) : BigDecimal = {
+    def extractScore(pSet: PolicySet): BigDecimal = {
       pSet match {
         case BasicPolicySet(pol, name) => extractScore(pol)
         case Pol(rules, op, score, name) =>
@@ -121,10 +121,11 @@ class ExtendedOutputVerifier(input: String) {
             score.underlyingScore.fold(s => s, f => evaluateFormula(f))
           }
           else {
+            println(rules.filter(r => I(r.q.name).fold(score => PealBottom, bool => bool) == PealTrue))
             throw new RuntimeException("op X is not done")
           }
-        case _ => throw new RuntimeException("other pSet operators not supported")
-        //      case //Deal with operators
+        case _ => //Deal with other operators
+          throw new RuntimeException("other pSet operators not supported")
       }
     }
 
