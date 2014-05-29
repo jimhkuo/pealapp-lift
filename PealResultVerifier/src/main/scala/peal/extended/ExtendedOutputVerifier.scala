@@ -73,6 +73,7 @@ class ExtendedOutputVerifier(input: String) {
   }
 
   def cert(cond: Condition, I: Map[String, Either[BigDecimal, ThreeWayBoolean]], v: ThreeWayBoolean): ThreeWayBoolean = {
+    //TODO can catch exception and return bottom
     cond match {
       case NotCondition(c) => cert(conds(c), I, !v)
       case AndCondition(lhs, rhs) =>
@@ -111,22 +112,17 @@ class ExtendedOutputVerifier(input: String) {
     }
   }
 
-  //TODO if certValue is not BigDecimal, throw exception for now
+  //if certValue is not BigDecimal, throw exception to be handled in the upper layer
   private def certValue(pSet: Either[BigDecimal, PolicySet], I: Map[String, Either[BigDecimal, ThreeWayBoolean]]): BigDecimal = {
 
     def eval(e: Multiplier): BigDecimal = {
-      print("eval: " + e.toZ3Expression)
-      val a = e.name match {
+      e.name match {
         case "" => e.multiplier
         case _ if I(e.name).isLeft => e.multiplier * I(e.name).fold(s => s, vf => -999)
-        case _ => throw new RuntimeException("invalid eval case")
+        case _ => throw new RuntimeException("Invalid eval case")
       }
-      println(" result: " + a)
-
-      a
     }
 
-    //Decide to evaluate score here (instead of in Score) because it has access to I
     def evaluateFormula(vf: VariableFormula): BigDecimal = {
       vf.operations.foldLeft(BigDecimal.valueOf(0.toDouble))(_ + eval(_))
     }
@@ -136,7 +132,7 @@ class ExtendedOutputVerifier(input: String) {
         case BasicPolicySet(pol, name) => extractScore(pol)
         case Pol(rules, op, score, name) =>
           if (rules.exists(r => I.getOrElse(r.q.name, Right(PealBottom)).fold(score => PealBottom, pealBool => pealBool) == PealBottom)) {
-            //log
+            //should log
             throw new RuntimeException("Bottom reached in certValue")
           }
           else if (!rules.exists(r => I(r.q.name).fold(score => PealBottom, bool => bool) == PealTrue)) {
