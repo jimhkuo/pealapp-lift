@@ -39,6 +39,15 @@ class ExtendedOutputVerifierTest extends ShouldMatchersForJUnit {
     println(new ExtendedOutputVerifier(input).verifyModel(model, "name1"))
   }
 
+  @Test
+  def testPredicateAndNotCondition() {
+    val input = "POLICIES\nb1 = min ((q1 0.2) (q2 0.4) (q3 0.9)) default 1\nPOLICY_SETS\npSet1 = b1\nCONDITIONS\ncond1 = q1\ncond2 = !cond1\nANALYSES\nname1 = always_true? cond2"
+    val model = "Result of analysis [name1 = always_true? cond2]:\nsat\n(model \n  (define-fun cond1 () Bool\n    true)\n  (define-fun always_true_name1 () Bool\n    false)\n  (define-fun b1_score () Real\n    (/ 1.0 5.0))\n  (define-fun q1 () Bool\n    true)\n  (define-fun cond2 () Bool\n    false)\n)"
+    println(input)
+    println(model)
+    println(new ExtendedOutputVerifier(input).verifyModel(model, "name1"))
+  }
+
   @Ignore("wip")
   @Test
   def testMaxAndMinPSet() {
