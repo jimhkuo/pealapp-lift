@@ -88,7 +88,6 @@ class ExtendedOutputVerifier(input: String) {
           cert(conds(lhs), I, v) && cert(conds(rhs), I, v)
         }
       case c: LessThanThCondition =>
-        //TODO if certValue is bottom, returns bottom
         if (v == PealTrue) {
           ThreeWayBooleanObj.from(certValue(Right(c.lhs), I) <= certValue(c.rhs, I))
         } else {
@@ -104,8 +103,19 @@ class ExtendedOutputVerifier(input: String) {
     }
   }
 
-  private def certValue(pSet: Either[BigDecimal, PolicySet], I: Map[String, Either[BigDecimal, ThreeWayBoolean]]) = {
+  private def extractScore(pSet : PolicySet) = {
     //TODO not done
-    -999
+    pSet match {
+      case BasicPolicySet(pol, name) => -99
+      case Pol(rules, op, score, name) => -100
+//      case //Deal with operators
+    }
+  }
+
+  //TODO if certValue is not BigDecimal, throw exception for now
+  private def certValue(pSet: Either[BigDecimal, PolicySet], I: Map[String, Either[BigDecimal, ThreeWayBoolean]]): BigDecimal = {
+    val fold: BigDecimal = pSet.fold(score => score, pSet => extractScore(pSet))
+    println("fold: " + fold)
+    fold
   }
 }

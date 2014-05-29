@@ -41,4 +41,9 @@ class ThreeWayBooleanTest extends ShouldMatchersForJUnit {
     PealBottom || PealTrue should be(PealTrue)
     PealBottom || PealFalse should be(PealBottom)
   }
+
+  @Test
+  def testPealTurthToDouble() {
+//      0.5 < PealBottom
+  }
 }
