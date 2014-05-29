@@ -108,8 +108,8 @@ class ExtendedOutputVerifier(input: String) {
   private def certValue(pSet: Either[BigDecimal, PolicySet], I: Map[String, Either[BigDecimal, ThreeWayBoolean]]): BigDecimal = {
 
     //Decide to evaluate score here (instead of in Score) because it has access to I
-    def evaluateScore(score: Score): BigDecimal = {
-      throw new RuntimeException("evaluateScore is not done")
+    def evaluateFormula(vf: VariableFormula) : BigDecimal = {
+      throw new RuntimeException("evaluateFormula is not done")
     }
 
     def extractScore(pSet: PolicySet): BigDecimal = {
@@ -121,8 +121,8 @@ class ExtendedOutputVerifier(input: String) {
             throw new RuntimeException("Bottom reached")
           }
           else if (!rules.exists(r => I(r.q.name).fold(score => PealBottom, bool => bool) == PealTrue)) {
-//            score.underlyingScore.fold(s => s, f => evaluateFormula(f))
-            evaluateScore(score)
+            println(score.underlyingScore.fold(s => s, f => f.toZ3Expression))
+            score.underlyingScore.fold(s => s, f => evaluateFormula(f))
           }
           else {
             val okRules = rules.filter(r => I(r.q.name).fold(score => PealBottom, bool => bool) == PealTrue)
