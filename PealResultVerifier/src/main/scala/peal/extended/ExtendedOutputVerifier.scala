@@ -103,10 +103,9 @@ class ExtendedOutputVerifier(input: String) {
     }
   }
 
-  private def extractScore(pSet : PolicySet) = {
-    //TODO not done
+  private def extractScore(pSet : PolicySet) : BigDecimal = {
     pSet match {
-      case BasicPolicySet(pol, name) => -99
+      case BasicPolicySet(pol, name) => extractScore(pol)
       case Pol(rules, op, score, name) => -100
 //      case //Deal with operators
     }
