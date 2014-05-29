@@ -28,8 +28,8 @@ class ExtendedOutputVerifier(input: String) {
 
   def verifyModel(rawModel: String, analysisName: String) = {
     val I = Z3ModelExtractor.extractI(rawModel)(analysisName)
-//    println("I:")
-//    I.foreach(i => println(i._1 + " -> " + i._2.fold(s => s.toString(), b => b.toString)))
+    //    println("I:")
+    //    I.foreach(i => println(i._1 + " -> " + i._2.fold(s => s.toString(), b => b.toString)))
     doAnalysis(analysisName, I)
   }
 
@@ -155,11 +155,11 @@ class ExtendedOutputVerifier(input: String) {
             }
             println("op X: " + decimal)
             decimal
-//            throw new RuntimeException("op X is not done")
           }
-        case _ => //Deal with other operators
-//          throw new RuntimeException("other pSet operators not supported")
-          ???
+        case MaxPolicySet(lhs, rhs, n) => ???
+        case MinPolicySet(lhs, rhs, n) => ???
+        case MulPolicySet(lhs, rhs, n) => ???
+        case PlusPolicySet(lhs, rhs, n) => ???
       }
     }
 
