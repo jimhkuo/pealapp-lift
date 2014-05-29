@@ -125,13 +125,12 @@ class ExtendedOutputVerifier(input: String) {
     }
 
     def extractScore(pSet: PolicySet): BigDecimal = {
-      println("extracting score")
       pSet match {
         case BasicPolicySet(pol, name) => extractScore(pol)
         case Pol(rules, op, score, name) =>
           if (rules.exists(r => I.getOrElse(r.q.name, Right(PealBottom)).fold(score => PealBottom, pealBool => pealBool) == PealBottom)) {
             //log
-            throw new RuntimeException("Bottom reached")
+            throw new RuntimeException("Bottom reached in certValue")
           }
           else if (!rules.exists(r => I(r.q.name).fold(score => PealBottom, bool => bool) == PealTrue)) {
             println(score.underlyingScore.fold(s => s, f => f.toZ3Expression))
@@ -147,8 +146,6 @@ class ExtendedOutputVerifier(input: String) {
       }
     }
 
-    val fold: BigDecimal = pSet.fold(score => score, pSet => extractScore(pSet))
-    println("extractScore: " + fold)
-    fold
+    pSet.fold(score => score, pSet => extractScore(pSet))
   }
 }
