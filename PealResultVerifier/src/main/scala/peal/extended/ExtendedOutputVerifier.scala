@@ -92,7 +92,7 @@ class ExtendedOutputVerifier(input: String) {
       case c: LessThanThCondition =>
         val lhsValue: BigDecimal = certValue(Right(c.lhs), I)
         val rhsValue: BigDecimal = certValue(c.rhs, I)
-        println("LessThanThCondition: " + lhsValue + " " + rhsValue)
+        println("LessThanThCondition: lhs " + lhsValue + " <= rhs " + rhsValue + ", v " + v)
         if (v == PealTrue) {
           ThreeWayBooleanObj.from(lhsValue <= rhsValue)
         } else {
@@ -150,6 +150,7 @@ class ExtendedOutputVerifier(input: String) {
             val decimal: BigDecimal = op match {
               case Min => okRules.foldLeft(BigDecimal.valueOf(1d))((acc, rule) => acc.min(rule.score.underlyingScore.fold(s => s, f => evaluateFormula(f))))
               case Max => okRules.foldLeft(BigDecimal.valueOf(0d))((acc, rule) => acc.max(rule.score.underlyingScore.fold(s => s, f => evaluateFormula(f))))
+              case Plus => okRules.foldLeft(BigDecimal.valueOf(0d))((acc, rule) => acc + rule.score.underlyingScore.fold(s => s, f => evaluateFormula(f)))
             }
             println("op X: " + decimal)
             decimal
