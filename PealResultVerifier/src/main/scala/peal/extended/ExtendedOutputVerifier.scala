@@ -27,8 +27,8 @@ class ExtendedOutputVerifier(input: String) {
 
   def verifyModel(rawModel: String, analysisName: String) = {
     val I = Z3ModelExtractor.extractI(rawModel)(analysisName)
-    println("I:")
-    I.foreach(i => println(i._1 + " -> " + i._2.fold(s => s.toString(), b => b.toString)))
+//    println("I:")
+//    I.foreach(i => println(i._1 + " -> " + i._2.fold(s => s.toString(), b => b.toString)))
     doAnalysis(analysisName, I)
   }
 
