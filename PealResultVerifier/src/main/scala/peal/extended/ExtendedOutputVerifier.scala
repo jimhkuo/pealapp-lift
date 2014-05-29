@@ -15,7 +15,7 @@ import peal.synthesis.analysis.Different
 import peal.synthesis.analysis.Implies
 import peal.synthesis.analysis.Satisfiable
 import peal.synthesis.analysis.Equivalent
-import peal.domain.operator.{Min, Plus}
+import peal.domain.operator.{Max, Min, Plus}
 
 //TODO setting bottom to false in iterations is still required
 class ExtendedOutputVerifier(input: String) {
@@ -90,16 +90,22 @@ class ExtendedOutputVerifier(input: String) {
           cert(conds(lhs), I, v) && cert(conds(rhs), I, v)
         }
       case c: LessThanThCondition =>
+        val lhsValue: BigDecimal = certValue(Right(c.lhs), I)
+        val rhsValue: BigDecimal = certValue(c.rhs, I)
+        println("LessThanThCondition: " + lhsValue + " " + rhsValue)
         if (v == PealTrue) {
-          ThreeWayBooleanObj.from(certValue(Right(c.lhs), I) <= certValue(c.rhs, I))
+          ThreeWayBooleanObj.from(lhsValue <= rhsValue)
         } else {
-          ThreeWayBooleanObj.from(certValue(c.rhs, I) < certValue(Right(c.lhs), I))
+          ThreeWayBooleanObj.from(rhsValue < lhsValue)
         }
       case c: GreaterThanThCondition =>
+        val lhsValue: BigDecimal = certValue(Right(c.lhs), I)
+        val rhsValue: BigDecimal = certValue(c.rhs, I)
+        println("GreaterThanThCondition: lhs " + lhsValue + " > rhs " + rhsValue + ", v " + v)
         if (v == PealTrue) {
-          ThreeWayBooleanObj.from(certValue(Right(c.lhs), I) < certValue(c.rhs, I))
+          ThreeWayBooleanObj.from(rhsValue < lhsValue)
         } else {
-          ThreeWayBooleanObj.from(certValue(c.rhs, I) <= certValue(Right(c.lhs), I))
+          ThreeWayBooleanObj.from(lhsValue <= rhsValue)
         }
       case c: PredicateCondition => I(c.predicateName).right.getOrElse(PealBottom) === v
     }
@@ -134,13 +140,16 @@ class ExtendedOutputVerifier(input: String) {
             throw new RuntimeException("Bottom reached in certValue")
           }
           else if (!rules.exists(r => I(r.q.name).fold(score => PealBottom, bool => bool) == PealTrue)) {
-            score.underlyingScore.fold(s => s, f => evaluateFormula(f))
+            val fold: BigDecimal = score.underlyingScore.fold(s => s, f => evaluateFormula(f))
+            println("fold " + fold)
+            fold
           }
           else {
             val okRules = rules.filter(r => I(r.q.name).fold(score => PealBottom, bool => bool) == PealTrue)
             println(okRules)
             val decimal: BigDecimal = op match {
               case Min => okRules.foldLeft(BigDecimal.valueOf(1d))((acc, rule) => acc.min(rule.score.underlyingScore.fold(s => s, f => evaluateFormula(f))))
+              case Max => okRules.foldLeft(BigDecimal.valueOf(0d))((acc, rule) => acc.max(rule.score.underlyingScore.fold(s => s, f => evaluateFormula(f))))
             }
             println("op X: " + decimal)
             decimal
