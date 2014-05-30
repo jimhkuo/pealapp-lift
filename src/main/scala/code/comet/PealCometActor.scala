@@ -179,7 +179,9 @@ class PealCometActor extends CometActor with Loggable {
       this ! SaveFile(newSynthesis, lapseTime)
     case DisplayLazy => this ! Result(<pre>{performLazySynthesis(inputPolicies)}</pre>)
     case LazySynthesisAndCallZ3 => onCallZ3(performLazySynthesis(inputPolicies))
-    case ExtendedSynthesisAndCallZ3 => onCallZ3(performExtendedSynthesis(inputPolicies))
+    case ExtendedSynthesisAndCallZ3 =>
+      val (constsMap,  conds, pSets, analyses, domainSpecific) = parseInput(inputPolicies)
+      onCallZ3AndVerify(performExtendedSynthesis(inputPolicies), constsMap, analyses)
     case PrepareLazy =>
       partialUpdate(JqId("result") ~> JqHtml(Text("Synthesising... Please wait...")))
       this ! DownloadLazy
@@ -370,6 +372,33 @@ class PealCometActor extends CometActor with Loggable {
   private def onCallZ3(z3SMTInput : String) {
     try {
       this ! Result(<pre>{z3SMTInput}</pre><pre>Z3 Raw Output:<br/>{Z3Caller.call(z3SMTInput)}</pre>)
+    } catch {
+      case e: Exception =>  dealWithIt(e)
+    }
+  }
+
+  private def onCallZ3AndVerify(z3SMTInput : String,constsMap: Map[String, PealAst], analyses: Map[String, AnalysisGenerator]) {
+    try {
+      val z3RawOutput = Z3Caller.call(z3SMTInput)
+      val z3OutputParser = ParserHelper.getZ3OutputParser(z3RawOutput)
+      val z3OutputModels = z3OutputParser.results().toMap
+      val sortedAnalyses = analyses.keys.toSeq.sortWith(_ < _)
+
+      val verificationResults = for (analysis <- sortedAnalyses if (z3OutputModels(analysis).satResult == Sat)) yield {
+        val verifiedModel = new ExplicitOutputVerifier(inputPolicies).verifyModel(z3RawOutput, analysis)
+        val result = verifiedModel._1 match {
+          case PealTrue => "succeeded"
+          case PealFalse => "failed"
+          case PealBottom => "was inconclusive"
+        }
+        "Independent verification of correctness of scenario [" + analysis + "] " + result + ", modified predicates are " + verifiedModel._2 + "\n"
+      }
+
+      val analysedResults = Z3OutputAnalyser.execute(analyses, z3OutputModels, constsMap)
+
+//      this ! Result(<pre>{z3SMTInput}</pre><pre>Z3 Raw Output:<br/>{z3RawOutput}</pre>)
+      this ! Result(<pre>{z3SMTInput}</pre> <pre>Analysed results:<br/>{analysedResults}</pre><pre>{verificationResults.mkString("")}</pre><pre>Z3 Raw Output:<br/>{z3RawOutput}</pre>)
+
     } catch {
       case e: Exception =>  dealWithIt(e)
     }
