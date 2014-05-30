@@ -26,43 +26,57 @@ class ExtendedOutputVerifier(input: String) {
   val analyses = pealProgramParser.analyses
   val predicateNames: Seq[String] = pealProgramParser.pols.values().flatMap(pol => pol.rules).map(r => r.q.name).toSeq.distinct
 
-  def verifyModel(rawModel: String, analysisName: String) = {
+  def verifyModel(rawModel: String, analysisName: String): (ThreeWayBoolean, Set[String]) = {
     val I = Z3ModelExtractor.extractI(rawModel)(analysisName)
-    //    println("I:")
-    //    I.foreach(i => println(i._1 + " -> " + i._2.fold(s => s.toString(), b => b.toString)))
-    doAnalysis(analysisName, I)
+    verifyModel(rawModel, analysisName, I, Set())
   }
 
-  def doAnalysis(analysisName: String, truthMapping: Map[String, Either[BigDecimal, ThreeWayBoolean]]): ThreeWayBoolean = {
+  def verifyModel(rawModel: String, analysisName: String, I: Map[String, Either[BigDecimal, ThreeWayBoolean]], reMappedPredicates: Set[String]): (ThreeWayBoolean, Set[String]) = {
+
+    doAnalysis(analysisName, I, reMappedPredicates) match {
+      case (PealBottom, s) =>
+
+        var truthMapping = I
+        val bottomPredicates = predicateNames.filterNot(truthMapping.contains).filterNot(s.contains)
+        if (bottomPredicates.isEmpty) {
+          return (PealBottom, s)
+        }
+        (s + bottomPredicates.head).foreach(truthMapping += _ -> Right(PealFalse))
+        verifyModel(rawModel, analysisName, truthMapping, s + bottomPredicates.head)
+      case (r, s) => (r, s)
+    }
+  }
+
+  def doAnalysis(analysisName: String, truthMapping: Map[String, Either[BigDecimal, ThreeWayBoolean]], reMappedPredicates: Set[String]): (ThreeWayBoolean, Set[String]) = {
     analyses(analysisName) match {
       case AlwaysTrue(_, condName) =>
         if (truthMapping(condName) == Right(PealFalse)) {
-          return cert(conds(condName), truthMapping, truthMapping(condName).right.get)
+          return (cert(conds(condName), truthMapping, truthMapping(condName).right.get), reMappedPredicates)
         }
         throw new RuntimeException(condName + " should be false but is not in " + analysisName)
       case AlwaysFalse(_, condName) =>
         if (truthMapping(condName) == Right(PealTrue)) {
-          return cert(conds(condName), truthMapping, truthMapping(condName).right.get)
+          return (cert(conds(condName), truthMapping, truthMapping(condName).right.get), reMappedPredicates)
         }
         throw new RuntimeException(condName + " should be true but is not in " + analysisName)
       case Satisfiable(_, condName) =>
         if (truthMapping(condName) == Right(PealTrue)) {
-          return cert(conds(condName), truthMapping, truthMapping(condName).right.get)
+          return (cert(conds(condName), truthMapping, truthMapping(condName).right.get), reMappedPredicates)
         }
         throw new RuntimeException(condName + " should be true but is not in " + analysisName)
       case Different(_, lhs, rhs) =>
         if (truthMapping.get(lhs) != truthMapping.get(rhs)) {
-          return cert(conds(lhs), truthMapping, truthMapping(lhs).right.get) && cert(conds(rhs), truthMapping, truthMapping(rhs).right.get)
+          return (cert(conds(lhs), truthMapping, truthMapping(lhs).right.get) && cert(conds(rhs), truthMapping, truthMapping(rhs).right.get), reMappedPredicates)
         }
         throw new RuntimeException(lhs + " and " + rhs + " should be different but are not in " + analysisName)
       case Equivalent(_, lhs, rhs) =>
         if (truthMapping.get(lhs) != truthMapping.get(rhs)) {
-          return cert(conds(lhs), truthMapping, truthMapping(lhs).right.get) && cert(conds(rhs), truthMapping, truthMapping(rhs).right.get)
+          return (cert(conds(lhs), truthMapping, truthMapping(lhs).right.get) && cert(conds(rhs), truthMapping, truthMapping(rhs).right.get), reMappedPredicates)
         }
         throw new RuntimeException(lhs + " and " + rhs + " should be different but are not in " + analysisName)
       case Implies(_, lhs, rhs) =>
         if (truthMapping(lhs) == Right(PealTrue) && truthMapping(rhs) == Right(PealFalse)) {
-          return cert(conds(lhs), truthMapping, truthMapping(lhs).right.get) && cert(conds(rhs), truthMapping, truthMapping(rhs).right.get)
+          return (cert(conds(lhs), truthMapping, truthMapping(lhs).right.get) && cert(conds(rhs), truthMapping, truthMapping(rhs).right.get), reMappedPredicates)
         }
         throw new RuntimeException(lhs + " should be true and " + rhs + " should be false, but are not in " + analysisName)
       case _ =>
