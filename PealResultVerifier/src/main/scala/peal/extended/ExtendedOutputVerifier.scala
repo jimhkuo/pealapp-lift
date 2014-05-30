@@ -16,6 +16,7 @@ import peal.synthesis.analysis.Implies
 import peal.synthesis.analysis.Satisfiable
 import peal.synthesis.analysis.Equivalent
 import peal.domain.operator.{Mul, Max, Min, Plus}
+import java.math.MathContext
 
 //TODO setting bottom to false in iterations is still required
 class ExtendedOutputVerifier(input: String) {
@@ -146,8 +147,8 @@ class ExtendedOutputVerifier(input: String) {
 
     def evaluateFormula(vf: VariableFormula): BigDecimal = {
       val decimal: BigDecimal = vf.operations.foldLeft(BigDecimal(0))(_ + eval(_))
-      println("evaluateFormula: " + decimal)
-      decimal
+      println("evaluateFormula: " + decimal.setScale(8, BigDecimal.RoundingMode.HALF_UP))
+      decimal.setScale(8, BigDecimal.RoundingMode.HALF_UP) //TODO this hack is bad and only temporary
     }
 
     def extractScore(pSet: PolicySet): BigDecimal = {

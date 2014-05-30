@@ -12,6 +12,12 @@ import peal.antlr.util.ParserHelper
 class ScalaTest extends ShouldMatchersForJUnit {
 
   @Test
+  def testRound() {
+
+    val bigDecimal: BigDecimal = BigDecimal(1.23456789)
+    println(bigDecimal.setScale(2, BigDecimal.RoundingMode.HALF_UP))
+  }
+  @Test
   def testHead() {
       println(List("a1","b2").head)
   }
