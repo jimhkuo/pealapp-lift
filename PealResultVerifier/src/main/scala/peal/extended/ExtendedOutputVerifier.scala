@@ -154,7 +154,7 @@ class ExtendedOutputVerifier(input: String) {
           }
         case MaxPolicySet(lhs, rhs, n) => extractScore(lhs).max(extractScore(rhs))
         case MinPolicySet(lhs, rhs, n) => extractScore(lhs).min(extractScore(rhs))
-        case PlusPolicySet(lhs, rhs, n) => ???
+        case PlusPolicySet(lhs, rhs, n) => extractScore(lhs) + extractScore(rhs)
         case MulPolicySet(lhs, rhs, n) => ???
       }
     }
