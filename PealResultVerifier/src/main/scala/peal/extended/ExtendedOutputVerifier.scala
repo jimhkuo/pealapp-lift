@@ -139,13 +139,13 @@ class ExtendedOutputVerifier(input: String) {
     def eval(e: Multiplier): BigDecimal = {
       e.name match {
         case "" => e.multiplier
-        case _ if I(e.name).isLeft => e.multiplier * I(e.name).fold(s => s, vf => -999)
+        case _ if I(e.name).isLeft => e.multiplier * I(e.name).fold(s => s, vf => throw new RuntimeException("illegal variable format"))
         case _ => throw new RuntimeException("Invalid eval case")
       }
     }
 
     def evaluateFormula(vf: VariableFormula): BigDecimal = {
-      val decimal: BigDecimal = vf.operations.foldLeft(BigDecimal.valueOf(0.toDouble))(_ + eval(_))
+      val decimal: BigDecimal = vf.operations.foldLeft(BigDecimal(0))(_ + eval(_))
       println("evaluateFormula: " + decimal)
       decimal
     }
