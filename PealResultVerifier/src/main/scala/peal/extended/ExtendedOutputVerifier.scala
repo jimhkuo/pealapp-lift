@@ -73,42 +73,45 @@ class ExtendedOutputVerifier(input: String) {
   }
 
   def cert(cond: Condition, I: Map[String, Either[BigDecimal, ThreeWayBoolean]], v: ThreeWayBoolean): ThreeWayBoolean = {
-    //TODO can catch exception and return bottom
-    cond match {
-      case NotCondition(c) => cert(conds(c), I, !v)
-      case AndCondition(lhs, rhs) =>
-        if (v == PealTrue) {
-          cert(conds(lhs), I, v) && cert(conds(rhs), I, v)
-        }
-        else {
-          cert(conds(lhs), I, v) || cert(conds(rhs), I, v)
-        }
-      case OrCondition(lhs, rhs) =>
-        if (v == PealTrue) {
-          cert(conds(lhs), I, v) || cert(conds(rhs), I, v)
-        }
-        else {
-          cert(conds(lhs), I, v) && cert(conds(rhs), I, v)
-        }
-      case c: LessThanThCondition =>
-        val lhsValue: BigDecimal = certValue(Right(c.lhs), I)
-        val rhsValue: BigDecimal = certValue(c.rhs, I)
-        println("LessThanThCondition: lhs " + lhsValue + " <= rhs " + rhsValue + ", v " + v)
-        if (v == PealTrue) {
-          ThreeWayBooleanObj.from(lhsValue <= rhsValue)
-        } else {
-          ThreeWayBooleanObj.from(rhsValue < lhsValue)
-        }
-      case c: GreaterThanThCondition =>
-        val lhsValue: BigDecimal = certValue(Right(c.lhs), I)
-        val rhsValue: BigDecimal = certValue(c.rhs, I)
-        println("GreaterThanThCondition: lhs " + lhsValue + " > rhs " + rhsValue + ", v " + v)
-        if (v == PealTrue) {
-          ThreeWayBooleanObj.from(rhsValue < lhsValue)
-        } else {
-          ThreeWayBooleanObj.from(lhsValue <= rhsValue)
-        }
-      case c: PredicateCondition => I(c.predicateName).right.getOrElse(PealBottom) === v
+    try {
+      cond match {
+        case NotCondition(c) => cert(conds(c), I, !v)
+        case AndCondition(lhs, rhs) =>
+          if (v == PealTrue) {
+            cert(conds(lhs), I, v) && cert(conds(rhs), I, v)
+          }
+          else {
+            cert(conds(lhs), I, v) || cert(conds(rhs), I, v)
+          }
+        case OrCondition(lhs, rhs) =>
+          if (v == PealTrue) {
+            cert(conds(lhs), I, v) || cert(conds(rhs), I, v)
+          }
+          else {
+            cert(conds(lhs), I, v) && cert(conds(rhs), I, v)
+          }
+        case c: LessThanThCondition =>
+          val lhsValue: BigDecimal = certValue(Right(c.lhs), I)
+          val rhsValue: BigDecimal = certValue(c.rhs, I)
+          println("LessThanThCondition: lhs " + lhsValue + " <= rhs " + rhsValue + ", v " + v)
+          if (v == PealTrue) {
+            ThreeWayBooleanObj.from(lhsValue <= rhsValue)
+          } else {
+            ThreeWayBooleanObj.from(rhsValue < lhsValue)
+          }
+        case c: GreaterThanThCondition =>
+          val lhsValue: BigDecimal = certValue(Right(c.lhs), I)
+          val rhsValue: BigDecimal = certValue(c.rhs, I)
+          println("GreaterThanThCondition: lhs " + lhsValue + " > rhs " + rhsValue + ", v " + v)
+          if (v == PealTrue) {
+            ThreeWayBooleanObj.from(rhsValue < lhsValue)
+          } else {
+            ThreeWayBooleanObj.from(lhsValue <= rhsValue)
+          }
+        case c: PredicateCondition => I(c.predicateName).right.getOrElse(PealBottom) === v
+      }
+    } catch {
+      case e: RuntimeException => PealBottom
     }
   }
 
@@ -133,7 +136,7 @@ class ExtendedOutputVerifier(input: String) {
         case Pol(rules, op, score, name) =>
           if (rules.exists(r => I.getOrElse(r.q.name, Right(PealBottom)).fold(score => PealBottom, pealBool => pealBool) == PealBottom)) {
             //should log
-            throw new RuntimeException("Bottom reached in certValue")
+            throw new RuntimeException("PealBottom reached in certValue because some predicates are not defined in I")
           }
           else if (!rules.exists(r => I(r.q.name).fold(score => PealBottom, bool => bool) == PealTrue)) {
             val fold: BigDecimal = score.underlyingScore.fold(s => s, f => evaluateFormula(f))
