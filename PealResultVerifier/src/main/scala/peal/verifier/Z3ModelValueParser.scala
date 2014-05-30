@@ -21,7 +21,6 @@ object Z3ModelValueParser {
       case e: NumberFormatException =>
         val rational(numer, denom) = v
         new Rational(numer, denom).value
-
     }
   }
 }

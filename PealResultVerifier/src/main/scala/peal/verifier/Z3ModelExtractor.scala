@@ -2,7 +2,6 @@ package peal.verifier
 
 import peal.antlr.util.ParserHelper
 import scala.collection.JavaConversions._
-import peal.domain.ThreeWayBooleanObj
 
 object Z3ModelExtractor {
 
