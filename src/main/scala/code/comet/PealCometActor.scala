@@ -18,6 +18,7 @@ import peal.domain.z3.{Sat, PealAst, Term}
 import peal.antlr.util.ParserHelper
 import peal.z3.Z3Caller
 import peal.explicit.ExplicitOutputVerifier
+import peal.extended.ExtendedOutputVerifier
 
 class PealCometActor extends CometActor with Loggable {
 
@@ -385,7 +386,7 @@ class PealCometActor extends CometActor with Loggable {
       val sortedAnalyses = analyses.keys.toSeq.sortWith(_ < _)
 
       val verificationResults = for (analysis <- sortedAnalyses if (z3OutputModels(analysis).satResult == Sat)) yield {
-        val verifiedModel = new ExplicitOutputVerifier(inputPolicies).verifyModel(z3RawOutput, analysis)
+        val verifiedModel = new ExtendedOutputVerifier(inputPolicies).verifyModel(z3RawOutput, analysis)
         val result = verifiedModel._1 match {
           case PealTrue => "succeeded"
           case PealFalse => "failed"
@@ -396,9 +397,7 @@ class PealCometActor extends CometActor with Loggable {
 
       val analysedResults = Z3OutputAnalyser.execute(analyses, z3OutputModels, constsMap)
 
-//      this ! Result(<pre>{z3SMTInput}</pre><pre>Z3 Raw Output:<br/>{z3RawOutput}</pre>)
       this ! Result(<pre>{z3SMTInput}</pre> <pre>Analysed results:<br/>{analysedResults}</pre><pre>{verificationResults.mkString("")}</pre><pre>Z3 Raw Output:<br/>{z3RawOutput}</pre>)
-
     } catch {
       case e: Exception =>  dealWithIt(e)
     }

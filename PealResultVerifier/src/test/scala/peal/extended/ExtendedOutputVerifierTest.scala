@@ -2,7 +2,7 @@ package peal.extended
 
 import org.scalatest.junit.ShouldMatchersForJUnit
 import org.junit.{Ignore, Test}
-import peal.domain.PealTrue
+import peal.domain.{ThreeWayBoolean, PealTrue}
 
 
 class ExtendedOutputVerifierTest extends ShouldMatchersForJUnit {
@@ -150,6 +150,8 @@ class ExtendedOutputVerifierTest extends ShouldMatchersForJUnit {
     val model = "Result of analysis [name1 = always_true? cond1]:\nsat\n(model \n  (define-fun cond1 () Bool\n    false)\n  (define-fun b1_score () Real\n    (/ 1.0 10.0))\n  (define-fun q3 () Bool\n    true)\n  (define-fun always_true_name1 () Bool\n    false)\n)"
     println(input)
     //    println(model)
-    new ExtendedOutputVerifier(input).verifyModel(model, "name1")._1 should be (PealTrue)
+    val model1: (ThreeWayBoolean, Set[String]) = new ExtendedOutputVerifier(input).verifyModel(model, "name1")
+    model1._1 should be (PealTrue)
+    println(model1._2)
   }
 }
