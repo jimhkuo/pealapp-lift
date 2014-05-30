@@ -11,4 +11,11 @@ object Z3ModelExtractor {
       case (name, z3Model) => (name, z3Model.assignments.map(assignment => (assignment.name, Z3ModelValueParser.parse(assignment.value))).toMap)
     }
   }
+
+  def extractIToRational(model: String) = {
+    val z3OutputParser = ParserHelper.getZ3OutputParser(model.mkString(""))
+    z3OutputParser.results().map {
+      case (name, z3Model) => (name, z3Model.assignments.map(assignment => (assignment.name, Z3ModelValueParser.parseToRational(assignment.value))).toMap)
+    }
+  }
 }
