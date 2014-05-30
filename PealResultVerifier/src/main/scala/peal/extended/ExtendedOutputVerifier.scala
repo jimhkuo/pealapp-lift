@@ -76,7 +76,11 @@ class ExtendedOutputVerifier(input: String) {
         throw new RuntimeException(lhs + " and " + rhs + " should be different but are not in " + analysisName)
       case Implies(_, lhs, rhs) =>
         if (truthMapping(lhs) == Right(PealTrue) && truthMapping(rhs) == Right(PealFalse)) {
-          return (cert(conds(lhs), truthMapping, truthMapping(lhs).right.get) && cert(conds(rhs), truthMapping, truthMapping(rhs).right.get), reMappedPredicates)
+          val cert1: ThreeWayBoolean = cert(conds(lhs), truthMapping, truthMapping(lhs).right.get)
+          val cert2: ThreeWayBoolean = cert(conds(rhs), truthMapping, truthMapping(rhs).right.get)
+          println("lhs is expected to be " + truthMapping(lhs).right.get + ", rhs is expected to be " + truthMapping(rhs).right.get)
+          println("cert1 " + cert1 + " cert2 " + cert2)
+          return (cert1 && cert2, reMappedPredicates)
         }
         throw new RuntimeException(lhs + " should be true and " + rhs + " should be false, but are not in " + analysisName)
       case _ =>
@@ -141,7 +145,9 @@ class ExtendedOutputVerifier(input: String) {
     }
 
     def evaluateFormula(vf: VariableFormula): BigDecimal = {
-      vf.operations.foldLeft(BigDecimal.valueOf(0.toDouble))(_ + eval(_))
+      val decimal: BigDecimal = vf.operations.foldLeft(BigDecimal.valueOf(0.toDouble))(_ + eval(_))
+      println("evaluateFormula: " + decimal)
+      decimal
     }
 
     def extractScore(pSet: PolicySet): BigDecimal = {
@@ -159,12 +165,15 @@ class ExtendedOutputVerifier(input: String) {
           }
           else {
             val okRules = rules.filter(r => I(r.q.name).fold(score => PealBottom, bool => bool) == PealTrue)
-            println(okRules)
+            println("okRules are: " + okRules + " op is " + op)
             val decimal: BigDecimal = op match {
-              case Min => okRules.foldLeft(BigDecimal.valueOf(1d))((acc, rule) => acc.min(rule.score.underlyingScore.fold(s => s, f => evaluateFormula(f))))
-              case Max => okRules.foldLeft(BigDecimal.valueOf(0d))((acc, rule) => acc.max(rule.score.underlyingScore.fold(s => s, f => evaluateFormula(f))))
-              case Plus => okRules.foldLeft(BigDecimal.valueOf(0d))((acc, rule) => acc + rule.score.underlyingScore.fold(s => s, f => evaluateFormula(f)))
-              case Mul => okRules.foldLeft(BigDecimal.valueOf(1d))((acc, rule) => acc * rule.score.underlyingScore.fold(s => s, f => evaluateFormula(f)))
+              case Min => okRules.foldLeft(BigDecimal(1))((acc, rule) => acc.min(rule.score.underlyingScore.fold(s => s, f => evaluateFormula(f))))
+              case Max => okRules.foldLeft(BigDecimal(0))((acc, rule) => acc.max(rule.score.underlyingScore.fold(s => s, f => evaluateFormula(f))))
+              case Plus => okRules.foldLeft(BigDecimal(0))((acc, rule) => {
+                println("acc " + acc + ", rule " + rule)
+                acc + rule.score.underlyingScore.fold(s => s, f => evaluateFormula(f))
+              })
+              case Mul => okRules.foldLeft(BigDecimal(1))((acc, rule) => acc * rule.score.underlyingScore.fold(s => s, f => evaluateFormula(f)))
             }
             println("op X: " + decimal)
             decimal
