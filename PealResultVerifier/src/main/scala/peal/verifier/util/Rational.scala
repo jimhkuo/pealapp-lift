@@ -21,4 +21,5 @@ case class Rational(numerator: BigDecimal, denominator: BigDecimal) {
   def value: BigDecimal = numerator / denominator
 
   def max(that: Rational) = if (this.less(that)) that else this
+  def min(that: Rational) = if (this.less(that)) this else that
 }

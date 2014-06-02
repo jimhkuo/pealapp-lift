@@ -25,4 +25,11 @@ class RationalTest extends ShouldMatchersForJUnit {
     Rational("15", "10").max(Rational("10", "9")) should be (Rational("1.5"))
     Rational("-15", "10").max(Rational("10", "9")) should be (Rational("10","9"))
   }
+
+  @Test
+  def testMin() {
+    Rational("1.5").min(Rational("1")) should be (Rational("1"))
+    Rational("15", "10").min(Rational("10", "9")) should be (Rational("10","9"))
+    Rational("-15", "10").min(Rational("10", "9")) should be (Rational("-15","10"))
+  }
 }
