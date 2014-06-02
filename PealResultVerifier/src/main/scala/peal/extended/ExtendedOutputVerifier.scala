@@ -16,7 +16,7 @@ import peal.synthesis.analysis.Implies
 import peal.synthesis.analysis.Satisfiable
 import peal.synthesis.analysis.Equivalent
 import peal.domain.operator.{Mul, Max, Min, Plus}
-import java.math.MathContext
+import peal.verifier.util.Rational
 
 class ExtendedOutputVerifier(input: String) {
   val pealProgramParser = ParserHelper.getPealParser(input)
@@ -27,11 +27,11 @@ class ExtendedOutputVerifier(input: String) {
   val predicateNames: Seq[String] = pealProgramParser.pols.values().flatMap(pol => pol.rules).map(r => r.q.name).toSeq.distinct
 
   def verifyModel(rawModel: String, analysisName: String): (ThreeWayBoolean, Set[String]) = {
-    val I = Z3ModelExtractor.extractI(rawModel)(analysisName)
+    val I = Z3ModelExtractor.extractIUsingRational(rawModel)(analysisName)
     verifyModel(rawModel, analysisName, I, Set())
   }
 
-  def verifyModel(rawModel: String, analysisName: String, I: Map[String, Either[BigDecimal, ThreeWayBoolean]], reMappedPredicates: Set[String]): (ThreeWayBoolean, Set[String]) = {
+  def verifyModel(rawModel: String, analysisName: String, I: Map[String, Either[Rational, ThreeWayBoolean]], reMappedPredicates: Set[String]): (ThreeWayBoolean, Set[String]) = {
 
     doAnalysis(analysisName, I, reMappedPredicates) match {
       case (PealBottom, s) =>
@@ -47,7 +47,7 @@ class ExtendedOutputVerifier(input: String) {
     }
   }
 
-  def doAnalysis(analysisName: String, truthMapping: Map[String, Either[BigDecimal, ThreeWayBoolean]], reMappedPredicates: Set[String]): (ThreeWayBoolean, Set[String]) = {
+  def doAnalysis(analysisName: String, truthMapping: Map[String, Either[Rational, ThreeWayBoolean]], reMappedPredicates: Set[String]): (ThreeWayBoolean, Set[String]) = {
     analyses(analysisName) match {
       case AlwaysTrue(_, condName) =>
         if (truthMapping(condName) == Right(PealFalse)) {
@@ -90,7 +90,7 @@ class ExtendedOutputVerifier(input: String) {
     throw new RuntimeException("shouldn't get here, no supported analysis specified")
   }
 
-  def cert(cond: Condition, I: Map[String, Either[BigDecimal, ThreeWayBoolean]], v: ThreeWayBoolean): ThreeWayBoolean = {
+  def cert(cond: Condition, I: Map[String, Either[Rational, ThreeWayBoolean]], v: ThreeWayBoolean): ThreeWayBoolean = {
     try {
       cond match {
         case NotCondition(c) => cert(conds(c), I, !v)
@@ -129,26 +129,28 @@ class ExtendedOutputVerifier(input: String) {
         case c: PredicateCondition => I(c.predicateName).right.getOrElse(PealBottom) === v
       }
     } catch {
-      case e: RuntimeException => PealBottom
+      case e: RuntimeException =>
+        e.printStackTrace()
+        PealBottom
     }
   }
 
   //if certValue is not BigDecimal, throw exception to be handled in the upper layer
-  private def certValue(pSet: Either[BigDecimal, PolicySet], I: Map[String, Either[BigDecimal, ThreeWayBoolean]]): BigDecimal = {
+  private def certValue(pSet: Either[BigDecimal, PolicySet], I: Map[String, Either[Rational, ThreeWayBoolean]]): BigDecimal = {
 
-    def eval(e: Multiplier): BigDecimal = {
+    def eval(e: Multiplier): Rational = {
       e.name match {
-        case "" => e.multiplier
-        case _ if I(e.name).isLeft => e.multiplier * I(e.name).fold(s => s, vf => throw new RuntimeException("illegal variable format"))
+        case "" => Rational(e.multiplier.toString())
+        case _ if I(e.name).isLeft => Rational(e.multiplier.toString()).mul(I(e.name).fold(s => s, vf => throw new RuntimeException("illegal variable format")))
         case _ => throw new RuntimeException("Invalid eval case")
       }
     }
 
-    def evaluateFormula(vf: VariableFormula): BigDecimal = {
-      val decimal: BigDecimal = vf.operations.foldLeft(BigDecimal(0))(_ + eval(_))
-      println("evaluateFormula: " + decimal.setScale(8, BigDecimal.RoundingMode.HALF_UP))
+    def evaluateFormula(vf: VariableFormula): Rational = {
+//      println("evaluateFormula: " + decimal.setScale(8, BigDecimal.RoundingMode.HALF_UP))
       //TODO temporary hack for rational replacement
-      decimal.setScale(8, BigDecimal.RoundingMode.HALF_UP)
+      //      decimal.setScale(8, BigDecimal.RoundingMode.HALF_UP)
+      vf.operations.foldLeft(Rational("0"))((l, r) => l.plus(eval(r)))
     }
 
     def extractScore(pSet: PolicySet): BigDecimal = {
@@ -160,7 +162,7 @@ class ExtendedOutputVerifier(input: String) {
             throw new RuntimeException("PealBottom reached in certValue because some predicates are not defined in I")
           }
           else if (!rules.exists(r => I(r.q.name).fold(score => PealBottom, bool => bool) == PealTrue)) {
-            val fold: BigDecimal = score.underlyingScore.fold(s => s, f => evaluateFormula(f))
+            val fold: BigDecimal = score.underlyingScore.fold(s => s, f => evaluateFormula(f).value)
             println("fold " + fold)
             fold
           }
@@ -168,13 +170,13 @@ class ExtendedOutputVerifier(input: String) {
             val okRules = rules.filter(r => I(r.q.name).fold(score => PealBottom, bool => bool) == PealTrue)
             println("okRules are: " + okRules + " op is " + op)
             val decimal: BigDecimal = op match {
-              case Min => okRules.foldLeft(BigDecimal(1))((acc, rule) => acc.min(rule.score.underlyingScore.fold(s => s, f => evaluateFormula(f))))
-              case Max => okRules.foldLeft(BigDecimal(0))((acc, rule) => acc.max(rule.score.underlyingScore.fold(s => s, f => evaluateFormula(f))))
-              case Plus => okRules.foldLeft(BigDecimal(0))((acc, rule) => {
-                println("acc " + acc + ", rule " + rule)
-                acc + rule.score.underlyingScore.fold(s => s, f => evaluateFormula(f))
-              })
-              case Mul => okRules.foldLeft(BigDecimal(1))((acc, rule) => acc * rule.score.underlyingScore.fold(s => s, f => evaluateFormula(f)))
+              case Min => okRules.foldLeft(Rational("1"))((acc, rule) => acc.min(rule.score.underlyingScore.fold(s => Rational(s.toString()), f => evaluateFormula(f)))).value
+//              case Max => okRules.foldLeft(BigDecimal(0))((acc, rule) => acc.max(rule.score.underlyingScore.fold(s => s, f => evaluateFormula(f))))
+//              case Plus => okRules.foldLeft(BigDecimal(0))((acc, rule) => {
+//                println("acc " + acc + ", rule " + rule)
+//                acc + rule.score.underlyingScore.fold(s => s, f => evaluateFormula(f))
+//              })
+//              case Mul => okRules.foldLeft(BigDecimal(1))((acc, rule) => acc * rule.score.underlyingScore.fold(s => s, f => evaluateFormula(f)))
             }
             println("op X: " + decimal)
             decimal
