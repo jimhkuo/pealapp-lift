@@ -39,4 +39,11 @@ class RationalTest extends ShouldMatchersForJUnit {
     Rational("15", "10").mul(Rational("10", "9")) should be (Rational("15","9"))
     Rational("-15", "10").mul(Rational("10", "9")) should be (Rational("-15","9"))
   }
+
+  @Test
+  def testPlus() {
+    Rational("1.5").plus(Rational("1")) should be (Rational("2.5"))
+    Rational("15", "10").plus(Rational("10", "9")) should be (Rational("235","90"))
+    Rational("-15", "10").plus(Rational("10", "9")) should be (Rational("-35","90"))
+  }
 }
