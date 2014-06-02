@@ -28,6 +28,11 @@ class ScalaTest extends ShouldMatchersForJUnit {
   }
 
   @Test
+  def testToInt() {
+      println("1.0".toDouble.toInt)
+  }
+
+  @Test
   def testEmptySum() {
       List[Int]().sum should be (0)
   }

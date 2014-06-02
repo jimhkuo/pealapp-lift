@@ -27,7 +27,7 @@ object Z3ModelValueParser {
     } catch {
       case e: NumberFormatException =>
         val rational(numer, denom) = v
-        new Rational(numer, denom).value
+        Rational(numer, denom).value
     }
   }
 
