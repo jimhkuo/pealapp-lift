@@ -28,6 +28,12 @@ class Z3ModelExtractorTest extends ShouldMatchersForJUnit {
   }
 
   @Test
+  def testCanExtractBigDecimal() {
+    val model = "Result of analysis [analysis1 = always_true? cond1]:\n\nsat\n\n(model \n\n  (define-fun b () Real\n    (- 1.5))\n )"
+    Z3ModelExtractor.extractIToRational(model)("analysis1") should be(Map("b" -> Left(Rational(-1.5, 1))))
+  }
+
+  @Test
   def testCanExtractModelFromExtendedSynthesis() {
     val model = "Result of analysis [name1 = satisfiable? cond1]:\nsat\n(model \n  (define-fun b1_score () Real\n    (/ 1.0 2.0))\n  (define-fun cond3 () Bool\n    false)\n  (define-fun y () Real\n    0.0)\n  (define-fun q4 () Bool\n    true)\n  (define-fun cond2 () Bool\n    false)\n  (define-fun cond1 () Bool\n    true)\n  (define-fun satisfiable_name1 () Bool\n    true)\n  (define-fun q1 () Bool\n    false)\n  (define-fun b1_default_U () Real\n    0.0)\n  (define-fun q5 () Bool\n    true)\n  (define-fun b () Real\n    (- 1.0))\n  (define-fun cond4 () Bool\n    true)\n  (define-fun q3 () Bool\n    false)\n  (define-fun a () Real\n    0.0)\n  (define-fun q2 () Bool\n    false)\n  (define-fun b1_q1_U () Real\n    0.0)\n  (define-fun z () Real\n    (/ 5.0 8.0))\n  (define-fun b2_score () Real\n    (/ 1.0 2.0))\n  (define-fun q6 () Bool\n    true)\n  (define-fun b2_q6_U () Real\n    0.0)\n  (define-fun x () Real\n    5.0)\n)"
     val assignments = Z3ModelExtractor.extractI(model)("name1")
