@@ -10,4 +10,9 @@ class RationalTest extends ShouldMatchersForJUnit {
   def testCanCreate() {
       Rational("1.0","2.0") should be (Rational("1", "2"))
   }
+
+  @Test
+  def testDecimal() {
+      Rational("1.5") should be (Rational(3, 2))
+  }
 }

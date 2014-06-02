@@ -24,13 +24,13 @@ class Z3ModelExtractorTest extends ShouldMatchersForJUnit {
   @Test
   def testCanExtractRational() {
     val model = "Result of analysis [analysis1 = always_true? cond1]:\n\nsat\n\n(model \n\n  (define-fun b1_score () Real\n    (/ 1.0 2.0))\n)"
-    Z3ModelExtractor.extractIToRational(model)("analysis1") should be(Map("b1_score" -> Left(Rational(1, 2))))
+    Z3ModelExtractor.extractIUsingRational(model)("analysis1") should be(Map("b1_score" -> Left(Rational(1, 2))))
   }
 
   @Test
-  def testCanExtractBigDecimal() {
+  def testCanExtractIUsingRationalBigDecimal() {
     val model = "Result of analysis [analysis1 = always_true? cond1]:\n\nsat\n\n(model \n\n  (define-fun b () Real\n    (- 1.5))\n )"
-    Z3ModelExtractor.extractIToRational(model)("analysis1") should be(Map("b" -> Left(Rational(-1.5, 1))))
+    Z3ModelExtractor.extractIUsingRational(model)("analysis1") should be(Map("b" -> Left(Rational(-1.5, 1))))
   }
 
   @Test
