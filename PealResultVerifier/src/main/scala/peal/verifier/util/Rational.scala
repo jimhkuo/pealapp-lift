@@ -5,13 +5,13 @@ object Rational {
 
   def apply(num: String): Rational = Rational(num, "1")
 
-  def apply(x: String, y: String) = {
+  def apply(x: String, y: String) : Rational = {
     val numer = x.toDouble
     val denom = y.toDouble
     val commonDivisior = gcd(numer, denom)
     val a = if (numer * denom < 0) -(numer / commonDivisior).abs else (numer / commonDivisior).abs
     val b = (denom / commonDivisior).abs
-    new Rational(a, b)
+    Rational(a, b)
   }
 }
 
