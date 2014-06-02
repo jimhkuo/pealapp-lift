@@ -1,8 +1,7 @@
 package peal.verifier
 
 import org.scalatest.junit.ShouldMatchersForJUnit
-import org.junit.{Ignore, Test}
-import peal.domain.z3.Model
+import org.junit.Test
 import peal.domain.PealFalse
 import peal.verifier.util.Rational
 
