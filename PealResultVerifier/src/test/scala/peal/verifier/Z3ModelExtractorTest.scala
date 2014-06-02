@@ -4,6 +4,7 @@ import org.scalatest.junit.ShouldMatchersForJUnit
 import org.junit.{Ignore, Test}
 import peal.domain.z3.Model
 import peal.domain.PealFalse
+import peal.verifier.util.Rational
 
 
 class Z3ModelExtractorTest extends ShouldMatchersForJUnit {
@@ -18,6 +19,12 @@ class Z3ModelExtractorTest extends ShouldMatchersForJUnit {
   def testCanExtractBrokenModel() {
     val model = "Result of analysis [analysis1 = always_true? cond1]:\n\nsat\n\n(model \n\n  (define-fun cond1 () Bool\n\n    false)\n\n  (define-fun always_true_analysis1 () Bool\n\n    false)\n\n  (define-fun cond2 () Bool\n\n    false)\n\n)\n\nResult of analysis [analysis2 = always_false? cond2]:\n\nunsat\n\n(error \"line 25 column 10: model is not available\")\n\nResult of analysis [analysis3 = different? cond1 cond2]:\n\nunsat\n\n(error \"line 33 column 10: model is not available\")"
     Z3ModelExtractor.extractI(model)("analysis1") should be(Map("cond2" -> Right(PealFalse), "always_true_analysis1" -> Right(PealFalse), "cond1" -> Right(PealFalse)))
+  }
+
+  @Test
+  def testCanExtractRational() {
+    val model = "Result of analysis [analysis1 = always_true? cond1]:\n\nsat\n\n(model \n\n  (define-fun b1_score () Real\n    (/ 1.0 2.0))\n)"
+    Z3ModelExtractor.extractIToRational(model)("analysis1") should be(Map("b1_score" -> Left(Rational(1, 2))))
   }
 
   @Test
