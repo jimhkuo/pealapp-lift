@@ -171,12 +171,12 @@ class ExtendedOutputVerifier(input: String) {
             println("okRules are: " + okRules + " op is " + op)
             val decimal: BigDecimal = op match {
               case Min => okRules.foldLeft(Rational("1"))((acc, rule) => acc.min(rule.score.underlyingScore.fold(s => Rational(s.toString()), f => evaluateFormula(f)))).value
-//              case Max => okRules.foldLeft(BigDecimal(0))((acc, rule) => acc.max(rule.score.underlyingScore.fold(s => s, f => evaluateFormula(f))))
+              case Max => okRules.foldLeft(Rational("0"))((acc, rule) => acc.max(rule.score.underlyingScore.fold(s => Rational(s.toString()), f => evaluateFormula(f)))).value
 //              case Plus => okRules.foldLeft(BigDecimal(0))((acc, rule) => {
 //                println("acc " + acc + ", rule " + rule)
 //                acc + rule.score.underlyingScore.fold(s => s, f => evaluateFormula(f))
 //              })
-//              case Mul => okRules.foldLeft(BigDecimal(1))((acc, rule) => acc * rule.score.underlyingScore.fold(s => s, f => evaluateFormula(f)))
+              case Mul => okRules.foldLeft(Rational("1"))((acc, rule) => acc.mul(rule.score.underlyingScore.fold(s => Rational(s.toString()), f => evaluateFormula(f)))).value
             }
             println("op X: " + decimal)
             decimal
