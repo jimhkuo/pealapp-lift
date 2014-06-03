@@ -141,13 +141,13 @@ class ExtendedOutputVerifier(input: String) {
     def eval(e: Multiplier): Rational = {
       e.name match {
         case "" => Rational(e.multiplier.toString())
-        case _ if I(e.name).isLeft => Rational(e.multiplier.toString()).mul(I(e.name).fold(s => s, vf => throw new RuntimeException("illegal variable format")))
+        case _ if I(e.name).isLeft => Rational(e.multiplier.toString()) * I(e.name).fold(s => s, vf => throw new RuntimeException("illegal variable format"))
         case _ => throw new RuntimeException("Invalid eval case")
       }
     }
 
     def evaluateFormula(vf: VariableFormula): Rational = {
-      vf.operations.foldLeft(Rational("0"))((l, r) => l.plus(eval(r)))
+      vf.operations.foldLeft(Rational("0"))((l, r) => l + eval(r))
     }
 
     def extractScore(pSet: PolicySet): BigDecimal = {
@@ -169,8 +169,8 @@ class ExtendedOutputVerifier(input: String) {
             val decimal: BigDecimal = op match {
               case Min => okRules.foldLeft(Rational("1"))((acc, rule) => acc.min(rule.score.underlyingScore.fold(s => Rational(s.toString()), f => evaluateFormula(f)))).value
               case Max => okRules.foldLeft(Rational("0"))((acc, rule) => acc.max(rule.score.underlyingScore.fold(s => Rational(s.toString()), f => evaluateFormula(f)))).value
-              case Plus => okRules.foldLeft(Rational("0"))((acc, rule) => acc.plus(rule.score.underlyingScore.fold(s => Rational(s.toString()), f => evaluateFormula(f)))).value
-              case Mul => okRules.foldLeft(Rational("1"))((acc, rule) => acc.mul(rule.score.underlyingScore.fold(s => Rational(s.toString()), f => evaluateFormula(f)))).value
+              case Plus => okRules.foldLeft(Rational("0"))((acc, rule) => acc + rule.score.underlyingScore.fold(s => Rational(s.toString()), f => evaluateFormula(f))).value
+              case Mul => okRules.foldLeft(Rational("1"))((acc, rule) => acc * rule.score.underlyingScore.fold(s => Rational(s.toString()), f => evaluateFormula(f))).value
             }
             println("op X: " + decimal)
             decimal
