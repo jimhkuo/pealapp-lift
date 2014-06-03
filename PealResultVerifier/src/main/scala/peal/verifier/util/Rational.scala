@@ -24,7 +24,9 @@ case class Rational(numerator: BigDecimal, denominator: BigDecimal) {
 
   def min(that: Rational) = if (this.less(that)) this else that
 
+  def *(that: Rational) = Rational((numerator * that.numerator).toString(), (denominator * that.denominator).toString())
   def mul(that: Rational) = Rational((numerator * that.numerator).toString(), (denominator * that.denominator).toString())
 
+  def +(that: Rational) = Rational((numerator * that.denominator + that.numerator * denominator).toString(), (denominator * that.denominator).toString())
   def plus(that: Rational) = Rational((numerator * that.denominator + that.numerator * denominator).toString(), (denominator * that.denominator).toString())
 }
