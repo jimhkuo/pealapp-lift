@@ -12,38 +12,53 @@ import peal.antlr.util.ParserHelper
 class ScalaTest extends ShouldMatchersForJUnit {
 
   @Test
+  def test() {
+    val m = collection.mutable.Map(1 -> 1, 2 -> 2)
+    m += (3 -> 3)
+//    m = m + (3 -> 3) //not allowed
+    println(m)
+
+    var i = 10
+    i += 1
+
+    println(i)
+
+  }
+
+  @Test
   def testRound() {
 
     val bigDecimal: BigDecimal = BigDecimal(1.23456789)
     println(bigDecimal.setScale(2, BigDecimal.RoundingMode.HALF_UP))
   }
+
   @Test
   def testHead() {
-      println(List("a1","b2").head)
+    println(List("a1", "b2").head)
   }
 
   @Test
   def testEmptySet() {
-      println(List[Int]().filter(_<0).forall(_ > 0))
+    println(List[Int]().filter(_ < 0).forall(_ > 0))
   }
 
   @Test
   def testToInt() {
-      println("1.0".toDouble.toInt)
+    println("1.0".toDouble.toInt)
   }
 
   @Test
   def testEmptySum() {
-      List[Int]().sum should be (0)
+    List[Int]().sum should be(0)
   }
 
   @Test
   def testEmptyProduct() {
-      List[Int]().product should be (1)
+    List[Int]().product should be(1)
   }
 
   @Test
-  def test() {
+  def testList() {
     println(List(1, 2, 3).toSet)
     println(List(1, 2, 3).toSet())
 
