@@ -12,7 +12,6 @@ import scala.collection.mutable.ListBuffer
 trait ModelGenerator {
 
 
-
   private def generateScore: String = {
     "%.4f".format(Random.nextDouble())
   }
@@ -84,19 +83,12 @@ trait ModelGenerator {
     pSets
   }
 
-  def generate(doDomainSpecific: Boolean, n: Int, m0: Int, m1: Int, m2: Int, m3: Int, k: Int, th: Double, delta: Double): String = {
-
-    val policies = createPolicies(n, m0, m1, m2, m3, k)
-
-    val pSets = createPolicySets(n)
-
+  def lastSets(n: Int, top: String) = {
     val l = (math.log(n * 4) / math.log(2)).floor.toInt
-
     val end = math.pow(2, l).toInt
     val remainder = for (i <- end until n * 4 by 2) yield {
       ("p" + i + "_" + (i + 1), "min(b" + i + ", b" + (i + 1) + ")")
     }
-    val top = pSets.flatten.toSeq.last._1
     var finalPolicySet = top
     var ii = -1
     var lastBit = ""
@@ -114,10 +106,22 @@ trait ModelGenerator {
       lastBit = "\n\n" + lastBit
     }
 
+    (finalPolicySet, remainder.toSeq.map(c => c._1 + " = " + c._2).mkString("\n") + lastBit)
+  }
+
+  def generate(doDomainSpecific: Boolean, n: Int, m0: Int, m1: Int, m2: Int, m3: Int, k: Int, th: Double, delta: Double): String = {
+
+    val policies = createPolicies(n, m0, m1, m2, m3, k)
+
+    val pSets = createPolicySets(n)
+
+    val aa: String = pSets.flatten.toSeq.last._1
+    val (finalPolicySet, lastBit) = lastSets(n, aa)
+
     val cond1 = "cond1 = " + "%.2f".format(th) + " < " + finalPolicySet
     val cond2 = "cond2 = " + "%.2f".format(th + delta) + " < " + finalPolicySet
 
-    val pealText = "POLICIES\n" + policies.toSeq.mkString("\n") + "\nPOLICY_SETS\n" + pSets.flatten.toSeq.map(c => c._1 + " = " + c._2).mkString("\n-") + "\n\n" + remainder.toSeq.map(c => c._1 + " = " + c._2).mkString("\n") + lastBit + "CONDITIONS\n" + cond1 + "\n" + cond2 + "\n"
+    val pealText = "POLICIES\n" + policies.toSeq.mkString("\n") + "\nPOLICY_SETS\n" + pSets.flatten.toSeq.map(c => c._1 + " = " + c._2).mkString("\n") + "\n\n" + lastBit + "CONDITIONS\n" + cond1 + "\n" + cond2 + "\n"
     val analyses = "analysis1 = always_true? cond1\nanalysis2 = always_false? cond2\nanalysis3 = different? cond1 cond2\n"
     val domainSpecifics = if (doDomainSpecific) generateDomainSpecifics(k / 3, pealText) else ""
 
@@ -125,7 +129,6 @@ trait ModelGenerator {
   }
 
 
-  
   private def generateDomainSpecifics(p: Int, pealText: String): String = {
 
     val parser = ParserHelper.getPealParser(pealText)
