@@ -29,6 +29,10 @@ trait RandomModelGenerator {
     "%.4f".format(Random.nextDouble())
   }
 
+  def createRangedScorePolicies(n: Int, m0: Int, m1: Int, m2: Int, m3: Int, k: Int): String = {
+    createPolicies(n, m0, m1, m2, m3, k, generateConstantScore)
+  }
+
   def createConstantScorePolicies(n: Int, m0: Int, m1: Int, m2: Int, m3: Int, k: Int): String = {
     createPolicies(n, m0, m1, m2, m3, k, generateConstantScore)
   }
