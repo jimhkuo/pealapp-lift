@@ -30,10 +30,13 @@ trait RandomModelGenerator {
   }
 
   private def generateRandomScore: Score = {
+    def randomVarName: String = {
+      "v" + Random.alphanumeric.take(1).mkString.toLowerCase
+    }
     Random.nextInt(3) match {
       case 0 => new Score(Left(BigDecimal.valueOf(Random.nextDouble()).setScale(4, BigDecimal.RoundingMode.HALF_UP)), None)
-      case 1 => new Score(Right(VariableFormula("x")), None)
-      case 2 => new Score(Right(VariableFormula(Multiplier(2, "y"))), None)
+      case 1 => new Score(Right(VariableFormula(randomVarName)), None)
+      case 2 => new Score(Right(VariableFormula(Multiplier(2, randomVarName))), None)
     }
   }
 
