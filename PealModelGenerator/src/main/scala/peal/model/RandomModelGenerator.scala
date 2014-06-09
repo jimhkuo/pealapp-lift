@@ -1,12 +1,12 @@
 package peal.model
 
-import peal.domain.{Rule, Predicate}
+import peal.domain._
 import peal.domain.operator._
 import scala.util.Random
 import scala.collection.JavaConversions._
-import peal.domain.Pol
 import peal.antlr.util.ParserHelper
 import scala.collection.mutable.ListBuffer
+import peal.domain.Pol
 
 
 trait RandomModelGenerator {
@@ -25,16 +25,15 @@ trait RandomModelGenerator {
     generate(doDomainSpecific, n(0).toInt, n(1).toInt, n(2).toInt, n(3).toInt, n(4).toInt, n(5).toInt, n(6).toDouble, n(7).toDouble)
   }
 
-  private def generateConstantScore: String = {
-    "%.4f".format(Random.nextDouble())
+  private def generateConstantScore: Score = {
+    new Score(Left(Random.nextDouble()), None)
   }
 
-  private def generateRandomScore: String = {
+  private def generateRandomScore: Score = {
     Random.nextInt(3) match {
-      case 0 => "%.4f".format(Random.nextDouble())
-      case 1 => "%.8f".format(Random.nextDouble())
-      case 2 => "%.1f".format(Random.nextDouble())
-
+      case 0 => new Score(Left(Random.nextDouble()), None)
+      case 1 => new Score(Right(VariableFormula("x")), None)
+      case 2 => new Score(Right(VariableFormula(Multiplier(2, "y"))), None)
     }
   }
 
@@ -46,12 +45,12 @@ trait RandomModelGenerator {
     createPolicies(n, m0, m1, m2, m3, k, generateConstantScore)
   }
 
-  private def createPolicies(n: Int, m0: Int, m1: Int, m2: Int, m3: Int, k: Int, f: => String): String = {
+  private def createPolicies(n: Int, m0: Int, m1: Int, m2: Int, m3: Int, k: Int, scoreGenerator: => Score): String = {
     val predicates = (0 until k).map(i => new Predicate("q" + i))
 
     def createPol(op: Operator, count: Int): Pol = {
       val tempPredicates = Random.shuffle(predicates)
-      val rules = (0 until count).map(i => new Rule(tempPredicates(i), f))
+      val rules = (0 until count).map(i => new Rule(tempPredicates(i), scoreGenerator))
       new Pol(rules, op, generateConstantScore)
     }
 
