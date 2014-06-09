@@ -109,6 +109,12 @@ trait ModelGenerator {
     (finalPolicySet, remainder.toSeq.map(c => c._1 + " = " + c._2).mkString("\n") + lastBit)
   }
 
+  def createConditions(finalPSet: String, th: Double, delta: Double) : String = {
+    val cond1 = "cond1 = " + "%.2f".format(th) + " < " + finalPSet
+    val cond2 = "cond2 = " + "%.2f".format(th + delta) + " < " + finalPSet
+    "CONDITIONS\n" + cond1 + "\n" + cond2 + "\n"
+  }
+
   def generate(doDomainSpecific: Boolean, n: Int, m0: Int, m1: Int, m2: Int, m3: Int, k: Int, th: Double, delta: Double): String = {
 
     val policies = createPolicies(n, m0, m1, m2, m3, k)
@@ -117,12 +123,11 @@ trait ModelGenerator {
 
     val (finalPolicySet, lastBit) = lastSets(n, pSets.last._1)
 
-    val cond1 = "cond1 = " + "%.2f".format(th) + " < " + finalPolicySet
-    val cond2 = "cond2 = " + "%.2f".format(th + delta) + " < " + finalPolicySet
+    val conditions = createConditions(finalPolicySet, th, delta)
 
-    val policiesAndConditions = "POLICIES\n" + policies.mkString("\n") + "\nPOLICY_SETS\n" + pSets.map(c => c._1 + " = " + c._2).mkString("\n") + "\n\n" + lastBit + "CONDITIONS\n" + cond1 + "\n" + cond2 + "\n"
-    val analyses = "ANALYSES\nanalysis1 = always_true? cond1\nanalysis2 = always_false? cond2\nanalysis3 = different? cond1 cond2\n"
+    val policiesAndConditions = "POLICIES\n" + policies.mkString("\n") + "\nPOLICY_SETS\n" + pSets.map(c => c._1 + " = " + c._2).mkString("\n") + "\n\n" + lastBit + conditions//"CONDITIONS\n" + cond1 + "\n" + cond2 + "\n"
     val domainSpecifics = if (doDomainSpecific) generateDomainSpecifics(k / 3, policiesAndConditions) else ""
+    val analyses = "ANALYSES\nanalysis1 = always_true? cond1\nanalysis2 = always_false? cond2\nanalysis3 = different? cond1 cond2\n"
 
     policiesAndConditions + domainSpecifics + analyses
   }
