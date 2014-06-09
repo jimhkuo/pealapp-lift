@@ -1,14 +1,13 @@
 package peal.model
 
-import peal.domain.{Rule, Predicate}
+import peal.domain.Predicate
 import scala.collection.JavaConversions._
 import scala.util.Random
 import peal.domain.operator._
 import scala.collection.mutable.ListBuffer
 import peal.antlr.util.ParserHelper
-import peal.domain.Pol
 
-object RandomModelGenerator {
+object RandomModelGenerator extends PolGenerator {
 
   def generate(n: String*): String = {
     generate(n(0).toInt, n(1).toInt, n(2).toInt, n(3).toInt, n(4).toInt, n(5).toInt, n(6).toDouble, n(7).toDouble)
@@ -26,19 +25,10 @@ object RandomModelGenerator {
 
     val predicates = (0 until k).map(i => new Predicate("q" + i))
 
-    def createPol(op: Operator, count: Int): Pol = {
-      val tempPredicates = Random.shuffle(predicates)
-      val rules = (0 until count).map {
-        i =>
-          new Rule(tempPredicates(i), "%.4f".format(Random.nextDouble()))
-      }
-      new Pol(rules, op, "%.4f".format(Random.nextDouble()))
-    }
-
-    val minPolicies = Seq.fill(n)(createPol(Min, m0))
-    val maxPolicies = Seq.fill(n)(createPol(Max, m1))
-    val plusPolicies = Seq.fill(n)(createPol(Plus, m2))
-    val mulPolicies = Seq.fill(n)(createPol(Mul, m3))
+    val minPolicies = Seq.fill(n)(createPol(Min, m0, predicates))
+    val maxPolicies = Seq.fill(n)(createPol(Max, m1, predicates))
+    val plusPolicies = Seq.fill(n)(createPol(Plus, m2, predicates))
+    val mulPolicies = Seq.fill(n)(createPol(Mul, m3, predicates))
 
     val policyList = Random.shuffle(minPolicies ++ maxPolicies ++ plusPolicies ++ mulPolicies)
     val policyMap = (0 until policyList.length).map(i => (i, policyList(i))).toMap
