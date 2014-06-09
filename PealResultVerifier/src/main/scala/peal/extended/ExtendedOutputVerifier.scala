@@ -41,7 +41,12 @@ class ExtendedOutputVerifier(input: String) {
         if (bottomPredicates.isEmpty) {
           return (PealBottom, s)
         }
-        (s + bottomPredicates.head).foreach(truthMapping += _ -> Right(PealFalse))
+        println("*** Trying again")
+        (s + bottomPredicates.head).foreach{
+          m =>
+            println("set " +m + " to false")
+            truthMapping += m -> Right(PealFalse)
+        }
         verifyModel(rawModel, analysisName, truthMapping, s + bottomPredicates.head)
       case (r, s) => (r, s)
     }
