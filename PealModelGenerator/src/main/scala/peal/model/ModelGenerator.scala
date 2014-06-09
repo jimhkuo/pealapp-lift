@@ -1,6 +1,6 @@
 package peal.model
 
-import peal.domain.{Rule, Pol, Predicate}
+import peal.domain.{Rule, Predicate}
 import peal.domain.operator._
 import scala.util.Random
 import scala.collection.JavaConversions._
@@ -19,11 +19,13 @@ trait ModelGenerator {
 
   def createPolicies(n: Int, m0: Int, m1: Int, m2: Int, m3: Int, k: Int): Seq[String] = {
     val predicates = (0 until k).map(i => new Predicate("q" + i))
+
     def createPol(op: Operator, count: Int): Pol = {
       val tempPredicates = Random.shuffle(predicates)
       val rules = (0 until count).map(i => new Rule(tempPredicates(i), generateScore))
       new Pol(rules, op, generateScore)
     }
+
     val minPolicies = Seq.fill(n)(createPol(Min, m0))
     val maxPolicies = Seq.fill(n)(createPol(Max, m1))
     val plusPolicies = Seq.fill(n)(createPol(Plus, m2))
@@ -37,9 +39,7 @@ trait ModelGenerator {
     policies
   }
 
-  def generate(doDomainSpecific: Boolean, n: Int, m0: Int, m1: Int, m2: Int, m3: Int, k: Int, th: Double, delta: Double): String = {
-
-    val policies: Seq[String] = createPolicies(n, m0, m1, m2, m3, k)
+  def createPolicySets(n: Int) = {
 
     val x = n * 4
     val l = (math.log(x) / math.log(2)).floor.toInt
@@ -64,6 +64,7 @@ trait ModelGenerator {
 
       layer += 1
     }
+
     val pSets = for (i <- 0 until lattice.size) yield {
       val pSet = for (j <- 0 until lattice(i).size) yield {
         if (i == 0) {
@@ -80,16 +81,26 @@ trait ModelGenerator {
 
       pSet
     }
-    val end = math.pow(2, l).toInt
+    pSets
+  }
 
-    val reminder = for (i <- end until x by 2) yield {
+  def generate(doDomainSpecific: Boolean, n: Int, m0: Int, m1: Int, m2: Int, m3: Int, k: Int, th: Double, delta: Double): String = {
+
+    val policies = createPolicies(n, m0, m1, m2, m3, k)
+
+    val pSets = createPolicySets(n)
+
+    val l = (math.log(n * 4) / math.log(2)).floor.toInt
+
+    val end = math.pow(2, l).toInt
+    val remainder = for (i <- end until n * 4 by 2) yield {
       ("p" + i + "_" + (i + 1), "min(b" + i + ", b" + (i + 1) + ")")
     }
     val top = pSets.flatten.toSeq.last._1
     var finalPolicySet = top
     var ii = -1
     var lastBit = ""
-    for (r <- reminder) {
+    for (r <- remainder) {
 
       ii += 1
       val out = ii % 2 match {
@@ -102,10 +113,11 @@ trait ModelGenerator {
     if (!lastBit.isEmpty) {
       lastBit = "\n\n" + lastBit
     }
+
     val cond1 = "cond1 = " + "%.2f".format(th) + " < " + finalPolicySet
     val cond2 = "cond2 = " + "%.2f".format(th + delta) + " < " + finalPolicySet
 
-    val pealText = "POLICIES\n" + policies.toSeq.mkString("\n") + "\nPOLICY_SETS\n" + pSets.flatten.toSeq.map(c => c._1 + " = " + c._2).mkString("\n") + "\n\n" + reminder.toSeq.map(c => c._1 + " = " + c._2).mkString("\n") + lastBit + "CONDITIONS\n" + cond1 + "\n" + cond2 + "\n"
+    val pealText = "POLICIES\n" + policies.toSeq.mkString("\n") + "\nPOLICY_SETS\n" + pSets.flatten.toSeq.map(c => c._1 + " = " + c._2).mkString("\n-") + "\n\n" + remainder.toSeq.map(c => c._1 + " = " + c._2).mkString("\n") + lastBit + "CONDITIONS\n" + cond1 + "\n" + cond2 + "\n"
     val analyses = "analysis1 = always_true? cond1\nanalysis2 = always_false? cond2\nanalysis3 = different? cond1 cond2\n"
     val domainSpecifics = if (doDomainSpecific) generateDomainSpecifics(k / 3, pealText) else ""
 
@@ -113,7 +125,7 @@ trait ModelGenerator {
   }
 
 
-
+  
   private def generateDomainSpecifics(p: Int, pealText: String): String = {
 
     val parser = ParserHelper.getPealParser(pealText)
