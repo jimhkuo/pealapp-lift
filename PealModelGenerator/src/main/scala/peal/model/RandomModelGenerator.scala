@@ -35,23 +35,12 @@ object RandomModelGenerator {
       new Pol(rules, op, "%.4f".format(Random.nextDouble()))
     }
 
-    val minPolicies = (0 until n).map {
-      j =>
-        createPol(Min)
-    }
-    val maxPolicies = (0 until n).map {
-      j =>
-        createPol(Max)
-    }
-    val plusPolicies = (0 until n).map {
-      j =>
-        createPol(Plus)
-    }
-    val mulPolicies = (0 until n).map {
-      j =>
-        createPol(Mul)
-    }
+    val minPolicies = Seq.fill(n)(createPol(Min))
+    val maxPolicies = Seq.fill(n)(createPol(Max))
+    val plusPolicies = Seq.fill(n)(createPol(Plus))
+    val mulPolicies = Seq.fill(n)(createPol(Mul))
     val policyList = Random.shuffle(minPolicies ++ maxPolicies ++ plusPolicies ++ mulPolicies)
+
     var i = -1
     val policyMap = policyList.map {
       b =>
