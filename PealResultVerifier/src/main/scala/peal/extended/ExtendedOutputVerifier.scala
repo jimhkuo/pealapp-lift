@@ -42,9 +42,9 @@ class ExtendedOutputVerifier(input: String) {
           return (PealBottom, s)
         }
         println("*** Trying again")
-        (s + bottomPredicates.head).foreach{
+        (s + bottomPredicates.head).foreach {
           m =>
-            println("set " +m + " to false")
+            println("set " + m + " to false")
             truthMapping += m -> Right(PealFalse)
         }
         verifyModel(rawModel, analysisName, truthMapping, s + bottomPredicates.head)
@@ -161,7 +161,7 @@ class ExtendedOutputVerifier(input: String) {
         println("score is " + score)
         score.scoreRange match {
           case None => score.underlyingScore.fold(s => Rational(s.toString()), f => evaluateFormula(f))
-          case Some(_) => score.underlyingScore.fold(s => Rational(s.toString()), f => evaluateFormula(f)) + I(name + "_default_U").fold(s => s, vf => throw new RuntimeException("illegal variable format"))
+          case Some(_) => score.underlyingScore.fold(s => Rational(s.toString()), f => evaluateFormula(f)) + I(name).fold(s => s, vf => throw new RuntimeException("illegal variable format"))
         }
       }
 
@@ -173,7 +173,7 @@ class ExtendedOutputVerifier(input: String) {
             throw new RuntimeException("PealBottom reached in certValue because some predicates are not defined in I")
           }
           else if (!rules.exists(r => I(r.q.name).fold(score => PealBottom, bool => bool) == PealTrue)) {
-            trueScore(score, name).value
+            trueScore(score, name + "_default_U").value
           }
           else {
 
@@ -181,7 +181,7 @@ class ExtendedOutputVerifier(input: String) {
             println("okRules are: " + okRules + " op is " + op)
             val decimal: BigDecimal = op match {
               //TODO need to deal with range here
-              case Min => okRules.foldLeft(Rational("1"))((acc, rule) => acc.min(trueScore(rule.score, name))).value
+              case Min => okRules.foldLeft(Rational("1"))((acc, rule) => acc.min(trueScore(rule.score, name + "_" + rule.q.name + "_U"))).value
               case Max => okRules.foldLeft(Rational("0"))((acc, rule) => acc.max(rule.score.underlyingScore.fold(s => Rational(s.toString()), f => evaluateFormula(f)))).value
               case Plus => okRules.foldLeft(Rational("0"))((acc, rule) => acc + rule.score.underlyingScore.fold(s => Rational(s.toString()), f => evaluateFormula(f))).value
               case Mul => okRules.foldLeft(Rational("1"))((acc, rule) => acc * rule.score.underlyingScore.fold(s => Rational(s.toString()), f => evaluateFormula(f))).value
