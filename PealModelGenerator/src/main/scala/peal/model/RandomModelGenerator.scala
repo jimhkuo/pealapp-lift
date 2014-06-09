@@ -26,12 +26,12 @@ trait RandomModelGenerator {
   }
 
   private def generateConstantScore: Score = {
-    new Score(Left(Random.nextDouble()), None)
+    new Score(Left(BigDecimal.valueOf(Random.nextDouble()).setScale(4, BigDecimal.RoundingMode.HALF_UP)), None)
   }
 
   private def generateRandomScore: Score = {
     Random.nextInt(3) match {
-      case 0 => new Score(Left(Random.nextDouble()), None)
+      case 0 => new Score(Left(BigDecimal.valueOf(Random.nextDouble()).setScale(4, BigDecimal.RoundingMode.HALF_UP)), None)
       case 1 => new Score(Right(VariableFormula("x")), None)
       case 2 => new Score(Right(VariableFormula(Multiplier(2, "y"))), None)
     }
@@ -51,7 +51,7 @@ trait RandomModelGenerator {
     def createPol(op: Operator, count: Int): Pol = {
       val tempPredicates = Random.shuffle(predicates)
       val rules = (0 until count).map(i => new Rule(tempPredicates(i), scoreGenerator))
-      new Pol(rules, op, generateConstantScore)
+      new Pol(rules, op, scoreGenerator)
     }
 
     val minPolicies = Seq.fill(n)(createPol(Min, m0))
