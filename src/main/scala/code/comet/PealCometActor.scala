@@ -12,7 +12,7 @@ import scala.Predef._
 import peal.synthesis.analysis._
 import code.lib._
 import net.liftweb.http.js.jquery.JqJE.JqId
-import peal.model.{MajorityVotingGenerator, RandomModelGenerator}
+import peal.model.{MajorityVotingGenerator, ConstantScoreModelGenerator}
 import peal.domain.{PealFalse, PealBottom, PealTrue, PolicySet}
 import peal.domain.z3.{Sat, PealAst, Term}
 import peal.antlr.util.ParserHelper
@@ -245,15 +245,15 @@ class PealCometActor extends CometActor with Loggable {
       partialUpdate(JqId("policies") ~> JqVal(inputPolicies))
     case Generate =>
       this ! Message("")
-      inputPolicies = RandomModelGenerator.generate(randomModelParam.split(Array(' ', ',')).filterNot(_ == ""):_*)
+      inputPolicies = ConstantScoreModelGenerator.generate(randomModelParam.split(Array(' ', ',')).filterNot(_ == ""):_*)
       partialUpdate(JqId("policies") ~> JqVal(inputPolicies))
     case GenerateWithRange =>
       this ! Message("")
-      inputPolicies = RandomModelGenerator.generate(randomModelWithRangeParam.split(Array(' ', ',')).filterNot(_ == ""):_*)
+      inputPolicies = ConstantScoreModelGenerator.generate(randomModelWithRangeParam.split(Array(' ', ',')).filterNot(_ == ""):_*)
       partialUpdate(JqId("policies") ~> JqVal(inputPolicies))
     case GenerateDomainSpecifics =>
       this ! Message("")
-      inputPolicies = RandomModelGenerator.generate(true, randomModelParamWithDomain.split(Array(' ', ',')).filterNot(_ == ""):_*)
+      inputPolicies = ConstantScoreModelGenerator.generate(true, randomModelParamWithDomain.split(Array(' ', ',')).filterNot(_ == ""):_*)
       partialUpdate(JqId("policies") ~> JqVal(inputPolicies))
   }
 

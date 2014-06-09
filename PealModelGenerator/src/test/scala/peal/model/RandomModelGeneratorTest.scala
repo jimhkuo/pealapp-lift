@@ -2,16 +2,16 @@ package peal.model
 
 import org.junit.Test
 
-class ModelGeneratorTest {
+class RandomModelGeneratorTest {
 
   @Test
   def testRandom() {
-    println(RandomModelGenerator.generate(false, 3, 4, 3, 2, 1, 3*3, 0.5, 0.1))
+    println(ConstantScoreModelGenerator.generate(false, 3, 4, 3, 2, 1, 3*3, 0.5, 0.1))
   }
 
   @Test
   def testRandomWithDomain() {
-    println(RandomModelGenerator.generate(true, 2, 4, 3, 2, 1, 3*3, 0.5, 0.1))
+    println(ConstantScoreModelGenerator.generate(true, 2, 4, 3, 2, 1, 3*3, 0.5, 0.1))
   }
 
   @Test
