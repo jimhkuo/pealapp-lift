@@ -86,6 +86,7 @@ class PealCometActor extends CometActor with Loggable {
   var inputPolicies = defaultInput
   var majorityVotingCount = 10
   var randomModelParam = "5, 5, 4, 3, 2, 7, 0.5, 0.1"
+  var randomModelWithRangeParam = "5, 5, 4, 3, 2, 7, 0.5, 0.1"
   var randomModelParamWithDomain = "2, 3, 1, 1, 1, 9, 0.5, 0.1"
 
   def render = {
@@ -109,6 +110,10 @@ class PealCometActor extends CometActor with Loggable {
           <div>
             {SHtml.ajaxButton("Random sample with domain specifics: n, m_min, m_max, m_+, m_*, p, th, delta", () => {this ! GenerateDomainSpecifics; _Noop}, "class" -> "btn btn-primary btn-sm", "style" -> "margin:2px;")}
             {SHtml.ajaxText(randomModelParamWithDomain, s => {randomModelParamWithDomain = s; _Noop}, "id" -> "r", "size" -> "30")}
+          </div>
+          <div>
+            {SHtml.ajaxButton("Random sample with ranges: n, m_min, m_max, m_+, m_*, p, th, delta", () => {this ! GenerateWithRange; _Noop}, "class" -> "btn btn-primary btn-sm", "style" -> "margin:2px;")}
+            {SHtml.ajaxText(randomModelWithRangeParam, s => {randomModelWithRangeParam = s; _Noop}, "id" -> "r", "size" -> "30")}
           </div>
           <div>
             {SHtml.ajaxButton("Clear text area", () => {this ! Clear; _Noop}, "class" -> "btn btn-warning btn-sm", "style" -> "margin:2px;")}
@@ -241,6 +246,10 @@ class PealCometActor extends CometActor with Loggable {
     case Generate =>
       this ! Message("")
       inputPolicies = RandomModelGenerator.generate(randomModelParam.split(Array(' ', ',')).filterNot(_ == ""):_*)
+      partialUpdate(JqId("policies") ~> JqVal(inputPolicies))
+    case GenerateWithRange =>
+      this ! Message("")
+      inputPolicies = RandomModelGenerator.generate(randomModelWithRangeParam.split(Array(' ', ',')).filterNot(_ == ""):_*)
       partialUpdate(JqId("policies") ~> JqVal(inputPolicies))
     case GenerateDomainSpecifics =>
       this ! Message("")

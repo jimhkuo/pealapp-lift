@@ -17,6 +17,7 @@ case object Clear
 case object Generate
 
 case object GenerateDomainSpecifics
+case object GenerateWithRange
 
 case object Download
 
