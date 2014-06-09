@@ -11,12 +11,11 @@ import scala.collection.mutable.ListBuffer
 
 trait ModelGenerator {
 
-
   private def generateScore: String = {
     "%.4f".format(Random.nextDouble())
   }
 
-  def createPolicies(n: Int, m0: Int, m1: Int, m2: Int, m3: Int, k: Int): Seq[String] = {
+  def createPolicies(n: Int, m0: Int, m1: Int, m2: Int, m3: Int, k: Int): String = {
     val predicates = (0 until k).map(i => new Predicate("q" + i))
 
     def createPol(op: Operator, count: Int): Pol = {
@@ -35,7 +34,7 @@ trait ModelGenerator {
     val policies = for (s <- policyMap.keys.toSeq.sortWith(_ < _)) yield {
       "b" + s + " = " + policyMap(s).toString
     }
-    policies
+    "POLICIES\n" + policies.mkString("\n")
   }
 
   def createPolicySets(n: Int) = {
@@ -115,25 +114,7 @@ trait ModelGenerator {
     "CONDITIONS\n" + cond1 + "\n" + cond2 + "\n"
   }
 
-  def generate(doDomainSpecific: Boolean, n: Int, m0: Int, m1: Int, m2: Int, m3: Int, k: Int, th: Double, delta: Double): String = {
-
-    val policies = createPolicies(n, m0, m1, m2, m3, k)
-
-    val pSets = createPolicySets(n)
-
-    val (finalPolicySet, lastBit) = lastSets(n, pSets.last._1)
-
-    val conditions = createConditions(finalPolicySet, th, delta)
-
-    val policiesAndConditions = "POLICIES\n" + policies.mkString("\n") + "\nPOLICY_SETS\n" + pSets.map(c => c._1 + " = " + c._2).mkString("\n") + "\n\n" + lastBit + conditions//"CONDITIONS\n" + cond1 + "\n" + cond2 + "\n"
-    val domainSpecifics = if (doDomainSpecific) generateDomainSpecifics(k / 3, policiesAndConditions) else ""
-    val analyses = "ANALYSES\nanalysis1 = always_true? cond1\nanalysis2 = always_false? cond2\nanalysis3 = different? cond1 cond2\n"
-
-    policiesAndConditions + domainSpecifics + analyses
-  }
-
-
-  private def generateDomainSpecifics(p: Int, pealText: String): String = {
+  def generateDomainSpecifics(p: Int, pealText: String): String = {
 
     val parser = ParserHelper.getPealParser(pealText)
     parser.program()
