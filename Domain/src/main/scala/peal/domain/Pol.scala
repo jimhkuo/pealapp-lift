@@ -11,7 +11,8 @@ case class Pol(rules: java.util.List[Rule], operator: Operator, val score: Score
     case None => ""
     case Some(r) => " [" + r.minValue + "," + r.maxValue + "]"
   }
-  override def toString: String = operator + " (" + rules.mkString(" ") + ") default " + score.underlyingScore.fold(score => score.toString(), variable => variable.toZ3Expression) + range
+  override def toString: String = operator + " (" + rules.mkString(" ") + ") default " + score.underlyingScore.fold(score => score.toString(), variable => variable.toZ3Expression)
+  def toNaturalExpression: String = operator + " (" + rules.mkString(" ") + ") default " + score.underlyingScore.fold(score => score.toString(), variable => variable.toNaturalExpression) + range
 
 
   //multiplier will be used if default score is non constant

@@ -72,7 +72,7 @@ trait RandomModelGenerator {
     val policyList = Random.shuffle(minPolicies ++ maxPolicies ++ plusPolicies ++ mulPolicies)
     val policyMap = (0 until policyList.length).map(i => (i, policyList(i))).toMap
     val policies = for (s <- policyMap.keys.toSeq.sortWith(_ < _)) yield {
-      "b" + s + " = " + policyMap(s).toString
+      "b" + s + " = " + policyMap(s).toNaturalExpression
     }
     "POLICIES\n" + policies.mkString("\n")
   }
