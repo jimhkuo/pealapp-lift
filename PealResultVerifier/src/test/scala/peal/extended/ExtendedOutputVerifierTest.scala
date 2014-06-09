@@ -100,6 +100,15 @@ class ExtendedOutputVerifierTest extends ShouldMatchersForJUnit {
   }
 
   @Test
+  def testPolMinWithRange() {
+    val input = "POLICIES\nb1 = min ((q1 0.2) (q2 0.4) (q3 0.9)) default x [0.5, 0.9]\nPOLICY_SETS\npSet1 = b1\nCONDITIONS\ncond1 = pSet1 <= 0.5\nANALYSES\nname1 = always_true? cond1"
+    val model = "Result of analysis [name1 = always_true? cond1]:\nsat\n(model \n  (define-fun b1_score () Real\n    (/ 3.0 5.0))\n  (define-fun q3 () Bool\n    false)\n  (define-fun q2 () Bool\n    false)\n  (define-fun cond1 () Bool\n    false)\n  (define-fun b1_default_U () Real\n    (/ 1.0 2.0))\n  (define-fun q1 () Bool\n    false)\n  (define-fun x () Real\n    (/ 1.0 10.0))\n  (define-fun always_true_name1 () Bool\n    false)\n)"
+    println(input)
+    println(model)
+    new ExtendedOutputVerifier(input).verifyModel(model, "name1")._1 should be(PealTrue)
+  }
+
+  @Test
   def testPolMax() {
     val input = "POLICIES\nb1 = max ((q1 0.8) (q2 0.7) (q3 0.4)) default 1\nPOLICY_SETS\npSet1 = b1\nCONDITIONS\ncond1 = 0.5 < pSet1 \nANALYSES\nname1 = always_true? cond1"
     val model = "Result of analysis [name1 = always_true? cond1]:\nsat\n(model \n  (define-fun cond1 () Bool\n    false)\n  (define-fun b1_score () Real\n    (/ 2.0 5.0))\n  (define-fun q1 () Bool\n    false)\n  (define-fun q3 () Bool\n    true)\n  (define-fun q2 () Bool\n    false)\n  (define-fun always_true_name1 () Bool\n    false)\n)"
@@ -199,6 +208,14 @@ class ExtendedOutputVerifierTest extends ShouldMatchersForJUnit {
     val model2: (ThreeWayBoolean, Set[String]) = new ExtendedOutputVerifier(input).verifyModel(model, "name1")
     model1._1 should be(PealTrue)
     println(model2._2)
+  }
 
+  @Test
+  def testFailedCase3() {
+    val input = "POLICIES\nb0 = max ((q1 0.2603 [-0.4133,0.4174])) default vc\nb1 = * ((q4 0.5325 [-0.0870,0.6493])) default 0.9825 [-0.6180,0.5811]\nb2 = + ((q1 0.8088*ve [-0.6325,0.6191])) default vy\nb3 = min ((q0 0.1884)) default 0.1066\nPOLICY_SETS\np0_1 = min(b0,b1)\np2_3 = min(b2,b3)\np0_3 = max(p0_1,p2_3)\n\nCONDITIONS\ncond1 = 0.50 < p0_3\ncond2 = 0.60 < p0_3\nANALYSES\nanalysis2 = always_false? cond2"
+    val model = "Result of analysis [analysis2 = always_false? cond2]:\nsat\n(model \n  (define-fun b1_q4_U () Real\n    (/ 363.0 2500.0))\n  (define-fun q0 () Bool\n    true)\n  (define-fun b1_score () Real\n    (/ 6777.0 10000.0))\n  (define-fun q4 () Bool\n    true)\n  (define-fun cond2 () Bool\n    true)\n  (define-fun cond1 () Bool\n    true)\n  (define-fun b0_score () Real\n    (/ 6777.0 10000.0))\n  (define-fun b2_q1_U () Real\n    0.0)\n  (define-fun b3_score () Real\n    (/ 471.0 2500.0))\n  (define-fun q1 () Bool\n    true)\n  (define-fun b1_default_U () Real\n    0.0)\n  (define-fun b0_q1_U () Real\n    (/ 2087.0 5000.0))\n  (define-fun always_false_analysis2 () Bool\n    true)\n  (define-fun b2_score () Real\n    (/ 471.0 2500.0))\n  (define-fun ve () Real\n    (/ 157.0 674.0))\n)"
+    val model1: (ThreeWayBoolean, Set[String]) = new ExtendedOutputVerifier(input).verifyModel(model, "analysis2")
+    model1._1 should be(PealTrue)
+    println(model1._2)
   }
 }

@@ -151,6 +151,9 @@ class ExtendedOutputVerifier(input: String) {
     }
 
     def extractScore(pSet: PolicySet): BigDecimal = {
+      def scoreRange(r: Rule) : Rational = {
+        Rational("0")
+      }
       pSet match {
         case BasicPolicySet(pol, name) => extractScore(pol)
         case Pol(rules, op, score, name) =>
@@ -164,10 +167,12 @@ class ExtendedOutputVerifier(input: String) {
             fold
           }
           else {
+
             val okRules = rules.filter(r => I(r.q.name).fold(score => PealBottom, bool => bool) == PealTrue)
             println("okRules are: " + okRules + " op is " + op)
             val decimal: BigDecimal = op match {
-              case Min => okRules.foldLeft(Rational("1"))((acc, rule) => acc.min(rule.score.underlyingScore.fold(s => Rational(s.toString()), f => evaluateFormula(f)))).value
+                //TODO need to deal with range here
+              case Min => okRules.foldLeft(Rational("1"))((acc, rule) => acc.min(rule.score.underlyingScore.fold(s => Rational(s.toString()) + scoreRange(rule), f => evaluateFormula(f)))).value
               case Max => okRules.foldLeft(Rational("0"))((acc, rule) => acc.max(rule.score.underlyingScore.fold(s => Rational(s.toString()), f => evaluateFormula(f)))).value
               case Plus => okRules.foldLeft(Rational("0"))((acc, rule) => acc + rule.score.underlyingScore.fold(s => Rational(s.toString()), f => evaluateFormula(f))).value
               case Mul => okRules.foldLeft(Rational("1"))((acc, rule) => acc * rule.score.underlyingScore.fold(s => Rational(s.toString()), f => evaluateFormula(f))).value
