@@ -157,9 +157,12 @@ class ExtendedOutputVerifier(input: String) {
 
     def extractScore(pSet: PolicySet): BigDecimal = {
 
-      def trueScore(score: Score, name: String): Rational = score.scoreRange match {
-        case None => score.underlyingScore.fold(s => Rational(s.toString()), f => evaluateFormula(f))
-        case Some(_) => score.underlyingScore.fold(s => Rational(s.toString()), f => evaluateFormula(f)) + I(name + "_default_U").fold(s => s, vf => throw new RuntimeException("illegal variable format"))
+      def trueScore(score: Score, name: String): Rational = {
+        println("score is " + score)
+        score.scoreRange match {
+          case None => score.underlyingScore.fold(s => Rational(s.toString()), f => evaluateFormula(f))
+          case Some(_) => score.underlyingScore.fold(s => Rational(s.toString()), f => evaluateFormula(f)) + I(name + "_default_U").fold(s => s, vf => throw new RuntimeException("illegal variable format"))
+        }
       }
 
       pSet match {
@@ -178,7 +181,7 @@ class ExtendedOutputVerifier(input: String) {
             println("okRules are: " + okRules + " op is " + op)
             val decimal: BigDecimal = op match {
               //TODO need to deal with range here
-              case Min => okRules.foldLeft(Rational("1"))((acc, rule) => acc.min(rule.score.underlyingScore.fold(s => Rational(s.toString()), f => evaluateFormula(f)))).value
+              case Min => okRules.foldLeft(Rational("1"))((acc, rule) => acc.min(trueScore(rule.score, name))).value
               case Max => okRules.foldLeft(Rational("0"))((acc, rule) => acc.max(rule.score.underlyingScore.fold(s => Rational(s.toString()), f => evaluateFormula(f)))).value
               case Plus => okRules.foldLeft(Rational("0"))((acc, rule) => acc + rule.score.underlyingScore.fold(s => Rational(s.toString()), f => evaluateFormula(f))).value
               case Mul => okRules.foldLeft(Rational("1"))((acc, rule) => acc * rule.score.underlyingScore.fold(s => Rational(s.toString()), f => evaluateFormula(f))).value
