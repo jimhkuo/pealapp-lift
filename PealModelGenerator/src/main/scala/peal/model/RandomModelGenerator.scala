@@ -29,8 +29,17 @@ trait RandomModelGenerator {
     "%.4f".format(Random.nextDouble())
   }
 
-  def createRangedScorePolicies(n: Int, m0: Int, m1: Int, m2: Int, m3: Int, k: Int): String = {
-    createPolicies(n, m0, m1, m2, m3, k, generateConstantScore)
+  private def generateRandomScore: String = {
+    Random.nextInt(3) match {
+      case 0 => "%.4f".format(Random.nextDouble())
+      case 1 => "%.8f".format(Random.nextDouble())
+      case 2 => "%.1f".format(Random.nextDouble())
+
+    }
+  }
+
+  def createRandomScorePolicies(n: Int, m0: Int, m1: Int, m2: Int, m3: Int, k: Int): String = {
+    createPolicies(n, m0, m1, m2, m3, k, generateRandomScore)
   }
 
   def createConstantScorePolicies(n: Int, m0: Int, m1: Int, m2: Int, m3: Int, k: Int): String = {
@@ -42,7 +51,7 @@ trait RandomModelGenerator {
 
     def createPol(op: Operator, count: Int): Pol = {
       val tempPredicates = Random.shuffle(predicates)
-      val rules = (0 until count).map(i => new Rule(tempPredicates(i), generateConstantScore))
+      val rules = (0 until count).map(i => new Rule(tempPredicates(i), f))
       new Pol(rules, op, generateConstantScore)
     }
 

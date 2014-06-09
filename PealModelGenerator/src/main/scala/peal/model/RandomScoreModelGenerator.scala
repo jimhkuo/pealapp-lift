@@ -1,10 +1,10 @@
 package peal.model
 
-object RangedScoreModelGenerator extends RandomModelGenerator {
+object RandomScoreModelGenerator extends RandomModelGenerator {
 
  def generate(doDomainSpecific: Boolean, n: Int, m0: Int, m1: Int, m2: Int, m3: Int, k: Int, th: Double, delta: Double): String = {
 
-    val policies = createRangedScorePolicies(n, m0, m1, m2, m3, k)
+    val policies = createRandomScorePolicies(n, m0, m1, m2, m3, k)
 
     val pSets = createPolicySetMatrix(n)
 
