@@ -39,8 +39,8 @@ object RandomModelGenerator {
     val maxPolicies = Seq.fill(n)(createPol(Max))
     val plusPolicies = Seq.fill(n)(createPol(Plus))
     val mulPolicies = Seq.fill(n)(createPol(Mul))
-    val policyList = Random.shuffle(minPolicies ++ maxPolicies ++ plusPolicies ++ mulPolicies)
 
+    val policyList = Random.shuffle(minPolicies ++ maxPolicies ++ plusPolicies ++ mulPolicies)
     val policyMap = ((0 until policyList.length) zip policyList).toMap
     val policies = for (s <- policyMap.keys.toSeq.sortWith(_ < _)) yield {
       "b" + s + " = " + policyMap(s).toString
