@@ -4,7 +4,7 @@ object ConstantScoreModelGenerator extends RandomModelGenerator {
 
  def generate(doDomainSpecific: Boolean, n: Int, m0: Int, m1: Int, m2: Int, m3: Int, k: Int, th: Double, delta: Double): String = {
 
-    val policies = createPolicies(n, m0, m1, m2, m3, k)
+    val policies = createConstantScorePolicies(n, m0, m1, m2, m3, k)
 
     val pSets = createPolicySetMatrix(n)
 

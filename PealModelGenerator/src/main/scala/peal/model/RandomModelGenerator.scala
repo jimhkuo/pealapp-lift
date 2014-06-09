@@ -25,17 +25,21 @@ trait RandomModelGenerator {
     generate(doDomainSpecific, n(0).toInt, n(1).toInt, n(2).toInt, n(3).toInt, n(4).toInt, n(5).toInt, n(6).toDouble, n(7).toDouble)
   }
 
-  private def generateScore: String = {
+  private def generateConstantScore: String = {
     "%.4f".format(Random.nextDouble())
   }
 
-  def createPolicies(n: Int, m0: Int, m1: Int, m2: Int, m3: Int, k: Int): String = {
+  def createConstantScorePolicies(n: Int, m0: Int, m1: Int, m2: Int, m3: Int, k: Int): String = {
+    createPolicies(n, m0, m1, m2, m3, k, generateConstantScore)
+  }
+
+  private def createPolicies(n: Int, m0: Int, m1: Int, m2: Int, m3: Int, k: Int, f: => String): String = {
     val predicates = (0 until k).map(i => new Predicate("q" + i))
 
     def createPol(op: Operator, count: Int): Pol = {
       val tempPredicates = Random.shuffle(predicates)
-      val rules = (0 until count).map(i => new Rule(tempPredicates(i), generateScore))
-      new Pol(rules, op, generateScore)
+      val rules = (0 until count).map(i => new Rule(tempPredicates(i), generateConstantScore))
+      new Pol(rules, op, generateConstantScore)
     }
 
     val minPolicies = Seq.fill(n)(createPol(Min, m0))
@@ -122,7 +126,7 @@ trait RandomModelGenerator {
     (finalPolicySet, remainder.toSeq.map(c => c._1 + " = " + c._2).mkString("\n") + lastBit)
   }
 
-  def createConditions(finalPSet: String, th: Double, delta: Double) : String = {
+  def createConditions(finalPSet: String, th: Double, delta: Double): String = {
     val cond1 = "cond1 = " + "%.2f".format(th) + " < " + finalPSet
     val cond2 = "cond2 = " + "%.2f".format(th + delta) + " < " + finalPSet
     "CONDITIONS\n" + cond1 + "\n" + cond2 + "\n"
