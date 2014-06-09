@@ -158,7 +158,6 @@ class ExtendedOutputVerifier(input: String) {
     def extractScore(pSet: PolicySet): BigDecimal = {
 
       def trueScore(score: Score, name: String): Rational = {
-        println("score is " + score)
         score.scoreRange match {
           case None => score.underlyingScore.fold(s => Rational(s.toString()), f => evaluateFormula(f))
           case Some(_) => score.underlyingScore.fold(s => Rational(s.toString()), f => evaluateFormula(f)) + I(name).fold(s => s, vf => throw new RuntimeException("illegal variable format"))
@@ -180,7 +179,6 @@ class ExtendedOutputVerifier(input: String) {
             val okRules = rules.filter(r => I(r.q.name).fold(score => PealBottom, bool => bool) == PealTrue)
             println("okRules are: " + okRules + " op is " + op)
             val decimal: BigDecimal = op match {
-              //TODO need to deal with range here
               case Min => okRules.foldLeft(Rational("1"))((acc, rule) => acc.min(trueScore(rule.score, name + "_" + rule.q.name + "_U"))).value
               case Max => okRules.foldLeft(Rational("0"))((acc, rule) => acc.max(trueScore(rule.score, name + "_" + rule.q.name + "_U"))).value
               case Plus => okRules.foldLeft(Rational("0"))((acc, rule) => acc + trueScore(rule.score, name + "_" + rule.q.name + "_U")).value
