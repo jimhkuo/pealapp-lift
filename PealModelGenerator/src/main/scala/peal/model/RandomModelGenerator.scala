@@ -3,9 +3,10 @@ package peal.model
 import peal.domain.{Pol, Rule, Predicate}
 import scala.collection.JavaConversions._
 import scala.util.Random
-import peal.domain.operator.{Mul, Plus, Max, Min}
+import peal.domain.operator._
 import scala.collection.mutable.ListBuffer
 import peal.antlr.util.ParserHelper
+import peal.domain.Pol
 
 object RandomModelGenerator {
 
@@ -23,43 +24,32 @@ object RandomModelGenerator {
 
   def generate(doDomainSpecific: Boolean, n: Int, m0: Int, m1: Int, m2: Int, m3: Int, k: Int, th: Double, delta: Double): String = {
 
-    var predicates = (0 until k).map(i => new Predicate("q" + i))
+    val predicates = (0 until k).map(i => new Predicate("q" + i))
+
+    def createPol(op: Operator): Pol = {
+      val tempPredicates = Random.shuffle(predicates)
+      val rules = (0 until m0).map {
+        i =>
+          new Rule(tempPredicates(i), "%.4f".format(Random.nextDouble()))
+      }
+      new Pol(rules, op, "%.4f".format(Random.nextDouble()))
+    }
 
     val minPolicies = (0 until n).map {
       j =>
-        predicates = Random.shuffle(predicates)
-        val rules = (0 until m0).map {
-          i =>
-            new Rule(predicates(i), "%.4f".format(Random.nextDouble()))
-        }
-        new Pol(rules, Min, "%.4f".format(Random.nextDouble()))
+        createPol(Min)
     }
     val maxPolicies = (0 until n).map {
       j =>
-        predicates = Random.shuffle(predicates)
-        val rules = (0 until m1).map {
-          i =>
-            new Rule(predicates(i), "%.4f".format(Random.nextDouble()))
-        }
-        new Pol(rules, Max, "%.4f".format(Random.nextDouble()))
+        createPol(Max)
     }
     val plusPolicies = (0 until n).map {
       j =>
-        predicates = Random.shuffle(predicates)
-        val rules = (0 until m2).map {
-          i =>
-            new Rule(predicates(i), "%.4f".format(Random.nextDouble()))
-        }
-        new Pol(rules, Plus, "%.4f".format(Random.nextDouble()))
+        createPol(Plus)
     }
     val mulPolicies = (0 until n).map {
       j =>
-        predicates = Random.shuffle(predicates)
-        val rules = (0 until m3).map {
-          i =>
-            new Rule(predicates(i), "%.4f".format(Random.nextDouble()))
-        }
-        new Pol(rules, Mul, "%.4f".format(Random.nextDouble()))
+        createPol(Mul)
     }
     val policyList = Random.shuffle(minPolicies ++ maxPolicies ++ plusPolicies ++ mulPolicies)
     var i = -1
