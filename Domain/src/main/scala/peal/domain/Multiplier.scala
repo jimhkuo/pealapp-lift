@@ -13,4 +13,8 @@ class Multiplier(val multiplier: BigDecimal, val name: String = "") {
     case "" => multiplier.toString()
     case _ => if (multiplier != 1) "(* " + multiplier + " " + name + ")" else name
   }
+  def toNaturalExpression = name match {
+    case "" => multiplier.toString()
+    case _ => if (multiplier != 1) multiplier + "*" + name else name
+  }
 }

@@ -47,12 +47,12 @@ class NewSynthesiser(input: String) extends Synthesiser {
     case (name, pol) =>
       pol.operator match {
         case Max => pol.rules.map(r =>
-          "(assert (implies " + r.q.name + " (<= " + r.scoreString + " " + name + "_score" + ")))\n")
+          "(assert (implies " + r.q.name + " (<= " + r.scoreZ3String + " " + name + "_score" + ")))\n")
         case Min => pol.rules.map(r =>
-          "(assert (implies " + r.q.name + " (<= " + name + "_score" + " " + r.scoreString + ")))\n")
+          "(assert (implies " + r.q.name + " (<= " + name + "_score" + " " + r.scoreZ3String + ")))\n")
         case o: Operator => pol.rules.map(r =>
           "(declare-const " + name + "_score_" + r.q.name + " Real)\n" +
-            "(assert (implies " + r.q.name + " (= " + r.scoreString + " " + name + "_score_" + r.q.name + ")))\n" +
+            "(assert (implies " + r.q.name + " (= " + r.scoreZ3String + " " + name + "_score_" + r.q.name + ")))\n" +
             "(assert (implies (not (= " + o.unit + " " + name + "_score_" + r.q.name + ")) " + r.q.name + "))\n")
       }
   }
@@ -61,7 +61,7 @@ class NewSynthesiser(input: String) extends Synthesiser {
 
   private def nonDefaultCase(p: Pol) = {
     val out = for (r <- p.rules) yield {
-      "(and " + r.q.name + " (= " + p.policyName + "_score " + r.scoreString + "))"
+      "(and " + r.q.name + " (= " + p.policyName + "_score " + r.scoreZ3String + "))"
     }
     out.mkString(" ")
   }

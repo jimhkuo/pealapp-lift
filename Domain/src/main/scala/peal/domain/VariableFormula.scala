@@ -25,4 +25,10 @@ class VariableFormula() {
     case 1 => operations(0).toZ3Expression
     case _ => "(+ " + operations.map(_.toZ3Expression).mkString(" ") + ")"
   }
+
+  def toNaturalExpression = operations.size match {
+    case 0 => ""
+    case 1 => operations(0).toNaturalExpression
+    case _ => operations.map(_.toNaturalExpression).mkString(" + ")
+  }
 }

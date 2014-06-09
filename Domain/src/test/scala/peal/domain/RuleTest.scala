@@ -17,7 +17,7 @@ class RuleTest extends ShouldMatchersForJUnit {
 
   @Test
   def testCanReturnCorrectScoreString() {
-    new Rule(new Predicate("q1"), new Score(Right(VariableFormula(Multiplier(7, "x"))), None)).scoreString should be ("(* 7 x)")
-    new Rule(new Predicate("q1"), 0.4).scoreString should be ("0.4")
+    new Rule(new Predicate("q1"), new Score(Right(VariableFormula(Multiplier(7, "x"))), None)).scoreZ3String should be ("(* 7 x)")
+    new Rule(new Predicate("q1"), 0.4).scoreZ3String should be ("0.4")
   }
 }
