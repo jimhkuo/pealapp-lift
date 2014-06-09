@@ -5,8 +5,8 @@ import org.junit.Test
 class ModelGeneratorTest {
 
   @Test
-  def test() {
-    println(RandomModelGenerator.generate(true, 2, 3, 1, 1, 1, 3*3, 0.5, 0.1))
+  def testRandom() {
+    println(RandomModelGenerator.generate(false, 2, 4, 3, 3, 1, 3*3, 0.5, 0.1))
   }
 
   @Test
