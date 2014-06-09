@@ -86,7 +86,7 @@ class PealCometActor extends CometActor with Loggable {
   var inputPolicies = defaultInput
   var majorityVotingCount = 10
   var randomModelParam = "5, 5, 4, 3, 2, 7, 0.5, 0.1"
-  var randomModelWithRangeParam = "5, 5, 4, 3, 2, 7, 0.5, 0.1"
+  var randomModelWithRangeParam = "2, 4, 3, 2, 1, 6, 0.5, 0.1"
   var randomModelParamWithDomain = "2, 3, 1, 1, 1, 9, 0.5, 0.1"
 
   def render = {
