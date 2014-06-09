@@ -151,9 +151,12 @@ class ExtendedOutputVerifier(input: String) {
     }
 
     def extractScore(pSet: PolicySet): BigDecimal = {
-      def scoreRange(r: Rule) : Rational = {
-        Rational("0")
+
+      def trueScore(score: Score, name: String): Rational = score.scoreRange match {
+        case None => score.underlyingScore.fold(s => Rational(s.toString()), f => evaluateFormula(f))
+        case Some(_) => score.underlyingScore.fold(s => Rational(s.toString()), f => evaluateFormula(f)) + I(name + "_default_U").fold(s => s, vf => throw new RuntimeException("illegal variable format"))
       }
+
       pSet match {
         case BasicPolicySet(pol, name) => extractScore(pol)
         case Pol(rules, op, score, name) =>
@@ -162,17 +165,15 @@ class ExtendedOutputVerifier(input: String) {
             throw new RuntimeException("PealBottom reached in certValue because some predicates are not defined in I")
           }
           else if (!rules.exists(r => I(r.q.name).fold(score => PealBottom, bool => bool) == PealTrue)) {
-            val fold: BigDecimal = score.underlyingScore.fold(s => s, f => evaluateFormula(f).value)
-            println("fold " + fold)
-            fold
+            trueScore(score, name).value
           }
           else {
 
             val okRules = rules.filter(r => I(r.q.name).fold(score => PealBottom, bool => bool) == PealTrue)
             println("okRules are: " + okRules + " op is " + op)
             val decimal: BigDecimal = op match {
-                //TODO need to deal with range here
-              case Min => okRules.foldLeft(Rational("1"))((acc, rule) => acc.min(rule.score.underlyingScore.fold(s => Rational(s.toString()) + scoreRange(rule), f => evaluateFormula(f)))).value
+              //TODO need to deal with range here
+              case Min => okRules.foldLeft(Rational("1"))((acc, rule) => acc.min(rule.score.underlyingScore.fold(s => Rational(s.toString()), f => evaluateFormula(f)))).value
               case Max => okRules.foldLeft(Rational("0"))((acc, rule) => acc.max(rule.score.underlyingScore.fold(s => Rational(s.toString()), f => evaluateFormula(f)))).value
               case Plus => okRules.foldLeft(Rational("0"))((acc, rule) => acc + rule.score.underlyingScore.fold(s => Rational(s.toString()), f => evaluateFormula(f))).value
               case Mul => okRules.foldLeft(Rational("1"))((acc, rule) => acc * rule.score.underlyingScore.fold(s => Rational(s.toString()), f => evaluateFormula(f))).value
