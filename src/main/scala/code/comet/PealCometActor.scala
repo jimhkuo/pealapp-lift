@@ -12,7 +12,7 @@ import scala.Predef._
 import peal.synthesis.analysis._
 import code.lib._
 import net.liftweb.http.js.jquery.JqJE.JqId
-import peal.model.{MajorityVotingGenerator, ConstantScoreModelGenerator}
+import peal.model.{RandomScoreModelGenerator, MajorityVotingGenerator, ConstantScoreModelGenerator}
 import peal.domain.{PealFalse, PealBottom, PealTrue, PolicySet}
 import peal.domain.z3.{Sat, PealAst, Term}
 import peal.antlr.util.ParserHelper
@@ -249,7 +249,7 @@ class PealCometActor extends CometActor with Loggable {
       partialUpdate(JqId("policies") ~> JqVal(inputPolicies))
     case GenerateWithRange =>
       this ! Message("")
-      inputPolicies = ConstantScoreModelGenerator.generate(randomModelWithRangeParam.split(Array(' ', ',')).filterNot(_ == ""):_*)
+      inputPolicies = RandomScoreModelGenerator.generate(randomModelWithRangeParam.split(Array(' ', ',')).filterNot(_ == ""):_*)
       partialUpdate(JqId("policies") ~> JqVal(inputPolicies))
     case GenerateDomainSpecifics =>
       this ! Message("")

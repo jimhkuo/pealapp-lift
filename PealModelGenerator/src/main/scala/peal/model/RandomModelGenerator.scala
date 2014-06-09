@@ -33,10 +33,17 @@ trait RandomModelGenerator {
     def randomVarName: String = {
       "v" + Random.alphanumeric.take(1).mkString.toLowerCase
     }
+    def randomNum: BigDecimal = {
+      BigDecimal.valueOf(Random.nextDouble()).setScale(4, BigDecimal.RoundingMode.HALF_UP)
+    }
+    def randomRange: Option[ScoreRange] = Random.nextInt(2) match {
+      case 0 => None
+      case 1 => Some(new ScoreRange(-1, 1))
+    }
     Random.nextInt(3) match {
-      case 0 => new Score(Left(BigDecimal.valueOf(Random.nextDouble()).setScale(4, BigDecimal.RoundingMode.HALF_UP)), None)
-      case 1 => new Score(Right(VariableFormula(randomVarName)), None)
-      case 2 => new Score(Right(VariableFormula(Multiplier(2, randomVarName))), None)
+      case 0 => new Score(Left(randomNum), randomRange)
+      case 1 => new Score(Right(VariableFormula(randomVarName)), randomRange)
+      case 2 => new Score(Right(VariableFormula(Multiplier(randomNum, randomVarName))), randomRange)
     }
   }
 
@@ -48,13 +55,13 @@ trait RandomModelGenerator {
     createPolicies(n, m0, m1, m2, m3, k, generateConstantScore)
   }
 
-  private def createPolicies(n: Int, m0: Int, m1: Int, m2: Int, m3: Int, k: Int, scoreGenerator: => Score): String = {
+  private def createPolicies(n: Int, m0: Int, m1: Int, m2: Int, m3: Int, k: Int, generatedScore: => Score): String = {
     val predicates = (0 until k).map(i => new Predicate("q" + i))
 
     def createPol(op: Operator, count: Int): Pol = {
       val tempPredicates = Random.shuffle(predicates)
-      val rules = (0 until count).map(i => new Rule(tempPredicates(i), scoreGenerator))
-      new Pol(rules, op, scoreGenerator)
+      val rules = (0 until count).map(i => new Rule(tempPredicates(i), generatedScore))
+      new Pol(rules, op, generatedScore)
     }
 
     val minPolicies = Seq.fill(n)(createPol(Min, m0))
