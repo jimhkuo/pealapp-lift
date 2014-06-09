@@ -182,7 +182,7 @@ class ExtendedOutputVerifier(input: String) {
             val decimal: BigDecimal = op match {
               //TODO need to deal with range here
               case Min => okRules.foldLeft(Rational("1"))((acc, rule) => acc.min(trueScore(rule.score, name + "_" + rule.q.name + "_U"))).value
-              case Max => okRules.foldLeft(Rational("0"))((acc, rule) => acc.max(rule.score.underlyingScore.fold(s => Rational(s.toString()), f => evaluateFormula(f)))).value
+              case Max => okRules.foldLeft(Rational("0"))((acc, rule) => acc.max(trueScore(rule.score, name + "_" + rule.q.name + "_U"))).value
               case Plus => okRules.foldLeft(Rational("0"))((acc, rule) => acc + rule.score.underlyingScore.fold(s => Rational(s.toString()), f => evaluateFormula(f))).value
               case Mul => okRules.foldLeft(Rational("1"))((acc, rule) => acc * rule.score.underlyingScore.fold(s => Rational(s.toString()), f => evaluateFormula(f))).value
             }
