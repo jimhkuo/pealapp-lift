@@ -96,8 +96,7 @@ class ExtendedSynthesiser(input: String) extends Synthesiser {
 
   def generate() = {
     val declarations = for (name <- predicateNames) yield "(declare-const " + name + " Bool)\n"
-    val variableDeclarations = for (name <- nonConstantScores) yield "(declare-const " + name + " Real)\n"
-    val nonConstantScoreDeclarations = for (name <- nonConstantDefaultScores) yield "(declare-const " + name + " Real)\n"
+    val variableDeclarations = for (name <- nonConstantScores ++ nonConstantDefaultScores) yield "(declare-const " + name + " Real)\n"
     val policyScoreDeclarations = for (name <- pols.keySet()) yield "(declare-const " + name + "_score" + " Real)\n"
     val policySetScoreDeclarations = for (name <- pSets.keySet()) yield "(declare-const " + name + "_score" + " Real)\n"
     val condDeclarations = for (name <- conds.keys) yield "(declare-const " + name + " Bool)\n"
@@ -115,7 +114,6 @@ class ExtendedSynthesiser(input: String) extends Synthesiser {
 
     declarations.mkString("") +
       variableDeclarations.mkString("") +
-      nonConstantScoreDeclarations.mkString("") +
       condDeclarations.mkString("") +
       policyScoreDeclarations.mkString("") +
       policySetScoreDeclarations.mkString("") +

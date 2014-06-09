@@ -3,6 +3,7 @@ package peal.synthesis
 import org.scalatest.junit.ShouldMatchersForJUnit
 import org.junit.{Ignore, Test}
 import peal.util.Z3ModelMatcher
+import peal.antlr.util.ParserHelper
 
 class ExtendedSynthesiserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
 
@@ -263,4 +264,12 @@ class ExtendedSynthesiserTest extends ShouldMatchersForJUnit with Z3ModelMatcher
     generator.generate().contains("(assert (and (<= b1_q1_U 0.1) (<= -0.1 b1_q1_U)))") should be (true)
     generator.generate().contains("(assert (and (<= b1_q2_U 0.7) (<= -0.4 b1_q2_U)))") should be (true)
   }
+
+  @Test
+  def testRepeatedVariable() {
+    val input = "POLICIES\nb0 = + ((q3 x)) default x\nb1 = max ((q0 0.9920)) default x\nb2 = * ((q6 0.0489)) default 0.1423\nb3 = min ((q2 0.6755)) default 0.3968\nPOLICY_SETS\np0_1 = min(b0,b1)\np2_3 = min(b2,b3)\np0_3 = max(p0_1,p2_3)\n\nCONDITIONS\ncond1 = 0.50 < p0_3\ncond2 = 0.60 < p0_3\nANALYSES\nanalysis1 = always_true? cond1\nanalysis2 = always_false? cond2\nanalysis3 = different? cond1 cond2\n"
+    println(input)
+    println(new ExtendedSynthesiser(input).generate())
+  }
+
 }

@@ -17,7 +17,7 @@ class PealProgramParserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
   def testConditionCanBePredicate() {
     val input =
       "POLICIES\nb1 = + ((q1 x) (q2 0.9)) default 1\n" +
-      "b2 = + ((q3 x) (q4 0.9)) default 1\n" +
+        "b2 = + ((q3 x) (q4 0.9)) default 1\n" +
         "POLICY_SETS\npSet = + (b1,b2)\n" +
         "CONDITIONS\ncond = q4"
 
@@ -25,15 +25,15 @@ class PealProgramParserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
     pealProgramParser.program()
 
     val allRules = pealProgramParser.pols.values().flatMap(pol => pol.rules).toSeq
-    allRules(0).score.underlyingScore.right.get.toZ3Expression should be ("x")
-    allRules(1).score.underlyingScore.left.get should be (BigDecimal(0.9))
+    allRules(0).score.underlyingScore.right.get.toZ3Expression should be("x")
+    allRules(1).score.underlyingScore.left.get should be(BigDecimal(0.9))
   }
 
   @Test
   def testCanAggregratePolicySetUsingPlus() {
     val input =
       "POLICIES\nb1 = + ((q1 x) (q2 0.9)) default 1\n" +
-      "b2 = + ((q3 x) (q4 0.9)) default 1\n" +
+        "b2 = + ((q3 x) (q4 0.9)) default 1\n" +
         "POLICY_SETS\npSet = + (b1,b2)\n" +
         "CONDITIONS\ncond = pSet <= 0.5"
 
@@ -41,15 +41,15 @@ class PealProgramParserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
     pealProgramParser.program()
 
     val allRules = pealProgramParser.pols.values().flatMap(pol => pol.rules).toSeq
-    allRules(0).score.underlyingScore.right.get.toZ3Expression should be ("x")
-    allRules(1).score.underlyingScore.left.get should be (BigDecimal(0.9))
+    allRules(0).score.underlyingScore.right.get.toZ3Expression should be("x")
+    allRules(1).score.underlyingScore.left.get should be(BigDecimal(0.9))
   }
 
   @Test
   def testCanAggregratePolicySetUsingMul() {
     val input =
       "POLICIES\nb1 = + ((q1 x) (q2 0.9)) default 1\n" +
-      "b2 = + ((q3 x) (q4 0.9)) default 1\n" +
+        "b2 = + ((q3 x) (q4 0.9)) default 1\n" +
         "POLICY_SETS\npSet = * (b1,b2)\n" +
         "CONDITIONS\ncond = pSet <= 0.5"
 
@@ -57,8 +57,8 @@ class PealProgramParserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
     pealProgramParser.program()
 
     val allRules = pealProgramParser.pols.values().flatMap(pol => pol.rules).toSeq
-    allRules(0).score.underlyingScore.right.get.toZ3Expression should be ("x")
-    allRules(1).score.underlyingScore.left.get should be (BigDecimal(0.9))
+    allRules(0).score.underlyingScore.right.get.toZ3Expression should be("x")
+    allRules(1).score.underlyingScore.left.get should be(BigDecimal(0.9))
   }
 
   @Test
@@ -72,12 +72,12 @@ class PealProgramParserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
     pealProgramParser.program()
 
     val allRules = pealProgramParser.pols.values().flatMap(pol => pol.rules).toSeq
-    allRules(0).score.underlyingScore.right.get.toZ3Expression should be ("x")
-    allRules(0).score.scoreRange.get.minValue should be (BigDecimal(0.1))
-    allRules(0).score.scoreRange.get.maxValue should be (BigDecimal(0.2))
-    allRules(1).score.underlyingScore.left.get should be (BigDecimal(0.9))
-    allRules(1).score.scoreRange.get.minValue should be (BigDecimal(-0.1))
-    allRules(1).score.scoreRange.get.maxValue should be (BigDecimal(0.2))
+    allRules(0).score.underlyingScore.right.get.toZ3Expression should be("x")
+    allRules(0).score.scoreRange.get.minValue should be(BigDecimal(0.1))
+    allRules(0).score.scoreRange.get.maxValue should be(BigDecimal(0.2))
+    allRules(1).score.underlyingScore.left.get should be(BigDecimal(0.9))
+    allRules(1).score.scoreRange.get.minValue should be(BigDecimal(-0.1))
+    allRules(1).score.scoreRange.get.maxValue should be(BigDecimal(0.2))
   }
 
   @Test
@@ -90,8 +90,8 @@ class PealProgramParserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
     val pealProgramParser = ParserHelper.getPealParser(input)
     pealProgramParser.program()
 
-    pealProgramParser.pols("b1").score.scoreRange.get.minValue should be (BigDecimal(-0.2))
-    pealProgramParser.pols("b1").score.scoreRange.get.maxValue should be (BigDecimal(0.3))
+    pealProgramParser.pols("b1").score.scoreRange.get.minValue should be(BigDecimal(-0.2))
+    pealProgramParser.pols("b1").score.scoreRange.get.maxValue should be(BigDecimal(0.3))
   }
 
   @Test
@@ -374,4 +374,13 @@ class PealProgramParserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
     pealProgrmParser.program()
     pealProgrmParser.conds("cond2").synthesis(consts) should beZ3Model("(or (and (or (not q4) false) (and (or q4 q3) (not q3))) (and (and (or q5 q3) false) (or (not q2) (not false))))")
   }
+
+//  @Test
+//  def testRepeatedVariable() {
+//    val input = "POLICIES\nb0 = + ((q3 x)) default x\nb1 = max ((q0 0.9920)) default x\nb2 = * ((q6 0.0489)) default 0.1423\nb3 = min ((q2 0.6755)) default 0.3968\nPOLICY_SETS\np0_1 = min(b0,b1)\np2_3 = min(b2,b3)\np0_3 = max(p0_1,p2_3)\n\nCONDITIONS\ncond1 = 0.50 < p0_3\ncond2 = 0.60 < p0_3\nANALYSES\nanalysis1 = always_true? cond1\nanalysis2 = always_false? cond2\nanalysis3 = different? cond1 cond2\n"
+//    val pealProgrmParser = ParserHelper.getPealParser(input)
+//    pealProgrmParser.program()
+//    println(pealProgrmParser.pols)
+//    println(new ExtendedSynthesiser(input).generate())
+//  }
 }
