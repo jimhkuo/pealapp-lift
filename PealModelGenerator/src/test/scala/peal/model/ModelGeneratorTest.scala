@@ -10,6 +10,11 @@ class ModelGeneratorTest {
   }
 
   @Test
+  def testRandomWithDomain() {
+    println(RandomModelGenerator.generate(true, 2, 4, 3, 3, 1, 3*3, 0.5, 0.1))
+  }
+
+  @Test
   def testBuildLattice() {
     val x = 16
 

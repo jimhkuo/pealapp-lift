@@ -1,6 +1,6 @@
 package peal.model
 
-import peal.domain.{Pol, Rule, Predicate}
+import peal.domain.{Rule, Predicate}
 import scala.collection.JavaConversions._
 import scala.util.Random
 import peal.domain.operator._
@@ -53,15 +53,15 @@ object RandomModelGenerator {
     val lattice = ListBuffer[Seq[(Int, Int)]]()
     while (m != 1) {
       if (layer == 0) {
-        val lhs = for (i <- 0 until m by 2) yield (i)
-        val rhs = for (i <- 0 until m by 2) yield (i + 1)
+        val lhs = for (i <- 0 until m by 2) yield i
+        val rhs = for (i <- 0 until m by 2) yield i + 1
         val pairs = lhs.zip(rhs)
         lattice.append(pairs)
         m = pairs.size
       }
       else {
-        val lhs = for (i <- 0 until m by 2) yield (lattice(layer - 1)(i)._1)
-        val rhs = for (i <- 0 until m by 2) yield (lattice(layer - 1)(i + 1)._2)
+        val lhs = for (i <- 0 until m by 2) yield lattice(layer - 1)(i)._1
+        val rhs = for (i <- 0 until m by 2) yield lattice(layer - 1)(i + 1)._2
         val pairs = lhs.zip(rhs)
         lattice.append(pairs)
         m = pairs.size
@@ -123,14 +123,14 @@ object RandomModelGenerator {
     parser.program()
     val predicates = parser.pols.values().flatMap(pol => pol.rules).map(r => r.q.name).toSet
 
-    val realDeclaration = for (i <- 0 until p) yield ("(declare-const x" + i + " Real)")
-    val intDeclaration = for (i <- 0 until p) yield ("(declare-const a" + i + " Int)")
+    val realDeclaration = for (i <- 0 until p) yield "(declare-const x" + i + " Real)"
+    val intDeclaration = for (i <- 0 until p) yield "(declare-const a" + i + " Int)"
     val methodName = "(declare-sort MethodName)\n(declare-fun calledBy (MethodName) Bool)\n(assert (forall ((n MethodName) (m MethodName)) (or (= m n) (implies (calledBy m) (not (calledBy n))))))\n"
-    val methodNameDeclaration = for (i <- 0 until p) yield ("(declare-const n" + i + " MethodName)")
+    val methodNameDeclaration = for (i <- 0 until p) yield "(declare-const n" + i + " MethodName)"
 
-    val firstLevel = for (i <- 0 until p if (predicates.contains("q" + i))) yield ("(assert (= q" + i + " (calledBy n" + Random.nextInt(p) + ")))")
-    val secondLevel = for (i <- p until 2 * p if (predicates.contains("q" + i))) yield ("(assert (= q" + i + " (< a" + Random.nextInt(p) + " (+ a" + Random.nextInt(p) + " " + "%.4f".format(Random.nextDouble()) + "))))")
-    val thirdLevel = for (i <- 2 * p until 3 * p if (predicates.contains("q" + i))) yield ("(assert (= q" + i + " (< x" + Random.nextInt(p) + " (* x" + Random.nextInt(p) + " " + "%.4f".format(Random.nextDouble()) + "))))")
+    val firstLevel = for (i <- 0 until p if predicates.contains("q" + i)) yield "(assert (= q" + i + " (calledBy n" + Random.nextInt(p) + ")))"
+    val secondLevel = for (i <- p until 2 * p if predicates.contains("q" + i)) yield "(assert (= q" + i + " (< a" + Random.nextInt(p) + " (+ a" + Random.nextInt(p) + " " + "%.4f".format(Random.nextDouble()) + "))))"
+    val thirdLevel = for (i <- 2 * p until 3 * p if predicates.contains("q" + i)) yield "(assert (= q" + i + " (< x" + Random.nextInt(p) + " (* x" + Random.nextInt(p) + " " + "%.4f".format(Random.nextDouble()) + "))))"
 
     "DOMAIN_SPECIFICS\n" + realDeclaration.mkString("", "\n", "\n") + intDeclaration.mkString("", "\n", "\n") + methodName + methodNameDeclaration.mkString("", "\n", "\n") + firstLevel.mkString("", "\n", "\n") + secondLevel.mkString("", "\n", "\n") + thirdLevel.mkString("", "\n", "\n")
   }
