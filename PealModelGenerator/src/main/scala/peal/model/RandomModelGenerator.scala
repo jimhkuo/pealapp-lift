@@ -38,7 +38,7 @@ trait RandomModelGenerator {
     }
     def randomRange: Option[ScoreRange] = Random.nextInt(2) match {
       case 0 => None
-      case 1 => Some(new ScoreRange(-1, 1))
+      case 1 => Some(new ScoreRange(-randomNum, randomNum))
     }
     Random.nextInt(3) match {
       case 0 => new Score(Left(randomNum), randomRange)
