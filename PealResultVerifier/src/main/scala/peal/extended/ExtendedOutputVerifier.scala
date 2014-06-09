@@ -184,7 +184,7 @@ class ExtendedOutputVerifier(input: String) {
               case Min => okRules.foldLeft(Rational("1"))((acc, rule) => acc.min(trueScore(rule.score, name + "_" + rule.q.name + "_U"))).value
               case Max => okRules.foldLeft(Rational("0"))((acc, rule) => acc.max(trueScore(rule.score, name + "_" + rule.q.name + "_U"))).value
               case Plus => okRules.foldLeft(Rational("0"))((acc, rule) => acc + trueScore(rule.score, name + "_" + rule.q.name + "_U")).value
-              case Mul => okRules.foldLeft(Rational("1"))((acc, rule) => acc * rule.score.underlyingScore.fold(s => Rational(s.toString()), f => evaluateFormula(f))).value
+              case Mul => okRules.foldLeft(Rational("1"))((acc, rule) => acc * trueScore(rule.score, name + "_" + rule.q.name + "_U")).value
             }
             println("op X: " + decimal)
             decimal
