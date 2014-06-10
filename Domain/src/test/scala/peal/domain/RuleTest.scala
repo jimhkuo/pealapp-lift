@@ -12,7 +12,7 @@ class RuleTest extends ShouldMatchersForJUnit {
 
   @Test
   def testCanOutputZ3VariableString() {
-    new Rule(new Predicate("q1"), new Score(Right(VariableFormula(Multiplier(7, "x"))), None)).toString should be ("(q1 (* 7 x))")
+    new Rule(new Predicate("q1"), new Score(Right(VariableFormula(Multiplier(7, "x"))), None)).toString should be ("(q1 7*x)")
   }
 
   @Test

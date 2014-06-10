@@ -157,32 +157,31 @@ class ExtendedOutputVerifier(input: String) {
 
     def extractScore(pSet: PolicySet): BigDecimal = {
 
-      def trueScore(score: Score, name: String): Rational = {
+      def trueScore(score: Score, rangeVarName: String): Rational = {
         score.scoreRange match {
           case None => score.underlyingScore.fold(s => Rational(s.toString()), f => evaluateFormula(f))
-          case Some(_) => score.underlyingScore.fold(s => Rational(s.toString()), f => evaluateFormula(f)) + I(name).fold(s => s, vf => throw new RuntimeException("illegal variable format"))
+          case Some(_) => score.underlyingScore.fold(s => Rational(s.toString()), f => evaluateFormula(f)) + I(rangeVarName).fold(s => s, vf => throw new RuntimeException("illegal variable format"))
         }
       }
 
       pSet match {
         case BasicPolicySet(pol, name) => extractScore(pol)
-        case Pol(rules, op, score, name) =>
+        case Pol(rules, op, score, policyName) =>
           if (rules.exists(r => I.getOrElse(r.q.name, Right(PealBottom)).fold(score => PealBottom, pealBool => pealBool) == PealBottom)) {
             //should log
             throw new RuntimeException("PealBottom reached in certValue because some predicates are not defined in I")
           }
           else if (!rules.exists(r => I(r.q.name).fold(score => PealBottom, bool => bool) == PealTrue)) {
-            trueScore(score, name + "_default_U").value
+            trueScore(score, policyName + "_default_U").value
           }
           else {
-
             val okRules = rules.filter(r => I(r.q.name).fold(score => PealBottom, bool => bool) == PealTrue)
             println("okRules are: " + okRules + " op is " + op)
             val decimal: BigDecimal = op match {
-              case Min => okRules.foldLeft(Rational("1"))((acc, rule) => acc.min(trueScore(rule.score, name + "_" + rule.q.name + "_U"))).value
-              case Max => okRules.foldLeft(Rational("0"))((acc, rule) => acc.max(trueScore(rule.score, name + "_" + rule.q.name + "_U"))).value
-              case Plus => okRules.foldLeft(Rational("0"))((acc, rule) => acc + trueScore(rule.score, name + "_" + rule.q.name + "_U")).value
-              case Mul => okRules.foldLeft(Rational("1"))((acc, rule) => acc * trueScore(rule.score, name + "_" + rule.q.name + "_U")).value
+              case Min => okRules.foldLeft(Rational("1"))((acc, rule) => acc.min(trueScore(rule.score, policyName + "_" + rule.q.name + "_U"))).value
+              case Max => okRules.foldLeft(Rational("0"))((acc, rule) => acc.max(trueScore(rule.score, policyName + "_" + rule.q.name + "_U"))).value
+              case Plus => okRules.foldLeft(Rational("0"))((acc, rule) => acc + trueScore(rule.score, policyName + "_" + rule.q.name + "_U")).value
+              case Mul => okRules.foldLeft(Rational("1"))((acc, rule) => acc * trueScore(rule.score, policyName + "_" + rule.q.name + "_U")).value
             }
             println("op X: " + decimal)
             decimal

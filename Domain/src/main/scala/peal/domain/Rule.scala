@@ -1,5 +1,6 @@
 package peal.domain
 
+//not sure the point of Predicate
 class Rule(val q: Predicate, val score: Score) {
   def this(q: Predicate, doubleScore: Double) = this(q, new Score(Left(BigDecimal.valueOf(doubleScore)), None))
 
@@ -16,5 +17,6 @@ class Rule(val q: Predicate, val score: Score) {
   }
 
   private def scoreString = score.underlyingScore.fold(score => score.toString(), variable => variable.toNaturalExpression)
+
   override def toString = "(" + q.name + " " + scoreString + range + ")"
 }
