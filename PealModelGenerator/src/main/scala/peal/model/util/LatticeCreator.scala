@@ -29,5 +29,4 @@ object LatticeCreator {
 
     buildLayers(m, List())
   }
-
 }
