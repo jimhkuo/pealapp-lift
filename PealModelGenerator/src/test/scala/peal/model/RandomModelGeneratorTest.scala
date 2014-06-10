@@ -6,7 +6,7 @@ class RandomModelGeneratorTest {
 
   @Test
   def testRandomScore() {
-    println(RandomScoreModelGenerator.generate(false, 1, 1, 1, 1, 1, 3*3, 0.5, 0.1))
+    println(RandomScoreModelGenerator.generate(false, 6, 1, 1, 1, 1, 3*3, 0.5, 0.1))
   }
 
   @Test

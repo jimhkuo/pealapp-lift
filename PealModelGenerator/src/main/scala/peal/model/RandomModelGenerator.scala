@@ -33,8 +33,7 @@ trait RandomModelGenerator {
     createPolicies(n, m0, m1, m2, m3, k, generateConstantScore)
   }
 
-  def createPolicySetMatrix(n: Int) = {
-
+  def createLattice(n : Int) = {
     val x = n * 4
     val l = (math.log(x) / math.log(2)).floor.toInt
     var m = math.pow(2, l).toInt
@@ -59,6 +58,12 @@ trait RandomModelGenerator {
       layer += 1
     }
 
+    lattice
+  }
+
+  def createPolicySetMatrix(n: Int) = {
+
+    val lattice = createLattice(n)
     val pSets = for (i <- 0 until lattice.size) yield {
       val pSet = for (j <- 0 until lattice(i).size) yield {
         if (i == 0) {
