@@ -34,7 +34,7 @@ trait RandomModelGenerator {
     createPolicies(n, m0, m1, m2, m3, k, generateConstantScore)
   }
 
-  def createPolicySetMatrix(n: Int) = {
+  def createPolicySetMatrixWithMinMax(n: Int) = {
     val lattice = LatticeCreator.createLattice(n)
     val pSets = for (i <- 0 until lattice.size) yield {
       val pSet = for (j <- 0 until lattice(i).size) yield {

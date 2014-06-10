@@ -6,7 +6,7 @@ object ConstantScoreModelGenerator extends RandomModelGenerator {
 
     val policies = createConstantScorePolicies(n, m0, m1, m2, m3, k)
 
-    val pSets = createPolicySetMatrix(n)
+    val pSets = createPolicySetMatrixWithMinMax(n)
 
     val (finalPolicySet, lastBit) = lastSets(n, pSets.last._1)
 
