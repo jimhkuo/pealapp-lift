@@ -25,56 +25,12 @@ trait RandomModelGenerator {
     generate(doDomainSpecific, n(0).toInt, n(1).toInt, n(2).toInt, n(3).toInt, n(4).toInt, n(5).toInt, n(6).toDouble, n(7).toDouble)
   }
 
-  private def generateConstantScore: Score = {
-    new Score(Left(BigDecimal.valueOf(Random.nextDouble()).setScale(4, BigDecimal.RoundingMode.HALF_UP)), None)
-  }
-
-  private def generateRandomScore: Score = {
-    def randomVarName: String = {
-      "v" + Random.alphanumeric.take(1).mkString.toLowerCase
-    }
-    def randomNum: BigDecimal = {
-      BigDecimal.valueOf(Random.nextDouble()).setScale(4, BigDecimal.RoundingMode.HALF_UP)
-    }
-    def randomRange: Option[ScoreRange] = Random.nextInt(2) match {
-      case 0 => None
-      case 1 => Some(new ScoreRange(-randomNum, randomNum))
-    }
-    Random.nextInt(3) match {
-      case 0 => new Score(Left(randomNum), randomRange)
-      case 1 => new Score(Right(VariableFormula(randomVarName)), randomRange)
-      case 2 => new Score(Right(VariableFormula(Multiplier(randomNum, randomVarName))), randomRange)
-    }
-  }
-
   def createRandomScorePolicies(n: Int, m0: Int, m1: Int, m2: Int, m3: Int, k: Int): String = {
     createPolicies(n, m0, m1, m2, m3, k, generateRandomScore)
   }
 
   def createConstantScorePolicies(n: Int, m0: Int, m1: Int, m2: Int, m3: Int, k: Int): String = {
     createPolicies(n, m0, m1, m2, m3, k, generateConstantScore)
-  }
-
-  private def createPolicies(n: Int, m0: Int, m1: Int, m2: Int, m3: Int, k: Int, generatedScore: => Score): String = {
-    val predicates = (0 until k).map(i => new Predicate("q" + i))
-
-    def createPol(op: Operator, count: Int): Pol = {
-      val tempPredicates = Random.shuffle(predicates)
-      val rules = (0 until count).map(i => new Rule(tempPredicates(i), generatedScore))
-      new Pol(rules, op, generatedScore)
-    }
-
-    val minPolicies = Seq.fill(n)(createPol(Min, m0))
-    val maxPolicies = Seq.fill(n)(createPol(Max, m1))
-    val plusPolicies = Seq.fill(n)(createPol(Plus, m2))
-    val mulPolicies = Seq.fill(n)(createPol(Mul, m3))
-
-    val policyList = Random.shuffle(minPolicies ++ maxPolicies ++ plusPolicies ++ mulPolicies)
-    val policyMap = (0 until policyList.length).map(i => (i, policyList(i))).toMap
-    val policies = for (s <- policyMap.keys.toSeq.sortWith(_ < _)) yield {
-      "b" + s + " = " + policyMap(s).toNaturalExpression
-    }
-    "POLICIES\n" + policies.mkString("\n")
   }
 
   def createPolicySetMatrix(n: Int) = {
@@ -155,7 +111,6 @@ trait RandomModelGenerator {
   }
 
   def generateDomainSpecifics(p: Int, pealText: String): String = {
-
     val parser = ParserHelper.getPealParser(pealText)
     parser.program()
     val predicates = parser.pols.values().flatMap(pol => pol.rules).map(r => r.q.name).toSet
@@ -172,4 +127,47 @@ trait RandomModelGenerator {
     "DOMAIN_SPECIFICS\n" + realDeclaration.mkString("", "\n", "\n") + intDeclaration.mkString("", "\n", "\n") + methodName + methodNameDeclaration.mkString("", "\n", "\n") + firstLevel.mkString("", "\n", "\n") + secondLevel.mkString("", "\n", "\n") + thirdLevel.mkString("", "\n", "\n")
   }
 
+  private def generateConstantScore: Score = {
+    new Score(Left(BigDecimal.valueOf(Random.nextDouble()).setScale(4, BigDecimal.RoundingMode.HALF_UP)), None)
+  }
+
+  private def generateRandomScore: Score = {
+    def randomVarName: String = {
+      "v" + Random.alphanumeric.take(1).mkString.toLowerCase
+    }
+    def randomNum: BigDecimal = {
+      BigDecimal.valueOf(Random.nextDouble()).setScale(4, BigDecimal.RoundingMode.HALF_UP)
+    }
+    def randomRange: Option[ScoreRange] = Random.nextInt(2) match {
+      case 0 => None
+      case 1 => Some(new ScoreRange(-randomNum, randomNum))
+    }
+    Random.nextInt(3) match {
+      case 0 => new Score(Left(randomNum), randomRange)
+      case 1 => new Score(Right(VariableFormula(randomVarName)), randomRange)
+      case 2 => new Score(Right(VariableFormula(Multiplier(randomNum, randomVarName))), randomRange)
+    }
+  }
+
+  private def createPolicies(n: Int, m0: Int, m1: Int, m2: Int, m3: Int, k: Int, generatedScore: => Score): String = {
+    val predicates = (0 until k).map(i => new Predicate("q" + i))
+
+    def createPol(op: Operator, count: Int): Pol = {
+      val tempPredicates = Random.shuffle(predicates)
+      val rules = (0 until count).map(i => new Rule(tempPredicates(i), generatedScore))
+      new Pol(rules, op, generatedScore)
+    }
+
+    val minPolicies = Seq.fill(n)(createPol(Min, m0))
+    val maxPolicies = Seq.fill(n)(createPol(Max, m1))
+    val plusPolicies = Seq.fill(n)(createPol(Plus, m2))
+    val mulPolicies = Seq.fill(n)(createPol(Mul, m3))
+
+    val policyList = Random.shuffle(minPolicies ++ maxPolicies ++ plusPolicies ++ mulPolicies)
+    val policyMap = (0 until policyList.length).map(i => (i, policyList(i))).toMap
+    val policies = for (s <- policyMap.keys.toSeq.sortWith(_ < _)) yield {
+      "b" + s + " = " + policyMap(s).toNaturalExpression
+    }
+    "POLICIES\n" + policies.mkString("\n")
+  }
 }
