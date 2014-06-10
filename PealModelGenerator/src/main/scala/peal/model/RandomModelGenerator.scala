@@ -78,7 +78,7 @@ trait RandomModelGenerator {
     pSets.flatten.toSeq
   }
 
-  def lastSets(n: Int, top: String) = {
+  def lastSetsWithMinMax(n: Int, top: String) = {
     val l = (math.log(n * 4) / math.log(2)).floor.toInt
     val end = math.pow(2, l).toInt
     val remainder = for (i <- end until n * 4 by 2) yield {
@@ -92,6 +92,38 @@ trait RandomModelGenerator {
       val out = ii % 2 match {
         case 0 => top + "_" + ii + " = min(" + finalPolicySet + "," + r._1 + ")\n"
         case 1 => top + "_" + ii + " = max(" + finalPolicySet + "," + r._1 + ")\n"
+      }
+      lastBit += out
+      finalPolicySet = top + "_" + ii
+    }
+    if (!lastBit.isEmpty) {
+      lastBit = "\n\n" + lastBit
+    }
+
+    (finalPolicySet, remainder.toSeq.map(c => c._1 + " = " + c._2).mkString("\n") + lastBit)
+  }
+
+  def lastSetsWithAllFourOperators(n: Int, top: String) = {
+    val l = (math.log(n * 4) / math.log(2)).floor.toInt
+    val end = math.pow(2, l).toInt
+    val remainder = for (i <- end until n * 4 by 2) yield {
+      i % 4 match {
+        case 0 => ("p" + i + "_" + (i + 1), "min(b" + i + ", b" + (i + 1) + ")")
+        case 1 => ("p" + i + "_" + (i + 1), "max(b" + i + ", b" + (i + 1) + ")")
+        case 2 => ("p" + i + "_" + (i + 1), "+(b" + i + ", b" + (i + 1) + ")")
+        case 3 => ("p" + i + "_" + (i + 1), "*(b" + i + ", b" + (i + 1) + ")")
+      }
+    }
+    var finalPolicySet = top
+    var ii = -1
+    var lastBit = ""
+    for (r <- remainder) {
+      ii += 1
+      val out = ii % 4 match {
+        case 0 => top + "_" + ii + " = min(" + finalPolicySet + "," + r._1 + ")\n"
+        case 1 => top + "_" + ii + " = max(" + finalPolicySet + "," + r._1 + ")\n"
+        case 2 => top + "_" + ii + " = +(" + finalPolicySet + "," + r._1 + ")\n"
+        case 3 => top + "_" + ii + " = *(" + finalPolicySet + "," + r._1 + ")\n"
       }
       lastBit += out
       finalPolicySet = top + "_" + ii

@@ -8,7 +8,7 @@ object RandomScoreModelGenerator extends RandomModelGenerator {
 
     val pSets = createPolicySetMatrixWithAllFourOperators(n)
 
-    val (finalPolicySet, lastBit) = lastSets(n, pSets.last._1)
+    val (finalPolicySet, lastBit) = lastSetsWithAllFourOperators(n, pSets.last._1)
 
     val conditions = createConditions(finalPolicySet, th, delta)
 
