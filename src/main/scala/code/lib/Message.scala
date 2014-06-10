@@ -56,6 +56,7 @@ case object SynthesisAndCallZ3QuietAnalysis
 case object LazySynthesisAndCallZ3
 
 case object ExtendedSynthesisAndCallZ3
+case object CertifyExtendedResults
 
 case object NewSynthesisAndCallZ3
 

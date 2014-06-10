@@ -11,7 +11,6 @@ import peal.synthesis.{ExtendedSynthesiser, NewSynthesiser, LazySynthesiser, Con
 import scala.Predef._
 import peal.synthesis.analysis._
 import code.lib._
-import net.liftweb.http.js.jquery.JqJE.JqId
 import peal.model.{RandomScoreModelGenerator, MajorityVotingGenerator, ConstantScoreModelGenerator}
 import peal.domain.{PealFalse, PealBottom, PealTrue, PolicySet}
 import peal.domain.z3.{Sat, PealAst, Term}
@@ -19,6 +18,11 @@ import peal.antlr.util.ParserHelper
 import peal.z3.Z3Caller
 import peal.explicit.ExplicitOutputVerifier
 import peal.extended.ExtendedOutputVerifier
+import net.liftweb.http.js.jquery.JqJE.JqId
+import code.lib.Message
+import code.lib.Result
+import code.lib.SaveFile
+import code.lib.Failed
 
 class PealCometActor extends CometActor with Loggable {
 
@@ -84,6 +88,10 @@ class PealCometActor extends CometActor with Loggable {
     "name5 = different? cond1 cond2\n" +
     "name6 = implies? cond1 cond2\n"
   var inputPolicies = defaultInput
+  var z3RawOutput = ""
+  var extendedSynthesis = ""
+  var constsMap: Map[String, PealAst] = Map()
+  var analyses: Map[String, AnalysisGenerator] = Map()
   var majorityVotingCount = 10
   var randomModelParam = "5, 5, 4, 3, 2, 7, 0.5, 0.1"
   var randomModelWithRangeParam = "2, 4, 3, 2, 1, 6, 0.5, 0.1"
@@ -152,6 +160,7 @@ class PealCometActor extends CometActor with Loggable {
             <div class="tab-pane" id="extended">
               <div class="col-sm-5">
                 {SHtml.ajaxButton("Generate, show, and run Z3 code, display results in raw Z3 form", () => {this ! ExtendedSynthesisAndCallZ3; _Noop}, "class" -> "btn btn-success btn-sm", "style" -> "margin:2px;")}
+                {SHtml.ajaxButton("Certify Z3 results", () => {this ! CertifyExtendedResults; _Noop}, "class" -> "btn btn-success btn-sm", "style" -> "margin:2px;")}
               </div>
             </div>
             <div class="tab-pane" id="new">
@@ -187,7 +196,11 @@ class PealCometActor extends CometActor with Loggable {
     case LazySynthesisAndCallZ3 => onCallZ3(performLazySynthesis(inputPolicies))
     case ExtendedSynthesisAndCallZ3 =>
       val (constsMap,  conds, pSets, analyses, domainSpecific) = parseInput(inputPolicies)
-      onCallZ3AndVerify(performExtendedSynthesis(inputPolicies), constsMap, analyses)
+      this.constsMap = constsMap
+      this.analyses = analyses
+      extendedSynthesis = performExtendedSynthesis(inputPolicies)
+      onCallZ3(extendedSynthesis)
+    case CertifyExtendedResults => certifyResults(extendedSynthesis)
     case PrepareLazy =>
       partialUpdate(JqId("result") ~> JqHtml(Text("Synthesising... Please wait...")))
       this ! DownloadLazy
@@ -226,6 +239,7 @@ class PealCometActor extends CometActor with Loggable {
     case Clear =>
       this ! Message("")
       inputPolicies = ""
+      clearIntermediateResults
       partialUpdate(JqId("policies") ~> JqVal(""))
     case MajorityVoting =>
       this ! Message("")
@@ -249,12 +263,20 @@ class PealCometActor extends CometActor with Loggable {
       partialUpdate(JqId("policies") ~> JqVal(inputPolicies))
     case GenerateWithRange =>
       this ! Message("")
+      clearIntermediateResults
       inputPolicies = RandomScoreModelGenerator.generate(randomModelWithRangeParam.split(Array(' ', ',')).filterNot(_ == ""):_*)
       partialUpdate(JqId("policies") ~> JqVal(inputPolicies))
     case GenerateDomainSpecifics =>
       this ! Message("")
       inputPolicies = ConstantScoreModelGenerator.generate(true, randomModelParamWithDomain.split(Array(' ', ',')).filterNot(_ == ""):_*)
       partialUpdate(JqId("policies") ~> JqVal(inputPolicies))
+  }
+
+  private def clearIntermediateResults {
+    z3RawOutput = ""
+    extendedSynthesis = ""
+    constsMap = Map()
+    analyses = Map()
   }
 
   private def performLazySynthesis(policies: String): String = {
@@ -381,15 +403,17 @@ class PealCometActor extends CometActor with Loggable {
 
   private def onCallZ3(z3SMTInput : String) {
     try {
-      this ! Result(<pre>{z3SMTInput}</pre><pre>Z3 Raw Output:<br/>{Z3Caller.call(z3SMTInput)}</pre>)
+      z3RawOutput = Z3Caller.call(z3SMTInput)
+
+      this ! Result(<pre>{z3SMTInput}</pre><pre>Z3 Raw Output:<br/>{z3RawOutput}</pre>)
     } catch {
       case e: Exception =>  dealWithIt(e)
     }
   }
 
-  private def onCallZ3AndVerify(z3SMTInput : String,constsMap: Map[String, PealAst], analyses: Map[String, AnalysisGenerator]) {
+  private def certifyResults(z3SMTInput: String) {
     try {
-      val z3RawOutput = Z3Caller.call(z3SMTInput)
+      if (z3RawOutput == "") throw new RuntimeException("Need to generate Z3 results first")
       val z3OutputParser = ParserHelper.getZ3OutputParser(z3RawOutput)
       val z3OutputModels = z3OutputParser.results().toMap
       val sortedAnalyses = analyses.keys.toSeq.sortWith(_ < _)
@@ -406,7 +430,7 @@ class PealCometActor extends CometActor with Loggable {
 
       val analysedResults = Z3OutputAnalyser.execute(analyses, z3OutputModels, constsMap)
 
-      this ! Result(<pre>{z3SMTInput}</pre> <pre>Analysed results:<br/>{analysedResults}</pre><pre>{verificationResults.mkString("")}</pre><pre>Z3 Raw Output:<br/>{z3RawOutput}</pre>)
+      this ! Result(<pre>{verificationResults.mkString("")}</pre><pre>Analysed results:<br/>{analysedResults}</pre><pre>{z3SMTInput}</pre> <pre>Z3 Raw Output:<br/>{z3RawOutput}</pre>)
     } catch {
       case e: Exception =>  dealWithIt(e)
     }
