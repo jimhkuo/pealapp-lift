@@ -155,6 +155,7 @@ class ExtendedOutputVerifier(input: String) {
       vf.operations.foldLeft(Rational("0"))((l, r) => l + eval(r))
     }
 
+    //TODO need to return Rational
     def extractScore(pSet: PolicySet): BigDecimal = {
 
       def trueScore(score: Score, rangeVarName: String): Rational = {
@@ -186,9 +187,12 @@ class ExtendedOutputVerifier(input: String) {
             println("op X: " + decimal)
             decimal
           }
+        //TODO can't do arithmetic operations in BigDecimal
         case MaxPolicySet(lhs, rhs, n) => extractScore(lhs).max(extractScore(rhs))
         case MinPolicySet(lhs, rhs, n) => extractScore(lhs).min(extractScore(rhs))
-        case PlusPolicySet(lhs, rhs, n) => extractScore(lhs) + extractScore(rhs)
+        case PlusPolicySet(lhs, rhs, n) =>
+          println("plus pSet")
+          extractScore(lhs) + extractScore(rhs)
         case MulPolicySet(lhs, rhs, n) => extractScore(lhs) * extractScore(rhs)
       }
     }
