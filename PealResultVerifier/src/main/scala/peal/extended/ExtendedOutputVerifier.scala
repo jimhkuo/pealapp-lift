@@ -178,12 +178,14 @@ class ExtendedOutputVerifier(input: String) {
             val okRules = rules.filter(r => I(r.q.name).fold(score => PealBottom, bool => bool) == PealTrue)
             println("okRules are: " + okRules + " op is " + op)
             val decimal = op match {
+                //TODO this has problem when score is negative
               case Min => okRules.foldLeft(Rational("1"))((acc, rule) => acc.min(trueScore(rule.score, policyName + "_" + rule.q.name + "_U")))
-              case Max => okRules.foldLeft(Rational("0"))((acc, rule) => acc.max(trueScore(rule.score, policyName + "_" + rule.q.name + "_U")))
+              case Max => okRules.tail.foldLeft(trueScore(okRules.head.score, policyName + "_" + okRules.head.q.name + "_U"))((acc, rule) => acc.max(trueScore(rule.score, policyName + "_" + rule.q.name + "_U")))
               case Plus => okRules.foldLeft(Rational("0"))((acc, rule) => acc + trueScore(rule.score, policyName + "_" + rule.q.name + "_U"))
               case Mul => okRules.foldLeft(Rational("1"))((acc, rule) => acc * trueScore(rule.score, policyName + "_" + rule.q.name + "_U"))
             }
-            println("op X: " + decimal)
+            val ruleString = (for (o <- okRules) yield o.q.name).mkString(" ")
+            println("op X " + op + " " + policyName + ": " + ruleString + ": "  + decimal)
             decimal
           }
         case MaxPolicySet(lhs, rhs, n) => extractScore(lhs).max(extractScore(rhs))
