@@ -155,8 +155,7 @@ class ExtendedOutputVerifier(input: String) {
       vf.operations.foldLeft(Rational("0"))((l, r) => l + eval(r))
     }
 
-    //TODO need to return Rational
-    def extractScore(pSet: PolicySet): BigDecimal = {
+    def extractScore(pSet: PolicySet): Rational = {
 
       def trueScore(score: Score, rangeVarName: String): Rational = {
         score.scoreRange match {
@@ -173,21 +172,20 @@ class ExtendedOutputVerifier(input: String) {
             throw new RuntimeException("PealBottom reached in certValue because some predicates are not defined in I")
           }
           else if (!rules.exists(r => I(r.q.name).fold(score => PealBottom, bool => bool) == PealTrue)) {
-            trueScore(score, policyName + "_default_U").value
+            trueScore(score, policyName + "_default_U")
           }
           else {
             val okRules = rules.filter(r => I(r.q.name).fold(score => PealBottom, bool => bool) == PealTrue)
             println("okRules are: " + okRules + " op is " + op)
-            val decimal: BigDecimal = op match {
-              case Min => okRules.foldLeft(Rational("1"))((acc, rule) => acc.min(trueScore(rule.score, policyName + "_" + rule.q.name + "_U"))).value
-              case Max => okRules.foldLeft(Rational("0"))((acc, rule) => acc.max(trueScore(rule.score, policyName + "_" + rule.q.name + "_U"))).value
-              case Plus => okRules.foldLeft(Rational("0"))((acc, rule) => acc + trueScore(rule.score, policyName + "_" + rule.q.name + "_U")).value
-              case Mul => okRules.foldLeft(Rational("1"))((acc, rule) => acc * trueScore(rule.score, policyName + "_" + rule.q.name + "_U")).value
+            val decimal = op match {
+              case Min => okRules.foldLeft(Rational("1"))((acc, rule) => acc.min(trueScore(rule.score, policyName + "_" + rule.q.name + "_U")))
+              case Max => okRules.foldLeft(Rational("0"))((acc, rule) => acc.max(trueScore(rule.score, policyName + "_" + rule.q.name + "_U")))
+              case Plus => okRules.foldLeft(Rational("0"))((acc, rule) => acc + trueScore(rule.score, policyName + "_" + rule.q.name + "_U"))
+              case Mul => okRules.foldLeft(Rational("1"))((acc, rule) => acc * trueScore(rule.score, policyName + "_" + rule.q.name + "_U"))
             }
             println("op X: " + decimal)
             decimal
           }
-        //TODO can't do arithmetic operations in BigDecimal
         case MaxPolicySet(lhs, rhs, n) => extractScore(lhs).max(extractScore(rhs))
         case MinPolicySet(lhs, rhs, n) => extractScore(lhs).min(extractScore(rhs))
         case PlusPolicySet(lhs, rhs, n) =>
@@ -197,6 +195,6 @@ class ExtendedOutputVerifier(input: String) {
       }
     }
 
-    pSet.fold(score => score, pSet => extractScore(pSet))
+    pSet.fold(score => score, pSet => extractScore(pSet).value)
   }
 }
