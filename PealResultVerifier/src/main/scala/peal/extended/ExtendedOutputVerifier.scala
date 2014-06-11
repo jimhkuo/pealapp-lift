@@ -179,7 +179,7 @@ class ExtendedOutputVerifier(input: String) {
             println("okRules are: " + okRules + " op is " + op)
             val decimal = op match {
               case Min => okRules.foldLeft(Rational("1"))((acc, rule) => acc.min(trueScore(rule.score, policyName + "_" + rule.q.name + "_U")))
-              case Max => okRules.tail.foldLeft(trueScore(okRules.head.score, policyName + "_" + okRules.head.q.name + "_U"))((acc, rule) => acc.max(trueScore(rule.score, policyName + "_" + rule.q.name + "_U")))
+              case Max => okRules.foldLeft(Rational("-1"))((acc, rule) => acc.max(trueScore(rule.score, policyName + "_" + rule.q.name + "_U")))
               case Plus => okRules.foldLeft(Rational("0"))((acc, rule) => acc + trueScore(rule.score, policyName + "_" + rule.q.name + "_U"))
               case Mul => okRules.foldLeft(Rational("1"))((acc, rule) => acc * trueScore(rule.score, policyName + "_" + rule.q.name + "_U"))
             }
