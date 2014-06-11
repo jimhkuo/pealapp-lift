@@ -183,15 +183,12 @@ class ExtendedOutputVerifier(input: String) {
               case Plus => okRules.foldLeft(Rational("0"))((acc, rule) => acc + trueScore(rule.score, policyName + "_" + rule.q.name + "_U"))
               case Mul => okRules.foldLeft(Rational("1"))((acc, rule) => acc * trueScore(rule.score, policyName + "_" + rule.q.name + "_U"))
             }
-            val ruleString = (for (o <- okRules) yield o.q.name).mkString(" ")
-            println("op X " + op + " " + policyName + ": " + ruleString + ": "  + decimal)
+            println("op X " + op + " " + policyName + ": " + (for (o <- okRules) yield o.q.name).mkString(" ") + ": " + decimal)
             decimal
           }
         case MaxPolicySet(lhs, rhs, n) => extractScore(lhs).max(extractScore(rhs))
         case MinPolicySet(lhs, rhs, n) => extractScore(lhs).min(extractScore(rhs))
-        case PlusPolicySet(lhs, rhs, n) =>
-          println("plus pSet")
-          extractScore(lhs) + extractScore(rhs)
+        case PlusPolicySet(lhs, rhs, n) => extractScore(lhs) + extractScore(rhs)
         case MulPolicySet(lhs, rhs, n) => extractScore(lhs) * extractScore(rhs)
       }
     }
