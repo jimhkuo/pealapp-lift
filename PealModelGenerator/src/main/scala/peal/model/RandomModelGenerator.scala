@@ -5,7 +5,6 @@ import peal.domain.operator._
 import scala.util.Random
 import scala.collection.JavaConversions._
 import peal.antlr.util.ParserHelper
-import scala.collection.mutable.ListBuffer
 import peal.domain.Pol
 import peal.model.util.LatticeCreator
 
