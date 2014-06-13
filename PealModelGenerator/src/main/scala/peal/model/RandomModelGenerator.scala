@@ -113,10 +113,10 @@ trait RandomModelGenerator {
       case 3 => "*"
     }
 
-    val lastBitPairs = remainder.zipWithIndex.foldLeft(List[(String, String)]((top, "")))((acc, r) => acc :+ (top + "_" + r._2 ,top + "_" + r._2 + " = " + op(r._2) + "(" + acc.last._1 + "," + r._1._1 + ")\n")).drop(1)
-    val lastBits = lastBitPairs.map(_._2).mkString("\n","", "")
+    val lastPairs = remainder.zipWithIndex.foldLeft(List[(String, String)]((top, "")))((acc, r) => acc :+ (top + "_" + r._2 ,top + "_" + r._2 + " = " + op(r._2) + "(" + acc.last._1 + "," + r._1._1 + ")\n")).drop(1)
+    val lastBits = lastPairs.map(_._2).mkString("\n","", "")
 
-    (lastBitPairs.last._1, remainder.toSeq.map(c => c._1 + " = " + c._2).mkString("\n") + lastBits)
+    (lastPairs.last._1, remainder.toSeq.map(c => c._1 + " = " + c._2).mkString("\n") + lastBits)
   }
 
   def createConditions(finalPSet: String, th: Double, delta: Double): String = {
