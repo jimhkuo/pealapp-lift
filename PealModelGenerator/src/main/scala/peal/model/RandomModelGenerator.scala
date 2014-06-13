@@ -57,25 +57,25 @@ trait RandomModelGenerator {
 
   def createPolicySetMatrixWithAllFourOperators(n: Int) = {
     val lattice = LatticeCreator.createLattice(n)
-    val pSets = for (i <- 0 until lattice.size) yield {
-      val pSet = for (j <- 0 until lattice(i).size) yield {
-        if (i == 0) {
-          ("p" + lattice(i)(j)._1 + "_" + lattice(i)(j)._2, "min(b" + lattice(i)(j)._1 + ",b" + lattice(i)(j)._2 + ")")
-        }
-        else {
-          val operator = i % 4 match {
-            case 0 => "min"
-            case 1 => "max"
-            case 2 => "+"
-            case 3 => "*"
-          }
-          ("p" + lattice(i)(j)._1 + "_" + lattice(i)(j)._2, operator + "(p" + lattice(i)(j)._1 + "_" + lattice(i - 1)(j * 2)._2 + ",p" + lattice(i - 1)(j * 2 + 1)._1 + "_" + lattice(i)(j)._2 + ")")
-        }
-      }
 
-      pSet
+    for {
+      i <- 0 until lattice.size
+      j <- 0 until lattice(i).size
+    } yield {
+      if (i == 0) {
+        ("p" + lattice(i)(j)._1 + "_" + lattice(i)(j)._2, "min(b" + lattice(i)(j)._1 + ",b" + lattice(i)(j)._2 + ")")
+      }
+      else {
+
+        val operator = i % 4 match {
+          case 0 => "min"
+          case 1 => "max"
+          case 2 => "+"
+          case 3 => "*"
+        }
+        ("p" + lattice(i)(j)._1 + "_" + lattice(i)(j)._2, operator + "(p" + lattice(i)(j)._1 + "_" + lattice(i - 1)(j * 2)._2 + ",p" + lattice(i - 1)(j * 2 + 1)._1 + "_" + lattice(i)(j)._2 + ")")
+      }
     }
-    pSets.flatten.toSeq
   }
 
   def lastSetsWithMinMax(n: Int, top: String) = {
