@@ -105,25 +105,18 @@ trait RandomModelGenerator {
         case 3 => ("p" + i + "_" + (i + 1), "*(b" + i + ", b" + (i + 1) + ")")
       }
     }
-    var finalPolicySet = top
-    var ii = -1
-    var lastBit = ""
-    for (r <- remainder) {
-      ii += 1
-      val out = ii % 4 match {
-        case 0 => top + "_" + ii + " = min(" + finalPolicySet + "," + r._1 + ")\n"
-        case 1 => top + "_" + ii + " = max(" + finalPolicySet + "," + r._1 + ")\n"
-        case 2 => top + "_" + ii + " = +(" + finalPolicySet + "," + r._1 + ")\n"
-        case 3 => top + "_" + ii + " = *(" + finalPolicySet + "," + r._1 + ")\n"
-      }
-      lastBit += out
-      finalPolicySet = top + "_" + ii
-    }
-    if (!lastBit.isEmpty) {
-      lastBit = "\n\n" + lastBit
+
+    def op(i : Int) = i % 4 match {
+      case 0 => "min"
+      case 1 => "max"
+      case 2 => "+"
+      case 3 => "*"
     }
 
-    (finalPolicySet, remainder.toSeq.map(c => c._1 + " = " + c._2).mkString("\n") + lastBit)
+    val fb = remainder.zipWithIndex.foldLeft(List[(String, String)]((top, "")))((acc, r) => acc :+ (top + "_" + r._2 ,top + "_" + r._2 + " = " + op(r._2) + "(" + acc.last._1 + "," + r._1._1 + ")\n")).drop(1)
+    val out = fb.map(_._2).mkString("\n","", "")
+
+    (fb.last._1, remainder.toSeq.map(c => c._1 + " = " + c._2).mkString("\n") + out)
   }
 
   def createConditions(finalPSet: String, th: Double, delta: Double): String = {
