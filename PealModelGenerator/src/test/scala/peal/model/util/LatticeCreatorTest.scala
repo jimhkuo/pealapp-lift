@@ -11,6 +11,11 @@ class LatticeCreatorTest extends ShouldMatchersForJUnit {
   }
 
   @Test
+  def testCanBuildLattice2Layer() {
+    LatticeCreator.createLattice(2) should be (List(Vector((0,1), (2,3), (4,5), (6,7)), Vector((0,3), (4,7)), Vector((0,7))))
+  }
+
+  @Test
   def testCanBuildLattice6Layers() {
     LatticeCreator.createLattice(6) should be (List(Vector((0,1), (2,3), (4,5), (6,7), (8,9), (10,11), (12,13), (14,15)), Vector((0,3), (4,7), (8,11), (12,15)), Vector((0,7), (8,15)), Vector((0,15))))
   }
