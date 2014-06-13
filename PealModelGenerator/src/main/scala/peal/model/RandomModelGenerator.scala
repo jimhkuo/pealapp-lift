@@ -35,24 +35,12 @@ trait RandomModelGenerator {
   }
 
   def createPolicySetMatrixWithMinMax(n: Int) = {
-    val lattice = LatticeCreator.createLattice(n)
-    val pSets = for (i <- 0 until lattice.size) yield {
-      val pSet = for (j <- 0 until lattice(i).size) yield {
-        if (i == 0) {
-          ("p" + lattice(i)(j)._1 + "_" + lattice(i)(j)._2, "min(b" + lattice(i)(j)._1 + ",b" + lattice(i)(j)._2 + ")")
-        }
-        else {
-          val operator = i % 2 match {
-            case 0 => "min"
-            case 1 => "max"
-          }
-          ("p" + lattice(i)(j)._1 + "_" + lattice(i)(j)._2, operator + "(p" + lattice(i)(j)._1 + "_" + lattice(i - 1)(j * 2)._2 + ",p" + lattice(i - 1)(j * 2 + 1)._1 + "_" + lattice(i)(j)._2 + ")")
-        }
-      }
-
-      pSet
+    def op(i: Int): String = i % 2 match {
+      case 0 => "min"
+      case 1 => "max"
     }
-    pSets.flatten.toSeq
+
+    createPolicySetMatrix(n, op)
   }
 
   def createPolicySetMatrixWithAllFourOperators(n: Int) = {
@@ -66,7 +54,6 @@ trait RandomModelGenerator {
         ("p" + lattice(i)(j)._1 + "_" + lattice(i)(j)._2, "min(b" + lattice(i)(j)._1 + ",b" + lattice(i)(j)._2 + ")")
       }
       else {
-
         val operator = i % 4 match {
           case 0 => "min"
           case 1 => "max"
@@ -74,6 +61,22 @@ trait RandomModelGenerator {
           case 3 => "*"
         }
         ("p" + lattice(i)(j)._1 + "_" + lattice(i)(j)._2, operator + "(p" + lattice(i)(j)._1 + "_" + lattice(i - 1)(j * 2)._2 + ",p" + lattice(i - 1)(j * 2 + 1)._1 + "_" + lattice(i)(j)._2 + ")")
+      }
+    }
+  }
+
+  private def createPolicySetMatrix(n: Int, op: Int => String) = {
+    val lattice = LatticeCreator.createLattice(n)
+
+    for {
+      i <- 0 until lattice.size
+      j <- 0 until lattice(i).size
+    } yield {
+      if (i == 0) {
+        ("p" + lattice(i)(j)._1 + "_" + lattice(i)(j)._2, "min(b" + lattice(i)(j)._1 + ",b" + lattice(i)(j)._2 + ")")
+      }
+      else {
+        ("p" + lattice(i)(j)._1 + "_" + lattice(i)(j)._2, op(i) + "(p" + lattice(i)(j)._1 + "_" + lattice(i - 1)(j * 2)._2 + ",p" + lattice(i - 1)(j * 2 + 1)._1 + "_" + lattice(i)(j)._2 + ")")
       }
     }
   }
