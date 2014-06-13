@@ -8,9 +8,11 @@ object LatticeCreator {
     val m = math.pow(2, l).toInt
 
     def buildLayers(m: Int, layers: List[Seq[(Int, Int)]]): List[Seq[(Int, Int)]] = {
-      val pairs = layers match {
-        case Nil => for (i <- 0 until m by 2) yield (i, i + 1)
-        case _ => for (i <- 0 until m by 2) yield (layers.last(i)._1, layers.last(i + 1)._2)
+      val pairs = for (i <- 0 until m by 2) yield {
+        layers match {
+          case Nil => (i, i + 1)
+          case _ => (layers.last(i)._1, layers.last(i + 1)._2)
+        }
       }
 
       if (pairs.size > 1) {
