@@ -3,8 +3,7 @@ package peal.model.util
 object LatticeCreator {
 
   def createLattice(n: Int) = {
-    val x = n * 4
-    val l = (math.log(x) / math.log(2)).floor.toInt
+    val l = (math.log(n * 4) / math.log(2)).floor.toInt
     val m = math.pow(2, l).toInt
 
     def buildLayers(m: Int, layers: List[Seq[(Int, Int)]]): List[Seq[(Int, Int)]] = {
