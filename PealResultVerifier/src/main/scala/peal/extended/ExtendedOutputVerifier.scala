@@ -45,8 +45,8 @@ class ExtendedOutputVerifier(input: String) {
         //        print("*")
         (s + bottomPredicates.head).foreach {
           m =>
-            println("set " + m + " to false")
-            //            print(m)
+//            println("set " + m + " to false")
+                        print(m)
             truthMapping += m -> Right(PealFalse)
         }
         verifyModel(rawModel, analysisName, truthMapping, s + bottomPredicates.head)
@@ -137,7 +137,7 @@ class ExtendedOutputVerifier(input: String) {
       }
     } catch {
       case e: RuntimeException =>
-        e.printStackTrace()
+//        e.printStackTrace()
         PealBottom
     }
   }
