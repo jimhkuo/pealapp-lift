@@ -157,14 +157,14 @@ trait RandomModelGenerator {
     def randomNum: BigDecimal = {
       BigDecimal.valueOf(Random.nextDouble()).setScale(4, BigDecimal.RoundingMode.HALF_UP)
     }
-    def randomRange: Option[ScoreRange] = Random.nextInt(2) match {
-      case 0 => None
-      case 1 => Some(new ScoreRange(-randomNum, randomNum))
+    def randomRange: Option[ScoreRange] = Random.nextInt(5) match {
+      case 4 => Some(new ScoreRange(-randomNum, randomNum))
+      case _ => None
     }
-    Random.nextInt(3) match {
-      case 0 => new Score(Left(randomNum), randomRange)
-      case 1 => new Score(Right(VariableFormula(randomVarName)), randomRange)
-      case 2 => new Score(Right(VariableFormula(Multiplier(randomNum, randomVarName))), randomRange)
+    Random.nextInt(5) match {
+      case 4 => new Score(Right(VariableFormula(randomVarName)), randomRange)
+      case 3 => new Score(Right(VariableFormula(Multiplier(randomNum, randomVarName))), randomRange)
+      case _ => new Score(Left(randomNum), randomRange)
     }
   }
 

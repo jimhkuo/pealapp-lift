@@ -15,8 +15,9 @@ object Main extends App {
   System.exit(0)
 
   private def constantRun(runModes: RunMode*) {
+    val x = 5
     for (i <- 0 until 1000) {
-      executeRunner(2, 2, 2, 2, 2, 3 * 2, 0.5, 0.1, runModes: _*)
+      executeRunner(x, 2, 2, 2, 2, 3 * x, 0.5, 0.1, runModes: _*)
     }
   }
 
@@ -102,7 +103,7 @@ object Main extends App {
         }
       }
 
-      println("," + milliTime(mt / iterations) + "," + milliTime(et / iterations) + "," + milliTime(ezt / iterations) + "," + milliTime(lt / iterations) + "," + milliTime(lzt / iterations) + "," + milliTime(nt / iterations) + "," + milliTime(nzt / iterations)+ "," + milliTime(xt / iterations) + "," + milliTime(xzt / iterations))
+      println(",-" + milliTime(mt / iterations) + "," + milliTime(et / iterations) + "," + milliTime(ezt / iterations) + "," + milliTime(lt / iterations) + "," + milliTime(lzt / iterations) + "," + milliTime(nt / iterations) + "," + milliTime(nzt / iterations)+ "," + milliTime(xt / iterations) + "," + milliTime(xzt / iterations))
       true
     } catch {
       case e: TimeoutException =>
