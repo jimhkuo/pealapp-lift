@@ -102,9 +102,10 @@ class VerificationExperimentRunner(doDomainSpecifics: Boolean, system: ActorSyst
               verificationResult._1 match {
                 case PealTrue => print("t," + "%.2f".format(lapse.toDouble / 1000000) + ",")
                 case PealFalse => print("F," + "%.2f".format(lapse.toDouble / 1000000) + ",")
+                  FileUtil.writeToFile(File.createTempFile("verificationFailed-false-", "").getAbsolutePath, model)
                 case PealBottom => print("B," + "%.2f".format(lapse.toDouble / 1000000) + ",")
+                  FileUtil.writeToFile(File.createTempFile("verificationFailed-bottom-", "").getAbsolutePath, model)
               }
-
             } catch {
               case e: Exception => print("u,0,")
             }
