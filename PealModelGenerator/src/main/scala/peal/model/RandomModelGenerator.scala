@@ -105,18 +105,22 @@ trait RandomModelGenerator {
         case 3 => ("p" + i + "_" + (i + 1), "*(b" + i + ", b" + (i + 1) + ")")
       }
     }
-
-    def op(i : Int) = i % 4 match {
-      case 0 => "min"
-      case 1 => "max"
-      case 2 => "+"
-      case 3 => "*"
+    if (remainder.isEmpty) {
+      (top, "")
     }
+    else {
+      def op(i: Int) = i % 4 match {
+        case 0 => "min"
+        case 1 => "max"
+        case 2 => "+"
+        case 3 => "*"
+      }
 
-    val lastPairs = remainder.zipWithIndex.foldLeft(List[(String, String)]((top, "")))((acc, r) => acc :+ (top + "_" + r._2 ,top + "_" + r._2 + " = " + op(r._2) + "(" + acc.last._1 + "," + r._1._1 + ")\n")).drop(1)
-    val lastBits = lastPairs.map(_._2).mkString("\n","", "")
+      val lastPairs = remainder.zipWithIndex.foldLeft(List[(String, String)]((top, "")))((acc, r) => acc :+(top + "_" + r._2, top + "_" + r._2 + " = " + op(r._2) + "(" + acc.last._1 + "," + r._1._1 + ")\n")).drop(1)
+      val lastBits = lastPairs.map(_._2).mkString("\n", "", "")
 
-    (lastPairs.last._1, remainder.toSeq.map(c => c._1 + " = " + c._2).mkString("\n") + lastBits)
+      (lastPairs.last._1, remainder.toSeq.map(c => c._1 + " = " + c._2).mkString("\n") + lastBits)
+    }
   }
 
   def createConditions(finalPSet: String, th: Double, delta: Double): String = {

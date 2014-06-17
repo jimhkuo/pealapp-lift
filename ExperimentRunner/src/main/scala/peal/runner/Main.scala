@@ -11,7 +11,7 @@ object Main extends App {
   private val doDomainSpecifics = false
 
   println("Picking up z3 from environment PATH: " + System.getenv("PATH"))
-  constantRun(Explicit)
+  binarySearch(Extended)
   System.exit(0)
 
   private def constantRun(runModes: RunMode*) {
@@ -21,7 +21,7 @@ object Main extends App {
   }
 
   private def binarySearch(runModes: RunMode*) {
-    val execute: (Int) => Boolean = (x) => executeRunner(10, 10, 1, 1, 1, 3 * 10, 0.5, 0.1, runModes: _*)
+    val execute: (Int) => Boolean = (x) => executeRunner(x, 2, 2, 2, 2, 3 * x, 0.5, 0.1, runModes: _*)
 
     var lastSuccess = 0
     var lastFailure = 0
@@ -84,6 +84,7 @@ object Main extends App {
 
       for (i <- 1 to iterations) {
 //        val output = new ExperimentRunner(doDomainSpecifics, system, timeout, z3MemoryBound, runModes: _*).runRandomModel(n, m0, m1, m2, m3, k, th, delta)
+        //TODO it doesn't use runMode
         val output = new VerificationExperimentRunner(doDomainSpecifics, system, timeout, z3MemoryBound).runRandomModel(n, m0, m1, m2, m3, k, th, delta)
         mt += output.modelGeneration
         et += output.eagerSynthesis

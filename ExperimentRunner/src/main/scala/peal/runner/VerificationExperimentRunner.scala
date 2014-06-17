@@ -14,6 +14,7 @@ import java.util.concurrent.TimeoutException
 import peal.antlr.util.ParserHelper
 import peal.domain.{PealBottom, PealFalse, PealTrue}
 import peal.explicit.ExplicitOutputVerifier
+import peal.extended.ExtendedOutputVerifier
 
 
 class VerificationExperimentRunner(doDomainSpecifics: Boolean, system: ActorSystem, duration: Long, z3CallerMemoryBound: Long) {
@@ -37,6 +38,7 @@ class VerificationExperimentRunner(doDomainSpecifics: Boolean, system: ActorSyst
   }
 
   private def runExperiment(model: String): TimingOutput = {
+    val synthesisType = "extended"
     val output = new TimingOutput()
     val processKiller = system.actorOf(Props[ProcessKillerActor])
     val randomModelFile = File.createTempFile("randomModel", "")
@@ -45,9 +47,9 @@ class VerificationExperimentRunner(doDomainSpecifics: Boolean, system: ActorSyst
       FileUtil.writeToFile(randomModelFile.getAbsolutePath, model)
       print("m")
 
-      val z3Input = Seq("java", "-Xmx25600m", "-Xss32m", "-cp", TimeoutSynthesisRunner.getClass.getProtectionDomain.getCodeSource.getLocation.getFile, "peal.runner.TimeoutSynthesisRunner", "explicit", randomModelFile.getAbsolutePath).!!
+      val z3Input = Seq("java", "-Xmx25600m", "-Xss32m", "-cp", TimeoutSynthesisRunner.getClass.getProtectionDomain.getCodeSource.getLocation.getFile, "peal.runner.TimeoutSynthesisRunner", synthesisType, randomModelFile.getAbsolutePath).!!
       if (z3Input.trim == "TIMEOUT") {
-        throw new TimeoutException("Timeout in explicit Synthesis")
+        throw new TimeoutException("Timeout in Synthesis")
       }
 
       output.eagerSynthesis = z3Input.split("\n")(0).toLong
@@ -76,11 +78,12 @@ class VerificationExperimentRunner(doDomainSpecifics: Boolean, system: ActorSyst
 
         print("z")
 
-        //TODO do verification here, record time
+        //do verification here, record time
         val pealProgramParser = ParserHelper.getPealParser(model)
         pealProgramParser.program()
 
-        val verifier = new ExplicitOutputVerifier(model)
+        //TODO call verifier here
+        val verifier = new ExtendedOutputVerifier(model)
 
         pealProgramParser.analyses.keys.toSeq.sortWith(_ < _).foreach {
           k =>

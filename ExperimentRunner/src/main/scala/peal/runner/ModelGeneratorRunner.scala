@@ -1,6 +1,6 @@
 package peal.runner
 
-import peal.model.ConstantScoreModelGenerator
+import peal.model.RandomScoreModelGenerator
 
 object ModelGeneratorRunner extends App {
 
@@ -15,5 +15,5 @@ object ModelGeneratorRunner extends App {
   val delta = args(8)
 
   //TODO switch to a different model generator here
-  println(ConstantScoreModelGenerator.generate(doDomainSpecifics, n, min, max, plus, mul, k, th, delta))
+  println(RandomScoreModelGenerator.generate(doDomainSpecifics, n, min, max, plus, mul, k, th, delta))
 }
