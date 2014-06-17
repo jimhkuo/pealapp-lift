@@ -158,7 +158,7 @@ trait RandomModelGenerator {
       BigDecimal.valueOf(Random.nextDouble()).setScale(4, BigDecimal.RoundingMode.HALF_UP)
     }
     def randomRange: Option[ScoreRange] = Random.nextInt(10) match {
-//      case 9 => Some(new ScoreRange(-randomNum, randomNum))
+      case 9 => Some(new ScoreRange(-randomNum, randomNum))
       case _ => None
     }
     Random.nextInt(5) match {
