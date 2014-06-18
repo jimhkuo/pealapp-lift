@@ -41,12 +41,12 @@ class ExtendedOutputVerifier(input: String) {
         if (bottomPredicates.isEmpty) {
           return (PealBottom, s)
         }
-        //        println("*** Trying again")
+        println("*** Trying again")
         //        print("*")
         (s + bottomPredicates.head).foreach {
           m =>
-//            println("set " + m + " to false")
-                        print(m)
+            //            println("set " + m + " to false")
+            print(m)
             truthMapping += m -> Right(PealFalse)
         }
         verifyModel(rawModel, analysisName, truthMapping, s + bottomPredicates.head)
@@ -118,7 +118,7 @@ class ExtendedOutputVerifier(input: String) {
         case c: LessThanThCondition =>
           val lhsValue: BigDecimal = certValue(Right(c.lhs), I)
           val rhsValue: BigDecimal = certValue(c.rhs, I)
-          //          println("LessThanThCondition: lhs " + lhsValue + " <= rhs " + rhsValue + ", v " + v)
+          println("LessThanThCondition: lhs " + lhsValue + " <= rhs " + rhsValue + ", v " + v)
           if (v == PealTrue) {
             ThreeWayBooleanObj.from(lhsValue <= rhsValue)
           } else {
@@ -127,7 +127,7 @@ class ExtendedOutputVerifier(input: String) {
         case c: GreaterThanThCondition =>
           val lhsValue: BigDecimal = certValue(Right(c.lhs), I)
           val rhsValue: BigDecimal = certValue(c.rhs, I)
-          //          println("GreaterThanThCondition: lhs " + lhsValue + " > rhs " + rhsValue + ", v " + v)
+          println("GreaterThanThCondition: lhs " + lhsValue + " > rhs " + rhsValue + ", v " + v)
           if (v == PealTrue) {
             ThreeWayBooleanObj.from(rhsValue < lhsValue)
           } else {
@@ -137,7 +137,7 @@ class ExtendedOutputVerifier(input: String) {
       }
     } catch {
       case e: RuntimeException =>
-//        e.printStackTrace()
+        e.printStackTrace()
         PealBottom
     }
   }
@@ -153,6 +153,7 @@ class ExtendedOutputVerifier(input: String) {
           case _ => throw new RuntimeException("Invalid eval case")
         }
       } else {
+        println("*** looking for " + e.name+ " 0 assumed")
         Rational("0")
       }
     }
@@ -170,7 +171,7 @@ class ExtendedOutputVerifier(input: String) {
         }
       }
 
-      pSet match {
+      val out = pSet match {
         case BasicPolicySet(pol, name) => extractScore(pol)
         case Pol(rules, op, score, policyName) =>
           if (rules.exists(r => I.getOrElse(r.q.name, Right(PealBottom)).fold(score => PealBottom, pealBool => pealBool) == PealBottom)) {
@@ -182,21 +183,28 @@ class ExtendedOutputVerifier(input: String) {
           }
           else {
             val okRules = rules.filter(r => I(r.q.name).fold(score => PealBottom, bool => bool) == PealTrue)
-            //            println("okRules are: " + okRules + " op is " + op)
-            val decimal = op match {
-              case Min => okRules.foldLeft(Rational("1"))((acc, rule) => acc.min(trueScore(rule.score, policyName + "_" + rule.q.name + "_U")))
-              case Max => okRules.foldLeft(Rational("-1"))((acc, rule) => acc.max(trueScore(rule.score, policyName + "_" + rule.q.name + "_U")))
+            println("okRules are: " + okRules + " op is " + op)
+            val rational = op match {
+              case Min => okRules.tail.foldLeft(trueScore(okRules.head.score, policyName + "_" + okRules.head.q.name + "_U"))((acc, rule) => acc.min(trueScore(rule.score, policyName + "_" + rule.q.name + "_U")))
+              case Max => okRules.tail.foldLeft(trueScore(okRules.head.score, policyName + "_" + okRules.head.q.name + "_U"))((acc, rule) => acc.max(trueScore(rule.score, policyName + "_" + rule.q.name + "_U")))
               case Plus => okRules.foldLeft(Rational("0"))((acc, rule) => acc + trueScore(rule.score, policyName + "_" + rule.q.name + "_U"))
               case Mul => okRules.foldLeft(Rational("1"))((acc, rule) => acc * trueScore(rule.score, policyName + "_" + rule.q.name + "_U"))
             }
-            //            println("op X " + op + " " + policyName + ": " + (for (o <- okRules) yield o.q.name).mkString(" ") + ": " + decimal)
-            decimal
+            println("op X " + op + " " + policyName + ": " + (for (o <- okRules) yield o.q.name).mkString(" ") + ": " + rational)
+            rational
           }
-        case MaxPolicySet(lhs, rhs, n) => extractScore(lhs).max(extractScore(rhs))
-        case MinPolicySet(lhs, rhs, n) => extractScore(lhs).min(extractScore(rhs))
-        case PlusPolicySet(lhs, rhs, n) => extractScore(lhs) + extractScore(rhs)
-        case MulPolicySet(lhs, rhs, n) => extractScore(lhs) * extractScore(rhs)
+        case MaxPolicySet(lhs, rhs, n) => println(pSet.getPolicySetName + " max"); extractScore(lhs).max(extractScore(rhs))
+        case MinPolicySet(lhs, rhs, n) => println(pSet.getPolicySetName + " min"); extractScore(lhs).min(extractScore(rhs))
+        case PlusPolicySet(lhs, rhs, n) => println(pSet.getPolicySetName + " +"); extractScore(lhs) + extractScore(rhs)
+        case MulPolicySet(lhs, rhs, n) => println(pSet.getPolicySetName + " *"); extractScore(lhs) * extractScore(rhs)
       }
+
+      pSet.getPolicySetName match {
+//        case "p0_7" | "p8_15" => println("*** " + pSet.getPolicySetName + " is " + out)
+        case "b11" => println("*** " + pSet.getPolicySetName + " is " + out)
+        case _ =>
+      }
+      out
     }
 
     pSet.fold(score => score, pSet => extractScore(pSet).value)

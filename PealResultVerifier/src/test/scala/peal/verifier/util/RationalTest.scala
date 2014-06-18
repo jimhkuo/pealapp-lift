@@ -38,6 +38,8 @@ class RationalTest extends ShouldMatchersForJUnit {
     Rational("1.5") * Rational("1") should be(Rational("1.5"))
     Rational("15", "10") * Rational("10", "9") should be(Rational("15", "9"))
     Rational("-15", "10") * Rational("10", "9") should be(Rational("-15", "9"))
+    Rational(12477,10000) * Rational("6365127","1.343E+7") should be(Rational(79417689579l,1.343E+11))
+//    Rational(79417689579l,134300000000L)
   }
 
   @Test
@@ -45,5 +47,7 @@ class RationalTest extends ShouldMatchersForJUnit {
     Rational("1.5") + Rational("1") should be(Rational("2.5"))
     Rational("15", "10") + Rational("10", "9") should be(Rational("235", "90"))
     Rational("-15", "10") + Rational("10", "9") should be(Rational("-35", "90"))
+    println((Rational("2351", "10000") + Rational("1603867", "6715000")).value)
+    println((Rational(2351, 10000) + Rational(1603867, 6.715E+6)).value)
   }
 }

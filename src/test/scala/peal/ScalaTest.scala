@@ -13,16 +13,17 @@ class ScalaTest extends ShouldMatchersForJUnit {
 
   @Test
   def test() {
-    val m = collection.mutable.Map(1 -> 1, 2 -> 2)
-    m += (3 -> 3)
-//    m = m + (3 -> 3) //not allowed
-    println(m)
-
-    var i = 10
-    i += 1
-
-    println(i)
-
+//    val m = collection.mutable.Map(1 -> 1, 2 -> 2)
+//    m += (3 -> 3)
+////    m = m + (3 -> 3) //not allowed
+//    println(m)
+//
+//    var i = 10
+//    i += 1
+//
+//    println(i)
+//
+    println(List[Int]().foldLeft(1)(_ + _))
   }
 
   @Test
