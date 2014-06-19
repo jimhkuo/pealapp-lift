@@ -314,33 +314,36 @@ class ExtendedOutputVerifierTest extends ShouldMatchersForJUnit {
     //working
 //    val model = "Result of analysis [analysis2 = always_false? cond2]:\nsat\n(model \n  (define-fun q13 () Bool\n    true)\n  (define-fun q0 () Bool\n    true)\n  (define-fun b1_score () Real\n    (/ 2409.0 2500.0))\n  (define-fun b14_score () Real\n    (/ 1947.0 10000.0))\n  (define-fun q4 () Bool\n    true)\n  (define-fun cond2 () Bool\n    true)\n  (define-fun cond1 () Bool\n    true)\n  (define-fun b3_score () Real\n    (/ 1693.0 10000.0))\n  (define-fun q1 () Bool\n    true)\n  (define-fun q9 () Bool\n    true)\n  (define-fun b18_q3_U () Real\n    (- (/ 3559.0 5000.0)))\n  (define-fun b0_q14_U () Real\n    (/ 22755439.0 68430000.0))\n  (define-fun q3 () Bool\n    false)\n  (define-fun b8_score () Real\n    (/ 5547.0 10000.0))\n  (define-fun b2_score () Real\n    (/ 7057.0 10000.0))\n  (define-fun vf () Real\n    (/ 15171.0 20000.0))\n  (define-fun b12_score () Real\n    (/ 1873.0 2500.0))\n  (define-fun q6 () Bool\n    false)\n  (define-fun q12 () Bool\n    false)\n  (define-fun b2_q6_U () Real\n    (- (/ 7931.0 10000.0)))\n  (define-fun b4_score () Real\n    (/ 492.0 625.0))\n  (define-fun b18_score () Real\n    0.0)\n  (define-fun b11_score () Real\n    (/ 3097.0 5000.0))\n  (define-fun q7 () Bool\n    false)\n  (define-fun b16_score () Real\n    (/ 12187.0 20000.0))\n  (define-fun b6_score () Real\n    0.0)\n  (define-fun q8 () Bool\n    false)\n  (define-fun b19_score () Real\n    (/ 37.0 80.0))\n  (define-fun q11 () Bool\n    false)\n  (define-fun b0_score () Real\n    (/ 12187.0 27372.0))\n  (define-fun q10 () Bool\n    false)\n  (define-fun q14 () Bool\n    true)\n  (define-fun b7_score () Real\n    (/ 1983.0 2000.0))\n  (define-fun b15_score () Real\n    (/ 1067.0 5000.0))\n  (define-fun v4 () Real\n    (/ 12187.0 40000.0))\n  (define-fun b17_score () Real\n    (/ 1393.0 2000.0))\n  (define-fun b13_default_U () Real\n    (- (/ 17.0 500.0)))\n  (define-fun q5 () Bool\n    false)\n  (define-fun b10_score () Real\n    (/ 1989.0 2000.0))\n  (define-fun b13_score () Real\n    (/ 15171.0 20000.0))\n  (define-fun b4_q11_U () Real\n    (- (/ 267.0 2500.0)))\n  (define-fun q2 () Bool\n    false)\n  (define-fun always_false_analysis2 () Bool\n    true)\n  (define-fun b5_score () Real\n    (- (/ 187.0 20000.0)))\n  (define-fun vt () Real\n    (- (/ 187.0 40000.0)))\n  (define-fun b9_score () Real\n    0.0)\n)"
     //failing
-    val model = "Result of analysis [analysis2 = always_false? cond2]:\nsat\n" +
-      "(model \n  (define-fun q13 () Bool\n    true)\n  (define-fun q0 () Bool\n    true)\n" +
-      "  (define-fun b1_score () Real\n    (/ 728.0 625.0))\n  (define-fun b14_score () Real\n    (/ 1947.0 10000.0))\n" +
-      "  (define-fun q4 () Bool\n    true)\n  (define-fun cond2 () Bool\n    true)\n  (define-fun cond1 () Bool\n    true)\n " +
-      " (define-fun b3_score () Real\n    (/ 1693.0 10000.0))\n  (define-fun q1 () Bool\n    false)\n  (define-fun q9 () Bool\n    true)\n" +
-      "  (define-fun b18_q3_U () Real\n    (- (/ 3559.0 5000.0)))\n  (define-fun b0_q14_U () Real\n    (/ 28230923.0 100000000.0))\n" +
-      "  (define-fun q3 () Bool\n    false)\n  (define-fun b8_score () Real\n    (/ 2351.0 10000.0))\n" +
-      "  (define-fun b2_score () Real\n    (/ 3527.0 5000.0))\n  (define-fun vf () Real\n    (- (/ 202143.0 13430000.0)))\n  " +
-      "(define-fun b12_score () Real\n    (/ 1873.0 2500.0))\n  (define-fun q6 () Bool\n    false)\n  " +
-      "(define-fun q12 () Bool\n    false)\n  (define-fun b2_q6_U () Real\n    (- (/ 7931.0 10000.0)))\n" +
-      "  (define-fun b4_score () Real\n    (/ 528.0 625.0))\n  (define-fun b18_score () Real\n    0.0)\n " +
-      " (define-fun b11_score () Real\n    (- (/ 606429.0 13430000.0)))\n  (define-fun q7 () Bool\n    false)\n " +
-      " (define-fun b16_score () Real\n    (/ 60789077.0 100000000.0))\n  (define-fun b6_score () Real\n    0.0)\n " +
-      " (define-fun q8 () Bool\n    true)\n  (define-fun b19_score () Real\n    (/ 1949.0 5000.0))\n  (define-fun q11 () Bool\n    true)\n " +
-      " (define-fun b0_score () Real\n    (/ 4029.0 10000.0))\n  (define-fun q10 () Bool\n    true)\n  (define-fun q14 () Bool\n    true)\n" +
-      "  (define-fun b7_score () Real\n    (/ 1983.0 2000.0))\n  (define-fun b15_score () Real\n    (/ 429.0 625.0))\n" +
-      "  (define-fun v4 () Real\n    (/ 60789077.0 200000000.0))\n  (define-fun b17_score () Real\n    (/ 1393.0 2000.0))\n  " +
-      "(define-fun b13_default_U () Real\n    (- (/ 17.0 500.0)))\n  (define-fun q5 () Bool\n    true)\n" +
-      "  (define-fun b10_score () Real\n    (/ 17.0 1250.0))\n  (define-fun b13_score () Real\n    (/ 1603867.0 6715000.0))\n" +
-      "  (define-fun b4_q11_U () Real\n    (/ 369.0 500.0))\n  (define-fun q2 () Bool\n    false)\n" +
-      "  (define-fun always_false_analysis2 () Bool\n    true)\n  (define-fun b5_score () Real\n    (/ 528.0 625.0))\n " +
-      " (define-fun vt () Real\n    (/ 6609.0 20000.0))\n  (define-fun b9_score () Real\n    (/ 487.0 1250.0))\n)"
+//    val model = "Result of analysis [analysis2 = always_false? cond2]:\nsat\n" +
+//      "(model \n  (define-fun q13 () Bool\n    true)\n  (define-fun q0 () Bool\n    true)\n" +
+//      "  (define-fun b1_score () Real\n    (/ 728.0 625.0))\n  (define-fun b14_score () Real\n    (/ 1947.0 10000.0))\n" +
+//      "  (define-fun q4 () Bool\n    true)\n  (define-fun cond2 () Bool\n    true)\n  (define-fun cond1 () Bool\n    true)\n " +
+//      " (define-fun b3_score () Real\n    (/ 1693.0 10000.0))\n  (define-fun q1 () Bool\n    false)\n  (define-fun q9 () Bool\n    true)\n" +
+//      "  (define-fun b18_q3_U () Real\n    (- (/ 3559.0 5000.0)))\n  (define-fun b0_q14_U () Real\n    (/ 28230923.0 100000000.0))\n" +
+//      "  (define-fun q3 () Bool\n    false)\n  (define-fun b8_score () Real\n    (/ 2351.0 10000.0))\n" +
+//      "  (define-fun b2_score () Real\n    (/ 3527.0 5000.0))\n  (define-fun vf () Real\n    (- (/ 202143.0 13430000.0)))\n  " +
+//      "(define-fun b12_score () Real\n    (/ 1873.0 2500.0))\n  (define-fun q6 () Bool\n    false)\n  " +
+//      "(define-fun q12 () Bool\n    false)\n  (define-fun b2_q6_U () Real\n    (- (/ 7931.0 10000.0)))\n" +
+//      "  (define-fun b4_score () Real\n    (/ 528.0 625.0))\n  (define-fun b18_score () Real\n    0.0)\n " +
+//      " (define-fun b11_score () Real\n    (- (/ 606429.0 13430000.0)))\n  (define-fun q7 () Bool\n    false)\n " +
+//      " (define-fun b16_score () Real\n    (/ 60789077.0 100000000.0))\n  (define-fun b6_score () Real\n    0.0)\n " +
+//      " (define-fun q8 () Bool\n    true)\n  (define-fun b19_score () Real\n    (/ 1949.0 5000.0))\n  (define-fun q11 () Bool\n    true)\n " +
+//      " (define-fun b0_score () Real\n    (/ 4029.0 10000.0))\n  (define-fun q10 () Bool\n    true)\n  (define-fun q14 () Bool\n    true)\n" +
+//      "  (define-fun b7_score () Real\n    (/ 1983.0 2000.0))\n  (define-fun b15_score () Real\n    (/ 429.0 625.0))\n" +
+//      "  (define-fun v4 () Real\n    (/ 60789077.0 200000000.0))\n  (define-fun b17_score () Real\n    (/ 1393.0 2000.0))\n  " +
+//      "(define-fun b13_default_U () Real\n    (- (/ 17.0 500.0)))\n  (define-fun q5 () Bool\n    true)\n" +
+//      "  (define-fun b10_score () Real\n    (/ 17.0 1250.0))\n  (define-fun b13_score () Real\n    (/ 1603867.0 6715000.0))\n" +
+//      "  (define-fun b4_q11_U () Real\n    (/ 369.0 500.0))\n  (define-fun q2 () Bool\n    false)\n" +
+//      "  (define-fun always_false_analysis2 () Bool\n    true)\n  (define-fun b5_score () Real\n    (/ 528.0 625.0))\n " +
+//      " (define-fun vt () Real\n    (/ 6609.0 20000.0))\n  (define-fun b9_score () Real\n    (/ 487.0 1250.0))\n)"
 
-    Z3ModelExtractor.extractIUsingRational(model)("analysis2").foreach(println(_))
+    val model = "Result of analysis [analysis2 = always_false? cond2]:\nsat\n(model \n  (define-fun q13 () Bool\n    true)\n  (define-fun q0 () Bool\n    true)\n  (define-fun b1_score () Real\n    (/ 728.0 625.0))\n  (define-fun b14_score () Real\n    (/ 1947.0 10000.0))\n  (define-fun q4 () Bool\n    true)\n  (define-fun cond2 () Bool\n    true)\n  (define-fun cond1 () Bool\n    true)\n  (define-fun b3_score () Real\n    (/ 1693.0 10000.0))\n  (define-fun q1 () Bool\n    false)\n  (define-fun q9 () Bool\n    true)\n  (define-fun b18_q3_U () Real\n    (- (/ 3559.0 5000.0)))\n  (define-fun b0_q14_U () Real\n    (/ 28230923.0 100000000.0))\n  (define-fun q3 () Bool\n    false)\n  (define-fun b8_score () Real\n    (/ 2351.0 10000.0))\n  (define-fun b2_score () Real\n    (/ 3527.0 5000.0))\n  (define-fun vf () Real\n    (- (/ 202143.0 13430000.0)))\n  (define-fun b12_score () Real\n    (/ 1873.0 2500.0))\n  (define-fun q6 () Bool\n    false)\n  (define-fun q12 () Bool\n    false)\n  (define-fun b2_q6_U () Real\n    (- (/ 7931.0 10000.0)))\n  (define-fun b4_score () Real\n    (/ 528.0 625.0))\n  (define-fun b18_score () Real\n    0.0)\n  (define-fun b11_score () Real\n    (- (/ 606429.0 13430000.0)))\n  (define-fun q7 () Bool\n    false)\n  (define-fun b16_score () Real\n    (/ 60789077.0 100000000.0))\n  (define-fun b6_score () Real\n    0.0)\n  (define-fun q8 () Bool\n    true)\n  (define-fun b19_score () Real\n    (/ 1949.0 5000.0))\n  (define-fun q11 () Bool\n    true)\n  (define-fun b0_score () Real\n    (/ 4029.0 10000.0))\n  (define-fun q10 () Bool\n    true)\n  (define-fun q14 () Bool\n    true)\n  (define-fun b7_score () Real\n    (/ 1983.0 2000.0))\n  (define-fun b15_score () Real\n    (/ 429.0 625.0))\n  (define-fun v4 () Real\n    (/ 60789077.0 200000000.0))\n  (define-fun b17_score () Real\n    (/ 1393.0 2000.0))\n  (define-fun b13_default_U () Real\n    (- (/ 17.0 500.0)))\n  (define-fun q5 () Bool\n    true)\n  (define-fun b10_score () Real\n    (/ 17.0 1250.0))\n  (define-fun b13_score () Real\n    (/ 1603867.0 6715000.0))\n  (define-fun b4_q11_U () Real\n    (/ 369.0 500.0))\n  (define-fun q2 () Bool\n    false)\n  (define-fun always_false_analysis2 () Bool\n    true)\n  (define-fun b5_score () Real\n    (/ 528.0 625.0))\n  (define-fun vt () Real\n    (/ 6609.0 20000.0))\n  (define-fun b9_score () Real\n    (/ 487.0 1250.0))\n)"
+//    Z3ModelExtractor.extractIUsingRational(model)("analysis2").foreach(println(_))
 
     val result: (ThreeWayBoolean, Set[String]) = new ExtendedOutputVerifier(input).verifyModel(model, "analysis2")
-    println(result._2)
+    println(input)
+    println(model)
+//    println(result._2)
     result._1 should be(PealTrue)
   }
 }

@@ -120,8 +120,8 @@ class ExtendedSynthesiser(input: String) extends Synthesiser {
       policyScoreDeclarations.mkString("") +
       policySetScoreDeclarations.mkString("") +
       domainSpecifics.mkString("", "\n", "\n") +
-      condDetails.mkString("", "\n", "\n") +
       policyComposition.mkString("", "\n", "\n") +
+      condDetails.mkString("", "\n", "\n") +
       generatedAnalyses.mkString("")
   }
 }

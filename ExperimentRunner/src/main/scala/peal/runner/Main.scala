@@ -15,7 +15,7 @@ object Main extends App {
   System.exit(0)
 
   private def constantRun(runModes: RunMode*) {
-    val x = 5
+    val x = 2
     for (i <- 0 until 1000) {
       executeRunner(x, 2, 2, 2, 2, 3 * x, 0.5, 0.1, runModes: _*)
     }
