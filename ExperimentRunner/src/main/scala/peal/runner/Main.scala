@@ -15,8 +15,8 @@ object Main extends App {
   System.exit(0)
 
   private def constantRun(runModes: RunMode*) {
-    val x = 2
-    for (i <- 0 until 1000) {
+    val x = 5
+    for (i <- 0 until 10000) {
       executeRunner(x, 2, 2, 2, 2, 3 * x, 0.5, 0.1, runModes: _*)
     }
   }
@@ -81,7 +81,7 @@ object Main extends App {
     var v3 = 0l
 
     try {
-      print(n + "-" + m0 + "-" + m1 + "-" + m2 + "-" + m3 + "-" + th + "-" + delta + "," + timeout + ",")
+      print(Count.i + " " + n + "-" + m0 + "-" + m1 + "-" + m2 + "-" + m3 + "-" + k + "-" + th + "-" + delta + "," + timeout + ",")
 
       for (i <- 1 to iterations) {
 //        val output = new ExperimentRunner(doDomainSpecifics, system, timeout, z3MemoryBound, runModes: _*).runRandomModel(n, m0, m1, m2, m3, k, th, delta)
@@ -101,6 +101,7 @@ object Main extends App {
           println(output.modelResults)
           println("syntheses produce different results," + n + "-" + m0 + "-" + m1 + "-" + m2 + "-" + m3 + "-" + th + "-" + delta + "," + timeout + "," + output.failedPealInput)
         }
+        Count.i += 1
       }
 
       println(",-" + milliTime(mt / iterations) + "," + milliTime(et / iterations) + "," + milliTime(ezt / iterations) + "," + milliTime(lt / iterations) + "," + milliTime(lzt / iterations) + "," + milliTime(nt / iterations) + "," + milliTime(nzt / iterations)+ "," + milliTime(xt / iterations) + "," + milliTime(xzt / iterations))

@@ -13,7 +13,6 @@ import scala.sys.process._
 import java.util.concurrent.TimeoutException
 import peal.antlr.util.ParserHelper
 import peal.domain.{PealBottom, PealFalse, PealTrue}
-import peal.explicit.ExplicitOutputVerifier
 import peal.extended.ExtendedOutputVerifier
 
 
@@ -109,6 +108,7 @@ class VerificationExperimentRunner(doDomainSpecifics: Boolean, system: ActorSyst
             } catch {
               case e: Exception => print("u,0,")
             }
+
         }
       } catch {
         case e: TimeoutException => processKiller ! z3InputFile
