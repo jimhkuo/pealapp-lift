@@ -1,4 +1,4 @@
-// $ANTLR 3.5.1 /Users/jkuo/PealApp-lift/antlr/PealProgram.g 2014-02-04 16:19:37
+// $ANTLR 3.5.1 /Users/jkuo/PealApp-lift/antlr/PealProgram.g 2014-06-20 15:03:41
 
 package peal.antlr;
 import java.util.*;
@@ -799,7 +799,7 @@ public class PealProgramParser extends Parser {
 
 
 	// $ANTLR start "rule"
-	// /Users/jkuo/PealApp-lift/antlr/PealProgram.g:106:1: rule returns [Rule r] : '(' id0= IDENT s= score ')' ;
+	// /Users/jkuo/PealApp-lift/antlr/PealProgram.g:101:1: rule returns [Rule r] : '(' id0= IDENT s= score ')' ;
 	public final Rule rule() throws RecognitionException {
 		Rule r = null;
 
@@ -808,16 +808,16 @@ public class PealProgramParser extends Parser {
 		Score s =null;
 
 		try {
-			// /Users/jkuo/PealApp-lift/antlr/PealProgram.g:107:2: ( '(' id0= IDENT s= score ')' )
-			// /Users/jkuo/PealApp-lift/antlr/PealProgram.g:107:4: '(' id0= IDENT s= score ')'
+			// /Users/jkuo/PealApp-lift/antlr/PealProgram.g:102:2: ( '(' id0= IDENT s= score ')' )
+			// /Users/jkuo/PealApp-lift/antlr/PealProgram.g:102:4: '(' id0= IDENT s= score ')'
 			{
-			match(input,9,FOLLOW_9_in_rule666); 
-			id0=(Token)match(input,IDENT,FOLLOW_IDENT_in_rule670); 
-			pushFollow(FOLLOW_score_in_rule674);
+			match(input,9,FOLLOW_9_in_rule661); 
+			id0=(Token)match(input,IDENT,FOLLOW_IDENT_in_rule665); 
+			pushFollow(FOLLOW_score_in_rule669);
 			s=score();
 			state._fsp--;
 
-			match(input,10,FOLLOW_10_in_rule675); 
+			match(input,10,FOLLOW_10_in_rule670); 
 			r = new Rule(new Predicate((id0!=null?id0.getText():null)),s);
 			}
 
@@ -836,7 +836,7 @@ public class PealProgramParser extends Parser {
 
 
 	// $ANTLR start "score"
-	// /Users/jkuo/PealApp-lift/antlr/PealProgram.g:110:1: score returns [Score s] : (r= raw_score |r= raw_score '[' n1= NUMBER ',' n2= NUMBER ']' |n= NUMBER |n= NUMBER '[' n1= NUMBER ',' n2= NUMBER ']' );
+	// /Users/jkuo/PealApp-lift/antlr/PealProgram.g:105:1: score returns [Score s] : (r= raw_score |r= raw_score '[' n1= NUMBER ',' n2= NUMBER ']' |n= NUMBER |n= NUMBER '[' n1= NUMBER ',' n2= NUMBER ']' );
 	public final Score score() throws RecognitionException {
 		Score s = null;
 
@@ -847,14 +847,14 @@ public class PealProgramParser extends Parser {
 		VariableFormula r =null;
 
 		try {
-			// /Users/jkuo/PealApp-lift/antlr/PealProgram.g:111:2: (r= raw_score |r= raw_score '[' n1= NUMBER ',' n2= NUMBER ']' |n= NUMBER |n= NUMBER '[' n1= NUMBER ',' n2= NUMBER ']' )
+			// /Users/jkuo/PealApp-lift/antlr/PealProgram.g:106:2: (r= raw_score |r= raw_score '[' n1= NUMBER ',' n2= NUMBER ']' |n= NUMBER |n= NUMBER '[' n1= NUMBER ',' n2= NUMBER ']' )
 			int alt10=4;
 			alt10 = dfa10.predict(input);
 			switch (alt10) {
 				case 1 :
-					// /Users/jkuo/PealApp-lift/antlr/PealProgram.g:111:4: r= raw_score
+					// /Users/jkuo/PealApp-lift/antlr/PealProgram.g:106:4: r= raw_score
 					{
-					pushFollow(FOLLOW_raw_score_in_score696);
+					pushFollow(FOLLOW_raw_score_in_score691);
 					r=raw_score();
 					state._fsp--;
 
@@ -862,36 +862,36 @@ public class PealProgramParser extends Parser {
 					}
 					break;
 				case 2 :
-					// /Users/jkuo/PealApp-lift/antlr/PealProgram.g:112:4: r= raw_score '[' n1= NUMBER ',' n2= NUMBER ']'
+					// /Users/jkuo/PealApp-lift/antlr/PealProgram.g:107:4: r= raw_score '[' n1= NUMBER ',' n2= NUMBER ']'
 					{
-					pushFollow(FOLLOW_raw_score_in_score705);
+					pushFollow(FOLLOW_raw_score_in_score700);
 					r=raw_score();
 					state._fsp--;
 
-					match(input,22,FOLLOW_22_in_score707); 
-					n1=(Token)match(input,NUMBER,FOLLOW_NUMBER_in_score710); 
-					match(input,13,FOLLOW_13_in_score712); 
-					n2=(Token)match(input,NUMBER,FOLLOW_NUMBER_in_score716); 
-					match(input,23,FOLLOW_23_in_score718); 
+					match(input,22,FOLLOW_22_in_score702); 
+					n1=(Token)match(input,NUMBER,FOLLOW_NUMBER_in_score705); 
+					match(input,13,FOLLOW_13_in_score707); 
+					n2=(Token)match(input,NUMBER,FOLLOW_NUMBER_in_score711); 
+					match(input,23,FOLLOW_23_in_score713); 
 					 s = new Score(new Right<BigDecimal,VariableFormula>(r), scala.Option.apply(new ScoreRange(BigDecimal.valueOf(Double.valueOf((n1!=null?n1.getText():null))), BigDecimal.valueOf(Double.valueOf((n2!=null?n2.getText():null))))));
 					}
 					break;
 				case 3 :
-					// /Users/jkuo/PealApp-lift/antlr/PealProgram.g:113:4: n= NUMBER
+					// /Users/jkuo/PealApp-lift/antlr/PealProgram.g:108:4: n= NUMBER
 					{
-					n=(Token)match(input,NUMBER,FOLLOW_NUMBER_in_score727); 
+					n=(Token)match(input,NUMBER,FOLLOW_NUMBER_in_score722); 
 					s = new Score(new Left<BigDecimal,VariableFormula>(BigDecimal.valueOf(Double.valueOf((n!=null?n.getText():null)))), scala.Option.apply((ScoreRange) null));
 					}
 					break;
 				case 4 :
-					// /Users/jkuo/PealApp-lift/antlr/PealProgram.g:114:4: n= NUMBER '[' n1= NUMBER ',' n2= NUMBER ']'
+					// /Users/jkuo/PealApp-lift/antlr/PealProgram.g:109:4: n= NUMBER '[' n1= NUMBER ',' n2= NUMBER ']'
 					{
-					n=(Token)match(input,NUMBER,FOLLOW_NUMBER_in_score736); 
-					match(input,22,FOLLOW_22_in_score738); 
-					n1=(Token)match(input,NUMBER,FOLLOW_NUMBER_in_score741); 
-					match(input,13,FOLLOW_13_in_score743); 
-					n2=(Token)match(input,NUMBER,FOLLOW_NUMBER_in_score747); 
-					match(input,23,FOLLOW_23_in_score749); 
+					n=(Token)match(input,NUMBER,FOLLOW_NUMBER_in_score731); 
+					match(input,22,FOLLOW_22_in_score733); 
+					n1=(Token)match(input,NUMBER,FOLLOW_NUMBER_in_score736); 
+					match(input,13,FOLLOW_13_in_score738); 
+					n2=(Token)match(input,NUMBER,FOLLOW_NUMBER_in_score742); 
+					match(input,23,FOLLOW_23_in_score744); 
 					s = new Score(new Left<BigDecimal,VariableFormula>(BigDecimal.valueOf(Double.valueOf((n!=null?n.getText():null)))), scala.Option.apply(new ScoreRange(BigDecimal.valueOf(Double.valueOf((n1!=null?n1.getText():null))), BigDecimal.valueOf(Double.valueOf((n2!=null?n2.getText():null))))));
 					}
 					break;
@@ -912,7 +912,7 @@ public class PealProgramParser extends Parser {
 
 
 	// $ANTLR start "raw_score"
-	// /Users/jkuo/PealApp-lift/antlr/PealProgram.g:117:1: raw_score returns [VariableFormula s] : m0= vmult ( '+' m= mult )* ;
+	// /Users/jkuo/PealApp-lift/antlr/PealProgram.g:112:1: raw_score returns [VariableFormula s] : m0= vmult ( '+' m= mult )* ;
 	public final VariableFormula raw_score() throws RecognitionException {
 		VariableFormula s = null;
 
@@ -921,15 +921,15 @@ public class PealProgramParser extends Parser {
 		Multiplier m =null;
 
 		try {
-			// /Users/jkuo/PealApp-lift/antlr/PealProgram.g:118:2: (m0= vmult ( '+' m= mult )* )
-			// /Users/jkuo/PealApp-lift/antlr/PealProgram.g:118:4: m0= vmult ( '+' m= mult )*
+			// /Users/jkuo/PealApp-lift/antlr/PealProgram.g:113:2: (m0= vmult ( '+' m= mult )* )
+			// /Users/jkuo/PealApp-lift/antlr/PealProgram.g:113:4: m0= vmult ( '+' m= mult )*
 			{
-			pushFollow(FOLLOW_vmult_in_raw_score769);
+			pushFollow(FOLLOW_vmult_in_raw_score764);
 			m0=vmult();
 			state._fsp--;
 
 			s = new VariableFormula().add(m0);
-			// /Users/jkuo/PealApp-lift/antlr/PealProgram.g:118:54: ( '+' m= mult )*
+			// /Users/jkuo/PealApp-lift/antlr/PealProgram.g:113:54: ( '+' m= mult )*
 			loop11:
 			while (true) {
 				int alt11=2;
@@ -940,10 +940,10 @@ public class PealProgramParser extends Parser {
 
 				switch (alt11) {
 				case 1 :
-					// /Users/jkuo/PealApp-lift/antlr/PealProgram.g:118:55: '+' m= mult
+					// /Users/jkuo/PealApp-lift/antlr/PealProgram.g:113:55: '+' m= mult
 					{
-					match(input,12,FOLLOW_12_in_raw_score774); 
-					pushFollow(FOLLOW_mult_in_raw_score778);
+					match(input,12,FOLLOW_12_in_raw_score769); 
+					pushFollow(FOLLOW_mult_in_raw_score773);
 					m=mult();
 					state._fsp--;
 
@@ -973,7 +973,7 @@ public class PealProgramParser extends Parser {
 
 
 	// $ANTLR start "vmult"
-	// /Users/jkuo/PealApp-lift/antlr/PealProgram.g:121:1: vmult returns [Multiplier m] : (id1= IDENT '*' n= NUMBER |n= NUMBER '*' id1= IDENT |id1= IDENT );
+	// /Users/jkuo/PealApp-lift/antlr/PealProgram.g:116:1: vmult returns [Multiplier m] : (id1= IDENT '*' n= NUMBER |n= NUMBER '*' id1= IDENT |id1= IDENT );
 	public final Multiplier vmult() throws RecognitionException {
 		Multiplier m = null;
 
@@ -982,7 +982,7 @@ public class PealProgramParser extends Parser {
 		Token n=null;
 
 		try {
-			// /Users/jkuo/PealApp-lift/antlr/PealProgram.g:122:2: (id1= IDENT '*' n= NUMBER |n= NUMBER '*' id1= IDENT |id1= IDENT )
+			// /Users/jkuo/PealApp-lift/antlr/PealProgram.g:117:2: (id1= IDENT '*' n= NUMBER |n= NUMBER '*' id1= IDENT |id1= IDENT )
 			int alt12=3;
 			int LA12_0 = input.LA(1);
 			if ( (LA12_0==IDENT) ) {
@@ -1019,27 +1019,27 @@ public class PealProgramParser extends Parser {
 
 			switch (alt12) {
 				case 1 :
-					// /Users/jkuo/PealApp-lift/antlr/PealProgram.g:122:4: id1= IDENT '*' n= NUMBER
+					// /Users/jkuo/PealApp-lift/antlr/PealProgram.g:117:4: id1= IDENT '*' n= NUMBER
 					{
-					id1=(Token)match(input,IDENT,FOLLOW_IDENT_in_vmult802); 
-					match(input,11,FOLLOW_11_in_vmult804); 
-					n=(Token)match(input,NUMBER,FOLLOW_NUMBER_in_vmult808); 
+					id1=(Token)match(input,IDENT,FOLLOW_IDENT_in_vmult797); 
+					match(input,11,FOLLOW_11_in_vmult799); 
+					n=(Token)match(input,NUMBER,FOLLOW_NUMBER_in_vmult803); 
 					m = new Multiplier(BigDecimal.valueOf(Double.valueOf((n!=null?n.getText():null))), (id1!=null?id1.getText():null));
 					}
 					break;
 				case 2 :
-					// /Users/jkuo/PealApp-lift/antlr/PealProgram.g:123:4: n= NUMBER '*' id1= IDENT
+					// /Users/jkuo/PealApp-lift/antlr/PealProgram.g:118:4: n= NUMBER '*' id1= IDENT
 					{
-					n=(Token)match(input,NUMBER,FOLLOW_NUMBER_in_vmult817); 
-					match(input,11,FOLLOW_11_in_vmult819); 
-					id1=(Token)match(input,IDENT,FOLLOW_IDENT_in_vmult823); 
+					n=(Token)match(input,NUMBER,FOLLOW_NUMBER_in_vmult812); 
+					match(input,11,FOLLOW_11_in_vmult814); 
+					id1=(Token)match(input,IDENT,FOLLOW_IDENT_in_vmult818); 
 					m = new Multiplier(BigDecimal.valueOf(Double.valueOf((n!=null?n.getText():null))), (id1!=null?id1.getText():null));
 					}
 					break;
 				case 3 :
-					// /Users/jkuo/PealApp-lift/antlr/PealProgram.g:124:4: id1= IDENT
+					// /Users/jkuo/PealApp-lift/antlr/PealProgram.g:119:4: id1= IDENT
 					{
-					id1=(Token)match(input,IDENT,FOLLOW_IDENT_in_vmult832); 
+					id1=(Token)match(input,IDENT,FOLLOW_IDENT_in_vmult827); 
 					m = new Multiplier(BigDecimal.valueOf(1), (id1!=null?id1.getText():null));
 					}
 					break;
@@ -1060,7 +1060,7 @@ public class PealProgramParser extends Parser {
 
 
 	// $ANTLR start "mult"
-	// /Users/jkuo/PealApp-lift/antlr/PealProgram.g:127:1: mult returns [Multiplier m] : (id1= IDENT '*' n= NUMBER |n= NUMBER '*' id1= IDENT |n= NUMBER |id1= IDENT );
+	// /Users/jkuo/PealApp-lift/antlr/PealProgram.g:122:1: mult returns [Multiplier m] : (id1= IDENT '*' n= NUMBER |n= NUMBER '*' id1= IDENT |n= NUMBER |id1= IDENT );
 	public final Multiplier mult() throws RecognitionException {
 		Multiplier m = null;
 
@@ -1069,7 +1069,7 @@ public class PealProgramParser extends Parser {
 		Token n=null;
 
 		try {
-			// /Users/jkuo/PealApp-lift/antlr/PealProgram.g:128:2: (id1= IDENT '*' n= NUMBER |n= NUMBER '*' id1= IDENT |n= NUMBER |id1= IDENT )
+			// /Users/jkuo/PealApp-lift/antlr/PealProgram.g:123:2: (id1= IDENT '*' n= NUMBER |n= NUMBER '*' id1= IDENT |n= NUMBER |id1= IDENT )
 			int alt13=4;
 			int LA13_0 = input.LA(1);
 			if ( (LA13_0==IDENT) ) {
@@ -1125,34 +1125,34 @@ public class PealProgramParser extends Parser {
 
 			switch (alt13) {
 				case 1 :
-					// /Users/jkuo/PealApp-lift/antlr/PealProgram.g:128:4: id1= IDENT '*' n= NUMBER
+					// /Users/jkuo/PealApp-lift/antlr/PealProgram.g:123:4: id1= IDENT '*' n= NUMBER
 					{
-					id1=(Token)match(input,IDENT,FOLLOW_IDENT_in_mult851); 
-					match(input,11,FOLLOW_11_in_mult853); 
-					n=(Token)match(input,NUMBER,FOLLOW_NUMBER_in_mult857); 
+					id1=(Token)match(input,IDENT,FOLLOW_IDENT_in_mult846); 
+					match(input,11,FOLLOW_11_in_mult848); 
+					n=(Token)match(input,NUMBER,FOLLOW_NUMBER_in_mult852); 
 					m = new Multiplier(BigDecimal.valueOf(Double.valueOf((n!=null?n.getText():null))), (id1!=null?id1.getText():null));
 					}
 					break;
 				case 2 :
-					// /Users/jkuo/PealApp-lift/antlr/PealProgram.g:129:4: n= NUMBER '*' id1= IDENT
+					// /Users/jkuo/PealApp-lift/antlr/PealProgram.g:124:4: n= NUMBER '*' id1= IDENT
 					{
-					n=(Token)match(input,NUMBER,FOLLOW_NUMBER_in_mult866); 
-					match(input,11,FOLLOW_11_in_mult868); 
-					id1=(Token)match(input,IDENT,FOLLOW_IDENT_in_mult872); 
+					n=(Token)match(input,NUMBER,FOLLOW_NUMBER_in_mult861); 
+					match(input,11,FOLLOW_11_in_mult863); 
+					id1=(Token)match(input,IDENT,FOLLOW_IDENT_in_mult867); 
 					m = new Multiplier(BigDecimal.valueOf(Double.valueOf((n!=null?n.getText():null))), (id1!=null?id1.getText():null));
 					}
 					break;
 				case 3 :
-					// /Users/jkuo/PealApp-lift/antlr/PealProgram.g:130:4: n= NUMBER
+					// /Users/jkuo/PealApp-lift/antlr/PealProgram.g:125:4: n= NUMBER
 					{
-					n=(Token)match(input,NUMBER,FOLLOW_NUMBER_in_mult881); 
+					n=(Token)match(input,NUMBER,FOLLOW_NUMBER_in_mult876); 
 					m = new Multiplier(BigDecimal.valueOf(Double.valueOf((n!=null?n.getText():null))), "");
 					}
 					break;
 				case 4 :
-					// /Users/jkuo/PealApp-lift/antlr/PealProgram.g:131:4: id1= IDENT
+					// /Users/jkuo/PealApp-lift/antlr/PealProgram.g:126:4: id1= IDENT
 					{
-					id1=(Token)match(input,IDENT,FOLLOW_IDENT_in_mult890); 
+					id1=(Token)match(input,IDENT,FOLLOW_IDENT_in_mult885); 
 					m = new Multiplier(BigDecimal.valueOf(1), (id1!=null?id1.getText():null));
 					}
 					break;
@@ -1176,13 +1176,13 @@ public class PealProgramParser extends Parser {
 
 
 	// $ANTLR start "operator"
-	// /Users/jkuo/PealApp-lift/antlr/PealProgram.g:134:1: operator : ( 'max' | 'min' | '+' | '*' );
+	// /Users/jkuo/PealApp-lift/antlr/PealProgram.g:129:1: operator : ( 'max' | 'min' | '+' | '*' );
 	public final PealProgramParser.operator_return operator() throws RecognitionException {
 		PealProgramParser.operator_return retval = new PealProgramParser.operator_return();
 		retval.start = input.LT(1);
 
 		try {
-			// /Users/jkuo/PealApp-lift/antlr/PealProgram.g:134:10: ( 'max' | 'min' | '+' | '*' )
+			// /Users/jkuo/PealApp-lift/antlr/PealProgram.g:129:10: ( 'max' | 'min' | '+' | '*' )
 			// /Users/jkuo/PealApp-lift/antlr/PealProgram.g:
 			{
 			if ( (input.LA(1) >= 11 && input.LA(1) <= 12)||(input.LA(1) >= 31 && input.LA(1) <= 32) ) {
@@ -1277,7 +1277,7 @@ public class PealProgramParser extends Parser {
 		}
 		@Override
 		public String getDescription() {
-			return "110:1: score returns [Score s] : (r= raw_score |r= raw_score '[' n1= NUMBER ',' n2= NUMBER ']' |n= NUMBER |n= NUMBER '[' n1= NUMBER ',' n2= NUMBER ']' );";
+			return "105:1: score returns [Score s] : (r= raw_score |r= raw_score '[' n1= NUMBER ',' n2= NUMBER ']' |n= NUMBER |n= NUMBER '[' n1= NUMBER ',' n2= NUMBER ']' );";
 		}
 	}
 
@@ -1401,40 +1401,40 @@ public class PealProgramParser extends Parser {
 	public static final BitSet FOLLOW_10_in_pol636 = new BitSet(new long[]{0x0000000004000000L});
 	public static final BitSet FOLLOW_26_in_pol638 = new BitSet(new long[]{0x0000000000000030L});
 	public static final BitSet FOLLOW_score_in_pol642 = new BitSet(new long[]{0x0000000000000002L});
-	public static final BitSet FOLLOW_9_in_rule666 = new BitSet(new long[]{0x0000000000000010L});
-	public static final BitSet FOLLOW_IDENT_in_rule670 = new BitSet(new long[]{0x0000000000000030L});
-	public static final BitSet FOLLOW_score_in_rule674 = new BitSet(new long[]{0x0000000000000400L});
-	public static final BitSet FOLLOW_10_in_rule675 = new BitSet(new long[]{0x0000000000000002L});
-	public static final BitSet FOLLOW_raw_score_in_score696 = new BitSet(new long[]{0x0000000000000002L});
-	public static final BitSet FOLLOW_raw_score_in_score705 = new BitSet(new long[]{0x0000000000400000L});
-	public static final BitSet FOLLOW_22_in_score707 = new BitSet(new long[]{0x0000000000000020L});
-	public static final BitSet FOLLOW_NUMBER_in_score710 = new BitSet(new long[]{0x0000000000002000L});
-	public static final BitSet FOLLOW_13_in_score712 = new BitSet(new long[]{0x0000000000000020L});
-	public static final BitSet FOLLOW_NUMBER_in_score716 = new BitSet(new long[]{0x0000000000800000L});
-	public static final BitSet FOLLOW_23_in_score718 = new BitSet(new long[]{0x0000000000000002L});
-	public static final BitSet FOLLOW_NUMBER_in_score727 = new BitSet(new long[]{0x0000000000000002L});
-	public static final BitSet FOLLOW_NUMBER_in_score736 = new BitSet(new long[]{0x0000000000400000L});
-	public static final BitSet FOLLOW_22_in_score738 = new BitSet(new long[]{0x0000000000000020L});
-	public static final BitSet FOLLOW_NUMBER_in_score741 = new BitSet(new long[]{0x0000000000002000L});
-	public static final BitSet FOLLOW_13_in_score743 = new BitSet(new long[]{0x0000000000000020L});
-	public static final BitSet FOLLOW_NUMBER_in_score747 = new BitSet(new long[]{0x0000000000800000L});
-	public static final BitSet FOLLOW_23_in_score749 = new BitSet(new long[]{0x0000000000000002L});
-	public static final BitSet FOLLOW_vmult_in_raw_score769 = new BitSet(new long[]{0x0000000000001002L});
-	public static final BitSet FOLLOW_12_in_raw_score774 = new BitSet(new long[]{0x0000000000000030L});
-	public static final BitSet FOLLOW_mult_in_raw_score778 = new BitSet(new long[]{0x0000000000001002L});
-	public static final BitSet FOLLOW_IDENT_in_vmult802 = new BitSet(new long[]{0x0000000000000800L});
-	public static final BitSet FOLLOW_11_in_vmult804 = new BitSet(new long[]{0x0000000000000020L});
-	public static final BitSet FOLLOW_NUMBER_in_vmult808 = new BitSet(new long[]{0x0000000000000002L});
-	public static final BitSet FOLLOW_NUMBER_in_vmult817 = new BitSet(new long[]{0x0000000000000800L});
-	public static final BitSet FOLLOW_11_in_vmult819 = new BitSet(new long[]{0x0000000000000010L});
-	public static final BitSet FOLLOW_IDENT_in_vmult823 = new BitSet(new long[]{0x0000000000000002L});
-	public static final BitSet FOLLOW_IDENT_in_vmult832 = new BitSet(new long[]{0x0000000000000002L});
-	public static final BitSet FOLLOW_IDENT_in_mult851 = new BitSet(new long[]{0x0000000000000800L});
-	public static final BitSet FOLLOW_11_in_mult853 = new BitSet(new long[]{0x0000000000000020L});
-	public static final BitSet FOLLOW_NUMBER_in_mult857 = new BitSet(new long[]{0x0000000000000002L});
-	public static final BitSet FOLLOW_NUMBER_in_mult866 = new BitSet(new long[]{0x0000000000000800L});
-	public static final BitSet FOLLOW_11_in_mult868 = new BitSet(new long[]{0x0000000000000010L});
-	public static final BitSet FOLLOW_IDENT_in_mult872 = new BitSet(new long[]{0x0000000000000002L});
-	public static final BitSet FOLLOW_NUMBER_in_mult881 = new BitSet(new long[]{0x0000000000000002L});
-	public static final BitSet FOLLOW_IDENT_in_mult890 = new BitSet(new long[]{0x0000000000000002L});
+	public static final BitSet FOLLOW_9_in_rule661 = new BitSet(new long[]{0x0000000000000010L});
+	public static final BitSet FOLLOW_IDENT_in_rule665 = new BitSet(new long[]{0x0000000000000030L});
+	public static final BitSet FOLLOW_score_in_rule669 = new BitSet(new long[]{0x0000000000000400L});
+	public static final BitSet FOLLOW_10_in_rule670 = new BitSet(new long[]{0x0000000000000002L});
+	public static final BitSet FOLLOW_raw_score_in_score691 = new BitSet(new long[]{0x0000000000000002L});
+	public static final BitSet FOLLOW_raw_score_in_score700 = new BitSet(new long[]{0x0000000000400000L});
+	public static final BitSet FOLLOW_22_in_score702 = new BitSet(new long[]{0x0000000000000020L});
+	public static final BitSet FOLLOW_NUMBER_in_score705 = new BitSet(new long[]{0x0000000000002000L});
+	public static final BitSet FOLLOW_13_in_score707 = new BitSet(new long[]{0x0000000000000020L});
+	public static final BitSet FOLLOW_NUMBER_in_score711 = new BitSet(new long[]{0x0000000000800000L});
+	public static final BitSet FOLLOW_23_in_score713 = new BitSet(new long[]{0x0000000000000002L});
+	public static final BitSet FOLLOW_NUMBER_in_score722 = new BitSet(new long[]{0x0000000000000002L});
+	public static final BitSet FOLLOW_NUMBER_in_score731 = new BitSet(new long[]{0x0000000000400000L});
+	public static final BitSet FOLLOW_22_in_score733 = new BitSet(new long[]{0x0000000000000020L});
+	public static final BitSet FOLLOW_NUMBER_in_score736 = new BitSet(new long[]{0x0000000000002000L});
+	public static final BitSet FOLLOW_13_in_score738 = new BitSet(new long[]{0x0000000000000020L});
+	public static final BitSet FOLLOW_NUMBER_in_score742 = new BitSet(new long[]{0x0000000000800000L});
+	public static final BitSet FOLLOW_23_in_score744 = new BitSet(new long[]{0x0000000000000002L});
+	public static final BitSet FOLLOW_vmult_in_raw_score764 = new BitSet(new long[]{0x0000000000001002L});
+	public static final BitSet FOLLOW_12_in_raw_score769 = new BitSet(new long[]{0x0000000000000030L});
+	public static final BitSet FOLLOW_mult_in_raw_score773 = new BitSet(new long[]{0x0000000000001002L});
+	public static final BitSet FOLLOW_IDENT_in_vmult797 = new BitSet(new long[]{0x0000000000000800L});
+	public static final BitSet FOLLOW_11_in_vmult799 = new BitSet(new long[]{0x0000000000000020L});
+	public static final BitSet FOLLOW_NUMBER_in_vmult803 = new BitSet(new long[]{0x0000000000000002L});
+	public static final BitSet FOLLOW_NUMBER_in_vmult812 = new BitSet(new long[]{0x0000000000000800L});
+	public static final BitSet FOLLOW_11_in_vmult814 = new BitSet(new long[]{0x0000000000000010L});
+	public static final BitSet FOLLOW_IDENT_in_vmult818 = new BitSet(new long[]{0x0000000000000002L});
+	public static final BitSet FOLLOW_IDENT_in_vmult827 = new BitSet(new long[]{0x0000000000000002L});
+	public static final BitSet FOLLOW_IDENT_in_mult846 = new BitSet(new long[]{0x0000000000000800L});
+	public static final BitSet FOLLOW_11_in_mult848 = new BitSet(new long[]{0x0000000000000020L});
+	public static final BitSet FOLLOW_NUMBER_in_mult852 = new BitSet(new long[]{0x0000000000000002L});
+	public static final BitSet FOLLOW_NUMBER_in_mult861 = new BitSet(new long[]{0x0000000000000800L});
+	public static final BitSet FOLLOW_11_in_mult863 = new BitSet(new long[]{0x0000000000000010L});
+	public static final BitSet FOLLOW_IDENT_in_mult867 = new BitSet(new long[]{0x0000000000000002L});
+	public static final BitSet FOLLOW_NUMBER_in_mult876 = new BitSet(new long[]{0x0000000000000002L});
+	public static final BitSet FOLLOW_IDENT_in_mult885 = new BitSet(new long[]{0x0000000000000002L});
 }

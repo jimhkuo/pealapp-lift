@@ -179,6 +179,7 @@ class ExtendedOutputVerifierTest extends ShouldMatchersForJUnit {
       "CONDITIONS\ncond1 = pSet1 <= 0.5\n" +
       "ANALYSES\nname1 = always_true? cond1"
     val model = "Result of analysis [name1 = always_true? cond1]:\nsat\n(model \n  (define-fun cond1 () Bool\n    false)\n  (define-fun b1_score () Real\n    (/ 3.0 2.0))\n  (define-fun x () Real\n    (/ 1.0 4.0))\n  (define-fun q1 () Bool\n    false)\n  (define-fun q3 () Bool\n    false)\n  (define-fun q2 () Bool\n    false)\n  (define-fun always_true_name1 () Bool\n    false)\n)"
+    println(input)
     new ExtendedOutputVerifier(input).verifyModel(model, "name1")._1 should be(PealTrue)
   }
 
@@ -308,6 +309,8 @@ class ExtendedOutputVerifierTest extends ShouldMatchersForJUnit {
     result._1 should be(PealTrue)
     println(result._2)
   }
+
+  @Ignore("wip")
   @Test
   def testFailedCase4() {
     val input = "POLICIES\nb0 = max ((q5 0.4029) (q14 0.1127 [-0.0027,0.6815])) default 0.7307\nb1 = + ((q9 0.9636) (q11 0.2012)) default 0.1073\nb2 = min ((q8 0.7054) (q6 0.3175 [-0.7931,0.1276])) default 0.7057\nb3 = * ((q6 0.8156) (q13 0.1693)) default 0.8282\nb4 = + ((q11 0.1068 [-0.3632,0.7380]) (q2 0.0645)) default 0.7872\nb5 = + ((q13 2*vt) (q5 0.1839)) default 2*vs\nb6 = * ((q0 0*vk) (q11 0.8569)) default 0.6636\nb7 = * ((q2 0.3446) (q3 0.3486)) default 0.9915\nb8 = * ((q6 0.8912) (q10 0.2351)) default 0.5547\nb9 = min ((q8 0.3896) (q10 0.6011)) default 0*vu\nb10 = max ((q3 0.0737) (q8 0.0136)) default 0.9945\nb11 = max ((q11 3*vf) (q2 0.0847)) default 0.6194\nb12 = + ((q3 0.4573) (q2 0.2543)) default 0.7492\nb13 = + ((q11 0.2539) (q9 vf)) default 0.8805 [-0.0340,0.1647]\nb14 = max ((q7 0.0194) (q6 0.1480)) default 0.1947\nb15 = min ((q8 0.6864) (q12 0.6203)) default 0.2134\nb16 = min ((q2 0.3168) (q4 2*v4)) default 0.4705\nb17 = min ((q7 0.0755) (q6 0.5221)) default 0.6965\nb18 = * ((q7 0.6841) (q3 3*vt [-0.7118,0.7851])) default 0*vq\nb19 = max ((q8 0.3898) (q1 0.4625)) default 0.8286\nPOLICY_SETS\np0_1 = min(b0,b1)\np2_3 = min(b2,b3)\np4_5 = min(b4,b5)\np6_7 = min(b6,b7)\np8_9 = min(b8,b9)\np10_11 = min(b10,b11)\np12_13 = min(b12,b13)\np14_15 = min(b14,b15)\np0_3 = max(p0_1,p2_3)\np4_7 = max(p4_5,p6_7)\np8_11 = max(p8_9,p10_11)\np12_15 = max(p12_13,p14_15)\np0_7 = +(p0_3,p4_7)\np8_15 = +(p8_11,p12_15)\np0_15 = *(p0_7,p8_15)\n\np16_17 = min(b16, b17)\np18_19 = +(b18, b19)\np0_15_0 = min(p0_15,p16_17)\np0_15_1 = max(p0_15_0,p18_19)\nCONDITIONS\ncond1 = 0.50 < p0_15_1\ncond2 = 0.60 < p0_15_1\nANALYSES\nanalysis1 = always_true? cond1\nanalysis2 = always_false? cond2\nanalysis3 = different? cond1 cond2"

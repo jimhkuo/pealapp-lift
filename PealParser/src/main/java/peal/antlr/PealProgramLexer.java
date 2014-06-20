@@ -1,4 +1,4 @@
-// $ANTLR 3.5.1 /Users/jkuo/PealApp-lift/antlr/PealProgram.g 2014-02-04 16:19:38
+// $ANTLR 3.5.1 /Users/jkuo/PealApp-lift/antlr/PealProgram.g 2014-06-20 15:03:42
 
 package peal.antlr;
 
@@ -666,10 +666,10 @@ public class PealProgramLexer extends Lexer {
 		try {
 			int _type = NUMBER;
 			int _channel = DEFAULT_TOKEN_CHANNEL;
-			// /Users/jkuo/PealApp-lift/antlr/PealProgram.g:136:8: ( ( '.' | '0' .. '9' | '-' | 'E' )+ )
-			// /Users/jkuo/PealApp-lift/antlr/PealProgram.g:136:10: ( '.' | '0' .. '9' | '-' | 'E' )+
+			// /Users/jkuo/PealApp-lift/antlr/PealProgram.g:131:8: ( ( '.' | '0' .. '9' | '-' | 'E' )+ )
+			// /Users/jkuo/PealApp-lift/antlr/PealProgram.g:131:10: ( '.' | '0' .. '9' | '-' | 'E' )+
 			{
-			// /Users/jkuo/PealApp-lift/antlr/PealProgram.g:136:10: ( '.' | '0' .. '9' | '-' | 'E' )+
+			// /Users/jkuo/PealApp-lift/antlr/PealProgram.g:131:10: ( '.' | '0' .. '9' | '-' | 'E' )+
 			int cnt1=0;
 			loop1:
 			while (true) {
@@ -719,8 +719,8 @@ public class PealProgramLexer extends Lexer {
 		try {
 			int _type = IDENT;
 			int _channel = DEFAULT_TOKEN_CHANNEL;
-			// /Users/jkuo/PealApp-lift/antlr/PealProgram.g:137:7: ( ( 'a' .. 'z' | 'A' .. 'Z' ) ( 'a' .. 'z' | 'A' .. 'Z' | '0' .. '9' | '_' )* )
-			// /Users/jkuo/PealApp-lift/antlr/PealProgram.g:137:9: ( 'a' .. 'z' | 'A' .. 'Z' ) ( 'a' .. 'z' | 'A' .. 'Z' | '0' .. '9' | '_' )*
+			// /Users/jkuo/PealApp-lift/antlr/PealProgram.g:132:7: ( ( 'a' .. 'z' | 'A' .. 'Z' ) ( 'a' .. 'z' | 'A' .. 'Z' | '0' .. '9' | '_' )* )
+			// /Users/jkuo/PealApp-lift/antlr/PealProgram.g:132:9: ( 'a' .. 'z' | 'A' .. 'Z' ) ( 'a' .. 'z' | 'A' .. 'Z' | '0' .. '9' | '_' )*
 			{
 			if ( (input.LA(1) >= 'A' && input.LA(1) <= 'Z')||(input.LA(1) >= 'a' && input.LA(1) <= 'z') ) {
 				input.consume();
@@ -730,7 +730,7 @@ public class PealProgramLexer extends Lexer {
 				recover(mse);
 				throw mse;
 			}
-			// /Users/jkuo/PealApp-lift/antlr/PealProgram.g:137:30: ( 'a' .. 'z' | 'A' .. 'Z' | '0' .. '9' | '_' )*
+			// /Users/jkuo/PealApp-lift/antlr/PealProgram.g:132:30: ( 'a' .. 'z' | 'A' .. 'Z' | '0' .. '9' | '_' )*
 			loop2:
 			while (true) {
 				int alt2=2;
@@ -776,10 +776,10 @@ public class PealProgramLexer extends Lexer {
 		try {
 			int _type = WS;
 			int _channel = DEFAULT_TOKEN_CHANNEL;
-			// /Users/jkuo/PealApp-lift/antlr/PealProgram.g:138:4: ( ( ' ' | '\\t' | '\\n' | '\\r' | '\\f' )+ )
-			// /Users/jkuo/PealApp-lift/antlr/PealProgram.g:138:6: ( ' ' | '\\t' | '\\n' | '\\r' | '\\f' )+
+			// /Users/jkuo/PealApp-lift/antlr/PealProgram.g:133:4: ( ( ' ' | '\\t' | '\\n' | '\\r' | '\\f' )+ )
+			// /Users/jkuo/PealApp-lift/antlr/PealProgram.g:133:6: ( ' ' | '\\t' | '\\n' | '\\r' | '\\f' )+
 			{
-			// /Users/jkuo/PealApp-lift/antlr/PealProgram.g:138:6: ( ' ' | '\\t' | '\\n' | '\\r' | '\\f' )+
+			// /Users/jkuo/PealApp-lift/antlr/PealProgram.g:133:6: ( ' ' | '\\t' | '\\n' | '\\r' | '\\f' )+
 			int cnt3=0;
 			loop3:
 			while (true) {

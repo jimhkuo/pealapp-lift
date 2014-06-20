@@ -111,17 +111,16 @@ class ExtendedSynthesiser(input: String) extends Synthesiser {
       "(echo \"Result of analysis [" + analyses(analysis).analysisName + "]:\")\n" + analyses(analysis).z3SMTInput
     }
 
-
     declarations.mkString("") +
-      predicateDeclaration.mkString("", "\n", "\n") +
       policyDefaultDeclaration.mkString("", "\n", "\n") +
       variableDeclarations.mkString("") +
       condDeclarations.mkString("") +
+      predicateDeclaration.mkString("", "\n", "\n") +
       policyScoreDeclarations.mkString("") +
       policySetScoreDeclarations.mkString("") +
       domainSpecifics.mkString("", "\n", "\n") +
-      policyComposition.mkString("", "\n", "\n") +
       condDetails.mkString("", "\n", "\n") +
+      policyComposition.mkString("", "\n", "\n") +
       generatedAnalyses.mkString("")
   }
 }
