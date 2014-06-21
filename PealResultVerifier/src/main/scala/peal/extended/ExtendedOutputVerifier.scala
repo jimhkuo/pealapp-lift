@@ -184,10 +184,10 @@ class ExtendedOutputVerifier(input: String) {
             val okScores = rules.filter(r => I(r.q.name).fold(score => PealBottom, bool => bool) == PealTrue).map(r => trueScore(r.score, policyName + "_" + r.q.name + "_U"))
 //            if (pSet.getPolicySetName == "b9") println("okRules are: " + okRules + " op is " + op)
             val decimal = op match {
-              case Min => okScores.tail.foldLeft(okScores.head)((acc, score) => acc.min(score))
-              case Max => okScores.tail.foldLeft(okScores.head)((acc, score) => acc.max(score))
-              case Plus => okScores.foldLeft(Rational("0"))((acc, score) => acc + score)
-              case Mul => okScores.foldLeft(Rational("1"))((acc, score) => acc * score)
+              case Min => okScores.reduceLeft((acc, score) => acc.min(score))
+              case Max => okScores.reduceLeft((acc, score) => acc.max(score))
+              case Plus => okScores.reduceLeft((acc, score) => acc + score)
+              case Mul => okScores.reduceLeft((acc, score) => acc * score)
             }
 //            if (pSet.getPolicySetName == "b9") println("op X " + op + " " + policyName + ": " + (for (o <- okRules) yield o.q.name).mkString(" ") + ": " + decimal)
             decimal
