@@ -24,20 +24,20 @@ class LessThanThConditionTest extends ShouldMatchersForJUnit with Z3ModelMatcher
 
   @Test
   def testNoRules() {
-    new LessThanThCondition(new BasicPolicySet(new Pol(List[Rule](), Min, 0.6)), Left(0.6)).synthesis(consts) should beZ3Model ("(or true false)")
-    new LessThanThCondition(new BasicPolicySet(new Pol(List[Rule](), Max, 0.5)), Left(0.6)).synthesis(consts) should beZ3Model ("(or true (not false))")
-    new LessThanThCondition(new BasicPolicySet(new Pol(List[Rule](), Plus, 0.5)), Left(0.6)).synthesis(consts) should beZ3Model ("(or true (not false))")
-    new LessThanThCondition(new BasicPolicySet(new Pol(List[Rule](), Mul, 0.5)), Left(0.6)).synthesis(consts) should beZ3Model ("(or true false)")
-    new LessThanThCondition(new BasicPolicySet(new Pol(List[Rule](), Min, 0.7)), Left(0.6)).synthesis(consts) should beZ3Model ("(and false false)")
-    new LessThanThCondition(new BasicPolicySet(new Pol(List[Rule](), Max, 0.7)), Left(0.6)).synthesis(consts) should beZ3Model ("(and false (not false))")
-    new LessThanThCondition(new BasicPolicySet(new Pol(List[Rule](), Plus, 0.7)), Left(0.6)).synthesis(consts) should beZ3Model ("(and false (not false))")
-    new LessThanThCondition(new BasicPolicySet(new Pol(List[Rule](), Mul, 0.7)), Left(0.6)).synthesis(consts) should beZ3Model ("(and false false)")
+    new LessThanThCondition(new BasicPolicySet(new Pol(List[Rule](), Min, "0.6")), Left(0.6)).synthesis(consts) should beZ3Model ("(or true false)")
+    new LessThanThCondition(new BasicPolicySet(new Pol(List[Rule](), Max, "0.5")), Left(0.6)).synthesis(consts) should beZ3Model ("(or true (not false))")
+    new LessThanThCondition(new BasicPolicySet(new Pol(List[Rule](), Plus, "0.5")), Left(0.6)).synthesis(consts) should beZ3Model ("(or true (not false))")
+    new LessThanThCondition(new BasicPolicySet(new Pol(List[Rule](), Mul, "0.5")), Left(0.6)).synthesis(consts) should beZ3Model ("(or true false)")
+    new LessThanThCondition(new BasicPolicySet(new Pol(List[Rule](), Min, "0.7")), Left(0.6)).synthesis(consts) should beZ3Model ("(and false false)")
+    new LessThanThCondition(new BasicPolicySet(new Pol(List[Rule](), Max, "0.7")), Left(0.6)).synthesis(consts) should beZ3Model ("(and false (not false))")
+    new LessThanThCondition(new BasicPolicySet(new Pol(List[Rule](), Plus, "0.7")), Left(0.6)).synthesis(consts) should beZ3Model ("(and false (not false))")
+    new LessThanThCondition(new BasicPolicySet(new Pol(List[Rule](), Mul, "0.7")), Left(0.6)).synthesis(consts) should beZ3Model ("(and false false)")
   }
 
   @Test
   def testSimpleMinCase() {
-    val p1 = new Pol(List(new Rule(new Predicate("q1"), 0.5)), Min, 1)
-    val p2 = new Pol(List(new Rule(new Predicate("q2"), 0.5)), Min, 0)
+    val p1 = new Pol(List(new Rule(new Predicate("q1"), 0.5)), Min, "1")
+    val p2 = new Pol(List(new Rule(new Predicate("q2"), 0.5)), Min, "0")
     val pSet = new MinPolicySet(new BasicPolicySet(p1), new BasicPolicySet(p2))
     val phi = new LessThanThCondition(pSet, Left(0.6))
 
@@ -46,8 +46,8 @@ class LessThanThConditionTest extends ShouldMatchersForJUnit with Z3ModelMatcher
 
   @Test
   def testCanSynthesisNestedCaseForMin() {
-    val p1 = new Pol(List(new Rule(new Predicate("q1"), 0.5)), Min, 1)
-    val p2 = new Pol(List(new Rule(new Predicate("q2"), 0.5)), Min, 0)
+    val p1 = new Pol(List(new Rule(new Predicate("q1"), 0.5)), Min, "1")
+    val p2 = new Pol(List(new Rule(new Predicate("q2"), 0.5)), Min, "0")
     val pSet1 = new MinPolicySet(new BasicPolicySet(p1), new BasicPolicySet(p2))
     val pSet2 = new MinPolicySet(new BasicPolicySet(p1), pSet1)
     val phi = new LessThanThCondition(pSet2, Left(0.6))
@@ -57,8 +57,8 @@ class LessThanThConditionTest extends ShouldMatchersForJUnit with Z3ModelMatcher
 
   @Test
   def testCanSynthesisNestedMoreCaseForMax() {
-    val p1 = new Pol(List(new Rule(new Predicate("q1"), 0.5)), Min, 1)
-    val p2 = new Pol(List(new Rule(new Predicate("q2"), 0.5)), Min, 0)
+    val p1 = new Pol(List(new Rule(new Predicate("q1"), 0.5)), Min, "1")
+    val p2 = new Pol(List(new Rule(new Predicate("q2"), 0.5)), Min, "0")
     val pSet1 = new MaxPolicySet(new BasicPolicySet(p1), new BasicPolicySet(p2))
     val pSet2 = new MaxPolicySet(new BasicPolicySet(p1), pSet1)
     val phi = new LessThanThCondition(pSet2, Left(0.6))

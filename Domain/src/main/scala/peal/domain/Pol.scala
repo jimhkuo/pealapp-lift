@@ -4,8 +4,7 @@ import scala.collection.JavaConversions._
 import peal.domain.operator.Operator
 
 case class Pol(rules: java.util.List[Rule], operator: Operator, val score: Score, policyName: String = "") extends PolicySet {
-  def this(rules: java.util.List[Rule], operator: Operator, doubleScore: Double) = this(rules, operator, new Score(Left(BigDecimal.valueOf(doubleScore)), None))
-  def this(rules: java.util.List[Rule], operator: Operator, scoreString: String) = this(rules, operator, new Score(Left(BigDecimal.valueOf(scoreString.toDouble)), None))
+  def this(rules: java.util.List[Rule], operator: Operator, scoreString: String) = this(rules, operator, new Score(Left(BigDecimal(scoreString)), None))
 
   private def range = score.scoreRange match {
     case None => ""
