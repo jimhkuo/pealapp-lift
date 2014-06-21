@@ -181,13 +181,13 @@ class ExtendedOutputVerifier(input: String) {
             trueScore(score, policyName + "_default_U")
           }
           else {
-            val okRules = rules.filter(r => I(r.q.name).fold(score => PealBottom, bool => bool) == PealTrue).map(r => trueScore(r.score, policyName + "_" + r.q.name + "_U"))
+            val okScores = rules.filter(r => I(r.q.name).fold(score => PealBottom, bool => bool) == PealTrue).map(r => trueScore(r.score, policyName + "_" + r.q.name + "_U"))
 //            if (pSet.getPolicySetName == "b9") println("okRules are: " + okRules + " op is " + op)
             val decimal = op match {
-              case Min => okRules.tail.foldLeft(okRules.head)((acc, rule) => acc.min(rule))
-              case Max => okRules.tail.foldLeft(okRules.head)((acc, rule) => acc.max(rule))
-              case Plus => okRules.foldLeft(Rational("0"))((acc, rule) => acc + rule)
-              case Mul => okRules.foldLeft(Rational("1"))((acc, rule) => acc * rule)
+              case Min => okScores.tail.foldLeft(okScores.head)((acc, score) => acc.min(score))
+              case Max => okScores.tail.foldLeft(okScores.head)((acc, score) => acc.max(score))
+              case Plus => okScores.foldLeft(Rational("0"))((acc, score) => acc + score)
+              case Mul => okScores.foldLeft(Rational("1"))((acc, score) => acc * score)
             }
 //            if (pSet.getPolicySetName == "b9") println("op X " + op + " " + policyName + ": " + (for (o <- okRules) yield o.q.name).mkString(" ") + ": " + decimal)
             decimal
@@ -198,7 +198,7 @@ class ExtendedOutputVerifier(input: String) {
         case MulPolicySet(lhs, rhs, n) => extractScore(lhs) * extractScore(rhs)
       }
 
-      if (pSet.getPolicySetName == "b9") println(pSet.getPolicySetName + " is " + out + " (" + out.value + ")")
+      println(pSet.getPolicySetName + " is " + out + " (" + out.value + ")")
 
       out
     }
