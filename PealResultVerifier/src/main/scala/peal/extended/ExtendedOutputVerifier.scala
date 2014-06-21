@@ -45,7 +45,7 @@ class ExtendedOutputVerifier(input: String) {
         //        print("*")
         (s + bottomPredicates.head).foreach {
           m =>
-            println("set " + m + " to false")
+//            println("set " + m + " to false")
             //            print(m)
             truthMapping += m -> Right(PealFalse)
         }
@@ -137,7 +137,7 @@ class ExtendedOutputVerifier(input: String) {
       }
     } catch {
       case e: RuntimeException =>
-        e.printStackTrace()
+//        e.printStackTrace()
         PealBottom
     }
   }
@@ -198,7 +198,7 @@ class ExtendedOutputVerifier(input: String) {
         case MulPolicySet(lhs, rhs, n) => extractScore(lhs) * extractScore(rhs)
       }
 
-      println(pSet.getPolicySetName + " is " + out + " (" + out.value + ")")
+//      println(pSet.getPolicySetName + " is " + out + " (" + out.value + ")")
 
       out
     }
