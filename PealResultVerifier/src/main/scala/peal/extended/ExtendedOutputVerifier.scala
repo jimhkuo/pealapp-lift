@@ -45,7 +45,7 @@ class ExtendedOutputVerifier(input: String) {
         //        print("*")
         (s + bottomPredicates.head).foreach {
           m =>
-//            println("set " + m + " to false")
+            println("set " + m + " to false")
             //            print(m)
             truthMapping += m -> Right(PealFalse)
         }
@@ -137,7 +137,7 @@ class ExtendedOutputVerifier(input: String) {
       }
     } catch {
       case e: RuntimeException =>
-//        e.printStackTrace()
+        e.printStackTrace()
         PealBottom
     }
   }
@@ -170,7 +170,7 @@ class ExtendedOutputVerifier(input: String) {
         }
       }
 
-      pSet match {
+      val out = pSet match {
         case BasicPolicySet(pol, name) => extractScore(pol)
         case Pol(rules, op, score, policyName) =>
           if (rules.exists(r => I.getOrElse(r.q.name, Right(PealBottom)).fold(score => PealBottom, pealBool => pealBool) == PealBottom)) {
@@ -182,14 +182,14 @@ class ExtendedOutputVerifier(input: String) {
           }
           else {
             val okRules = rules.filter(r => I(r.q.name).fold(score => PealBottom, bool => bool) == PealTrue)
-            //            println("okRules are: " + okRules + " op is " + op)
+            if (pSet.getPolicySetName == "b9") println("okRules are: " + okRules + " op is " + op)
             val decimal = op match {
-              case Min => okRules.foldLeft(Rational("1"))((acc, rule) => acc.min(trueScore(rule.score, policyName + "_" + rule.q.name + "_U")))
-              case Max => okRules.foldLeft(Rational("-1"))((acc, rule) => acc.max(trueScore(rule.score, policyName + "_" + rule.q.name + "_U")))
+              case Min => okRules.tail.foldLeft(trueScore(okRules.head.score, policyName + "_" + okRules.head.q.name + "_U"))((acc, rule) => acc.min(trueScore(rule.score, policyName + "_" + rule.q.name + "_U")))
+              case Max => okRules.tail.foldLeft(trueScore(okRules.head.score, policyName + "_" + okRules.head.q.name + "_U"))((acc, rule) => acc.max(trueScore(rule.score, policyName + "_" + rule.q.name + "_U")))
               case Plus => okRules.foldLeft(Rational("0"))((acc, rule) => acc + trueScore(rule.score, policyName + "_" + rule.q.name + "_U"))
               case Mul => okRules.foldLeft(Rational("1"))((acc, rule) => acc * trueScore(rule.score, policyName + "_" + rule.q.name + "_U"))
             }
-            //            println("op X " + op + " " + policyName + ": " + (for (o <- okRules) yield o.q.name).mkString(" ") + ": " + decimal)
+            if (pSet.getPolicySetName == "b9") println("op X " + op + " " + policyName + ": " + (for (o <- okRules) yield o.q.name).mkString(" ") + ": " + decimal)
             decimal
           }
         case MaxPolicySet(lhs, rhs, n) => extractScore(lhs).max(extractScore(rhs))
@@ -197,6 +197,10 @@ class ExtendedOutputVerifier(input: String) {
         case PlusPolicySet(lhs, rhs, n) => extractScore(lhs) + extractScore(rhs)
         case MulPolicySet(lhs, rhs, n) => extractScore(lhs) * extractScore(rhs)
       }
+
+      if (pSet.getPolicySetName == "b9") println(pSet.getPolicySetName + " is " + out + " (" + out.value + ")")
+
+      out
     }
 
     pSet.fold(score => score, pSet => extractScore(pSet).value)
