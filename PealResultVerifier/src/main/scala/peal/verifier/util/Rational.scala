@@ -18,7 +18,7 @@ object Rational {
 case class Rational(numerator: BigDecimal, denominator: BigDecimal) {
   private def less(that: Rational) = numerator * that.denominator < that.numerator * denominator
 
-  def z3Expression = if (numerator >= 0) "(/ " + numerator + " " + denominator + ")" else "(- (/ " + numerator.abs + " " + denominator + "))"
+  def z3Expression = if (numerator >= 0) "(/ " + numerator.bigDecimal.toPlainString + " " + denominator.bigDecimal.toPlainString + ")" else "(- (/ " + numerator.abs.bigDecimal.toPlainString + " " + denominator.bigDecimal.toPlainString + "))"
 
   def value: BigDecimal = numerator / denominator
 

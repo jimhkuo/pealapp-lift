@@ -45,7 +45,7 @@ class ExtendedOutputVerifier(input: String) {
         //        print("*")
         (s + bottomPredicates.head).foreach {
           m =>
-            println("set " + m + " to false")
+            println("*** set " + m + " to false")
             //            print(m)
             truthMapping += m -> Right(PealFalse)
         }
@@ -175,7 +175,8 @@ class ExtendedOutputVerifier(input: String) {
         case Pol(rules, op, score, policyName) =>
           if (rules.exists(r => I.getOrElse(r.q.name, Right(PealBottom)).fold(score => PealBottom, pealBool => pealBool) == PealBottom)) {
             //should log
-            throw new RuntimeException("PealBottom reached in certValue because some predicates are not defined in I")
+            val notDefined = rules.filter(r => I.getOrElse(r.q.name, Right(PealBottom)).fold(score => PealBottom, pealBool => pealBool) == PealBottom)
+            throw new RuntimeException("PealBottom reached in certValue because some predicates are not defined in I: " + notDefined + " in " + policyName + " " + rules)
           }
           else if (!rules.exists(r => I(r.q.name).fold(score => PealBottom, bool => bool) == PealTrue)) {
             trueScore(score, policyName + "_default_U")
