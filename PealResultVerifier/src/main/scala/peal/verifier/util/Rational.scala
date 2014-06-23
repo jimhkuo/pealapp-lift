@@ -6,8 +6,8 @@ object Rational {
   def apply(num: String): Rational = Rational(num, "1")
 
   def apply(x: String, y: String): Rational = {
-    val numer = x.toDouble.abs
-    val denom = y.toDouble.abs
+    val numer = BigDecimal(x).abs
+    val denom = BigDecimal(y).abs
     val commonDivisior = gcd(numer, denom)
     val a = if (x.toDouble * y.toDouble < 0) -(numer / commonDivisior).abs else (numer / commonDivisior).abs
     val b = (denom / commonDivisior).abs
