@@ -6,8 +6,8 @@ object Rational {
   def apply(num: String): Rational = Rational(num, "1")
 
   def apply(x: String, y: String): Rational = {
-    val numer = x.toDouble.abs
-    val denom = y.toDouble.abs
+    val numer = BigDecimal(x).abs
+    val denom = BigDecimal(y).abs
     val commonDivisior = gcd(numer, denom)
     val a = if (x.toDouble * y.toDouble < 0) -(numer / commonDivisior).abs else (numer / commonDivisior).abs
     val b = (denom / commonDivisior).abs
@@ -18,7 +18,7 @@ object Rational {
 case class Rational(numerator: BigDecimal, denominator: BigDecimal) {
   private def less(that: Rational) = numerator * that.denominator < that.numerator * denominator
 
-  def z3Expression = if (numerator >= 0) "(/ " + numerator + " " + denominator + ")" else "(- (/ " + numerator.abs + " " + denominator + "))"
+  def z3Expression = if (numerator >= 0) "(/ " + numerator.bigDecimal.toPlainString + " " + denominator.bigDecimal.toPlainString + ")" else "(- (/ " + numerator.abs.bigDecimal.toPlainString + " " + denominator.bigDecimal.toPlainString + "))"
 
   def value: BigDecimal = numerator / denominator
 

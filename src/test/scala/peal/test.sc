@@ -1,11 +1,12 @@
-def concat[T](xs: List[T], ys: List[T]): List[T] = (xs foldRight ys)(_ :: _)
+import peal.verifier.util.Rational
 
-val list1 = List(1, 2, 3, 4)
-val list10 = List(10, 20, 30, 40)
-
-val p = (list1 foldRight list10)(_ :: _)
-val p1 = list1.foldRight(list10.sum)(_ + _)
-concat(list1, list10)
+Rational("-1290181417","3.58125E+9") + Rational("3438931417","3.58125E+9")
 
 
-//worksheet doesn't like var
+val a = Rational("3438931417","10743750000") * Rational("3")
+val b = Rational("-1290181417","7162500000") * Rational("2")
+
+val c = a + b
+a.value
+b.value
+c.value
