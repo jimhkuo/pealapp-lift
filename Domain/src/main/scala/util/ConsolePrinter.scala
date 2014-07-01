@@ -2,13 +2,29 @@ package util
 
 object ConsolePrinter {
 
-  var loggingFunction = (s: String) => {}
+  var loggingFunction = (s: String, level: Int) => {}
 
   def enable() {
-    loggingFunction = (s: String) => println(s)
+    enable(0)
+  }
+
+  def enable(l: Int) {
+    loggingFunction = (s: String, level: Int) => {
+      if (level <= l)
+        println(s)
+    }
   }
 
   def log(message: String) {
-    loggingFunction(message)
+    loggingFunction(message, 0)
   }
+
+  def log1(message: String) {
+    loggingFunction(message, 1)
+  }
+
+  def log2(message: String) {
+    loggingFunction(message, 2)
+  }
+
 }

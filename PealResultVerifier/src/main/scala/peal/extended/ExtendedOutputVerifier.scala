@@ -119,7 +119,7 @@ class ExtendedOutputVerifier(input: String) {
         case c: LessThanThCondition =>
           val lhsValue: BigDecimal = certValue(Right(c.lhs), I)
           val rhsValue: BigDecimal = certValue(c.rhs, I)
-          ConsolePrinter.log("LessThanThCondition: lhs " + lhsValue + " <= rhs " + rhsValue + ", v " + v)
+          ConsolePrinter.log1("LessThanThCondition: lhs " + lhsValue + " <= rhs " + rhsValue + ", v " + v)
           if (v == PealTrue) {
             ThreeWayBooleanObj.from(lhsValue <= rhsValue)
           } else {
@@ -128,7 +128,7 @@ class ExtendedOutputVerifier(input: String) {
         case c: GreaterThanThCondition =>
           val lhsValue: BigDecimal = certValue(Right(c.lhs), I)
           val rhsValue: BigDecimal = certValue(c.rhs, I)
-          ConsolePrinter.log("GreaterThanThCondition: lhs " + lhsValue + " > rhs " + rhsValue + ", v " + v)
+          ConsolePrinter.log1("GreaterThanThCondition: lhs " + lhsValue + " > rhs " + rhsValue + ", v " + v)
           if (v == PealTrue) {
             ThreeWayBooleanObj.from(rhsValue < lhsValue)
           } else {
@@ -184,14 +184,14 @@ class ExtendedOutputVerifier(input: String) {
           }
           else {
             val okScores = rules.filter(r => I(r.q.name).fold(score => PealBottom, bool => bool) == PealTrue).map(r => trueScore(r.score, policyName + "_" + r.q.name + "_U"))
-            ConsolePrinter.log("okScores are: " + okScores + " op is " + op)
+            ConsolePrinter.log2("okScores are: " + okScores + " op is " + op)
             val decimal = op match {
               case Min => okScores.reduceLeft((acc, score) => acc.min(score))
               case Max => okScores.reduceLeft((acc, score) => acc.max(score))
               case Plus => okScores.reduceLeft((acc, score) => acc + score)
               case Mul => okScores.reduceLeft((acc, score) => acc * score)
             }
-            ConsolePrinter.log("op X " + op + " " + policyName + ": " + (for (o <- okScores) yield o).mkString(" ") + ": " + decimal)
+            ConsolePrinter.log2("op X " + op + " " + policyName + ": " + (for (o <- okScores) yield o).mkString(" ") + ": " + decimal)
             decimal
           }
         case MaxPolicySet(lhs, rhs, n) => extractScore(lhs).max(extractScore(rhs))
@@ -200,7 +200,7 @@ class ExtendedOutputVerifier(input: String) {
         case MulPolicySet(lhs, rhs, n) => extractScore(lhs) * extractScore(rhs)
       }
 
-//      println(pSet.getPolicySetName + " is " + out + " (" + out.value + ")")
+      ConsolePrinter.log(pSet.getPolicySetName + " is " + out + " (" + out.value + ")")
 
       out
     }
