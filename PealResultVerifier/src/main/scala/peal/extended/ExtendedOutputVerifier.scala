@@ -1,6 +1,7 @@
 package peal.extended
 
 import peal.antlr.util.ParserHelper
+import util.ConsolePrinter
 import scala.collection.JavaConversions._
 import peal.verifier.Z3ModelExtractor
 import peal.domain._
@@ -45,7 +46,7 @@ class ExtendedOutputVerifier(input: String) {
         //        print("*")
         (s + bottomPredicates.head).foreach {
           m =>
-//            println("*** set " + m + " to false")
+            ConsolePrinter.log("*** set " + m + " to false")
             //            print(m)
             truthMapping += m -> Right(PealFalse)
         }
@@ -118,7 +119,7 @@ class ExtendedOutputVerifier(input: String) {
         case c: LessThanThCondition =>
           val lhsValue: BigDecimal = certValue(Right(c.lhs), I)
           val rhsValue: BigDecimal = certValue(c.rhs, I)
-          //          println("LessThanThCondition: lhs " + lhsValue + " <= rhs " + rhsValue + ", v " + v)
+          ConsolePrinter.log("LessThanThCondition: lhs " + lhsValue + " <= rhs " + rhsValue + ", v " + v)
           if (v == PealTrue) {
             ThreeWayBooleanObj.from(lhsValue <= rhsValue)
           } else {
@@ -127,7 +128,7 @@ class ExtendedOutputVerifier(input: String) {
         case c: GreaterThanThCondition =>
           val lhsValue: BigDecimal = certValue(Right(c.lhs), I)
           val rhsValue: BigDecimal = certValue(c.rhs, I)
-          //          println("GreaterThanThCondition: lhs " + lhsValue + " > rhs " + rhsValue + ", v " + v)
+          ConsolePrinter.log("GreaterThanThCondition: lhs " + lhsValue + " > rhs " + rhsValue + ", v " + v)
           if (v == PealTrue) {
             ThreeWayBooleanObj.from(rhsValue < lhsValue)
           } else {
@@ -183,14 +184,14 @@ class ExtendedOutputVerifier(input: String) {
           }
           else {
             val okScores = rules.filter(r => I(r.q.name).fold(score => PealBottom, bool => bool) == PealTrue).map(r => trueScore(r.score, policyName + "_" + r.q.name + "_U"))
-//            if (pSet.getPolicySetName == "b9") println("okRules are: " + okRules + " op is " + op)
+            ConsolePrinter.log("okScores are: " + okScores + " op is " + op)
             val decimal = op match {
               case Min => okScores.reduceLeft((acc, score) => acc.min(score))
               case Max => okScores.reduceLeft((acc, score) => acc.max(score))
               case Plus => okScores.reduceLeft((acc, score) => acc + score)
               case Mul => okScores.reduceLeft((acc, score) => acc * score)
             }
-//            if (pSet.getPolicySetName == "b9") println("op X " + op + " " + policyName + ": " + (for (o <- okRules) yield o.q.name).mkString(" ") + ": " + decimal)
+            ConsolePrinter.log("op X " + op + " " + policyName + ": " + (for (o <- okScores) yield o).mkString(" ") + ": " + decimal)
             decimal
           }
         case MaxPolicySet(lhs, rhs, n) => extractScore(lhs).max(extractScore(rhs))
