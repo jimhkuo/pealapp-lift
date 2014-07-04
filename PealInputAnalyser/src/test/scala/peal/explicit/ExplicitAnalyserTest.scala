@@ -69,9 +69,19 @@ class ExplicitAnalyserTest extends ShouldMatchersForJUnit {
 
   @Test
   def testCanOutputAnalysisAlwaysFalse() {
-    ConsoleLogger.enable(2)
+    ConsoleLogger.enable(1)
     val input = "POLICIES\nb1 = * ((q1 1) (q2 1)) default 0.5\nPOLICY_SETS\npSet1 = b1\nCONDITIONS\ncond1 = pSet1 <= 0.9\nANALYSES\nname1 = always_false? cond1"
     val model = "Result of analysis [name1 = always_false? cond1]:\nsat\n(model \n  (define-fun cond1 () Bool\n    true)\n  (define-fun always_false_name1 () Bool\n    true)\n  (define-fun q1 () Bool\n    false)\n  (define-fun q2 () Bool\n    false)\n)"
+    ConsoleLogger.log2(input)
+    val out = new ExplicitAnalyser(input).analyse(model, "name1")
+    out should be ("b1 = default 0.5")
+  }
+
+  @Test
+  def testCanOutputAnalysisSatisfiable() {
+    ConsoleLogger.enable(1)
+    val input = "POLICIES\nb1 = * ((q1 1) (q2 1)) default 0.5\nPOLICY_SETS\npSet1 = b1\nCONDITIONS\ncond1 = pSet1 <= 0.9\nANALYSES\nname1 = satisfiable? cond1"
+    val model = "Result of analysis [name1 = satisfiable? cond1]:\nsat\n(model \n  (define-fun cond1 () Bool\n    true)\n  (define-fun satisfiable_name1 () Bool\n    true)\n  (define-fun q1 () Bool\n    false)\n  (define-fun q2 () Bool\n    false)\n)"
     ConsoleLogger.log2(input)
     val out = new ExplicitAnalyser(input).analyse(model, "name1")
     out should be ("b1 = default 0.5")
