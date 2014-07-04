@@ -94,7 +94,7 @@ class ExplicitAnalyser(input: String) {
     ConsoleLogger.log2(policies)
 
     //construct the internals of policies here
-    "Uses " + condNames.mkString("", ", ", "") + "\n" + policies.map(p => p + " = " + unfoldPolicy(p)).mkString("\n")
+    "uses " + condNames.mkString("", ", ", "") + "\n" + policies.map(p => p + " = " + unfoldPolicy(p)).mkString("\n")
   }
 
 }

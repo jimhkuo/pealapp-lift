@@ -388,8 +388,9 @@ class PealCometActor extends CometActor with Loggable {
 
       val analysedResults = Z3OutputAnalyser.execute(analyses, z3OutputModels, constsMap)
 
-      val unfoldedInputs = for (analysis <- sortedAnalyses if (z3OutputModels(analysis).satResult == Sat)) yield {
-        "Analysis: " + analysis + "\n" + new ExplicitAnalyser(inputPolicies).analyse(z3RawOutput, analysis)
+      val unfoldedInputs = for (analysis <- sortedAnalyses) yield {
+        if (z3OutputModels(analysis).satResult == Sat) "Analysis \"" + analysis + "\" " + new ExplicitAnalyser(inputPolicies).analyse(z3RawOutput, analysis)
+        else "Analysis \"" + analysis + "\" is UNSAT"
       }
       verbose match {
         case true => this ! Result(<pre>{z3SMTInput}</pre><pre>Analysed results:<br/>{analysedResults}</pre><pre>Unfolded inputs:<br/><br/>{unfoldedInputs.mkString("\n\n")}</pre><pre>{verificationResults.mkString("")}</pre><pre>Z3 Raw Output:<br/>{z3RawOutput}</pre>)
