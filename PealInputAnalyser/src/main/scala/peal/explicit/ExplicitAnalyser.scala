@@ -41,6 +41,7 @@ class ExplicitAnalyser(input: String) {
   def analyse(rawModel: String, analysisName: String): String = {
 
     val I = Z3ModelExtractor.extractI(rawModel)(analysisName)
+    ConsoleLogger.log1(I)
     val (ans, reMapped) = new ExplicitOutputVerifier(input).verifyModel(rawModel, analysisName)
     var completeTruthMapping = I
     //    reMapped.foreach(completeTruthMapping += _ -> Right(PealFalse))
@@ -48,9 +49,11 @@ class ExplicitAnalyser(input: String) {
     def unfoldPolicy(p: String): String = {
       pols(p) match {
         case Pol(rs, o, s, name) =>
-//          rs.filter(r => I.get())
+          val okRules = rs.filter(r => I.get(r.q.name) != None && I.get(r.q.name) == PealTrue)
+          if (okRules.isEmpty) "default " + s.toString.trim
+          else {"XXX"}
       }
-      ???
+//      pols(p).toNaturalExpression
     }
 
     analyses.foreach(ConsoleLogger.log2(_))
