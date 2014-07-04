@@ -1,10 +1,10 @@
 package peal.explicit
 
 import peal.antlr.util.ParserHelper
-import peal.domain.{BasicPolicySet, MaxPolicySet, MinPolicySet, Pol, _}
+import peal.domain._
 import peal.domain.operator.{Max, Min, Mul, Plus}
-import peal.synthesis.{AndCondition, GreaterThanThCondition, LessThanThCondition, NotCondition, OrCondition, _}
-import peal.synthesis.analysis.{AlwaysFalse, AlwaysTrue, Different, Equivalent, _}
+import peal.synthesis._
+import peal.synthesis.analysis._
 import peal.verifier.Z3ModelExtractor
 
 import scala.collection.JavaConversions._

@@ -1,26 +1,13 @@
 package peal.explicit
 
 import peal.antlr.util.ParserHelper
-import scala.collection.JavaConversions._
-import peal.synthesis._
-import peal.domain._
-import peal.domain.operator.{Mul, Max, Min, Plus}
-import peal.synthesis.analysis._
-import peal.synthesis.AndCondition
-import peal.domain.BasicPolicySet
-import peal.synthesis.analysis.AlwaysFalse
-import peal.synthesis.GreaterThanThCondition
-import peal.synthesis.LessThanThCondition
-import peal.domain.MinPolicySet
-import peal.domain.MaxPolicySet
-import peal.domain.Pol
-import scala.Some
-import peal.synthesis.analysis.Different
-import peal.synthesis.analysis.Equivalent
-import peal.synthesis.analysis.AlwaysTrue
-import peal.synthesis.OrCondition
-import peal.synthesis.NotCondition
+import peal.domain.{BasicPolicySet, MaxPolicySet, MinPolicySet, Pol, _}
+import peal.domain.operator.{Max, Min, Mul, Plus}
+import peal.synthesis.{AndCondition, GreaterThanThCondition, LessThanThCondition, NotCondition, OrCondition, _}
+import peal.synthesis.analysis.{AlwaysFalse, AlwaysTrue, Different, Equivalent, _}
 import peal.verifier.Z3ModelExtractor
+
+import scala.collection.JavaConversions._
 
 
 class ExplicitOutputVerifier(input: String) {
