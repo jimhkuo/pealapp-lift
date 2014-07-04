@@ -65,7 +65,7 @@ class ExplicitAnalyser(input: String) {
 
             o + " (([" +
               okRules.map(r => r.q.name).mkString("", " ", "") + "] " +
-              accumulateScores(o, okRules.toSet) + ") " +
+              accumulateScores(o, okRules.toSet) + ")" +
               undefinedRules.map(r => "(" + r.q.name + "? " + r.numberScore + ")").mkString("", " ", "") +
               ") " + "default " + s.toString.trim
           }
