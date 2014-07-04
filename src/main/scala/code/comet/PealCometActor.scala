@@ -16,7 +16,7 @@ import peal.domain.{PealFalse, PealBottom, PealTrue, PolicySet}
 import peal.domain.z3.{Sat, PealAst, Term}
 import peal.antlr.util.ParserHelper
 import peal.z3.Z3Caller
-import peal.explicit.ExplicitOutputVerifier
+import peal.explicit.{ExplicitAnalyser, ExplicitOutputVerifier}
 import peal.extended.ExtendedOutputVerifier
 import net.liftweb.http.js.jquery.JqJE.JqId
 import code.lib.Message
@@ -388,12 +388,16 @@ class PealCometActor extends CometActor with Loggable {
 
       val analysedResults = Z3OutputAnalyser.execute(analyses, z3OutputModels, constsMap)
 
+      val ana = analyses.keySet
+      val unfoldedInputs = ana.map(a => new ExplicitAnalyser(inputPolicies).analyse(z3RawOutput, a)).mkString("\n")
+
       verbose match {
-        case true => this ! Result(<pre>{z3SMTInput}</pre> <pre>Analysed results:<br/>{analysedResults}</pre><pre>{verificationResults.mkString("")}</pre><pre>Z3 Raw Output:<br/>{z3RawOutput}</pre>)
-        case false => this ! Result(<pre>Analysed results:<br/>{analysedResults}</pre><pre>{verificationResults.mkString("")}</pre>)
+        case true => this ! Result(<pre>{z3SMTInput}</pre> <pre>Analysed results:<br/>{analysedResults}<br/>{unfoldedInputs}</pre><pre>{verificationResults.mkString("")}</pre><pre>Z3 Raw Output:<br/>{z3RawOutput}</pre>)
+        case false => this ! Result(<pre>Analysed results:<br/>{analysedResults}<br/>{unfoldedInputs}</pre><pre>{verificationResults.mkString("")}</pre>)
       }
     } catch {
       case e: Exception =>
+        e.printStackTrace()
         verbose match {
           case true => this ! Result(<pre>{z3SMTInput}</pre> <pre>Z3 Raw Output:<br/>{z3RawOutput}</pre>)
           case false => this ! Result(<pre>Result analysis failed, returned model contains unexpected string:<br/>{z3RawOutput}</pre><pre>{e.getMessage}</pre>)
