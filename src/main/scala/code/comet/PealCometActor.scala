@@ -391,9 +391,10 @@ class PealCometActor extends CometActor with Loggable {
       val ana = analyses.keySet
       val unfoldedInputs = ana.map(a => new ExplicitAnalyser(inputPolicies).analyse(z3RawOutput, a)).mkString("\n")
 
+
       verbose match {
-        case true => this ! Result(<pre>{z3SMTInput}</pre> <pre>Analysed results:<br/>{analysedResults}<br/>{unfoldedInputs}</pre><pre>{verificationResults.mkString("")}</pre><pre>Z3 Raw Output:<br/>{z3RawOutput}</pre>)
-        case false => this ! Result(<pre>Analysed results:<br/>{analysedResults}<br/>{unfoldedInputs}</pre><pre>{verificationResults.mkString("")}</pre>)
+        case true => this ! Result(<pre>{z3SMTInput}</pre><pre>Analysed results:<br/>{analysedResults}</pre><pre>Unfolded inputs:<br/>{unfoldedInputs}</pre><pre>{verificationResults.mkString("")}</pre><pre>Z3 Raw Output:<br/>{z3RawOutput}</pre>)
+        case false => this ! Result(<pre>Analysed results:<br/>{analysedResults}</pre><pre>Unfolded inputs:<br/>{unfoldedInputs}</pre><pre>{verificationResults.mkString("")}</pre>)
       }
     } catch {
       case e: Exception =>
