@@ -1,18 +1,21 @@
 package peal
 
-import org.junit.Test
-import peal.domain.{Predicate, Rule, Pol}
-import peal.domain.operator.Min
-import org.scalatest.junit.ShouldMatchersForJUnit
-import scala.collection.JavaConversions._
-import scala.sys.process._
 import java.io.File
-import peal.antlr.util.ParserHelper
+
+import org.junit.Test
+import org.scalatest.junit.ShouldMatchersForJUnit
+
+import scala.sys.process._
 
 class ScalaTest extends ShouldMatchersForJUnit {
 
   @Test
-  def test() {
+  def testOption() {
+      println(Some(2).fold("none")(_.toString + " string"))
+  }
+
+  @Test
+  def testLeft() {
 //    val m = collection.mutable.Map(1 -> 1, 2 -> 2)
 //    m += (3 -> 3)
 ////    m = m + (3 -> 3) //not allowed

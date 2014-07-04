@@ -40,14 +40,18 @@ class ExplicitAnalyser(input: String) {
 
   def analyse(rawModel: String, analysisName: String): String = {
 
-    def unfoldPolicy(p: String): String = {
-      pols(p).toNaturalExpression
-    }
-
     val I = Z3ModelExtractor.extractI(rawModel)(analysisName)
     val (ans, reMapped) = new ExplicitOutputVerifier(input).verifyModel(rawModel, analysisName)
     var completeTruthMapping = I
     //    reMapped.foreach(completeTruthMapping += _ -> Right(PealFalse))
+
+    def unfoldPolicy(p: String): String = {
+      pols(p) match {
+        case Pol(rs, o, s, name) =>
+//          rs.filter(r => I.get())
+      }
+      ???
+    }
 
     analyses.foreach(ConsoleLogger.log2(_))
     val condNames = analyses.map(a => pullCond(a._2)).flatten
