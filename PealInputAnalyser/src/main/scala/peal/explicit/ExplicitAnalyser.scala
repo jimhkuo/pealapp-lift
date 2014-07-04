@@ -2,6 +2,7 @@ package peal.explicit
 
 import peal.antlr.util.ParserHelper
 import peal.domain._
+import peal.domain.operator._
 import peal.synthesis.{GreaterThanThCondition, LessThanThCondition, Condition}
 import peal.synthesis.analysis.{Equivalent, AlwaysTrue, AnalysisGenerator}
 import peal.util.ConsoleLogger
@@ -46,14 +47,20 @@ class ExplicitAnalyser(input: String) {
     var completeTruthMapping = I
     //    reMapped.foreach(completeTruthMapping += _ -> Right(PealFalse))
 
+    def accumulateScores(operator: Operator, rules: Set[Rule]) = operator match {
+      case Min => rules.tail.foldLeft(rules.head.numberScore)((acc, r) => acc.min(r.numberScore))
+    }
+
     def unfoldPolicy(p: String): String = {
       pols(p) match {
         case Pol(rs, o, s, name) =>
-          val okRules = rs.filter(r => I.get(r.q.name) != None && I.get(r.q.name) == PealTrue)
+          val okRules = rs.filter(r => I.get(r.q.name) != None && I.get(r.q.name) == Some(Right(PealTrue)))
+          ConsoleLogger.log1(okRules)
           if (okRules.isEmpty) "default " + s.toString.trim
-          else {"XXX"}
+          else {
+            o + " ([" + okRules.map(r => r.q.name).mkString("", " ", "") + "] " + accumulateScores(o, okRules.toSet) + ")"
+          }
       }
-//      pols(p).toNaturalExpression
     }
 
     analyses.foreach(ConsoleLogger.log2(_))
