@@ -4,7 +4,7 @@ import peal.antlr.util.ParserHelper
 import peal.domain._
 import peal.domain.operator._
 import peal.synthesis.{GreaterThanThCondition, LessThanThCondition, Condition}
-import peal.synthesis.analysis.{Equivalent, AlwaysTrue, AnalysisGenerator}
+import peal.synthesis.analysis.{AlwaysFalse, Equivalent, AlwaysTrue, AnalysisGenerator}
 import peal.util.ConsoleLogger
 import peal.verifier.Z3ModelExtractor
 
@@ -35,6 +35,7 @@ class ExplicitAnalyser(input: String) {
 
   private def pullCond(analysis: AnalysisGenerator) = analysis match {
     case AlwaysTrue(_, c) => c :: Nil
+    case AlwaysFalse(_, c) => c :: Nil
     case Equivalent(_, c1, c2) => c1 :: c2 :: Nil
   }
 
