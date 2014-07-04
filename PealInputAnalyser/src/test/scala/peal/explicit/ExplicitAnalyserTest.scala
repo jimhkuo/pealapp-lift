@@ -27,6 +27,16 @@ class ExplicitAnalyserTest extends ShouldMatchersForJUnit {
     out should be ("b1 = min ([q1] 0.6)")
   }
 
+  @Test
+  def testCanOutputAnalysisBothRulesTrue() {
+    ConsoleLogger.enable(1)
+    val input = "POLICIES\nb1 = + ((q1 0.5) (q2 0.1)) default 0.5\nPOLICY_SETS\npSet1 = b1\nCONDITIONS\ncond1 = pSet1 <= 0.5\nANALYSES\nname1 = always_true? cond1"
+    val model = "Result of analysis [name1 = always_true? cond1]:\nsat\n(model \n  (define-fun cond1 () Bool\n    false)\n  (define-fun q1 () Bool\n    true)\n  (define-fun q2 () Bool\n    true)\n  (define-fun always_true_name1 () Bool\n    false)\n)"
+    ConsoleLogger.log2(input)
+    val out = new ExplicitAnalyser(input).analyse(model, "name1")
+    out should be ("b1 = + ([q1 q2] 0.6)")
+  }
+
   @Ignore("not done")
   @Test
   def testCanOutputAnalysis2() {

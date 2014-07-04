@@ -49,6 +49,7 @@ class ExplicitAnalyser(input: String) {
 
     def accumulateScores(operator: Operator, rules: Set[Rule]) = operator match {
       case Min => rules.tail.foldLeft(rules.head.numberScore)((acc, r) => acc.min(r.numberScore))
+      case Plus => rules.tail.foldLeft(rules.head.numberScore)((acc, r) => acc + r.numberScore)
     }
 
     def unfoldPolicy(p: String): String = {
