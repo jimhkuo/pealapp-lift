@@ -39,6 +39,7 @@ class ExplicitAnalyser(input: String) {
     case Satisfiable(_, c) => c :: Nil
     case Different(_, c1, c2) => c1 :: c2 :: Nil
     case Equivalent(_, c1, c2) => c1 :: c2 :: Nil
+    case Implies(_, c1, c2) => c1 :: c2 :: Nil
   }
 
 
