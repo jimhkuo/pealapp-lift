@@ -388,11 +388,12 @@ class PealCometActor extends CometActor with Loggable {
 
       val analysedResults = Z3OutputAnalyser.execute(analyses, z3OutputModels, constsMap)
 
-      val unfoldedInputs = analyses.keySet.map(a => "Analysis: " + a + "\n" + new ExplicitAnalyser(inputPolicies).analyse(z3RawOutput, a)).mkString("\n\n")
-
+      val unfoldedInputs = for (analysis <- sortedAnalyses if (z3OutputModels(analysis).satResult == Sat)) yield {
+        "Analysis: " + analysis + "\n" + new ExplicitAnalyser(inputPolicies).analyse(z3RawOutput, analysis)
+      }
       verbose match {
-        case true => this ! Result(<pre>{z3SMTInput}</pre><pre>Analysed results:<br/>{analysedResults}</pre><pre>Unfolded inputs:<br/><br/>{unfoldedInputs}</pre><pre>{verificationResults.mkString("")}</pre><pre>Z3 Raw Output:<br/>{z3RawOutput}</pre>)
-        case false => this ! Result(<pre>Analysed results:<br/>{analysedResults}</pre><pre>Unfolded inputs:<br/><br/>{unfoldedInputs}</pre><pre>{verificationResults.mkString("")}</pre>)
+        case true => this ! Result(<pre>{z3SMTInput}</pre><pre>Analysed results:<br/>{analysedResults}</pre><pre>Unfolded inputs:<br/><br/>{unfoldedInputs.mkString("\n\n")}</pre><pre>{verificationResults.mkString("")}</pre><pre>Z3 Raw Output:<br/>{z3RawOutput}</pre>)
+        case false => this ! Result(<pre>Analysed results:<br/>{analysedResults}</pre><pre>Unfolded inputs:<br/><br/>{unfoldedInputs.mkString("\n\n")}</pre><pre>{verificationResults.mkString("")}</pre>)
       }
     } catch {
       case e: Exception =>
