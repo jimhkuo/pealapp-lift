@@ -15,7 +15,7 @@ class ExplicitAnalyser(input: String) {
   private val analyses = pealProgramParser.analyses
   private val predicateNames: Seq[String] = pealProgramParser.pols.values().flatMap(pol => pol.rules).map(r => r.q.name).toSeq.distinct
 
-  def analyse(rawModel: String, analysisName: String): (ThreeWayBoolean, Set[String]) = {
+  def analyse(rawModel: String, analysisName: String): String = {
     val I = Z3ModelExtractor.extractI(rawModel)(analysisName)
     //call explicit verifier
     //pull its remapped set, together with I to create the value map
