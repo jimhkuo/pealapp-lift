@@ -4,7 +4,7 @@ import org.scalatest.junit.ShouldMatchersForJUnit
 import org.junit.{Ignore, Test}
 import peal.domain.{ThreeWayBoolean, PealTrue}
 import peal.verifier.Z3ModelExtractor
-import util.ConsolePrinter
+import util.ConsoleLogger
 
 
 class ExtendedOutputVerifierTest extends ShouldMatchersForJUnit {

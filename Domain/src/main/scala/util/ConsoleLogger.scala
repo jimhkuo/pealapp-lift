@@ -1,6 +1,6 @@
 package util
 
-object ConsolePrinter {
+object ConsoleLogger {
 
   var loggingFunction = (s: String, level: Int) => {}
 
