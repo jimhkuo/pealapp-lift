@@ -44,7 +44,7 @@ class ExplicitAnalyserTest extends ShouldMatchersForJUnit {
     val model = "Result of analysis [name1 = always_true? cond1]:\nsat\n(model \n  (define-fun cond1 () Bool\n    false)\n  (define-fun q1 () Bool\n    true)\n  (define-fun q2 () Bool\n    true)\n  (define-fun always_true_name1 () Bool\n    false)\n)"
     ConsoleLogger.log2(input)
     val out = new ExplicitAnalyser(input).analyse(model, "name1")
-    out should be ("b1 = + ([q1 q2] 0.6)")
+    out should be ("b1 = + (([q1 q2] 0.6)) default 0.5")
   }
 
   @Test
@@ -54,7 +54,7 @@ class ExplicitAnalyserTest extends ShouldMatchersForJUnit {
     val model = "Result of analysis [name1 = always_true? cond1]:\nsat\n(model \n  (define-fun cond1 () Bool\n    false)\n  (define-fun q1 () Bool\n    true)\n  (define-fun q2 () Bool\n    true)\n  (define-fun always_true_name1 () Bool\n    false)\n)"
     ConsoleLogger.log2(input)
     val out = new ExplicitAnalyser(input).analyse(model, "name1")
-    out should be ("b1 = * ([q1 q2] 0.64)")
+    out should be ("b1 = * (([q1 q2] 0.64)) default 0.0")
   }
 
   @Test
@@ -64,7 +64,7 @@ class ExplicitAnalyserTest extends ShouldMatchersForJUnit {
     val model = "Result of analysis [name1 = always_true? cond1]:\nsat\n(model \n  (define-fun cond1 () Bool\n    false)\n  (define-fun q1 () Bool\n    true)\n  (define-fun always_true_name1 () Bool\n    false)\n)"
     ConsoleLogger.log2(input)
     val out = new ExplicitAnalyser(input).analyse(model, "name1")
-    out should be ("b1 = + ([q1 q2] 0.6)")
+    out should be ("b1 = * (([q1] 1.0) (q2? 1.0)) default 0.5")
   }
 
   @Ignore("not done")
