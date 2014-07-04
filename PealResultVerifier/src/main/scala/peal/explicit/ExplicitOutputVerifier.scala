@@ -1,10 +1,10 @@
 package peal.explicit
 
 import peal.antlr.util.ParserHelper
-import peal.domain.{BasicPolicySet, MaxPolicySet, MinPolicySet, Pol, _}
+import peal.domain._
 import peal.domain.operator.{Max, Min, Mul, Plus}
-import peal.synthesis.{AndCondition, GreaterThanThCondition, LessThanThCondition, NotCondition, OrCondition, _}
-import peal.synthesis.analysis.{AlwaysFalse, AlwaysTrue, Different, Equivalent, _}
+import peal.synthesis._
+import peal.synthesis.analysis._
 import peal.verifier.Z3ModelExtractor
 
 import scala.collection.JavaConversions._
@@ -23,7 +23,7 @@ class ExplicitOutputVerifier(input: String) {
     verifyModel(rawModel, analysisName, truthMapping, Set())
   }
 
-  def verifyModel(rawModel: String, analysisName: String, I: Map[String, Either[BigDecimal, ThreeWayBoolean]], reMappedPredicates: Set[String]): (ThreeWayBoolean, Set[String]) = {
+  private def verifyModel(rawModel: String, analysisName: String, I: Map[String, Either[BigDecimal, ThreeWayBoolean]], reMappedPredicates: Set[String]): (ThreeWayBoolean, Set[String]) = {
 
     doAnalysis(analysisName, I, reMappedPredicates) match {
       case (PealBottom, s) =>
@@ -39,7 +39,7 @@ class ExplicitOutputVerifier(input: String) {
     }
   }
 
-  def doAnalysis(analysisName: String, truthMapping: Map[String, Either[BigDecimal, ThreeWayBoolean]], reMappedPredicates: Set[String]): (ThreeWayBoolean, Set[String]) = {
+  private def doAnalysis(analysisName: String, truthMapping: Map[String, Either[BigDecimal, ThreeWayBoolean]], reMappedPredicates: Set[String]): (ThreeWayBoolean, Set[String]) = {
     analyses(analysisName) match {
       case AlwaysTrue(_, condName) =>
         if (truthMapping(condName) == Right(PealFalse)) {
@@ -78,7 +78,7 @@ class ExplicitOutputVerifier(input: String) {
     throw new RuntimeException("shouldn't get here, no supported analysis specified")
   }
 
-  def verify(cond: Condition, I: Map[String, Either[BigDecimal, ThreeWayBoolean]], v: ThreeWayBoolean): ThreeWayBoolean = {
+  private def verify(cond: Condition, I: Map[String, Either[BigDecimal, ThreeWayBoolean]], v: ThreeWayBoolean): ThreeWayBoolean = {
     cond match {
       case NotCondition(c) => verify(conds(c), I, !v)
       case AndCondition(lhs, rhs) =>
@@ -123,7 +123,7 @@ class ExplicitOutputVerifier(input: String) {
     }
   }
 
-  def evalPol(pol: PolicySet, th: BigDecimal, I: Map[String, Either[BigDecimal, ThreeWayBoolean]]): ThreeWayBoolean = pol match {
+  private def evalPol(pol: PolicySet, th: BigDecimal, I: Map[String, Either[BigDecimal, ThreeWayBoolean]]): ThreeWayBoolean = pol match {
     case p: Pol =>
       val rulesToProcess = p.rules.filterNot(r => I.get(r.q.name) == Some(Right(PealFalse)))
       val trueRules = rulesToProcess.filter(r => I.get(r.q.name) == Some(Right(PealTrue)))
