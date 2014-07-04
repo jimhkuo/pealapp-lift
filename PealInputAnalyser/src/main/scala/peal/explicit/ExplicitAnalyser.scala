@@ -3,7 +3,7 @@ package peal.explicit
 import peal.antlr.util.ParserHelper
 import peal.domain._
 import peal.domain.operator._
-import peal.synthesis.{GreaterThanThCondition, LessThanThCondition, Condition}
+import peal.synthesis._
 import peal.synthesis.analysis._
 import peal.util.ConsoleLogger
 import peal.verifier.Z3ModelExtractor
@@ -28,9 +28,12 @@ class ExplicitAnalyser(input: String) {
   }
 
   //This only works for explicit synthesis outputs
-  private def pullPolicies(cond: Condition) = cond match {
-    case LessThanThCondition(lhs, rhs) => extractPolicySet(lhs) :: Nil
-    case GreaterThanThCondition(lhs, rhs) => extractPolicySet(lhs) :: Nil
+  private def pullPolicies(cond: Condition) : List[String] = cond match {
+    case LessThanThCondition(lhs, rhs) => extractPolicySet(lhs)
+    case GreaterThanThCondition(lhs, rhs) => extractPolicySet(lhs)
+    case OrCondition(lhs, rhs) => extractPolicySet(conds(lhs).getPol.get) ::: extractPolicySet(conds(rhs).getPol.get)
+    case AndCondition(lhs, rhs) => extractPolicySet(conds(lhs).getPol.get) ::: extractPolicySet(conds(rhs).getPol.get)
+    case NotCondition(c) => extractPolicySet(conds(c).getPol.get)
   }
 
   private def pullCond(analysis: AnalysisGenerator) = analysis match {
@@ -86,7 +89,7 @@ class ExplicitAnalyser(input: String) {
       b <- pullPolicies(conds(c))
     } yield b
 
-    val policies = bs.flatten.toSet
+    val policies = bs.toSet
     ConsoleLogger.log2(policies)
 
     //construct the internals of policies here
