@@ -17,7 +17,7 @@ object PealBuild extends Build {
 
   lazy val synthesiser = Project(id = "PealSynthesiser", base = file("PealSynthesiser")) dependsOn(parser, domain % "test->test;compile->compile")
 
-  lazy val z3 = Project(id = "Z3Wrapper", base = file("Z3Wrapper")) dependsOn(domain)
+  lazy val z3 = Project(id = "Z3Wrapper", base = file("Z3Wrapper")) dependsOn(domain,parser)
 
   lazy val generator = Project(id = "PealModelGenerator", base = file("PealModelGenerator")) dependsOn (parser, domain % "test->test;compile->compile")
 

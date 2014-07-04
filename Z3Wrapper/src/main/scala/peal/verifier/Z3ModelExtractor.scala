@@ -3,6 +3,7 @@ package peal.verifier
 import peal.antlr.util.ParserHelper
 import scala.collection.JavaConversions._
 
+
 object Z3ModelExtractor {
 
   def extractI(model: String) = {

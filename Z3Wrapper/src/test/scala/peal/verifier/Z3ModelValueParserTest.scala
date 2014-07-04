@@ -1,8 +1,8 @@
 package peal.verifier
 
+import org.junit.Test
 import org.scalatest.junit.ShouldMatchersForJUnit
-import org.junit.{Ignore, Test}
-import peal.domain.{PealTrue, PealFalse}
+import peal.domain.{PealFalse, PealTrue}
 
 
 class Z3ModelValueParserTest extends ShouldMatchersForJUnit {

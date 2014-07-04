@@ -1,4 +1,4 @@
-import peal.verifier.util.Rational
+import peal.domain.Rational
 
 Rational("-1290181417","3.58125E+9") + Rational("3438931417","3.58125E+9")
 

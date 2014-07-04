@@ -1,9 +1,8 @@
 package peal.verifier
 
-import org.scalatest.junit.ShouldMatchersForJUnit
 import org.junit.Test
-import peal.domain.PealFalse
-import peal.verifier.util.Rational
+import org.scalatest.junit.ShouldMatchersForJUnit
+import peal.domain.{Rational, PealFalse}
 
 
 class Z3ModelExtractorTest extends ShouldMatchersForJUnit {

@@ -1,4 +1,4 @@
-package peal.verifier.util
+package peal.domain
 
 object Rational {
   private def gcd(a: BigDecimal, b: BigDecimal): BigDecimal = if (b == BigDecimal(0)) a else gcd(b, a % b)

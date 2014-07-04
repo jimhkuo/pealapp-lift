@@ -1,8 +1,6 @@
 package peal.verifier
 
-import peal.domain.{PealFalse, PealTrue, ThreeWayBooleanObj, ThreeWayBoolean}
-import peal.verifier.util.Rational
-
+import peal.domain._
 
 object Z3ModelValueParser {
   val rational = """([-\d.]+)/([\d.]+)""".r

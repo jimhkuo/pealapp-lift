@@ -1,7 +1,7 @@
 package peal.extended
 
 import peal.antlr.util.ParserHelper
-import util.ConsoleLogger
+import _root_.util.ConsoleLogger
 import scala.collection.JavaConversions._
 import peal.verifier.Z3ModelExtractor
 import peal.domain._
@@ -17,7 +17,6 @@ import peal.synthesis.analysis.Implies
 import peal.synthesis.analysis.Satisfiable
 import peal.synthesis.analysis.Equivalent
 import peal.domain.operator.{Mul, Max, Min, Plus}
-import peal.verifier.util.Rational
 
 class ExtendedOutputVerifier(input: String) {
   val pealProgramParser = ParserHelper.getPealParser(input)
