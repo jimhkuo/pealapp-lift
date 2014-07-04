@@ -14,6 +14,7 @@ class ExplicitAnalyser(input: String) {
   private val pealProgramParser = ParserHelper.getPealParser(input)
   pealProgramParser.program()
   private val conds = pealProgramParser.conds.toMap
+  private val pols = pealProgramParser.pols.toMap
   private val analyses = pealProgramParser.analyses
   private val predicateNames: Seq[String] = pealProgramParser.pols.values().flatMap(pol => pol.rules).map(r => r.q.name).toSeq.distinct
 
@@ -47,14 +48,18 @@ class ExplicitAnalyser(input: String) {
     analyses.foreach(println(_))
     val condNames = analyses.map(a => pullCond(a._2)).flatten
     println(condNames)
-    val policies = for {
+    val bs = for {
       c <- condNames
       b <- pullPolicies(conds(c))
     } yield {
       b
     }
 
-    println(policies.flatten.toSet)
+    val policies = bs.flatten.toSet
+    println(policies)
+
+    policies.foreach(p => println(p + " = " + pols(p)))
+
     ???
   }
 
