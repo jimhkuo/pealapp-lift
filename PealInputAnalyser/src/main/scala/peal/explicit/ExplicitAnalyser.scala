@@ -82,7 +82,8 @@ class ExplicitAnalyser(input: String) {
     }
 
     analyses.foreach(ConsoleLogger.log2(_))
-    val condNames = analyses.map(a => pullCond(a._2)).flatten
+
+    val condNames = pullCond(analyses(analysisName))
     ConsoleLogger.log2(condNames)
     val bs = for {
       c <- condNames
@@ -93,7 +94,7 @@ class ExplicitAnalyser(input: String) {
     ConsoleLogger.log2(policies)
 
     //construct the internals of policies here
-    "Uses " + pullCond(analyses(analysisName)).mkString("", ", ", "") + "\n" + policies.map(p => p + " = " + unfoldPolicy(p)).mkString("\n")
+    "Uses " + condNames.mkString("", ", ", "") + "\n" + policies.map(p => p + " = " + unfoldPolicy(p)).mkString("\n")
   }
 
 }
