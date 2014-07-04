@@ -1,7 +1,7 @@
 package peal.extended
 
 import peal.antlr.util.ParserHelper
-import _root_.util.ConsoleLogger
+import peal.util.ConsoleLogger
 import scala.collection.JavaConversions._
 import peal.verifier.Z3ModelExtractor
 import peal.domain._

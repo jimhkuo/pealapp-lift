@@ -3,8 +3,8 @@ package peal.extended
 import org.scalatest.junit.ShouldMatchersForJUnit
 import org.junit.{Ignore, Test}
 import peal.domain.{ThreeWayBoolean, PealTrue}
+import peal.util.ConsoleLogger
 import peal.verifier.Z3ModelExtractor
-import util.ConsoleLogger
 
 
 class ExtendedOutputVerifierTest extends ShouldMatchersForJUnit {
