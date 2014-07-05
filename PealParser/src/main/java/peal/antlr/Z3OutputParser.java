@@ -1,4 +1,4 @@
-// $ANTLR 3.5.1 /Users/jkuo/PealApp-lift/antlr/Z3Output.g 2014-07-05 08:55:34
+// $ANTLR 3.5.1 /Users/jkuo/PealApp-lift/antlr/Z3Output.g 2014-07-05 09:05:11
 
 package peal.antlr;
 
@@ -385,14 +385,14 @@ public class Z3OutputParser extends Parser {
 					}
 					break;
 				case 2 :
-					// /Users/jkuo/PealApp-lift/antlr/Z3Output.g:54:3: '(declare-fun' id0= IDENT '(' ')' id1= IDENT ')'
+					// /Users/jkuo/PealApp-lift/antlr/Z3Output.g:53:3: '(declare-fun' id0= IDENT '(' ')' id1= IDENT ')'
 					{
-					match(input,10,FOLLOW_10_in_assignment194); 
-					id0=(Token)match(input,IDENT,FOLLOW_IDENT_in_assignment198); 
-					match(input,9,FOLLOW_9_in_assignment200); 
-					match(input,13,FOLLOW_13_in_assignment201); 
-					id1=(Token)match(input,IDENT,FOLLOW_IDENT_in_assignment205); 
-					match(input,13,FOLLOW_13_in_assignment206); 
+					match(input,10,FOLLOW_10_in_assignment193); 
+					id0=(Token)match(input,IDENT,FOLLOW_IDENT_in_assignment197); 
+					match(input,9,FOLLOW_9_in_assignment199); 
+					match(input,13,FOLLOW_13_in_assignment200); 
+					id1=(Token)match(input,IDENT,FOLLOW_IDENT_in_assignment204); 
+					match(input,13,FOLLOW_13_in_assignment205); 
 					}
 					break;
 
@@ -412,7 +412,7 @@ public class Z3OutputParser extends Parser {
 
 
 	// $ANTLR start "value"
-	// /Users/jkuo/PealApp-lift/antlr/Z3Output.g:57:1: value returns [String s] : ( IDENT | NUMBER | '(' '-' unary ')' | '(' '/' lhs= NUMBER rhs= NUMBER ')' );
+	// /Users/jkuo/PealApp-lift/antlr/Z3Output.g:56:1: value returns [String s] : ( IDENT | NUMBER | '(' '-' unary ')' | '(' '/' lhs= NUMBER rhs= NUMBER ')' );
 	public final String value() throws RecognitionException {
 		String s = null;
 
@@ -424,7 +424,7 @@ public class Z3OutputParser extends Parser {
 		String unary4 =null;
 
 		try {
-			// /Users/jkuo/PealApp-lift/antlr/Z3Output.g:58:2: ( IDENT | NUMBER | '(' '-' unary ')' | '(' '/' lhs= NUMBER rhs= NUMBER ')' )
+			// /Users/jkuo/PealApp-lift/antlr/Z3Output.g:57:2: ( IDENT | NUMBER | '(' '-' unary ')' | '(' '/' lhs= NUMBER rhs= NUMBER ')' )
 			int alt10=4;
 			switch ( input.LA(1) ) {
 			case IDENT:
@@ -468,40 +468,40 @@ public class Z3OutputParser extends Parser {
 			}
 			switch (alt10) {
 				case 1 :
-					// /Users/jkuo/PealApp-lift/antlr/Z3Output.g:58:4: IDENT
+					// /Users/jkuo/PealApp-lift/antlr/Z3Output.g:57:4: IDENT
 					{
-					IDENT2=(Token)match(input,IDENT,FOLLOW_IDENT_in_value223); 
+					IDENT2=(Token)match(input,IDENT,FOLLOW_IDENT_in_value222); 
 					s = (IDENT2!=null?IDENT2.getText():null);
 					}
 					break;
 				case 2 :
-					// /Users/jkuo/PealApp-lift/antlr/Z3Output.g:59:4: NUMBER
+					// /Users/jkuo/PealApp-lift/antlr/Z3Output.g:58:4: NUMBER
 					{
-					NUMBER3=(Token)match(input,NUMBER,FOLLOW_NUMBER_in_value230); 
+					NUMBER3=(Token)match(input,NUMBER,FOLLOW_NUMBER_in_value229); 
 					s = (NUMBER3!=null?NUMBER3.getText():null);
 					}
 					break;
 				case 3 :
-					// /Users/jkuo/PealApp-lift/antlr/Z3Output.g:60:4: '(' '-' unary ')'
+					// /Users/jkuo/PealApp-lift/antlr/Z3Output.g:59:4: '(' '-' unary ')'
 					{
-					match(input,9,FOLLOW_9_in_value237); 
-					match(input,14,FOLLOW_14_in_value239); 
-					pushFollow(FOLLOW_unary_in_value241);
+					match(input,9,FOLLOW_9_in_value236); 
+					match(input,14,FOLLOW_14_in_value238); 
+					pushFollow(FOLLOW_unary_in_value240);
 					unary4=unary();
 					state._fsp--;
 
-					match(input,13,FOLLOW_13_in_value243); 
+					match(input,13,FOLLOW_13_in_value242); 
 					s = "-" + unary4;
 					}
 					break;
 				case 4 :
-					// /Users/jkuo/PealApp-lift/antlr/Z3Output.g:61:4: '(' '/' lhs= NUMBER rhs= NUMBER ')'
+					// /Users/jkuo/PealApp-lift/antlr/Z3Output.g:60:4: '(' '/' lhs= NUMBER rhs= NUMBER ')'
 					{
-					match(input,9,FOLLOW_9_in_value250); 
-					match(input,15,FOLLOW_15_in_value252); 
-					lhs=(Token)match(input,NUMBER,FOLLOW_NUMBER_in_value256); 
-					rhs=(Token)match(input,NUMBER,FOLLOW_NUMBER_in_value260); 
-					match(input,13,FOLLOW_13_in_value262); 
+					match(input,9,FOLLOW_9_in_value249); 
+					match(input,15,FOLLOW_15_in_value251); 
+					lhs=(Token)match(input,NUMBER,FOLLOW_NUMBER_in_value255); 
+					rhs=(Token)match(input,NUMBER,FOLLOW_NUMBER_in_value259); 
+					match(input,13,FOLLOW_13_in_value261); 
 					s = (lhs!=null?lhs.getText():null) + "/" + (rhs!=null?rhs.getText():null);
 					}
 					break;
@@ -522,7 +522,7 @@ public class Z3OutputParser extends Parser {
 
 
 	// $ANTLR start "unary"
-	// /Users/jkuo/PealApp-lift/antlr/Z3Output.g:64:1: unary returns [String s] : ( IDENT | NUMBER | value );
+	// /Users/jkuo/PealApp-lift/antlr/Z3Output.g:63:1: unary returns [String s] : ( IDENT | NUMBER | value );
 	public final String unary() throws RecognitionException {
 		String s = null;
 
@@ -532,7 +532,7 @@ public class Z3OutputParser extends Parser {
 		String value7 =null;
 
 		try {
-			// /Users/jkuo/PealApp-lift/antlr/Z3Output.g:65:2: ( IDENT | NUMBER | value )
+			// /Users/jkuo/PealApp-lift/antlr/Z3Output.g:64:2: ( IDENT | NUMBER | value )
 			int alt11=3;
 			switch ( input.LA(1) ) {
 			case IDENT:
@@ -557,23 +557,23 @@ public class Z3OutputParser extends Parser {
 			}
 			switch (alt11) {
 				case 1 :
-					// /Users/jkuo/PealApp-lift/antlr/Z3Output.g:65:4: IDENT
+					// /Users/jkuo/PealApp-lift/antlr/Z3Output.g:64:4: IDENT
 					{
-					IDENT5=(Token)match(input,IDENT,FOLLOW_IDENT_in_unary280); 
+					IDENT5=(Token)match(input,IDENT,FOLLOW_IDENT_in_unary279); 
 					s = (IDENT5!=null?IDENT5.getText():null);
 					}
 					break;
 				case 2 :
-					// /Users/jkuo/PealApp-lift/antlr/Z3Output.g:66:4: NUMBER
+					// /Users/jkuo/PealApp-lift/antlr/Z3Output.g:65:4: NUMBER
 					{
-					NUMBER6=(Token)match(input,NUMBER,FOLLOW_NUMBER_in_unary287); 
+					NUMBER6=(Token)match(input,NUMBER,FOLLOW_NUMBER_in_unary286); 
 					s = (NUMBER6!=null?NUMBER6.getText():null);
 					}
 					break;
 				case 3 :
-					// /Users/jkuo/PealApp-lift/antlr/Z3Output.g:67:4: value
+					// /Users/jkuo/PealApp-lift/antlr/Z3Output.g:66:4: value
 					{
-					pushFollow(FOLLOW_value_in_unary294);
+					pushFollow(FOLLOW_value_in_unary293);
 					value7=value();
 					state._fsp--;
 
@@ -597,13 +597,13 @@ public class Z3OutputParser extends Parser {
 
 
 	// $ANTLR start "error"
-	// /Users/jkuo/PealApp-lift/antlr/Z3Output.g:70:1: error : Z3ERROR ;
+	// /Users/jkuo/PealApp-lift/antlr/Z3Output.g:69:1: error : Z3ERROR ;
 	public final void error() throws RecognitionException {
 		try {
-			// /Users/jkuo/PealApp-lift/antlr/Z3Output.g:70:7: ( Z3ERROR )
-			// /Users/jkuo/PealApp-lift/antlr/Z3Output.g:70:10: Z3ERROR
+			// /Users/jkuo/PealApp-lift/antlr/Z3Output.g:69:7: ( Z3ERROR )
+			// /Users/jkuo/PealApp-lift/antlr/Z3Output.g:69:10: Z3ERROR
 			{
-			match(input,Z3ERROR,FOLLOW_Z3ERROR_in_error307); 
+			match(input,Z3ERROR,FOLLOW_Z3ERROR_in_error306); 
 			}
 
 		}
@@ -647,25 +647,25 @@ public class Z3OutputParser extends Parser {
 	public static final BitSet FOLLOW_IDENT_in_assignment181 = new BitSet(new long[]{0x0000000000000230L});
 	public static final BitSet FOLLOW_value_in_assignment185 = new BitSet(new long[]{0x0000000000002000L});
 	public static final BitSet FOLLOW_13_in_assignment186 = new BitSet(new long[]{0x0000000000000002L});
-	public static final BitSet FOLLOW_10_in_assignment194 = new BitSet(new long[]{0x0000000000000010L});
-	public static final BitSet FOLLOW_IDENT_in_assignment198 = new BitSet(new long[]{0x0000000000000200L});
-	public static final BitSet FOLLOW_9_in_assignment200 = new BitSet(new long[]{0x0000000000002000L});
-	public static final BitSet FOLLOW_13_in_assignment201 = new BitSet(new long[]{0x0000000000000010L});
-	public static final BitSet FOLLOW_IDENT_in_assignment205 = new BitSet(new long[]{0x0000000000002000L});
-	public static final BitSet FOLLOW_13_in_assignment206 = new BitSet(new long[]{0x0000000000000002L});
-	public static final BitSet FOLLOW_IDENT_in_value223 = new BitSet(new long[]{0x0000000000000002L});
-	public static final BitSet FOLLOW_NUMBER_in_value230 = new BitSet(new long[]{0x0000000000000002L});
-	public static final BitSet FOLLOW_9_in_value237 = new BitSet(new long[]{0x0000000000004000L});
-	public static final BitSet FOLLOW_14_in_value239 = new BitSet(new long[]{0x0000000000000230L});
-	public static final BitSet FOLLOW_unary_in_value241 = new BitSet(new long[]{0x0000000000002000L});
-	public static final BitSet FOLLOW_13_in_value243 = new BitSet(new long[]{0x0000000000000002L});
-	public static final BitSet FOLLOW_9_in_value250 = new BitSet(new long[]{0x0000000000008000L});
-	public static final BitSet FOLLOW_15_in_value252 = new BitSet(new long[]{0x0000000000000020L});
-	public static final BitSet FOLLOW_NUMBER_in_value256 = new BitSet(new long[]{0x0000000000000020L});
-	public static final BitSet FOLLOW_NUMBER_in_value260 = new BitSet(new long[]{0x0000000000002000L});
-	public static final BitSet FOLLOW_13_in_value262 = new BitSet(new long[]{0x0000000000000002L});
-	public static final BitSet FOLLOW_IDENT_in_unary280 = new BitSet(new long[]{0x0000000000000002L});
-	public static final BitSet FOLLOW_NUMBER_in_unary287 = new BitSet(new long[]{0x0000000000000002L});
-	public static final BitSet FOLLOW_value_in_unary294 = new BitSet(new long[]{0x0000000000000002L});
-	public static final BitSet FOLLOW_Z3ERROR_in_error307 = new BitSet(new long[]{0x0000000000000002L});
+	public static final BitSet FOLLOW_10_in_assignment193 = new BitSet(new long[]{0x0000000000000010L});
+	public static final BitSet FOLLOW_IDENT_in_assignment197 = new BitSet(new long[]{0x0000000000000200L});
+	public static final BitSet FOLLOW_9_in_assignment199 = new BitSet(new long[]{0x0000000000002000L});
+	public static final BitSet FOLLOW_13_in_assignment200 = new BitSet(new long[]{0x0000000000000010L});
+	public static final BitSet FOLLOW_IDENT_in_assignment204 = new BitSet(new long[]{0x0000000000002000L});
+	public static final BitSet FOLLOW_13_in_assignment205 = new BitSet(new long[]{0x0000000000000002L});
+	public static final BitSet FOLLOW_IDENT_in_value222 = new BitSet(new long[]{0x0000000000000002L});
+	public static final BitSet FOLLOW_NUMBER_in_value229 = new BitSet(new long[]{0x0000000000000002L});
+	public static final BitSet FOLLOW_9_in_value236 = new BitSet(new long[]{0x0000000000004000L});
+	public static final BitSet FOLLOW_14_in_value238 = new BitSet(new long[]{0x0000000000000230L});
+	public static final BitSet FOLLOW_unary_in_value240 = new BitSet(new long[]{0x0000000000002000L});
+	public static final BitSet FOLLOW_13_in_value242 = new BitSet(new long[]{0x0000000000000002L});
+	public static final BitSet FOLLOW_9_in_value249 = new BitSet(new long[]{0x0000000000008000L});
+	public static final BitSet FOLLOW_15_in_value251 = new BitSet(new long[]{0x0000000000000020L});
+	public static final BitSet FOLLOW_NUMBER_in_value255 = new BitSet(new long[]{0x0000000000000020L});
+	public static final BitSet FOLLOW_NUMBER_in_value259 = new BitSet(new long[]{0x0000000000002000L});
+	public static final BitSet FOLLOW_13_in_value261 = new BitSet(new long[]{0x0000000000000002L});
+	public static final BitSet FOLLOW_IDENT_in_unary279 = new BitSet(new long[]{0x0000000000000002L});
+	public static final BitSet FOLLOW_NUMBER_in_unary286 = new BitSet(new long[]{0x0000000000000002L});
+	public static final BitSet FOLLOW_value_in_unary293 = new BitSet(new long[]{0x0000000000000002L});
+	public static final BitSet FOLLOW_Z3ERROR_in_error306 = new BitSet(new long[]{0x0000000000000002L});
 }
