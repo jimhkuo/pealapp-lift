@@ -1,6 +1,7 @@
 package peal.verifier
 
 import peal.domain._
+import peal.util.ConsoleLogger
 
 object Z3ModelValueParser {
   val rational = """([-\d.]+)/([\d.]+)""".r
@@ -34,6 +35,7 @@ object Z3ModelValueParser {
       Rational(v)
     } catch {
       case e: NumberFormatException =>
+        e.printStackTrace()
         val rational(numer, denom) = v
         Rational(numer, denom)
     }

@@ -372,12 +372,12 @@ class PealCometActor extends CometActor with Loggable {
 
     val z3SMTInput = declarations.mkString("") +declarations1.mkString("") + body.mkString("") + domainSpecifics.mkString("", "\n","\n") + generatedAnalyses.mkString("")
 
-//    val z3RawOutput = Z3Caller.call(z3SMTInput).split("\n").filterNot(s => s.trim.startsWith(";;") || s.trim.indexOf("MethodName") >= 0).mkString("\n")
-    val z3RawOutput = Z3Caller.call(z3SMTInput).split("\n").filterNot(s => s.trim.startsWith(";;")).mkString("\n")
+    val z3RawOutput = Z3Caller.call(z3SMTInput)
     try {
       ConsoleLogger.log(z3RawOutput)
       val z3OutputParser = ParserHelper.getZ3OutputParser(z3RawOutput)
       val z3OutputModels = z3OutputParser.results().toMap
+      ConsoleLogger.log(z3OutputModels)
 
       val verificationResults = for (analysis <- sortedAnalyses if (z3OutputModels(analysis).satResult == Sat)) yield {
         val verifiedModel = new ExplicitOutputVerifier(inputPolicies).verifyModel(z3RawOutput, analysis)
