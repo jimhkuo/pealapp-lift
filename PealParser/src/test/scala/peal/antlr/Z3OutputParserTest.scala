@@ -116,7 +116,7 @@ class Z3OutputParserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
       "  (define-fun x4 () Real\n    (/ 1934.0 241.0))\n" +
       "  (define-fun x0 () Real\n    (- (/ 2781092.0 4959375.0)))\n" +
       "  (define-fun calledBy!4 ((x!1 MethodName)) Bool\n    (ite (= x!1 MethodName!val!0) true\n      false))\n" +
-//      "  (define-fun k!3 ((x!1 MethodName)) MethodName\n    (ite (= x!1 MethodName!val!0) MethodName!val!0\n    (ite (= x!1 MethodName!val!2) MethodName!val!2\n      MethodName!val!1)))\n" +
+      "  (define-fun k!3 ((x!1 MethodName)) MethodName\n    (ite (= x!1 MethodName!val!0) MethodName!val!0\n    (ite (= x!1 MethodName!val!2) MethodName!val!2\n      MethodName!val!1)))\n" +
       "  (define-fun calledBy ((x!1 MethodName)) Bool\n    (calledBy!4 (k!3 x!1)))\n" +
       ")"
 
@@ -125,7 +125,7 @@ class Z3OutputParserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
 
     val results = parser.results().toString
     println(results)
-//    results should be("{analysis1=Sat\nnull\nq0 (Bool) = false\nq13 (Bool) = true\nalways_true_analysis1 (Bool) = false\na2 (Int) = 0\nq4 (Bool) = false\ncond2 (Bool) = false\ncond1 (Bool) = false\nx2 (Real) = 0.0\nq1 (Bool) = false\nq9 (Bool) = false\nn3 (MethodName) = MethodName!val!2\nq3 (Bool) = false\na1 (Int) = 1\nn4 (MethodName) = MethodName!val!1\nq6 (Bool) = true\nq12 (Bool) = true\na3 (Int) = -1\na4 (Int) = 0\nq7 (Bool) = true\nn0 (MethodName) = MethodName!val!0\nq8 (Bool) = false\nq11 (Bool) = true\nq10 (Bool) = true\nq14 (Bool) = true\nx1 (Real) = -565.0/4467.0\nq5 (Bool) = true\nn1 (MethodName) = MethodName!val!3\nq2 (Bool) = false\nx3 (Real) = 226.0/269.0\na0 (Int) = 0\nx4 (Real) = 1281985.0/639144.0\nx0 (Real) = -113.0/1000.0\ncalledBy (Bool) = false}")
+    results should be("{analysis2=Sat\n () = \nq13 (Bool) = true\nq0 (Bool) = true\nq4 (Bool) = false\ncond2 (Bool) = true\ncond1 (Bool) = true\nx2 (Real) = -967.0/741.0\nq1 (Bool) = true\nq9 (Bool) = true\nq3 (Bool) = false\nn2 (MethodName) = MethodName!val!0\na1 (Int) = 0\nn4 (MethodName) = MethodName!val!1\nq6 (Bool) = true\nq12 (Bool) = true\na4 (Int) = 0\na3 (Int) = -1\nq7 (Bool) = true\nn0 (MethodName) = MethodName!val!2\nq8 (Bool) = false\nq11 (Bool) = true\nq10 (Bool) = true\nq14 (Bool) = true\nx1 (Real) = 0.0\nq5 (Bool) = true\nn1 (MethodName) = MethodName!val!0\nq2 (Bool) = false\nalways_false_analysis2 (Bool) = true\nx3 (Real) = -3868.0/7935.0\na0 (Int) = 0\nx4 (Real) = 1934.0/241.0\nx0 (Real) = -2781092.0/4959375.0\ncalledBy!4 (Bool) = \nk!3 (MethodName) = \ncalledBy (Bool) = }")
   }
 
   @Test

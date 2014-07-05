@@ -1,4 +1,4 @@
-// $ANTLR 3.5.1 /Users/jkuo/PealApp-lift/antlr/Z3Output.g 2014-07-05 10:34:21
+// $ANTLR 3.5.1 /Users/jkuo/PealApp-lift/antlr/Z3Output.g 2014-07-05 10:35:46
 
 package peal.antlr;
 
@@ -470,7 +470,7 @@ public class Z3OutputParser extends Parser {
 
 
 	// $ANTLR start "value"
-	// /Users/jkuo/PealApp-lift/antlr/Z3Output.g:61:1: value returns [String s] : ( IDENT | NUMBER | '(' '-' unary ')' | '(' '/' lhs= NUMBER rhs= NUMBER ')' | '(' IDENT ( '(' ( IDENT )+ ')' )? ')' | '(ite' '(' '=' IDENT IDENT ')' IDENT IDENT ')' );
+	// /Users/jkuo/PealApp-lift/antlr/Z3Output.g:61:1: value returns [String s] : ( IDENT | NUMBER | '(' '-' unary ')' | '(' '/' lhs= NUMBER rhs= NUMBER ')' | '(' IDENT ( '(' ( IDENT )+ ')' )? ')' | '(ite' '(' '=' IDENT IDENT ')' value value ')' );
 	public final String value() throws RecognitionException {
 		String s = null;
 
@@ -482,7 +482,7 @@ public class Z3OutputParser extends Parser {
 		String unary4 =null;
 
 		try {
-			// /Users/jkuo/PealApp-lift/antlr/Z3Output.g:62:2: ( IDENT | NUMBER | '(' '-' unary ')' | '(' '/' lhs= NUMBER rhs= NUMBER ')' | '(' IDENT ( '(' ( IDENT )+ ')' )? ')' | '(ite' '(' '=' IDENT IDENT ')' IDENT IDENT ')' )
+			// /Users/jkuo/PealApp-lift/antlr/Z3Output.g:62:2: ( IDENT | NUMBER | '(' '-' unary ')' | '(' '/' lhs= NUMBER rhs= NUMBER ')' | '(' IDENT ( '(' ( IDENT )+ ')' )? ')' | '(ite' '(' '=' IDENT IDENT ')' value value ')' )
 			int alt13=6;
 			switch ( input.LA(1) ) {
 			case IDENT:
@@ -628,7 +628,7 @@ public class Z3OutputParser extends Parser {
 					}
 					break;
 				case 6 :
-					// /Users/jkuo/PealApp-lift/antlr/Z3Output.g:67:4: '(ite' '(' '=' IDENT IDENT ')' IDENT IDENT ')'
+					// /Users/jkuo/PealApp-lift/antlr/Z3Output.g:67:4: '(ite' '(' '=' IDENT IDENT ')' value value ')'
 					{
 					match(input,13,FOLLOW_13_in_value347); 
 					match(input,9,FOLLOW_9_in_value349); 
@@ -636,8 +636,14 @@ public class Z3OutputParser extends Parser {
 					match(input,IDENT,FOLLOW_IDENT_in_value352); 
 					match(input,IDENT,FOLLOW_IDENT_in_value354); 
 					match(input,15,FOLLOW_15_in_value355); 
-					match(input,IDENT,FOLLOW_IDENT_in_value357); 
-					match(input,IDENT,FOLLOW_IDENT_in_value359); 
+					pushFollow(FOLLOW_value_in_value357);
+					value();
+					state._fsp--;
+
+					pushFollow(FOLLOW_value_in_value359);
+					value();
+					state._fsp--;
+
 					match(input,15,FOLLOW_15_in_value361); 
 					s = "";
 					}
@@ -814,9 +820,9 @@ public class Z3OutputParser extends Parser {
 	public static final BitSet FOLLOW_22_in_value350 = new BitSet(new long[]{0x0000000000000010L});
 	public static final BitSet FOLLOW_IDENT_in_value352 = new BitSet(new long[]{0x0000000000000010L});
 	public static final BitSet FOLLOW_IDENT_in_value354 = new BitSet(new long[]{0x0000000000008000L});
-	public static final BitSet FOLLOW_15_in_value355 = new BitSet(new long[]{0x0000000000000010L});
-	public static final BitSet FOLLOW_IDENT_in_value357 = new BitSet(new long[]{0x0000000000000010L});
-	public static final BitSet FOLLOW_IDENT_in_value359 = new BitSet(new long[]{0x0000000000008000L});
+	public static final BitSet FOLLOW_15_in_value355 = new BitSet(new long[]{0x0000000000002230L});
+	public static final BitSet FOLLOW_value_in_value357 = new BitSet(new long[]{0x0000000000002230L});
+	public static final BitSet FOLLOW_value_in_value359 = new BitSet(new long[]{0x0000000000008000L});
 	public static final BitSet FOLLOW_15_in_value361 = new BitSet(new long[]{0x0000000000000002L});
 	public static final BitSet FOLLOW_IDENT_in_unary379 = new BitSet(new long[]{0x0000000000000002L});
 	public static final BitSet FOLLOW_NUMBER_in_unary386 = new BitSet(new long[]{0x0000000000000002L});
