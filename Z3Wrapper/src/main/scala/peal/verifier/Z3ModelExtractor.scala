@@ -9,8 +9,11 @@ object Z3ModelExtractor {
 
   def extractI(model: String) = {
     val z3OutputParser = ParserHelper.getZ3OutputParser(model.mkString(""))
-    z3OutputParser.results().map {
-      case (name, z3Model) => (name, z3Model.assignments.filterNot(a => a.objectType == "MethodName").map(assignment => (assignment.name, Z3ModelValueParser.parse(assignment.value))).toMap)
+    val results = z3OutputParser.results()
+    ConsoleLogger.log(results)
+    results.map {
+      case (name, z3Model) =>
+        (name, z3Model.assignments.filterNot(a => a.objectType == "MethodName" || a.value == "").map(assignment => (assignment.name, Z3ModelValueParser.parse(assignment.value))).toMap)
     }
   }
 
@@ -18,7 +21,7 @@ object Z3ModelExtractor {
     val z3OutputParser = ParserHelper.getZ3OutputParser(model.mkString(""))
     z3OutputParser.results().map {
       case (name, z3Model) =>
-        (name, z3Model.assignments.filterNot(a => a.objectType == "MethodName").map(assignment => (assignment.name, Z3ModelValueParser.parseToRational(assignment.value))).toMap)
+        (name, z3Model.assignments.filterNot(a => a.objectType == "MethodName" || a.value == "").map(assignment => (assignment.name, Z3ModelValueParser.parseToRational(assignment.value))).toMap)
     }
   }
 }

@@ -53,9 +53,9 @@ model returns [Model m]
 
 assignment 	returns [Assignment a]
 	:'(define-fun' id0=IDENT '(' ('(' (IDENT)+ ')')? ')' id1=IDENT id2=value')' {ignore = false; $a = new Assignment($id0.text, $id1.text, $id2.s);}	
-	|'(declare-fun' id0=IDENT '('')' id1=IDENT')' //{$a = new Assignment($id0.text, $id1.text, "");}	
+	|'(declare-fun' id0=IDENT '('')' id1=IDENT')' {$a = new Assignment($id0.text, $id1.text, "");}	
 	|'(forall' {ignore = true;}
-	(IDENT | NUMBER | '+' | '*' | '=' | '(' | ')' | '<' | '<=' )*
+	(IDENT | NUMBER | '+' | '*' | '=' | '(' | ')' | '<' | '<=' )* {$a = new Assignment("", "", "");}	
 	;	
 
 value returns [String s]
