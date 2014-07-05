@@ -73,19 +73,19 @@ object Z3OutputAnalyser {
 
 
   private def getReasons(model: Model, includeNames: Set[String], excludeNames: Set[String], constsMap: Map[String, PealAst]) = {
-    val predicates = for (define: Assignment <- model.assignments if constsMap.contains(define.name)) yield {
+    val assignments = model.assignments.filterNot(_.value == "")
+    val predicates = for (define: Assignment <- assignments if constsMap.contains(define.name)) yield {
       define.name + " is " + define.value
     }
 
-    val conds = for (define: Assignment <- model.assignments if includeNames.contains(define.name)) yield {
+    val conds = for (define: Assignment <- assignments if includeNames.contains(define.name)) yield {
       define.name + " is " + define.value
     }
 
-    val additionals = for (define: Assignment <- model.assignments if !includeNames.contains(define.name) && !constsMap.contains(define.name) && excludeNames.filter(define.name.startsWith(_)).isEmpty) yield {
+    val additionals = for (define: Assignment <- assignments if !includeNames.contains(define.name) && !constsMap.contains(define.name) && excludeNames.filter(define.name.startsWith(_)).isEmpty) yield {
       define.name + " is " + define.value
     }
 
-//    (predicates ++ conds).mkString("\n")
     (predicates ++ conds ++ additionals).mkString("\n")
   }
 }
