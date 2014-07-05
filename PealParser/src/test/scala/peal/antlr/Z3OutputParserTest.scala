@@ -42,6 +42,34 @@ class Z3OutputParserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
   }
 
   @Test
+  def testBrokenDeclareFunCase2() {
+    ConsoleLogger.enable()
+    val input = "Result of analysis [analysis1 = always_true? cond1]:\nsat\n(model \n" +
+      "  ;; universe for MethodName:\n" +
+      "  ;;   MethodName!val!2 MethodName!val!3 MethodName!val!0 MethodName!val!1 \n" +
+      "  ;; -----------\n" +
+      "  ;; definitions for universe elements:\n" +
+      "  (declare-fun MethodName!val!2 () MethodName)\n" +
+      "  (declare-fun MethodName!val!3 () MethodName)\n" +
+      "  (declare-fun MethodName!val!0 () MethodName)\n" +
+      "  (declare-fun MethodName!val!1 () MethodName)\n" +
+      "  ;; cardinality constraint:\n" +
+      "  (forall ((x MethodName))\n" +
+      "          (or (= x MethodName!val!2)\n" +
+      "              (= x MethodName!val!3)\n" +
+      "              (= x MethodName!val!0)\n" +
+      "              (= x MethodName!val!1)))\n" +
+      "  ;; -----------\n  " +
+      "(define-fun q0 () Bool\n    false)\n  (define-fun q13 () Bool\n    true)\n  (define-fun always_true_analysis1 () Bool\n    false)\n  (define-fun a2 () Int\n    0)\n  (define-fun q4 () Bool\n    false)\n  (define-fun cond2 () Bool\n    false)\n  (define-fun cond1 () Bool\n    false)\n  (define-fun x2 () Real\n    0.0)\n  (define-fun q1 () Bool\n    false)\n  (define-fun q9 () Bool\n    false)\n  (define-fun n3 () MethodName\n    MethodName!val!2)\n  (define-fun q3 () Bool\n    false)\n  (define-fun a1 () Int\n    1)\n  (define-fun n4 () MethodName\n    MethodName!val!1)\n  (define-fun q6 () Bool\n    true)\n  (define-fun q12 () Bool\n    true)\n  (define-fun a3 () Int\n    (- 1))\n  (define-fun a4 () Int\n    0)\n  (define-fun q7 () Bool\n    true)\n  (define-fun n0 () MethodName\n    MethodName!val!0)\n  (define-fun q8 () Bool\n    false)\n  (define-fun q11 () Bool\n    true)\n  (define-fun q10 () Bool\n    true)\n  (define-fun q14 () Bool\n    true)\n  (define-fun x1 () Real\n    (- (/ 565.0 4467.0)))\n  (define-fun q5 () Bool\n    true)\n  (define-fun n1 () MethodName\n    MethodName!val!3)\n  (define-fun q2 () Bool\n    false)\n  (define-fun x3 () Real\n    (/ 226.0 269.0))\n  (define-fun a0 () Int\n    0)\n  (define-fun x4 () Real\n    (/ 1281985.0 639144.0))\n  (define-fun x0 () Real\n    (- (/ 113.0 1000.0)))\n  (define-fun calledBy ((x!1 MethodName)) Bool\n    false)\n)"
+    ConsoleLogger.log(input)
+    val parser = ParserHelper.getZ3OutputParser(input)
+
+    val results = parser.results().toString
+    println(results)
+    results should be ("{analysis1=Sat\nnull\nq0 (Bool) = false\nq13 (Bool) = true\nalways_true_analysis1 (Bool) = false\na2 (Int) = 0\nq4 (Bool) = false\ncond2 (Bool) = false\ncond1 (Bool) = false\nx2 (Real) = 0.0\nq1 (Bool) = false\nq9 (Bool) = false\nn3 (MethodName) = MethodName!val!2\nq3 (Bool) = false\na1 (Int) = 1\nn4 (MethodName) = MethodName!val!1\nq6 (Bool) = true\nq12 (Bool) = true\na3 (Int) = -1\na4 (Int) = 0\nq7 (Bool) = true\nn0 (MethodName) = MethodName!val!0\nq8 (Bool) = false\nq11 (Bool) = true\nq10 (Bool) = true\nq14 (Bool) = true\nx1 (Real) = -565.0/4467.0\nq5 (Bool) = true\nn1 (MethodName) = MethodName!val!3\nq2 (Bool) = false\nx3 (Real) = 226.0/269.0\na0 (Int) = 0\nx4 (Real) = 1281985.0/639144.0\nx0 (Real) = -113.0/1000.0\ncalledBy (Bool) = false}")
+  }
+
+  @Test
   def testCanDealWithBrackets() {
     ConsoleLogger.enable()
     val input = "Result of analysis [analysis1 = always_true? cond1]:\nsat\n(model \n" +
