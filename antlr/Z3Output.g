@@ -34,7 +34,6 @@ package peal.antlr;
 }
 
 
-//it builds a map of results
 results returns	[Map<String, Model> r]
 @init {r = new HashMap<String, Model>();}
 	:((Z3ERROR)+)? (
@@ -50,11 +49,11 @@ model returns [Model m]
 	;
 
 assignment 	returns [Assignment a]
-	:'(define-fun' id0=IDENT '()' id1=IDENT id2=value')' {$a = new Assignment($id0.text, $id1.text, $id2.s);}	
-	|'(declare-fun' id0=IDENT '()' id1=IDENT')' {$a = new Assignment($id0.text, $id1.text, "");}	
+	:'(define-fun' id0=IDENT '(' ('(' (IDENT)+ ')')? ')' id1=IDENT id2=value')' {$a = new Assignment($id0.text, $id1.text, $id2.s);}	
+//	:'(define-fun' id0=IDENT '()' id1=IDENT id2=value')' {$a = new Assignment($id0.text, $id1.text, $id2.s);}	
+	|'(declare-fun' id0=IDENT '('')' id1=IDENT')' {$a = new Assignment($id0.text, $id1.text, "");}	
 	;	
 
-//should consider using Rational number class here
 value returns [String s]
 	: IDENT {$s = $IDENT.text;}
 	| NUMBER {$s = $NUMBER.text;}
@@ -70,10 +69,10 @@ unary returns [String s]
 
 error :	 Z3ERROR;
 
-//OPERATOR : ('-' | '/' );	
+
 NUMBER : ('.'|'0'..'9'|'-'|'E')+;
 IDENT : ('a'..'z' | 'A'..'Z')( '!' | '_' | 'a'..'z' | 'A'..'Z' | '0'..'9')*;
 WS : (' ' | '\t' | '\n' | '\r' | '\f')+ { $channel = HIDDEN;};
 UNSATMESSAGE : '(error "line ' NUMBER ' column ' NUMBER': model is not available")';
 Z3ERROR :	 '(error "line ' NUMBER ' column ' NUMBER ': invalid declaration, constant \'' IDENT '\' (whith the given signature) already declared")';
-//STRING 	: IDENT WS (IDENT | WS | '=' | '"' | '?')+;
+

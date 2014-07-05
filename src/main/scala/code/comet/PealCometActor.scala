@@ -4,6 +4,7 @@ import net.liftweb._
 import http._
 import net.liftweb.http.js.jquery.JqJE._
 import net.liftweb.http.js.JsCmds._
+import peal.util.ConsoleLogger
 import scala.xml.Text
 import net.liftweb.common.Loggable
 import scala.collection.JavaConversions._
@@ -371,8 +372,10 @@ class PealCometActor extends CometActor with Loggable {
 
     val z3SMTInput = declarations.mkString("") +declarations1.mkString("") + body.mkString("") + domainSpecifics.mkString("", "\n","\n") + generatedAnalyses.mkString("")
 
-    val z3RawOutput = Z3Caller.call(z3SMTInput)
+//    val z3RawOutput = Z3Caller.call(z3SMTInput).split("\n").filterNot(s => s.trim.startsWith(";;") || s.trim.indexOf("MethodName") >= 0).mkString("\n")
+    val z3RawOutput = Z3Caller.call(z3SMTInput).split("\n").filterNot(s => s.trim.startsWith(";;")).mkString("\n")
     try {
+      ConsoleLogger.log(z3RawOutput)
       val z3OutputParser = ParserHelper.getZ3OutputParser(z3RawOutput)
       val z3OutputModels = z3OutputParser.results().toMap
 
