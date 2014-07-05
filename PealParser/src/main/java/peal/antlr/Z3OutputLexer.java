@@ -1,4 +1,4 @@
-// $ANTLR 3.5.1 /Users/jkuo/PealApp-lift/antlr/Z3Output.g 2014-07-05 10:12:30
+// $ANTLR 3.5.1 /Users/jkuo/PealApp-lift/antlr/Z3Output.g 2014-07-05 10:19:10
 
 package peal.antlr;
 
@@ -537,10 +537,10 @@ public class Z3OutputLexer extends Lexer {
 		try {
 			int _type = WS;
 			int _channel = DEFAULT_TOKEN_CHANNEL;
-			// /Users/jkuo/PealApp-lift/antlr/Z3Output.g:80:4: ( ( ' ' | '\\t' | '\\n' | '\\r' | '\\f' )+ )
-			// /Users/jkuo/PealApp-lift/antlr/Z3Output.g:80:6: ( ' ' | '\\t' | '\\n' | '\\r' | '\\f' )+
+			// /Users/jkuo/PealApp-lift/antlr/Z3Output.g:81:4: ( ( ' ' | '\\t' | '\\n' | '\\r' | '\\f' )+ )
+			// /Users/jkuo/PealApp-lift/antlr/Z3Output.g:81:6: ( ' ' | '\\t' | '\\n' | '\\r' | '\\f' )+
 			{
-			// /Users/jkuo/PealApp-lift/antlr/Z3Output.g:80:6: ( ' ' | '\\t' | '\\n' | '\\r' | '\\f' )+
+			// /Users/jkuo/PealApp-lift/antlr/Z3Output.g:81:6: ( ' ' | '\\t' | '\\n' | '\\r' | '\\f' )+
 			int cnt3=0;
 			loop3:
 			while (true) {
@@ -590,8 +590,8 @@ public class Z3OutputLexer extends Lexer {
 		try {
 			int _type = UNSATMESSAGE;
 			int _channel = DEFAULT_TOKEN_CHANNEL;
-			// /Users/jkuo/PealApp-lift/antlr/Z3Output.g:81:14: ( '(error \"line ' NUMBER ' column ' NUMBER ': model is not available\")' )
-			// /Users/jkuo/PealApp-lift/antlr/Z3Output.g:81:16: '(error \"line ' NUMBER ' column ' NUMBER ': model is not available\")'
+			// /Users/jkuo/PealApp-lift/antlr/Z3Output.g:82:14: ( '(error \"line ' NUMBER ' column ' NUMBER ': model is not available\")' )
+			// /Users/jkuo/PealApp-lift/antlr/Z3Output.g:82:16: '(error \"line ' NUMBER ' column ' NUMBER ': model is not available\")'
 			{
 			match("(error \"line "); 
 
@@ -619,8 +619,8 @@ public class Z3OutputLexer extends Lexer {
 		try {
 			int _type = Z3ERROR;
 			int _channel = DEFAULT_TOKEN_CHANNEL;
-			// /Users/jkuo/PealApp-lift/antlr/Z3Output.g:82:9: ( '(error \"line ' NUMBER ' column ' NUMBER ': invalid declaration, constant \\'' IDENT '\\' (whith the given signature) already declared\")' )
-			// /Users/jkuo/PealApp-lift/antlr/Z3Output.g:82:12: '(error \"line ' NUMBER ' column ' NUMBER ': invalid declaration, constant \\'' IDENT '\\' (whith the given signature) already declared\")'
+			// /Users/jkuo/PealApp-lift/antlr/Z3Output.g:83:9: ( '(error \"line ' NUMBER ' column ' NUMBER ': invalid declaration, constant \\'' IDENT '\\' (whith the given signature) already declared\")' )
+			// /Users/jkuo/PealApp-lift/antlr/Z3Output.g:83:12: '(error \"line ' NUMBER ' column ' NUMBER ': invalid declaration, constant \\'' IDENT '\\' (whith the given signature) already declared\")'
 			{
 			match("(error \"line "); 
 
