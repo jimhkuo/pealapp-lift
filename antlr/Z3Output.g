@@ -64,6 +64,7 @@ value returns [String s]
 	| '(' '-' unary ')' {$s = "-" + $unary.s;}
 	| '(' '/' lhs=NUMBER rhs=NUMBER ')' {$s = $lhs.text + "/" + $rhs.text;}
 	| '('IDENT ('(' (IDENT)+ ')')?')' {$s = "";}
+	| '(ite' '(''=' IDENT IDENT')' IDENT IDENT ')' {$s = "";}
 	;	
 
 unary returns [String s]
