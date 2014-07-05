@@ -28,7 +28,7 @@ class ExplicitAnalyser(input: String) {
   }
 
   //This only works for explicit synthesis outputs
-  private def pullPolicies(cond: Condition): List[String] = cond match {
+  private def pullPolicies(cond: Condition) : List[String] = cond match {
     case LessThanThCondition(lhs, rhs) => extractPolicySet(lhs)
     case GreaterThanThCondition(lhs, rhs) => extractPolicySet(lhs)
     case OrCondition(lhs, rhs) => extractPolicySet(conds(lhs).getPol.get) ::: extractPolicySet(conds(rhs).getPol.get)
@@ -51,6 +51,8 @@ class ExplicitAnalyser(input: String) {
     val I = Z3ModelExtractor.extractI(rawModel)(analysisName)
     ConsoleLogger.log1(I)
     val (ans, reMapped) = new ExplicitOutputVerifier(input).verifyModel(rawModel, analysisName)
+    var completeTruthMapping = I
+    //    reMapped.foreach(completeTruthMapping += _ -> Right(PealFalse))
 
     def accumulateScores(operator: Operator, rules: Set[Rule]) = operator match {
       case Min => rules.tail.foldLeft(rules.head.numberScore)((acc, r) => acc.min(r.numberScore))
@@ -63,24 +65,22 @@ class ExplicitAnalyser(input: String) {
       pols(p) match {
         case Pol(rs, o, s, name) =>
           val okRules = rs.filter(r => I.get(r.q.name) != None && I.get(r.q.name) == Some(Right(PealTrue)))
+          val undefinedRules = rs.filter(r => I.get(r.q.name) == None)
+          val undefined = if (undefinedRules.nonEmpty) {
+            undefinedRules.map(r => "(" + r.q.name + "? " + r.numberScore + ")").mkString(" ", " ", "")
+          }
+          else {
+            ""
+          }
+
           ConsoleLogger.log1(okRules)
-          val ok = s"${okRules.map(r => r.q.name).mkString(" ")}${if (okRules.nonEmpty) {" " + accumulateScores(o, okRules.toSet)} else {""}}"
 
-          val undefined = rs.filter(r => I.get(r.q.name) == None).map(r => "x(" + r.q.name + "? " + r.numberScore + ")").mkString(" ")
-
-
-          s"$o (${ok}${undefined}) default ${s.toString.trim}"
-
-        //          if (okRules.isEmpty) o + " () default " + s.toString.trim
-        //          else {
-        //            val undefined = if (undefinedRules.nonEmpty) {
-        //              undefinedRules.map(r => "(" + r.q.name + "? " + r.numberScore + ")").mkString(" ", " ", "")
-        //            }
-        //            else {
-        //              ""
-        //            }
-        //            s"$o (([${okRules.map(r => r.q.name).mkString("", " ", "")}] ${accumulateScores(o, okRules.toSet)})${undefined}) default ${s.toString.trim}"
-        //          }
+          if (okRules.isEmpty) {
+            o + " (" + undefined + ") default " + s.toString.trim
+          }
+          else {
+            s"$o (([${okRules.map(r => r.q.name).mkString("", " ", "")}] ${accumulateScores(o, okRules.toSet)})${undefined}) default ${s.toString.trim}"
+          }
       }
     }
 
