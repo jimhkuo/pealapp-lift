@@ -34,7 +34,7 @@ class Z3OutputParserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
     ConsoleLogger.enable()
     val originalInput = "Result of analysis [analysis1 = always_true? cond1]:\nsat\n(model \n  ;; universe for MethodName:\n  ;;   MethodName!val!0 MethodName!val!1 \n  ;; -----------\n  ;; definitions for universe elements:\n  (declare-fun MethodName!val!0 () MethodName)\n  (declare-fun MethodName!val!1 () MethodName)\n  ;; cardinality constraint:\n  (forall ((x MethodName)) (or (= x MethodName!val!0) (= x MethodName!val!1)))\n  ;; -----------\n  (define-fun q0 () Bool\n    false)\n  (define-fun n0 () MethodName\n    MethodName!val!1)\n  (define-fun always_true_analysis1 () Bool\n    false)\n  (define-fun a2 () Int\n    0)\n  (define-fun q8 () Bool\n    true)\n  (define-fun q4 () Bool\n    true)\n  (define-fun cond2 () Bool\n    false)\n  (define-fun cond1 () Bool\n    false)\n  (define-fun x2 () Real\n    (/ 1180.0 8807.0))\n  (define-fun x1 () Real\n    (/ 1180.0 5977.0))\n  (define-fun q1 () Bool\n    false)\n  (define-fun q5 () Bool\n    true)\n  (define-fun q3 () Bool\n    true)\n  (define-fun n2 () MethodName\n    MethodName!val!0)\n  (define-fun q2 () Bool\n    false)\n  (define-fun a1 () Int\n    0)\n  (define-fun a0 () Int\n    0)\n  (define-fun q6 () Bool\n    true)\n  (define-fun x0 () Real\n    0.0)\n  (define-fun calledBy ((x!1 MethodName)) Bool\n" +
       "    false)\n)"
-    val input = originalInput.split("\n").filterNot(_.trim.startsWith(";;")).mkString("\n")
+    val input = originalInput.split("\n").filterNot(s => s.trim.startsWith(";;") || s.trim.startsWith("(forall")).mkString("\n")
     ConsoleLogger.log(input)
     val parser = ParserHelper.getZ3OutputParser(input)
 
@@ -58,7 +58,7 @@ class Z3OutputParserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
       "  (define-fun q5 () Bool\n    true)\n" +
       "  (define-fun q3 () Bool\n    true)\n" +
       "  (define-fun q2 () Bool\n    false)\n" +
-//      "  (define-fun a1 () Int\n    0)\n" +
+      "  (define-fun a1 () Int\n    0)\n" +
 //      "  (define-fun a0 () Int\n    0)\n" +
       "  (define-fun q6 () Bool\n    true)\n" +
       "  (define-fun x0 () Real\n    0.0)\n" +
