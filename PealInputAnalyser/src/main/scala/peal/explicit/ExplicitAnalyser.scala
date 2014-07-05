@@ -67,7 +67,7 @@ class ExplicitAnalyser(input: String) {
           val okRules = rs.filter(r => I.get(r.q.name) != None && I.get(r.q.name) == Some(Right(PealTrue)))
           val undefinedRules = rs.filter(r => I.get(r.q.name) == None)
           val undefined = if (undefinedRules.nonEmpty) {
-            undefinedRules.map(r => "(" + r.q.name + "? " + r.numberScore + ")").mkString(" ", " ", "")
+            (if (okRules.nonEmpty) " " else "") + undefinedRules.map(r => "(" + r.q.name + "? " + r.numberScore + ")").mkString(" ")
           }
           else {
             ""
