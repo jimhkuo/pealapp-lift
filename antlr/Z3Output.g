@@ -63,6 +63,7 @@ value returns [String s]
 	| NUMBER {$s = $NUMBER.text;}
 	| '(' '-' unary ')' {$s = "-" + $unary.s;}
 	| '(' '/' lhs=NUMBER rhs=NUMBER ')' {$s = $lhs.text + "/" + $rhs.text;}
+	| '('IDENT ('(' (IDENT)+ ')')?')' {$s = "";}
 	;	
 
 unary returns [String s]

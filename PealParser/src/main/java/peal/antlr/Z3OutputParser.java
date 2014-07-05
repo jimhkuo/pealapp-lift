@@ -1,4 +1,4 @@
-// $ANTLR 3.5.1 /Users/jkuo/PealApp-lift/antlr/Z3Output.g 2014-07-05 09:47:00
+// $ANTLR 3.5.1 /Users/jkuo/PealApp-lift/antlr/Z3Output.g 2014-07-05 10:12:30
 
 package peal.antlr;
 
@@ -469,7 +469,7 @@ public class Z3OutputParser extends Parser {
 
 
 	// $ANTLR start "value"
-	// /Users/jkuo/PealApp-lift/antlr/Z3Output.g:61:1: value returns [String s] : ( IDENT | NUMBER | '(' '-' unary ')' | '(' '/' lhs= NUMBER rhs= NUMBER ')' );
+	// /Users/jkuo/PealApp-lift/antlr/Z3Output.g:61:1: value returns [String s] : ( IDENT | NUMBER | '(' '-' unary ')' | '(' '/' lhs= NUMBER rhs= NUMBER ')' | '(' IDENT ( '(' ( IDENT )+ ')' )? ')' );
 	public final String value() throws RecognitionException {
 		String s = null;
 
@@ -481,49 +481,56 @@ public class Z3OutputParser extends Parser {
 		String unary4 =null;
 
 		try {
-			// /Users/jkuo/PealApp-lift/antlr/Z3Output.g:62:2: ( IDENT | NUMBER | '(' '-' unary ')' | '(' '/' lhs= NUMBER rhs= NUMBER ')' )
-			int alt11=4;
+			// /Users/jkuo/PealApp-lift/antlr/Z3Output.g:62:2: ( IDENT | NUMBER | '(' '-' unary ')' | '(' '/' lhs= NUMBER rhs= NUMBER ')' | '(' IDENT ( '(' ( IDENT )+ ')' )? ')' )
+			int alt13=5;
 			switch ( input.LA(1) ) {
 			case IDENT:
 				{
-				alt11=1;
+				alt13=1;
 				}
 				break;
 			case NUMBER:
 				{
-				alt11=2;
+				alt13=2;
 				}
 				break;
 			case 9:
 				{
-				int LA11_3 = input.LA(2);
-				if ( (LA11_3==17) ) {
-					alt11=3;
-				}
-				else if ( (LA11_3==18) ) {
-					alt11=4;
-				}
-
-				else {
+				switch ( input.LA(2) ) {
+				case 17:
+					{
+					alt13=3;
+					}
+					break;
+				case 18:
+					{
+					alt13=4;
+					}
+					break;
+				case IDENT:
+					{
+					alt13=5;
+					}
+					break;
+				default:
 					int nvaeMark = input.mark();
 					try {
 						input.consume();
 						NoViableAltException nvae =
-							new NoViableAltException("", 11, 3, input);
+							new NoViableAltException("", 13, 3, input);
 						throw nvae;
 					} finally {
 						input.rewind(nvaeMark);
 					}
 				}
-
 				}
 				break;
 			default:
 				NoViableAltException nvae =
-					new NoViableAltException("", 11, 0, input);
+					new NoViableAltException("", 13, 0, input);
 				throw nvae;
 			}
-			switch (alt11) {
+			switch (alt13) {
 				case 1 :
 					// /Users/jkuo/PealApp-lift/antlr/Z3Output.g:62:4: IDENT
 					{
@@ -562,6 +569,58 @@ public class Z3OutputParser extends Parser {
 					s = (lhs!=null?lhs.getText():null) + "/" + (rhs!=null?rhs.getText():null);
 					}
 					break;
+				case 5 :
+					// /Users/jkuo/PealApp-lift/antlr/Z3Output.g:66:4: '(' IDENT ( '(' ( IDENT )+ ')' )? ')'
+					{
+					match(input,9,FOLLOW_9_in_value326); 
+					match(input,IDENT,FOLLOW_IDENT_in_value327); 
+					// /Users/jkuo/PealApp-lift/antlr/Z3Output.g:66:13: ( '(' ( IDENT )+ ')' )?
+					int alt12=2;
+					int LA12_0 = input.LA(1);
+					if ( (LA12_0==9) ) {
+						alt12=1;
+					}
+					switch (alt12) {
+						case 1 :
+							// /Users/jkuo/PealApp-lift/antlr/Z3Output.g:66:14: '(' ( IDENT )+ ')'
+							{
+							match(input,9,FOLLOW_9_in_value330); 
+							// /Users/jkuo/PealApp-lift/antlr/Z3Output.g:66:18: ( IDENT )+
+							int cnt11=0;
+							loop11:
+							while (true) {
+								int alt11=2;
+								int LA11_0 = input.LA(1);
+								if ( (LA11_0==IDENT) ) {
+									alt11=1;
+								}
+
+								switch (alt11) {
+								case 1 :
+									// /Users/jkuo/PealApp-lift/antlr/Z3Output.g:66:19: IDENT
+									{
+									match(input,IDENT,FOLLOW_IDENT_in_value333); 
+									}
+									break;
+
+								default :
+									if ( cnt11 >= 1 ) break loop11;
+									EarlyExitException eee = new EarlyExitException(11, input);
+									throw eee;
+								}
+								cnt11++;
+							}
+
+							match(input,14,FOLLOW_14_in_value337); 
+							}
+							break;
+
+					}
+
+					match(input,14,FOLLOW_14_in_value340); 
+					s = "";
+					}
+					break;
 
 			}
 		}
@@ -579,7 +638,7 @@ public class Z3OutputParser extends Parser {
 
 
 	// $ANTLR start "unary"
-	// /Users/jkuo/PealApp-lift/antlr/Z3Output.g:68:1: unary returns [String s] : ( IDENT | NUMBER | value );
+	// /Users/jkuo/PealApp-lift/antlr/Z3Output.g:69:1: unary returns [String s] : ( IDENT | NUMBER | value );
 	public final String unary() throws RecognitionException {
 		String s = null;
 
@@ -589,48 +648,48 @@ public class Z3OutputParser extends Parser {
 		String value7 =null;
 
 		try {
-			// /Users/jkuo/PealApp-lift/antlr/Z3Output.g:69:2: ( IDENT | NUMBER | value )
-			int alt12=3;
+			// /Users/jkuo/PealApp-lift/antlr/Z3Output.g:70:2: ( IDENT | NUMBER | value )
+			int alt14=3;
 			switch ( input.LA(1) ) {
 			case IDENT:
 				{
-				alt12=1;
+				alt14=1;
 				}
 				break;
 			case NUMBER:
 				{
-				alt12=2;
+				alt14=2;
 				}
 				break;
 			case 9:
 				{
-				alt12=3;
+				alt14=3;
 				}
 				break;
 			default:
 				NoViableAltException nvae =
-					new NoViableAltException("", 12, 0, input);
+					new NoViableAltException("", 14, 0, input);
 				throw nvae;
 			}
-			switch (alt12) {
+			switch (alt14) {
 				case 1 :
-					// /Users/jkuo/PealApp-lift/antlr/Z3Output.g:69:4: IDENT
+					// /Users/jkuo/PealApp-lift/antlr/Z3Output.g:70:4: IDENT
 					{
-					IDENT5=(Token)match(input,IDENT,FOLLOW_IDENT_in_unary337); 
+					IDENT5=(Token)match(input,IDENT,FOLLOW_IDENT_in_unary358); 
 					s = (IDENT5!=null?IDENT5.getText():null);
 					}
 					break;
 				case 2 :
-					// /Users/jkuo/PealApp-lift/antlr/Z3Output.g:70:4: NUMBER
+					// /Users/jkuo/PealApp-lift/antlr/Z3Output.g:71:4: NUMBER
 					{
-					NUMBER6=(Token)match(input,NUMBER,FOLLOW_NUMBER_in_unary344); 
+					NUMBER6=(Token)match(input,NUMBER,FOLLOW_NUMBER_in_unary365); 
 					s = (NUMBER6!=null?NUMBER6.getText():null);
 					}
 					break;
 				case 3 :
-					// /Users/jkuo/PealApp-lift/antlr/Z3Output.g:71:4: value
+					// /Users/jkuo/PealApp-lift/antlr/Z3Output.g:72:4: value
 					{
-					pushFollow(FOLLOW_value_in_unary351);
+					pushFollow(FOLLOW_value_in_unary372);
 					value7=value();
 					state._fsp--;
 
@@ -654,13 +713,13 @@ public class Z3OutputParser extends Parser {
 
 
 	// $ANTLR start "error"
-	// /Users/jkuo/PealApp-lift/antlr/Z3Output.g:74:1: error : Z3ERROR ;
+	// /Users/jkuo/PealApp-lift/antlr/Z3Output.g:75:1: error : Z3ERROR ;
 	public final void error() throws RecognitionException {
 		try {
-			// /Users/jkuo/PealApp-lift/antlr/Z3Output.g:74:7: ( Z3ERROR )
-			// /Users/jkuo/PealApp-lift/antlr/Z3Output.g:74:10: Z3ERROR
+			// /Users/jkuo/PealApp-lift/antlr/Z3Output.g:75:7: ( Z3ERROR )
+			// /Users/jkuo/PealApp-lift/antlr/Z3Output.g:75:10: Z3ERROR
 			{
-			match(input,Z3ERROR,FOLLOW_Z3ERROR_in_error364); 
+			match(input,Z3ERROR,FOLLOW_Z3ERROR_in_error385); 
 			}
 
 		}
@@ -722,8 +781,14 @@ public class Z3OutputParser extends Parser {
 	public static final BitSet FOLLOW_NUMBER_in_value313 = new BitSet(new long[]{0x0000000000000020L});
 	public static final BitSet FOLLOW_NUMBER_in_value317 = new BitSet(new long[]{0x0000000000004000L});
 	public static final BitSet FOLLOW_14_in_value319 = new BitSet(new long[]{0x0000000000000002L});
-	public static final BitSet FOLLOW_IDENT_in_unary337 = new BitSet(new long[]{0x0000000000000002L});
-	public static final BitSet FOLLOW_NUMBER_in_unary344 = new BitSet(new long[]{0x0000000000000002L});
-	public static final BitSet FOLLOW_value_in_unary351 = new BitSet(new long[]{0x0000000000000002L});
-	public static final BitSet FOLLOW_Z3ERROR_in_error364 = new BitSet(new long[]{0x0000000000000002L});
+	public static final BitSet FOLLOW_9_in_value326 = new BitSet(new long[]{0x0000000000000010L});
+	public static final BitSet FOLLOW_IDENT_in_value327 = new BitSet(new long[]{0x0000000000004200L});
+	public static final BitSet FOLLOW_9_in_value330 = new BitSet(new long[]{0x0000000000000010L});
+	public static final BitSet FOLLOW_IDENT_in_value333 = new BitSet(new long[]{0x0000000000004010L});
+	public static final BitSet FOLLOW_14_in_value337 = new BitSet(new long[]{0x0000000000004000L});
+	public static final BitSet FOLLOW_14_in_value340 = new BitSet(new long[]{0x0000000000000002L});
+	public static final BitSet FOLLOW_IDENT_in_unary358 = new BitSet(new long[]{0x0000000000000002L});
+	public static final BitSet FOLLOW_NUMBER_in_unary365 = new BitSet(new long[]{0x0000000000000002L});
+	public static final BitSet FOLLOW_value_in_unary372 = new BitSet(new long[]{0x0000000000000002L});
+	public static final BitSet FOLLOW_Z3ERROR_in_error385 = new BitSet(new long[]{0x0000000000000002L});
 }
