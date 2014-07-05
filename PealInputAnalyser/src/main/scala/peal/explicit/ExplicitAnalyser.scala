@@ -63,14 +63,13 @@ class ExplicitAnalyser(input: String) {
       pols(p) match {
         case Pol(rs, o, s, name) =>
           val okRules = rs.filter(r => I.get(r.q.name) != None && I.get(r.q.name) == Some(Right(PealTrue)))
-          val ok = okRules.map(r => r.q.name).mkString("", " ", "")
-          val undefinedRules = rs.filter(r => I.get(r.q.name) == None)
-          val undefined = undefinedRules.map(r => "(" + r.q.name + "? " + r.numberScore + ")").mkString(" ", " ", "")
-
           ConsoleLogger.log1(okRules)
-          ConsoleLogger.log1(undefinedRules)
+          val ok = s"${okRules.map(r => r.q.name).mkString(" ")}${if (okRules.nonEmpty) {" " + accumulateScores(o, okRules.toSet)} else {""}}"
 
-          s"$o (([$ok] ${accumulateScores(o, okRules.toSet)})$undefined) default ${s.toString.trim}"
+          val undefined = rs.filter(r => I.get(r.q.name) == None).map(r => "x(" + r.q.name + "? " + r.numberScore + ")").mkString(" ")
+
+
+          s"$o (${ok}${undefined}) default ${s.toString.trim}"
 
         //          if (okRules.isEmpty) o + " () default " + s.toString.trim
         //          else {

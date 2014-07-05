@@ -14,6 +14,7 @@ class ExplicitAnalyserTest extends ShouldMatchersForJUnit {
     val model = "Result of analysis [name1 = always_true? cond1]:\nsat\n(model \n  (define-fun cond1 () Bool\n    false)\n  (define-fun q1 () Bool\n    false)\n  (define-fun q2 () Bool\n    false)\n  (define-fun always_true_name1 () Bool\n    false)\n)"
     ConsoleLogger.log2(input)
     val out = new ExplicitAnalyser(input).analyse(model, "name1")
+    ConsoleLogger.log2(out)
     out should be ("uses cond1\nb1 = min () default 1.0")
   }
 

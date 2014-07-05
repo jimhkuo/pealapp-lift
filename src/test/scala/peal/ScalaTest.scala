@@ -10,6 +10,11 @@ import scala.sys.process._
 class ScalaTest extends ShouldMatchersForJUnit {
 
   @Test
+  def testS() {
+      println(s"aa${if (Set(1).nonEmpty) {" "}}")
+      println(s"bb${if (Set().nonEmpty) {" "}}")
+  }
+  @Test
   def testOption() {
       println(Some(2).fold("none")(_.toString + " string"))
   }
