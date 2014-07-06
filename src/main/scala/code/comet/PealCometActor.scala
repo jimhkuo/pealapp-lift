@@ -137,9 +137,9 @@ class PealCometActor extends CometActor with Loggable {
             <h4>2. Choose a synthesis method. Then click on one of the green synthesiser buttons:</h4>
             <ul class="nav nav-tabs">
               <li class="active"><a href="#explicit" data-toggle="tab">Explicit Synthesis</a></li>
-              <li><a href="#symbolic" data-toggle="tab">Symbolic Synthesis</a></li>
+              <li><a href="#symbolic" data-toggle="tab" style="display:none">Symbolic Synthesis</a></li>
               <li><a href="#extended" data-toggle="tab">Extended Synthesis</a></li>
-              <li><a href="#new" data-toggle="tab">New Synthesis</a></li>
+              <li><a href="#new" data-toggle="tab" style="display:none">New Synthesis</a></li>
             </ul>
           </div>
           <div class="tab-content">
