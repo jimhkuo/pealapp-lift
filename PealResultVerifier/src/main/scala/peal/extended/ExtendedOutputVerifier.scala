@@ -41,7 +41,7 @@ class ExtendedOutputVerifier(input: String) {
         if (bottomPredicates.isEmpty) {
           return (PealBottom, s)
         }
-        //        println("*** Trying again")
+        ConsoleLogger.log2("*** Trying again")
         //        print("*")
         (s + bottomPredicates.head).foreach {
           m =>
@@ -137,7 +137,7 @@ class ExtendedOutputVerifier(input: String) {
       }
     } catch {
       case e: RuntimeException =>
-//        e.printStackTrace()
+        //        e.printStackTrace()
         PealBottom
     }
   }
