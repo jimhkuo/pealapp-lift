@@ -61,7 +61,7 @@ class ExplicitAnalyser(input: String) {
       case Mul => rules.tail.foldLeft(rules.head.numberScore)((acc, r) => acc * r.numberScore)
     }
 
-    def unfoldPolicy(p: String): String = {
+    def specialisePolicy(p: String): String = {
       pols(p) match {
         case Pol(rs, o, s, name) =>
           val okRules = rs.filter(r => I.get(r.q.name) != None && I.get(r.q.name) == Some(Right(PealTrue)))
@@ -96,8 +96,7 @@ class ExplicitAnalyser(input: String) {
     val policies = bs.toSet
     ConsoleLogger.log2(policies)
 
-    //construct the internals of policies here
-    "uses " + condNames.mkString("", ", ", "") + "\n" + policies.map(p => p + " = " + unfoldPolicy(p)).mkString("\n")
+    "uses " + condNames.mkString("", ", ", "") + "\n" + policies.map(p => p + " = " + specialisePolicy(p)).mkString("\n")
   }
 
 }
