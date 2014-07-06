@@ -160,6 +160,7 @@ class PealCometActor extends CometActor with Loggable {
             </div>
             <div class="tab-pane" id="extended">
               <div class="col-sm-5">
+                <p><br/>The following is broken into separate steps as generation of Z3 results from extended synthesis sometimes takes a long time</p>
                 {SHtml.ajaxButton("Generate, show, and run Z3 code, display results in raw Z3 form", () => {this ! ExtendedSynthesisAndCallZ3; _Noop}, "class" -> "btn btn-success btn-sm", "style" -> "margin:2px;")}
                 {SHtml.ajaxButton("Certify Z3 results", () => {this ! CertifyExtendedResults; _Noop}, "class" -> "btn btn-success btn-sm", "style" -> "margin:2px;")}
               </div>
