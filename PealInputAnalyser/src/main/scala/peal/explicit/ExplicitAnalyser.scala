@@ -27,10 +27,12 @@ class ExplicitAnalyser(input: String) {
     case Pol(rs, o, s, n) => n :: Nil
   }
 
-  //This only works for explicit synthesis outputs
+  //TODO This only works for explicit synthesis outputs, need changing for extended synthesis
   private def pullPolicies(cond: Condition) : List[String] = cond match {
+      //need to take care of rhs
     case LessThanThCondition(lhs, rhs) => extractPolicySet(lhs)
     case GreaterThanThCondition(lhs, rhs) => extractPolicySet(lhs)
+      //can't use either.get
     case OrCondition(lhs, rhs) => extractPolicySet(conds(lhs).getPol.get) ::: extractPolicySet(conds(rhs).getPol.get)
     case AndCondition(lhs, rhs) => extractPolicySet(conds(lhs).getPol.get) ::: extractPolicySet(conds(rhs).getPol.get)
     case NotCondition(c) => extractPolicySet(conds(c).getPol.get)
@@ -51,8 +53,6 @@ class ExplicitAnalyser(input: String) {
     val I = Z3ModelExtractor.extractI(rawModel)(analysisName)
     ConsoleLogger.log1(I)
     val (ans, reMapped) = new ExplicitOutputVerifier(input).verifyModel(rawModel, analysisName)
-    var completeTruthMapping = I
-    //    reMapped.foreach(completeTruthMapping += _ -> Right(PealFalse))
 
     def accumulateScores(operator: Operator, rules: Set[Rule]) = operator match {
       case Min => rules.tail.foldLeft(rules.head.numberScore)((acc, r) => acc.min(r.numberScore))
