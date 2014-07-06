@@ -15,10 +15,9 @@ class ExplicitAnalyser(input: String) {
 
   private val pealProgramParser = ParserHelper.getPealParser(input)
   pealProgramParser.program()
-  private val conds = pealProgramParser.conds.toMap
-  private val pols = pealProgramParser.pols.toMap
+  private val conds = pealProgramParser.conds
+  private val pols = pealProgramParser.pols
   private val analyses = pealProgramParser.analyses
-  private val predicateNames: Seq[String] = pealProgramParser.pols.values().flatMap(pol => pol.rules).map(r => r.q.name).toSeq.distinct
 
   private def extractPolicySet(pSet: PolicySet): List[String] = pSet match {
     case BasicPolicySet(p, n) => extractPolicySet(p)
@@ -27,7 +26,7 @@ class ExplicitAnalyser(input: String) {
     case Pol(rs, o, s, n) => n :: Nil
   }
 
-  //TODO This only works for explicit synthesis outputs, need changing for extended synthesis
+  //TODO This currently only works for explicit synthesis outputs, need changing for extended synthesis
   private def pullPolicies(cond: Condition) : List[String] = cond match {
       //need to take care of rhs
     case LessThanThCondition(lhs, rhs) => extractPolicySet(lhs)
@@ -46,7 +45,6 @@ class ExplicitAnalyser(input: String) {
     case Equivalent(_, c1, c2) => c1 :: c2 :: Nil
     case Implies(_, c1, c2) => c1 :: c2 :: Nil
   }
-
 
   def analyse(rawModel: String, analysisName: String): String = {
 
