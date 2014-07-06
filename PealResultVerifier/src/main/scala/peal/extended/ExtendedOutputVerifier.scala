@@ -85,8 +85,8 @@ class ExtendedOutputVerifier(input: String) {
         if (truthMapping(lhs) == Right(PealTrue) && truthMapping(rhs) == Right(PealFalse)) {
           val cert1: ThreeWayBoolean = cert(conds(lhs), truthMapping, truthMapping(lhs).right.get)
           val cert2: ThreeWayBoolean = cert(conds(rhs), truthMapping, truthMapping(rhs).right.get)
-          println("lhs is expected to be " + truthMapping(lhs).right.get + ", rhs is expected to be " + truthMapping(rhs).right.get)
-          println("cert1 " + cert1 + " cert2 " + cert2)
+          ConsoleLogger.log2("lhs is expected to be " + truthMapping(lhs).right.get + ", rhs is expected to be " + truthMapping(rhs).right.get)
+          ConsoleLogger.log2("cert1 " + cert1 + " cert2 " + cert2)
           return (cert1 && cert2, reMappedPredicates)
         }
         throw new RuntimeException(lhs + " should be true and " + rhs + " should be false, but are not in " + analysisName)
@@ -199,7 +199,7 @@ class ExtendedOutputVerifier(input: String) {
         case MulPolicySet(lhs, rhs, n) => extractScore(lhs) * extractScore(rhs)
       }
 
-      ConsoleLogger.log(pSet.getPolicySetName + " is " + out + " (" + out.value + ")")
+      ConsoleLogger.log1(pSet.getPolicySetName + " is " + out + " (" + out.value + ")")
 
       out
     }

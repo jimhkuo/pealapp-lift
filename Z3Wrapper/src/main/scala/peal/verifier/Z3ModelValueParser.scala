@@ -25,6 +25,7 @@ object Z3ModelValueParser {
       BigDecimal.valueOf(v.toDouble)
     } catch {
       case e: NumberFormatException =>
+        ConsoleLogger.log1("BigDecimal.valueOf(" + v + ") failed, v is " + v)
         val rational(numer, denom) = v
         Rational(numer, denom).value
     }
@@ -35,7 +36,7 @@ object Z3ModelValueParser {
       Rational(v)
     } catch {
       case e: NumberFormatException =>
-        e.printStackTrace()
+        ConsoleLogger.log1("Rational(" + v + ") failed, v is " + v)
         val rational(numer, denom) = v
         Rational(numer, denom)
     }
