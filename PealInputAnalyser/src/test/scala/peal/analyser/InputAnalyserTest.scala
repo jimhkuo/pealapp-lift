@@ -124,4 +124,17 @@ class InputAnalyserTest extends ShouldMatchersForJUnit {
     ConsoleLogger.log1(out)
     out should be ("uses cond1\nb5 = max (([q2 q0 q4] 0.3937)) default 0\nb6 = + (([q2 q3] 0.0736)) default 0.2814\nb4 = min (([q0 q5 q2 q4] 0.0736)) default 0.9265\nb0 = * (([q5] 0.988)) default 0.6085\nb2 = max (([q5 q3 q4] 0.1726)) default 0.2029\nb3 = + (([q2] 0.8261)) default 0\nb7 = * (([q2] 0.547)) default 0.6631\nb1 = min (([q3 q4 q5 q0] 0.234)) default 0.1661")
   }
+
+  @Test
+  def testCanAnalyseExtended2() {
+    ConsoleLogger.enable(1)
+    val input = "POLICIES\nb0 = max ((q5 0.6971) (q3 0.1338) (q2 0.3440)) default vk\nb1 = * ((q4 0.8689)) default 0*vj\nb2 = + ((q5 0.7756) (q2 0.4698)) default 0.6451\nb3 = max ((q5 0*vf) (q1 0*v0) (q3 0.1135 [-0.7627,0.3058])) default 0.9094\nb4 = + ((q2 0.4641 [-0.6645,0.1467]) (q4 0.2861 [-0.1972,0.3757])) default 0.1326\nb5 = * ((q4 0.8916)) default 0.2009\nb6 = min ((q1 0.2133) (q5 0.8770) (q3 vx) (q2 0*va)) default 0.2424\nb7 = min ((q0 0.0585) (q4 0.1866) (q1 0.9557) (q2 0.7567)) default 0.7636\nPOLICY_SETS\np0_1 = min(b0,b1)\np2_3 = min(b2,b3)\np4_5 = min(b4,b5)\np6_7 = min(b6,b7)\np0_3 = max(p0_1,p2_3)\np4_7 = max(p4_5,p6_7)\n\nCONDITIONS\ncond1 = p4_7 < p0_3\nANALYSES\nanalysis1 = always_true? cond1\n"
+    val model = "Result of analysis [analysis1 = always_true? cond1]:\nsat\n(model \n  (define-fun q0 () Bool\n    false)\n  (define-fun b1_score () Real\n    0.0)\n  (define-fun always_true_analysis1 () Bool\n    false)\n  (define-fun b4_q4_U () Real\n    0.0)\n  (define-fun b6_score () Real\n    0.0)\n  (define-fun q4 () Bool\n    false)\n  (define-fun b0_score () Real\n    (/ 6971.0 10000.0))\n  (define-fun cond1 () Bool\n    false)\n  (define-fun b3_score () Real\n    (/ 227.0 2000.0))\n  (define-fun b7_score () Real\n    (/ 7567.0 10000.0))\n  (define-fun b4_q2_U () Real\n    (- (/ 329.0 1250.0)))\n  (define-fun vx () Real\n    0.0)\n  (define-fun q5 () Bool\n    true)\n  (define-fun b3_q3_U () Real\n    0.0)\n  (define-fun q3 () Bool\n    true)\n  (define-fun q2 () Bool\n    true)\n  (define-fun b5_score () Real\n    (/ 2009.0 10000.0))\n  (define-fun b2_score () Real\n    (/ 6227.0 5000.0))\n  (define-fun b4_score () Real\n    (/ 2009.0 10000.0))\n)"
+
+    ConsoleLogger.log2(input)
+    val out = new InputAnalyser(input).analyse(model, "analysis1")
+    ConsoleLogger.log1(out)
+    out should be ("uses cond1\nb1 = * () default 0\nb7 = min (([q2] 0.7567) (q1? 0.9557)) default 0.7636\nb6 = min (([q5 q3 q2] 0) (q1? 0.2133)) default 0.2424\nb5 = * () default 0.2009\nb4 = + (([q2] 0.2009)) default 0.1326\nb2 = + (([q5 q2] 1.2454)) default 0.6451\nb3 = max (([q5 q3] 0.1135) (q1? 0)) default 0.9094\nb0 = max (([q5 q3 q2] 0.6971)) default 0")
+  }
+
 }

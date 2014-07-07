@@ -31,8 +31,8 @@ class InputAnalyser(input: String) {
   //TODO This currently only works for explicit synthesis outputs, need changing for extended synthesis
   private def pullPolicies(cond: Condition): List[String] = cond match {
     //need to take care of rhs
-    case LessThanThCondition(lhs, rhs) => extractPolicySet(lhs)
-    case GreaterThanThCondition(lhs, rhs) => extractPolicySet(lhs)
+    case LessThanThCondition(lhs, rhs) => extractPolicySet(lhs) ::: rhs.fold(b => List(), p => extractPolicySet(p))
+    case GreaterThanThCondition(lhs, rhs) => extractPolicySet(lhs)::: rhs.fold(b => List(), p => extractPolicySet(p))
     //can't use either.get
     case OrCondition(lhs, rhs) => extractPolicySet(conds(lhs).getPol.get) ::: extractPolicySet(conds(rhs).getPol.get)
     case AndCondition(lhs, rhs) => extractPolicySet(conds(lhs).getPol.get) ::: extractPolicySet(conds(rhs).getPol.get)
@@ -70,7 +70,7 @@ class InputAnalyser(input: String) {
           val okRules = rs.filter(r => I.get(r.q.name) != None && I.get(r.q.name) == Some(Right(PealTrue)))
           val undefinedRules = rs.filter(r => I.get(r.q.name) == None)
           val undefined = if (undefinedRules.nonEmpty) {
-            (if (okRules.nonEmpty) " " else "") + undefinedRules.map(r => "(" + r.q.name + "? " + r.numberScore + ")").mkString(" ")
+            (if (okRules.nonEmpty) " " else "") + undefinedRules.map(r => "(" + r.q.name + "? " + ScoreEvaluator.trueScore(r.score, p + "_" + r.q.name + "_U").value + ")").mkString(" ")
           }
           else {
             ""
