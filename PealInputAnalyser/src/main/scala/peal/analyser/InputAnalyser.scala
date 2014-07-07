@@ -12,7 +12,7 @@ import peal.verifier.{OutputVerifier, Z3ModelExtractor}
 import scala.collection.JavaConversions._
 
 
-class InputAnalyser(input: String)(implicit outputVerifier: OutputVerifier) {
+class InputAnalyser(input: String) {
 
   private val pealProgramParser = ParserHelper.getPealParser(input)
   pealProgramParser.program()
@@ -52,9 +52,7 @@ class InputAnalyser(input: String)(implicit outputVerifier: OutputVerifier) {
 
     implicit val I = Z3ModelExtractor.extractIUsingRational(rawModel)(analysisName)
     ConsoleLogger.log1(I)
-    val (ans, reMapped) = outputVerifier.verifyModel(rawModel, analysisName)
 
-    //TODO this also used hardcoded behaviour
     def accumulateScores(operator: Operator, rules: Set[Rule], policyName: String): BigDecimal = {
       val rational = operator match {
         case Min => rules.tail.foldLeft(ScoreEvaluator.trueScore(rules.head.score, policyName + "_" + rules.head.q.name + "_U"))((acc, r) => acc.min(ScoreEvaluator.trueScore(r.score, policyName + "_" + r.q.name + "_U")))
