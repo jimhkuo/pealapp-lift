@@ -6,13 +6,12 @@ import peal.domain.operator._
 import peal.synthesis._
 import peal.synthesis.analysis._
 import peal.util.ConsoleLogger
-import peal.verifier.Z3ModelExtractor
-import peal.verifier.explicit.ExplicitOutputVerifier
+import peal.verifier.{OutputVerifier, Z3ModelExtractor}
 
 import scala.collection.JavaConversions._
 
 
-class InputAnalyser(input: String) {
+class InputAnalyser(input: String)(implicit outputVerifier : OutputVerifier) {
 
   private val pealProgramParser = ParserHelper.getPealParser(input)
   pealProgramParser.program()
@@ -51,7 +50,7 @@ class InputAnalyser(input: String) {
 
     val I = Z3ModelExtractor.extractI(rawModel)(analysisName)
     ConsoleLogger.log1(I)
-    val (ans, reMapped) = new ExplicitOutputVerifier(input).verifyModel(rawModel, analysisName)
+    val (ans, reMapped) = outputVerifier.verifyModel(rawModel, analysisName)
 
     def accumulateScores(operator: Operator, rules: Set[Rule]) = operator match {
       case Min => rules.tail.foldLeft(rules.head.numberScore)((acc, r) => acc.min(r.numberScore))
