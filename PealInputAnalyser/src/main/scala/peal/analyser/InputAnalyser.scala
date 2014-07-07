@@ -55,6 +55,7 @@ class InputAnalyser(input: String)(implicit outputVerifier : OutputVerifier) {
 
     //TODO this also used hardcoded behaviour
     def accumulateScores(operator: Operator, rules: Set[Rule]) = operator match {
+        //TODO need to evaluate scores even when scores are formulas
       case Min => rules.tail.foldLeft(rules.head.numberScore)((acc, r) => acc.min(r.numberScore))
       case Max => rules.tail.foldLeft(rules.head.numberScore)((acc, r) => acc.max(r.numberScore))
       case Plus => rules.tail.foldLeft(rules.head.numberScore)((acc, r) => acc + r.numberScore)
