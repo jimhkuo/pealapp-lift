@@ -149,4 +149,28 @@ class InputAnalyserTest extends ShouldMatchersForJUnit {
     out should be ("uses cond1\nb1 = * () default 0\nb7 = min (([q2] 0.7567) (q1? 0.9557)) default 0.7636\nb6 = min (([q5 q3 q2] 0) (q1? 0.2133)) default 0.2424\nb5 = * () default 0.2009\nb4 = + (([q2] 0.2009)) default 0.1326\nb2 = + (([q5 q2] 1.2454)) default 0.6451\nb3 = max (([q5 q3] 0.1135) (q1? 0)) default 0.9094\nb0 = max (([q5 q3 q2] 0.6971)) default 0")
   }
 
+  @Test
+  def testCanAnalyseExtendedOr() {
+    ConsoleLogger.enable(1)
+    val input = "POLICIES\nb1 = min () default 1\nb2 = min () default 1\nPOLICY_SETS\npSet1 = b1\npSet2 = b2\nCONDITIONS\ncond1 = pSet1 <= 0.5\ncond2 = pSet2 <= 0.5\ncond3 = cond1 || cond2 \nANALYSES\nname1 = always_true? cond3"
+    val model = "Result of analysis [name1 = always_true? cond3]:\nsat\n(model \n  (define-fun cond1 () Bool\n    false)\n  (define-fun always_true_name1 () Bool\n    false)\n  (define-fun cond3 () Bool\n    false)\n  (define-fun b1_score () Real\n    1.0)\n  (define-fun b2_score () Real\n    1.0)\n  (define-fun cond2 () Bool\n    false)\n)"
+
+    ConsoleLogger.log2(input)
+    val out = new InputAnalyser(input).analyse(model, "name1")
+    ConsoleLogger.log1(out)
+    out should be ("uses cond3\nb1 = min () default 1.0\nb2 = min () default 1.0")
+  }
+
+  @Test
+  def testCanAnalyseExtendedAnd() {
+    ConsoleLogger.enable(1)
+    val input = "POLICIES\nb1 = min () default 1\nb2 = min () default 1\nPOLICY_SETS\npSet1 = b1\npSet2 = b2\nCONDITIONS\ncond1 = pSet1 <= 0.5\ncond2 = pSet2 <= 0.5\ncond3 = cond1 && cond2 \nANALYSES\nname1 = always_true? cond3"
+    val model = "Result of analysis [name1 = always_true? cond3]:\nsat\n(model \n  (define-fun cond1 () Bool\n    false)\n  (define-fun always_true_name1 () Bool\n    false)\n  (define-fun cond3 () Bool\n    false)\n  (define-fun b1_score () Real\n    1.0)\n  (define-fun b2_score () Real\n    1.0)\n  (define-fun cond2 () Bool\n    false)\n)"
+
+    ConsoleLogger.log2(input)
+    val out = new InputAnalyser(input).analyse(model, "name1")
+    ConsoleLogger.log1(out)
+    out should be ("uses cond3\nb1 = min () default 1.0\nb2 = min () default 1.0")
+  }
+
 }
