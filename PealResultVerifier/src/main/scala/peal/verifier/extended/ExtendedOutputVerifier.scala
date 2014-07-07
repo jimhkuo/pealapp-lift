@@ -6,11 +6,11 @@ import peal.domain.operator.{Max, Min, Mul, Plus}
 import peal.synthesis.{AndCondition, LessThanThCondition, NotCondition, OrCondition, _}
 import peal.synthesis.analysis.{AlwaysFalse, AlwaysTrue, Different, Equivalent, Implies, Satisfiable}
 import peal.util.ConsoleLogger
-import peal.verifier.Z3ModelExtractor
+import peal.verifier.{OutputVerifier, Z3ModelExtractor}
 
 import scala.collection.JavaConversions._
 
-class ExtendedOutputVerifier(input: String) {
+class ExtendedOutputVerifier(input: String) extends OutputVerifier {
   val pealProgramParser = ParserHelper.getPealParser(input)
   pealProgramParser.program()
 

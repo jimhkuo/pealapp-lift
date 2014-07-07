@@ -5,12 +5,12 @@ import peal.domain._
 import peal.domain.operator.{Max, Min, Mul, Plus}
 import peal.synthesis._
 import peal.synthesis.analysis._
-import peal.verifier.Z3ModelExtractor
+import peal.verifier.{OutputVerifier, Z3ModelExtractor}
 
 import scala.collection.JavaConversions._
 
 
-class ExplicitOutputVerifier(input: String) {
+class ExplicitOutputVerifier(input: String) extends OutputVerifier {
 
   val pealProgramParser = ParserHelper.getPealParser(input)
   pealProgramParser.program()
