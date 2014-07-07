@@ -6,12 +6,13 @@ import peal.domain.operator._
 import peal.synthesis._
 import peal.synthesis.analysis._
 import peal.util.ConsoleLogger
+import peal.verifier.util.ScoreEvaluator
 import peal.verifier.{OutputVerifier, Z3ModelExtractor}
 
 import scala.collection.JavaConversions._
 
 
-class InputAnalyser(input: String)(implicit outputVerifier : OutputVerifier) {
+class InputAnalyser(input: String)(implicit outputVerifier: OutputVerifier) {
 
   private val pealProgramParser = ParserHelper.getPealParser(input)
   pealProgramParser.program()
@@ -28,11 +29,11 @@ class InputAnalyser(input: String)(implicit outputVerifier : OutputVerifier) {
   }
 
   //TODO This currently only works for explicit synthesis outputs, need changing for extended synthesis
-  private def pullPolicies(cond: Condition) : List[String] = cond match {
-      //need to take care of rhs
+  private def pullPolicies(cond: Condition): List[String] = cond match {
+    //need to take care of rhs
     case LessThanThCondition(lhs, rhs) => extractPolicySet(lhs)
     case GreaterThanThCondition(lhs, rhs) => extractPolicySet(lhs)
-      //can't use either.get
+    //can't use either.get
     case OrCondition(lhs, rhs) => extractPolicySet(conds(lhs).getPol.get) ::: extractPolicySet(conds(rhs).getPol.get)
     case AndCondition(lhs, rhs) => extractPolicySet(conds(lhs).getPol.get) ::: extractPolicySet(conds(rhs).getPol.get)
     case NotCondition(c) => extractPolicySet(conds(c).getPol.get)
@@ -49,17 +50,20 @@ class InputAnalyser(input: String)(implicit outputVerifier : OutputVerifier) {
 
   def analyse(rawModel: String, analysisName: String): String = {
 
-    val I = Z3ModelExtractor.extractI(rawModel)(analysisName)
+    implicit val I = Z3ModelExtractor.extractIUsingRational(rawModel)(analysisName)
     ConsoleLogger.log1(I)
     val (ans, reMapped) = outputVerifier.verifyModel(rawModel, analysisName)
 
     //TODO this also used hardcoded behaviour
-    def accumulateScores(operator: Operator, rules: Set[Rule]) = operator match {
-        //TODO need to evaluate scores even when scores are formulas
-      case Min => rules.tail.foldLeft(rules.head.numberScore)((acc, r) => acc.min(r.numberScore))
-      case Max => rules.tail.foldLeft(rules.head.numberScore)((acc, r) => acc.max(r.numberScore))
-      case Plus => rules.tail.foldLeft(rules.head.numberScore)((acc, r) => acc + r.numberScore)
-      case Mul => rules.tail.foldLeft(rules.head.numberScore)((acc, r) => acc * r.numberScore)
+    def accumulateScores(operator: Operator, rules: Set[Rule], policyName: String): BigDecimal = {
+      val rational = operator match {
+        case Min => rules.tail.foldLeft(ScoreEvaluator.trueScore(rules.head.score, policyName + "_" + rules.head.q.name + "_U"))((acc, r) => acc.min(ScoreEvaluator.trueScore(r.score, policyName + "_" + r.q.name + "_U")))
+        case Max => rules.tail.foldLeft(ScoreEvaluator.trueScore(rules.head.score, policyName + "_" + rules.head.q.name + "_U"))((acc, r) => acc.max(ScoreEvaluator.trueScore(r.score, policyName + "_" + r.q.name + "_U")))
+        case Plus => rules.tail.foldLeft(ScoreEvaluator.trueScore(rules.head.score, policyName + "_" + rules.head.q.name + "_U"))((acc, r) => acc + ScoreEvaluator.trueScore(r.score, policyName + "_" + r.q.name + "_U"))
+        case Mul => rules.tail.foldLeft(ScoreEvaluator.trueScore(rules.head.score, policyName + "_" + rules.head.q.name + "_U"))((acc, r) => acc * ScoreEvaluator.trueScore(r.score, policyName + "_" + r.q.name + "_U"))
+      }
+
+      rational.value
     }
 
     def specialisePolicy(p: String): String = {
@@ -80,7 +84,8 @@ class InputAnalyser(input: String)(implicit outputVerifier : OutputVerifier) {
             o + " (" + undefined + ") default " + s.toString.trim
           }
           else {
-            s"$o (([${okRules.map(r => r.q.name).mkString("", " ", "")}] ${accumulateScores(o, okRules.toSet)})${undefined}) default ${s.toString.trim}"
+            //TODO need to know containing policies
+            s"$o (([${okRules.map(r => r.q.name).mkString("", " ", "")}] ${accumulateScores(o, okRules.toSet, p)})${undefined}) default ${s.toString.trim}"
           }
       }
     }

@@ -123,7 +123,7 @@ class InputAnalyserTest extends ShouldMatchersForJUnit {
     out should be ("uses cond1, cond2\nb1 = * () default 0.5\nb2 = * (([q3] 1.0) (q4? 1.0)) default 0.5")
   }
 
-  @Ignore("wip")
+//  @Ignore("wip")
   @Test
   def testCanAnalyseExtended() {
     ConsoleLogger.enable(1)
@@ -134,6 +134,6 @@ class InputAnalyserTest extends ShouldMatchersForJUnit {
     ConsoleLogger.log2(input)
     val out = new InputAnalyser(input).analyse(model, "analysis1")
     ConsoleLogger.log1(out)
-//    out should be ("uses cond1, cond2\nb1 = * () default 0.5\nb2 = * (([q3] 1.0) (q4? 1.0)) default 0.5")
+    out should be ("uses cond1\nb3 = + (([q2] 0.8261)) default 2.0*vt\nb4 = min (([q0 q5 q2 q4] 0.0736)) default 0.9265\nb0 = * (([q5] 0.988)) default 0.6085\nb2 = max (([q5 q3 q4] 0.1726)) default 0.2029\nb6 = + (([q2 q3] 0.0736)) default 0.2814 [-0.1182,0.4017]\nb5 = max (([q2 q0 q4] 0.3937)) default 2.0*vs\nb7 = * (([q2] 0.547)) default 0.6631\nb1 = min (([q3 q4 q5 q0] 0.234)) default 0.1661")
   }
 }
