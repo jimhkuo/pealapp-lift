@@ -23,6 +23,7 @@ class InputAnalyser(input: String)(implicit outputVerifier : OutputVerifier) {
     case BasicPolicySet(p, n) => extractPolicySet(p)
     case MaxPolicySet(l, r, _) => extractPolicySet(l) ::: extractPolicySet(r)
     case MinPolicySet(l, r, _) => extractPolicySet(l) ::: extractPolicySet(r)
+    case PlusPolicySet(l, r, _) => extractPolicySet(l) ::: extractPolicySet(r)
     case Pol(rs, o, s, n) => n :: Nil
   }
 
@@ -52,6 +53,7 @@ class InputAnalyser(input: String)(implicit outputVerifier : OutputVerifier) {
     ConsoleLogger.log1(I)
     val (ans, reMapped) = outputVerifier.verifyModel(rawModel, analysisName)
 
+    //TODO this also used hardcoded behaviour
     def accumulateScores(operator: Operator, rules: Set[Rule]) = operator match {
       case Min => rules.tail.foldLeft(rules.head.numberScore)((acc, r) => acc.min(r.numberScore))
       case Max => rules.tail.foldLeft(rules.head.numberScore)((acc, r) => acc.max(r.numberScore))
