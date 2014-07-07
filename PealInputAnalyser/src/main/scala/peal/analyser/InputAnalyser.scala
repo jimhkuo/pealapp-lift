@@ -30,7 +30,6 @@ class InputAnalyser(input: String) {
 
   //TODO This currently only works for explicit synthesis outputs, need changing for extended synthesis
   private def pullPolicies(cond: Condition): List[String] = cond match {
-    //need to take care of rhs
     case LessThanThCondition(lhs, rhs) => extractPolicySet(lhs) ::: rhs.fold(b => List(), p => extractPolicySet(p))
     case GreaterThanThCondition(lhs, rhs) => extractPolicySet(lhs)::: rhs.fold(b => List(), p => extractPolicySet(p))
     //can't use either.get

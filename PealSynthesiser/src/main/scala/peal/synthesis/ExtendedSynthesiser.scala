@@ -83,7 +83,7 @@ class ExtendedSynthesiser(input: String) extends Synthesiser {
       (k, p) <- pols
     ) yield {
       p.rules.size match {
-        case 0 => "(assert (= " + k + "_score " + Z3ScoreGenerator.generate(p.score, k + "_default_U") + ")))"
+        case 0 => "(assert (= " + k + "_score " + Z3ScoreGenerator.generate(p.score, k + "_default_U") + "))"
         case 1 => "(assert (= " + k + "_score (ite " + p.rules(0).q.name + " " + Z3ScoreGenerator.generate(p.rules(0).score, k + "_" + p.rules(0).q.name + "_U") + " " + Z3ScoreGenerator.generate(p.score, k + "_default_U") + ")))"
         case _ =>
           p.operator match {
