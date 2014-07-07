@@ -38,7 +38,7 @@ class ExtendedOutputVerifier(input: String) extends OutputVerifier {
         //        print("*")
         (s + bottomPredicates.head).foreach {
           m =>
-            ConsoleLogger.log("*** set " + m + " to false")
+            ConsoleLogger.log2("*** set " + m + " to false")
             //            print(m)
             truthMapping += m -> Right(PealFalse)
         }
