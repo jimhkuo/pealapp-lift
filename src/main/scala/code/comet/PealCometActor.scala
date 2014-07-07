@@ -399,7 +399,6 @@ class PealCometActor extends CometActor with Loggable {
 
       val unfoldedInputs = for (analysis <- sortedAnalyses) yield {
         if (z3OutputModels(analysis).satResult == Sat) {
-          implicit val verifier = new ExplicitOutputVerifier(inputPolicies)
           "Analysis \"" + analysis + "\" " + new InputAnalyser(inputPolicies).analyse(z3RawOutput, analysis)
         }
         else {
