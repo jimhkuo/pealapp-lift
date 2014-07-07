@@ -1,6 +1,8 @@
 package peal
 
 import java.io.File
+import java.util.ArrayList
+import java.util.Arrays
 
 import org.junit.Test
 import org.scalatest.junit.ShouldMatchersForJUnit
@@ -8,6 +10,32 @@ import org.scalatest.junit.ShouldMatchersForJUnit
 import scala.sys.process._
 
 class ScalaTest extends ShouldMatchersForJUnit {
+
+  @Test
+  def testImplicit() {
+    trait Functor[F[_]] {
+      def map[X, Y](f: X => Y): F[X] => F[Y]
+    }
+
+
+    implicit object JAL_a_Functor extends Functor[ArrayList] {
+      def map[X, Y](f: X => Y) = (xs: ArrayList[X]) => {
+        val ys = new ArrayList[Y]
+        for (i <- 0 until xs.size) ys.add(f(xs.get(i)))
+        ys
+      }
+    }
+
+
+    implicit def fops[F[_] : Functor, A](fa: F[A]) = new {
+      val witness = implicitly[Functor[F]]
+
+      final def map[B](f: A => B): F[B] = witness.map(f)(fa)
+    }
+
+    val testList = new ArrayList(Arrays.asList("this", "is", "a", "test"))
+    println(testList.map(_.toUpperCase))
+  }
 
   @Test
   def testS() {

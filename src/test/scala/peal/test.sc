@@ -1,12 +1,23 @@
-import peal.domain.Rational
+import java.util
+trait Functor[F[_]] {
+  def map[X, Y](f: X => Y): F[X] => F[Y]
+}
 
-Rational("-1290181417","3.58125E+9") + Rational("3438931417","3.58125E+9")
+
+implicit object JAL_a_Functor extends Functor[util.ArrayList] {
+  def map[X, Y](f: X => Y) = (xs: util.ArrayList[X]) => {
+    val ys = new util.ArrayList[Y]
+    for (i <- 0 until xs.size) ys.add(f(xs.get(i)))
+    ys
+  }
+}
 
 
-val a = Rational("3438931417","10743750000") * Rational("3")
-val b = Rational("-1290181417","7162500000") * Rational("2")
+implicit def fops[F[_] : Functor, A](fa: F[A]) = new {
+  val witness = implicitly[Functor[F]]
 
-val c = a + b
-a.value
-b.value
-c.value
+  final def map[B](f: A => B): F[B] = witness.map(f)(fa)
+}
+
+val testList = new util.ArrayList(util.Arrays.asList("this", "is", "a", "test"))
+testList.map(_.toUpperCase)
