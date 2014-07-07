@@ -81,11 +81,11 @@ class InputAnalyser(input: String)(implicit outputVerifier: OutputVerifier) {
           ConsoleLogger.log1(okRules)
 
           if (okRules.isEmpty) {
-            o + " (" + undefined + ") default " + s.toString.trim
+            o + " (" + undefined + ") default " + ScoreEvaluator.trueScore(s, p + "_default_U").value
           }
           else {
             //TODO need to know containing policies
-            s"$o (([${okRules.map(r => r.q.name).mkString("", " ", "")}] ${accumulateScores(o, okRules.toSet, p)})${undefined}) default ${s.toString.trim}"
+            s"$o (([${okRules.map(r => r.q.name).mkString("", " ", "")}] ${accumulateScores(o, okRules.toSet, p)})${undefined}) default ${ScoreEvaluator.trueScore(s, p + "_default_U").value}"
           }
       }
     }
