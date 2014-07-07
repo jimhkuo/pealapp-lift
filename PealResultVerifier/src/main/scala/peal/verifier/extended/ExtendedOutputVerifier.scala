@@ -139,6 +139,7 @@ class ExtendedOutputVerifier(input: String) extends OutputVerifier {
   private def certValue(pSet: Either[BigDecimal, PolicySet], I: Map[String, Either[Rational, ThreeWayBoolean]]): BigDecimal = {
 
     def extractScore(pSet: PolicySet): Rational = {
+//      implicit val J = I
 
       val out = pSet match {
         case BasicPolicySet(pol, name) => extractScore(pol)
@@ -149,10 +150,10 @@ class ExtendedOutputVerifier(input: String) extends OutputVerifier {
             throw new RuntimeException("PealBottom reached in certValue because some predicates are not defined in I: " + notDefined + " in " + policyName + " " + rules)
           }
           else if (!rules.exists(r => I(r.q.name).fold(score => PealBottom, bool => bool) == PealTrue)) {
-            ScoreEvaluator.trueScore(I, score, policyName + "_default_U")
+            ScoreEvaluator.trueScore(score, policyName + "_default_U")
           }
           else {
-            val okScores = rules.filter(r => I(r.q.name).fold(score => PealBottom, bool => bool) == PealTrue).map(r => ScoreEvaluator.trueScore(I, r.score, policyName + "_" + r.q.name + "_U"))
+            val okScores = rules.filter(r => I(r.q.name).fold(score => PealBottom, bool => bool) == PealTrue).map(r => ScoreEvaluator.trueScore(r.score, policyName + "_" + r.q.name + "_U"))
             ConsoleLogger.log2("okScores are: " + okScores + " op is " + op)
             val decimal = op match {
               case Min => okScores.reduceLeft((acc, score) => acc.min(score))

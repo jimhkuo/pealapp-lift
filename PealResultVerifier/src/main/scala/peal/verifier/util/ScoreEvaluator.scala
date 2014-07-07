@@ -4,7 +4,7 @@ import peal.domain._
 
 object ScoreEvaluator {
 
-  def trueScore(I: Map[String, Either[Rational, ThreeWayBoolean]], score: Score, rangeVarName: String): Rational = {
+  def trueScore(score: Score, rangeVarName: String)(implicit I: Map[String, Either[Rational, ThreeWayBoolean]]): Rational = {
 
     def eval(e: Multiplier): Rational = {
       if (e.name == "" || I.contains(e.name)) {
