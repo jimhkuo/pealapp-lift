@@ -20,13 +20,13 @@ class ExtendedOutputVerifier(input: String) extends OutputVerifier {
   val predicateNames: Seq[String] = pealProgramParser.pols.values().flatMap(pol => pol.rules).map(r => r.q.name).toSeq.distinct
 
   def verifyModel(rawModel: String, analysisName: String): (ThreeWayBoolean, Set[String]) = {
-    val I = Z3ModelExtractor.extractIUsingRational(rawModel)(analysisName)
-    verifyModel(rawModel, analysisName, I, Set())
+    implicit val I = Z3ModelExtractor.extractIUsingRational(rawModel)(analysisName)
+    verifyModel(rawModel, analysisName, Set())
   }
 
-  def verifyModel(rawModel: String, analysisName: String, I: Map[String, Either[Rational, ThreeWayBoolean]], reMappedPredicates: Set[String]): (ThreeWayBoolean, Set[String]) = {
+  def verifyModel(rawModel: String, analysisName: String, reMappedPredicates: Set[String])(implicit I: Map[String, Either[Rational, ThreeWayBoolean]]): (ThreeWayBoolean, Set[String]) = {
 
-    doAnalysis(analysisName, I, reMappedPredicates) match {
+    doAnalysis(analysisName, reMappedPredicates)(I) match {
       case (PealBottom, s) =>
 
         var truthMapping = I
@@ -42,42 +42,42 @@ class ExtendedOutputVerifier(input: String) extends OutputVerifier {
             //            print(m)
             truthMapping += m -> Right(PealFalse)
         }
-        verifyModel(rawModel, analysisName, truthMapping, s + bottomPredicates.head)
+        verifyModel(rawModel, analysisName, s + bottomPredicates.head)(truthMapping)
       case (r, s) => (r, s)
     }
   }
 
-  def doAnalysis(analysisName: String, truthMapping: Map[String, Either[Rational, ThreeWayBoolean]], reMappedPredicates: Set[String]): (ThreeWayBoolean, Set[String]) = {
+  def doAnalysis(analysisName: String, reMappedPredicates: Set[String])(implicit truthMapping: Map[String, Either[Rational, ThreeWayBoolean]]): (ThreeWayBoolean, Set[String]) = {
     analyses(analysisName) match {
       case AlwaysTrue(_, condName) =>
         if (truthMapping(condName) == Right(PealFalse)) {
-          return (cert(conds(condName), truthMapping, truthMapping(condName).right.get), reMappedPredicates)
+          return (cert(conds(condName), truthMapping(condName).right.get)(truthMapping), reMappedPredicates)
         }
         throw new RuntimeException(condName + " should be false but is not in " + analysisName)
       case AlwaysFalse(_, condName) =>
         if (truthMapping(condName) == Right(PealTrue)) {
-          return (cert(conds(condName), truthMapping, truthMapping(condName).right.get), reMappedPredicates)
+          return (cert(conds(condName), truthMapping(condName).right.get)(truthMapping), reMappedPredicates)
         }
         throw new RuntimeException(condName + " should be true but is not in " + analysisName)
       case Satisfiable(_, condName) =>
         if (truthMapping(condName) == Right(PealTrue)) {
-          return (cert(conds(condName), truthMapping, truthMapping(condName).right.get), reMappedPredicates)
+          return (cert(conds(condName), truthMapping(condName).right.get)(truthMapping), reMappedPredicates)
         }
         throw new RuntimeException(condName + " should be true but is not in " + analysisName)
       case Different(_, lhs, rhs) =>
         if (truthMapping.get(lhs) != truthMapping.get(rhs)) {
-          return (cert(conds(lhs), truthMapping, truthMapping(lhs).right.get) && cert(conds(rhs), truthMapping, truthMapping(rhs).right.get), reMappedPredicates)
+          return (cert(conds(lhs), truthMapping(lhs).right.get)(truthMapping) && cert(conds(rhs), truthMapping(rhs).right.get)(truthMapping), reMappedPredicates)
         }
         throw new RuntimeException(lhs + " and " + rhs + " should be different but are not in " + analysisName)
       case Equivalent(_, lhs, rhs) =>
         if (truthMapping.get(lhs) != truthMapping.get(rhs)) {
-          return (cert(conds(lhs), truthMapping, truthMapping(lhs).right.get) && cert(conds(rhs), truthMapping, truthMapping(rhs).right.get), reMappedPredicates)
+          return (cert(conds(lhs), truthMapping(lhs).right.get)(truthMapping) && cert(conds(rhs), truthMapping(rhs).right.get)(truthMapping), reMappedPredicates)
         }
         throw new RuntimeException(lhs + " and " + rhs + " should be different but are not in " + analysisName)
       case Implies(_, lhs, rhs) =>
         if (truthMapping(lhs) == Right(PealTrue) && truthMapping(rhs) == Right(PealFalse)) {
-          val cert1: ThreeWayBoolean = cert(conds(lhs), truthMapping, truthMapping(lhs).right.get)
-          val cert2: ThreeWayBoolean = cert(conds(rhs), truthMapping, truthMapping(rhs).right.get)
+          val cert1: ThreeWayBoolean = cert(conds(lhs), truthMapping(lhs).right.get)(truthMapping)
+          val cert2: ThreeWayBoolean = cert(conds(rhs), truthMapping(rhs).right.get)(truthMapping)
           ConsoleLogger.log2("lhs is expected to be " + truthMapping(lhs).right.get + ", rhs is expected to be " + truthMapping(rhs).right.get)
           ConsoleLogger.log2("cert1 " + cert1 + " cert2 " + cert2)
           return (cert1 && cert2, reMappedPredicates)
@@ -90,27 +90,27 @@ class ExtendedOutputVerifier(input: String) extends OutputVerifier {
     throw new RuntimeException("shouldn't get here, no supported analysis specified")
   }
 
-  def cert(cond: Condition, I: Map[String, Either[Rational, ThreeWayBoolean]], v: ThreeWayBoolean): ThreeWayBoolean = {
+  def cert(cond: Condition, v: ThreeWayBoolean)(implicit I: Map[String, Either[Rational, ThreeWayBoolean]]): ThreeWayBoolean = {
     try {
       cond match {
-        case NotCondition(c) => cert(conds(c), I, !v)
+        case NotCondition(c) => cert(conds(c), !v)(I)
         case AndCondition(lhs, rhs) =>
           if (v == PealTrue) {
-            cert(conds(lhs), I, v) && cert(conds(rhs), I, v)
+            cert(conds(lhs), v)(I) && cert(conds(rhs), v)(I)
           }
           else {
-            cert(conds(lhs), I, v) || cert(conds(rhs), I, v)
+            cert(conds(lhs), v)(I) || cert(conds(rhs), v)(I)
           }
         case OrCondition(lhs, rhs) =>
           if (v == PealTrue) {
-            cert(conds(lhs), I, v) || cert(conds(rhs), I, v)
+            cert(conds(lhs), v)(I) || cert(conds(rhs), v)(I)
           }
           else {
-            cert(conds(lhs), I, v) && cert(conds(rhs), I, v)
+            cert(conds(lhs), v)(I) && cert(conds(rhs), v)(I)
           }
         case c: LessThanThCondition =>
-          val lhsValue: BigDecimal = certValue(Right(c.lhs), I)
-          val rhsValue: BigDecimal = certValue(c.rhs, I)
+          val lhsValue: BigDecimal = certValue(Right(c.lhs))(I)
+          val rhsValue: BigDecimal = certValue(c.rhs)(I)
           ConsoleLogger.log1("LessThanThCondition: lhs " + lhsValue + " <= rhs " + rhsValue + ", v " + v)
           if (v == PealTrue) {
             ThreeWayBooleanObj.from(lhsValue <= rhsValue)
@@ -118,8 +118,8 @@ class ExtendedOutputVerifier(input: String) extends OutputVerifier {
             ThreeWayBooleanObj.from(rhsValue < lhsValue)
           }
         case c: GreaterThanThCondition =>
-          val lhsValue: BigDecimal = certValue(Right(c.lhs), I)
-          val rhsValue: BigDecimal = certValue(c.rhs, I)
+          val lhsValue: BigDecimal = certValue(Right(c.lhs))(I)
+          val rhsValue: BigDecimal = certValue(c.rhs)(I)
           ConsoleLogger.log1("GreaterThanThCondition: lhs " + lhsValue + " > rhs " + rhsValue + ", v " + v)
           if (v == PealTrue) {
             ThreeWayBooleanObj.from(rhsValue < lhsValue)
@@ -136,10 +136,9 @@ class ExtendedOutputVerifier(input: String) extends OutputVerifier {
   }
 
   //if certValue is not BigDecimal, throw exception to be handled in the upper layer
-  private def certValue(pSet: Either[BigDecimal, PolicySet], I: Map[String, Either[Rational, ThreeWayBoolean]]): BigDecimal = {
+  private def certValue(pSet: Either[BigDecimal, PolicySet])(implicit I: Map[String, Either[Rational, ThreeWayBoolean]]): BigDecimal = {
 
     def extractScore(pSet: PolicySet): Rational = {
-//      implicit val J = I
 
       val out = pSet match {
         case BasicPolicySet(pol, name) => extractScore(pol)
