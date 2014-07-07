@@ -9,7 +9,6 @@ import peal.verifier.Z3ModelExtractor
 
 class ExtendedOutputVerifierTest extends ShouldMatchersForJUnit {
 
-
 //  ConsoleLogger.enable(2)
   @Test
   def testPredicateCondition() {

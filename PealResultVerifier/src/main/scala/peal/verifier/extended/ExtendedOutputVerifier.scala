@@ -6,6 +6,7 @@ import peal.domain.operator.{Max, Min, Mul, Plus}
 import peal.synthesis._
 import peal.synthesis.analysis.{AlwaysFalse, AlwaysTrue, Different, Equivalent, Implies, Satisfiable}
 import peal.util.ConsoleLogger
+import peal.verifier.util.ScoreEvaluator
 import peal.verifier.{OutputVerifier, Z3ModelExtractor}
 
 import scala.collection.JavaConversions._
@@ -137,30 +138,7 @@ class ExtendedOutputVerifier(input: String) extends OutputVerifier {
   //if certValue is not BigDecimal, throw exception to be handled in the upper layer
   private def certValue(pSet: Either[BigDecimal, PolicySet], I: Map[String, Either[Rational, ThreeWayBoolean]]): BigDecimal = {
 
-    def eval(e: Multiplier): Rational = {
-      if (e.name == "" || I.contains(e.name)) {
-        e.name match {
-          case "" => Rational(e.multiplier.toString())
-          case _ if I(e.name).isLeft => Rational(e.multiplier.toString()) * I(e.name).fold(s => s, vf => throw new RuntimeException("illegal variable format"))
-          case _ => throw new RuntimeException("Invalid eval case")
-        }
-      } else {
-        Rational("0")
-      }
-    }
-
-    def evaluateFormula(vf: VariableFormula): Rational = {
-      vf.operations.foldLeft(Rational("0"))((l, r) => l + eval(r))
-    }
-
     def extractScore(pSet: PolicySet): Rational = {
-
-      def trueScore(score: Score, rangeVarName: String): Rational = {
-        score.scoreRange match {
-          case None => score.underlyingScore.fold(s => Rational(s.toString()), f => evaluateFormula(f))
-          case Some(_) => score.underlyingScore.fold(s => Rational(s.toString()), f => evaluateFormula(f)) + I(rangeVarName).fold(s => s, vf => throw new RuntimeException("illegal variable format"))
-        }
-      }
 
       val out = pSet match {
         case BasicPolicySet(pol, name) => extractScore(pol)
@@ -171,10 +149,10 @@ class ExtendedOutputVerifier(input: String) extends OutputVerifier {
             throw new RuntimeException("PealBottom reached in certValue because some predicates are not defined in I: " + notDefined + " in " + policyName + " " + rules)
           }
           else if (!rules.exists(r => I(r.q.name).fold(score => PealBottom, bool => bool) == PealTrue)) {
-            trueScore(score, policyName + "_default_U")
+            ScoreEvaluator.trueScore(I, score, policyName + "_default_U")
           }
           else {
-            val okScores = rules.filter(r => I(r.q.name).fold(score => PealBottom, bool => bool) == PealTrue).map(r => trueScore(r.score, policyName + "_" + r.q.name + "_U"))
+            val okScores = rules.filter(r => I(r.q.name).fold(score => PealBottom, bool => bool) == PealTrue).map(r => ScoreEvaluator.trueScore(I, r.score, policyName + "_" + r.q.name + "_U"))
             ConsoleLogger.log2("okScores are: " + okScores + " op is " + op)
             val decimal = op match {
               case Min => okScores.reduceLeft((acc, score) => acc.min(score))

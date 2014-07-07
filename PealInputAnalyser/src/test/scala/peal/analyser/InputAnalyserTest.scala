@@ -1,6 +1,6 @@
 package peal.analyser
 
-import org.junit.Test
+import org.junit.{Ignore, Test}
 import org.scalatest.junit.ShouldMatchersForJUnit
 import peal.util.ConsoleLogger
 import peal.verifier.explicit.ExplicitOutputVerifier
@@ -123,6 +123,7 @@ class InputAnalyserTest extends ShouldMatchersForJUnit {
     out should be ("uses cond1, cond2\nb1 = * () default 0.5\nb2 = * (([q3] 1.0) (q4? 1.0)) default 0.5")
   }
 
+  @Ignore("wip")
   @Test
   def testCanAnalyseExtended() {
     ConsoleLogger.enable(1)
