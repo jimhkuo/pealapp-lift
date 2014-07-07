@@ -4,6 +4,7 @@ import net.liftweb._
 import http._
 import net.liftweb.http.js.jquery.JqJE._
 import net.liftweb.http.js.JsCmds._
+import peal.analyser.InputAnalyser
 import peal.util.ConsoleLogger
 import scala.xml.Text
 import net.liftweb.common.Loggable
@@ -17,7 +18,7 @@ import peal.domain.{PealFalse, PealBottom, PealTrue, PolicySet}
 import peal.domain.z3.{Sat, PealAst, Term}
 import peal.antlr.util.ParserHelper
 import peal.z3.Z3Caller
-import peal.explicit.{ExplicitAnalyser, ExplicitOutputVerifier}
+import peal.explicit.ExplicitOutputVerifier
 import peal.extended.ExtendedOutputVerifier
 import net.liftweb.http.js.jquery.JqJE.JqId
 import code.lib.Message
@@ -397,7 +398,7 @@ class PealCometActor extends CometActor with Loggable {
       val analysedResults = Z3OutputAnalyser.execute(analyses, z3OutputModels, constsMap)
 
       val unfoldedInputs = for (analysis <- sortedAnalyses) yield {
-        if (z3OutputModels(analysis).satResult == Sat) "Analysis \"" + analysis + "\" " + new ExplicitAnalyser(inputPolicies).analyse(z3RawOutput, analysis)
+        if (z3OutputModels(analysis).satResult == Sat) "Analysis \"" + analysis + "\" " + new InputAnalyser(inputPolicies).analyse(z3RawOutput, analysis)
         else "Analysis \"" + analysis + "\" is UNSAT"
       }
       verbose match {

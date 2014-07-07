@@ -1,8 +1,9 @@
-package peal.explicit
+package peal.analyser
 
 import peal.antlr.util.ParserHelper
 import peal.domain._
 import peal.domain.operator._
+import peal.explicit.ExplicitOutputVerifier
 import peal.synthesis._
 import peal.synthesis.analysis._
 import peal.util.ConsoleLogger
@@ -11,7 +12,7 @@ import peal.verifier.Z3ModelExtractor
 import scala.collection.JavaConversions._
 
 
-class ExplicitAnalyser(input: String) {
+class InputAnalyser(input: String) {
 
   private val pealProgramParser = ParserHelper.getPealParser(input)
   pealProgramParser.program()
