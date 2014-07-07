@@ -25,6 +25,7 @@ class InputAnalyser(input: String) {
     case MaxPolicySet(l, r, _) => extractPolicySet(l) ::: extractPolicySet(r)
     case MinPolicySet(l, r, _) => extractPolicySet(l) ::: extractPolicySet(r)
     case PlusPolicySet(l, r, _) => extractPolicySet(l) ::: extractPolicySet(r)
+    case MulPolicySet(l, r, _) => extractPolicySet(l) ::: extractPolicySet(r)
     case Pol(rs, o, s, n) => n :: Nil
   }
 
