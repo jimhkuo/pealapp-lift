@@ -1,5 +1,7 @@
 package peal.runner
 
+import peal.verifier.extended.ExtendedOutputVerifier
+
 import scala.concurrent.Await
 import scala.concurrent.duration._
 import scala.collection.JavaConversions._
@@ -13,7 +15,6 @@ import scala.sys.process._
 import java.util.concurrent.TimeoutException
 import peal.antlr.util.ParserHelper
 import peal.domain.{PealBottom, PealFalse, PealTrue}
-import peal.extended.ExtendedOutputVerifier
 
 
 class VerificationExperimentRunner(doDomainSpecifics: Boolean, system: ActorSystem, duration: Long, z3CallerMemoryBound: Long) {

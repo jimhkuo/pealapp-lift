@@ -6,6 +6,8 @@ import net.liftweb.http.js.jquery.JqJE._
 import net.liftweb.http.js.JsCmds._
 import peal.analyser.InputAnalyser
 import peal.util.ConsoleLogger
+import peal.verifier.explicit.ExplicitOutputVerifier
+import peal.verifier.extended.ExtendedOutputVerifier
 import scala.xml.Text
 import net.liftweb.common.Loggable
 import scala.collection.JavaConversions._
@@ -18,8 +20,6 @@ import peal.domain.{PealFalse, PealBottom, PealTrue, PolicySet}
 import peal.domain.z3.{Sat, PealAst, Term}
 import peal.antlr.util.ParserHelper
 import peal.z3.Z3Caller
-import peal.explicit.ExplicitOutputVerifier
-import peal.extended.ExtendedOutputVerifier
 import net.liftweb.http.js.jquery.JqJE.JqId
 import code.lib.Message
 import code.lib.Result

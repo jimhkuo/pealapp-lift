@@ -1,8 +1,7 @@
-package peal.verifier.util
+package peal.domain
 
-import org.scalatest.junit.ShouldMatchersForJUnit
 import org.junit.Test
-import peal.domain.Rational
+import org.scalatest.junit.ShouldMatchersForJUnit
 
 
 class RationalTest extends ShouldMatchersForJUnit {

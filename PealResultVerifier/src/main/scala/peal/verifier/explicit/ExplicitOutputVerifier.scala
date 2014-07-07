@@ -1,4 +1,4 @@
-package peal.explicit
+package peal.verifier.explicit
 
 import peal.antlr.util.ParserHelper
 import peal.domain._

@@ -1,8 +1,8 @@
-package peal.extended
+package peal.verifier.extended
 
-import org.scalatest.junit.ShouldMatchersForJUnit
 import org.junit.{Ignore, Test}
-import peal.domain.{ThreeWayBoolean, PealTrue}
+import org.scalatest.junit.ShouldMatchersForJUnit
+import peal.domain.{PealTrue, ThreeWayBoolean}
 import peal.util.ConsoleLogger
 import peal.verifier.Z3ModelExtractor
 

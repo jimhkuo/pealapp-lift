@@ -3,11 +3,11 @@ package peal.analyser
 import peal.antlr.util.ParserHelper
 import peal.domain._
 import peal.domain.operator._
-import peal.explicit.ExplicitOutputVerifier
 import peal.synthesis._
 import peal.synthesis.analysis._
 import peal.util.ConsoleLogger
 import peal.verifier.Z3ModelExtractor
+import peal.verifier.explicit.ExplicitOutputVerifier
 
 import scala.collection.JavaConversions._
 

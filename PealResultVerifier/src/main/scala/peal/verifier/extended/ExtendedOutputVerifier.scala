@@ -1,22 +1,14 @@
-package peal.extended
+package peal.verifier.extended
 
 import peal.antlr.util.ParserHelper
-import peal.util.ConsoleLogger
-import scala.collection.JavaConversions._
-import peal.verifier.Z3ModelExtractor
 import peal.domain._
-import peal.synthesis._
-import peal.synthesis.AndCondition
-import peal.synthesis.analysis.AlwaysFalse
-import peal.synthesis.analysis.AlwaysTrue
-import peal.synthesis.OrCondition
-import peal.synthesis.NotCondition
-import peal.synthesis.LessThanThCondition
-import peal.synthesis.analysis.Different
-import peal.synthesis.analysis.Implies
-import peal.synthesis.analysis.Satisfiable
-import peal.synthesis.analysis.Equivalent
-import peal.domain.operator.{Mul, Max, Min, Plus}
+import peal.domain.operator.{Max, Min, Mul, Plus}
+import peal.synthesis.{AndCondition, LessThanThCondition, NotCondition, OrCondition, _}
+import peal.synthesis.analysis.{AlwaysFalse, AlwaysTrue, Different, Equivalent, Implies, Satisfiable}
+import peal.util.ConsoleLogger
+import peal.verifier.Z3ModelExtractor
+
+import scala.collection.JavaConversions._
 
 class ExtendedOutputVerifier(input: String) {
   val pealProgramParser = ParserHelper.getPealParser(input)
