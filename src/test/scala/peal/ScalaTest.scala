@@ -25,10 +25,9 @@ class ScalaTest extends ShouldMatchersForJUnit {
       }
     }
 
-    implicit def fopsx[F[_] : Functor, A](fa: F[A]) = new {
-      val witness = implicitly[Functor[F]]
-
-      final def mapX[B](f: A => B): F[B] = witness.mapY(f)(fa)
+    implicit def fops[G[_] : Functor, A](fa: G[A]) = new {
+      val witness = implicitly[Functor[G]]
+      final def mapX[B](f: A => B): G[B] = witness.mapY(f)(fa)
     }
 
     val testList = new ArrayList(Arrays.asList("this", "is", "a", "test"))
