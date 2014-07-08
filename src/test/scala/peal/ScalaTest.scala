@@ -35,29 +35,40 @@ class ScalaTest extends ShouldMatchersForJUnit {
     println(testList.mapX(_.toUpperCase))
   }
 
+  trait NodeAppender {
+    def appendNode(node: Node) : NodeSeq => NodeSeq
+  }
+
+  implicit object NodeAppenderObj extends NodeAppender {
+    override def appendNode(node: Node) = (nodes : NodeSeq) => {
+      nodes :+ node
+    }
+  }
+
+  implicit def fops(ns: NodeSeq) = new {
+    val witness = implicitly[NodeAppender]
+
+    final def append(node: Node): NodeSeq = {
+      witness.appendNode(node)(ns)
+    }
+  }
+
+  object MutableNodeSeq {
+    def apply(nodes : NodeSeq) = new MutableNodeSeq(nodes)
+  }
+
+  class MutableNodeSeq(var nodes: NodeSeq) {
+    def append(node: Node) {
+      nodes = nodes.append(node)
+    }
+    override def toString = nodes.toString()
+  }
+
   @Test
   def testNodeSeq() {
-    trait NodeAppender {
-      def appendNode(node: Node) : NodeSeq => NodeSeq
-    }
-
-    implicit object NodeAppenderObj extends NodeAppender {
-      override def appendNode(node: Node) = (nodes : NodeSeq) => {
-        nodes :+ node
-      }
-    }
-
-    implicit def fops(ns: NodeSeq): Object {def appendNode(node: Node): NodeSeq} = new {
-      val witness = implicitly[NodeAppender]
-
-      final def appendNode(node: Node): NodeSeq = {
-        witness.appendNode(node)(ns)
-      }
-    }
-
-    val nodes: NodeSeq = <span>hi</span>
+    val nodes = MutableNodeSeq(<span>hi</span>)
     println(nodes)
-    println(nodes.appendNode(<span>Hi2</span>))
+    println(nodes.append(<span>Hi2</span>))
     println(nodes)
 
   }
