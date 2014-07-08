@@ -29,7 +29,6 @@ class InputAnalyser(input: String) {
     case Pol(rs, o, s, n) => n :: Nil
   }
 
-  //TODO This currently only works for explicit synthesis outputs, need changing for extended synthesis
   private def pullPolicies(cond: Condition): List[String] = cond match {
     case LessThanThCondition(lhs, rhs) => extractPolicySet(lhs) ::: rhs.fold(b => List(), p => extractPolicySet(p))
     case GreaterThanThCondition(lhs, rhs) => extractPolicySet(lhs)::: rhs.fold(b => List(), p => extractPolicySet(p))
@@ -82,7 +81,6 @@ class InputAnalyser(input: String) {
             o + " (" + undefined + ") default " + ScoreEvaluator.trueScore(s, p + "_default_U").value
           }
           else {
-            //TODO need to know containing policies
             s"$o (([${okRules.map(r => r.q.name).mkString("", " ", "")}] ${accumulateScores(o, okRules.toSet, p)})${undefined}) default ${ScoreEvaluator.trueScore(s, p + "_default_U").value}"
           }
       }
