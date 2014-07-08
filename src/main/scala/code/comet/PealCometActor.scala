@@ -11,7 +11,7 @@ import peal.verifier.extended.ExtendedOutputVerifier
 import scala.xml.Text
 import net.liftweb.common.Loggable
 import scala.collection.JavaConversions._
-import peal.synthesis.{ExtendedSynthesiser, NewSynthesiser, LazySynthesiser, Condition}
+import peal.synthesis._
 import scala.Predef._
 import peal.synthesis.analysis._
 import code.lib._
@@ -48,6 +48,7 @@ class PealCometActor extends CometActor with Loggable {
   var inputPolicies = socialNetworkExample
   var z3RawOutput = ""
   var extendedSynthesis = ""
+  var explicitSynthesis = ""
   var constsMap: Map[String, PealAst] = Map()
   var analyses: Map[String, AnalysisGenerator] = Map()
   var majorityVotingCount = 10
@@ -105,7 +106,7 @@ class PealCometActor extends CometActor with Loggable {
               <div class="col-sm-5">
                 {SHtml.ajaxButton("Display results of all analyses in pretty printed form and perform independent certification of results", () => {this ! SynthesisAndCallZ3QuietAnalysis; _Noop}, "class" -> "btn btn-success btn-sm", "style" -> "margin:2px;")}
                 {SHtml.ajaxButton("Generate, show, and run Z3 code; display results in pretty-printed and raw form", () => {this ! SynthesisAndCallZ3; _Noop}, "class" -> "btn btn-success btn-sm", "style" -> "margin:2px;")}
-                {SHtml.ajaxButton("Generate, show, and run Z3 code, display results in raw Z3 form", () => {this ! Display; _Noop}, "class" -> "btn btn-success btn-sm", "style" -> "margin:2px;")}
+                {SHtml.ajaxButton("Generate, show, and run Z3 code, display results in raw Z3 form", () => {this ! ExplicitSynthesisAndCallZ3; _Noop}, "class" -> "btn btn-success btn-sm", "style" -> "margin:2px;")}
               </div>
             </div>
             <div class="tab-pane" id="extended">
@@ -183,9 +184,12 @@ class PealCometActor extends CometActor with Loggable {
       val lazySynthesis = performLazySynthesis(inputPolicies)
       val lapseTime = System.nanoTime() - start
       this ! SaveFile(lazySynthesis, lapseTime)
-    case Display =>
-      val (constsMap, conds,  pSets, analyses, domainSpecific) = parseInput(inputPolicies)
-      onDisplay(constsMap, conds,  pSets, analyses, domainSpecific)
+    case ExplicitSynthesisAndCallZ3 =>
+      val (constsMap,  conds, pSets, analyses, domainSpecific) = parseInput(inputPolicies)
+      this.constsMap = constsMap
+      this.analyses = analyses
+      explicitSynthesis = performExplicitSynthesis(inputPolicies)
+      onCallZ3(explicitSynthesis)
     case Prepare =>
       partialUpdate(JqId("result") ~> JqHtml(Text("Synthesising... Please wait...")))
       this ! Download
@@ -270,6 +274,16 @@ class PealCometActor extends CometActor with Loggable {
   private def performNewSynthesis(policies: String): String = {
     try {
       new NewSynthesiser(policies).generate()
+    } catch {
+      case e: Exception =>
+        e.printStackTrace()
+        dealWithIt(e)
+    }
+  }
+
+  private def performExplicitSynthesis(policies: String): String = {
+    try {
+      new EagerSynthesiser(policies).generate()
     } catch {
       case e: Exception =>
         e.printStackTrace()

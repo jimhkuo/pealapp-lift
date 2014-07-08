@@ -39,7 +39,7 @@ case object ResetNonConstant
 
 case object MajorityVoting
 
-case object Display
+case object ExplicitSynthesisAndCallZ3
 
 case object DisplayLazy
 
