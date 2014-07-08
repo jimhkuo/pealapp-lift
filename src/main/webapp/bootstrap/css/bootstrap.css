@@ -3889,6 +3889,12 @@ textarea.input-group-sm > .input-group-btn > .btn {
 .nav-tabs > li > a.generalScore {
   color: #5bc0de;
 }
+.nav-tabs > li > a {
+  color: #428bca;
+}
+.nav-tabs > li.active > a {
+  color: black;
+}
 
 .nav-tabs.nav-justified {
   width: 100%;
