@@ -41,7 +41,14 @@ object Z3OutputAnalyser {
       nodes = nodes.append(node)
     }
     def append(s: String) {
-      nodes = nodes.append(<span>{s}<br/></span>)
+      append(s.split("\n").toList)
+    }
+    def append(lines: List[String]) {
+      lines.foreach{
+        l =>
+        nodes = nodes.append(<span>{l}<br/></span>)
+      }
+
     }
     override def toString = nodes.toString()
   }
@@ -111,7 +118,7 @@ object Z3OutputAnalyser {
 
         val cert = if (z3OutputModels(a).satResult == Sat) {
           section.append(<br/>)
-          section.append(<br/>)
+//          section.append(<br/>)
           val verifiedModel = ov.verifyModel(z3RawOutput, a)
           val result = verifiedModel._1 match {
             case PealTrue => "succeeded"
@@ -119,15 +126,14 @@ object Z3OutputAnalyser {
             case PealBottom => "was inconclusive"
           }
 
-          "Certification of analysis [" + a + "] " + result +
-            ". Additional predicates set to false in this certification process are " + verifiedModel._2 + "\n\n" +
-            "Policies in analysis [" + a + "] specialised with respect to the model extended with false predicates from Set():\n\n" + new InputAnalyser(inputPolicies).analyse(z3RawOutput, a)
+          section.append("Certification of analysis [" + a + "] " + result + ". Additional predicates set to false in this certification process are " + verifiedModel._2)
+          section.append("\nPolicies in analysis [" + a + "] specialised with respect to the model extended with false predicates from Set():")
+          section.append(new InputAnalyser(inputPolicies).analyse(z3RawOutput, a))
         }
         else {
-          "\nOutput of analysis [" + a + "] is UNSAT: so no certification performed and no specialized policies reported."
+          section.append("\nOutput of analysis [" + a + "] is UNSAT: so no certification performed and no specialized policies reported.")
         }
 
-        section.append(<span>{cert}</span>)
         entireAnalysis = entireAnalysis ++ <p>{section.nodes}</p>
     }
     entireAnalysis
@@ -151,6 +157,6 @@ object Z3OutputAnalyser {
       define.name + " is " + getNaturalValue(define.value)
     }
 
-    (predicates ++ conds ++ additionals).mkString("\n")
+    (predicates ++ conds ++ additionals).toList
   }
 }
