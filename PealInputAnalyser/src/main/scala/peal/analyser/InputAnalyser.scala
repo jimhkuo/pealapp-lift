@@ -100,7 +100,7 @@ class InputAnalyser(input: String) {
     val policies = bs.toSet
     ConsoleLogger.log2(policies)
 
-    "In " + condNames.mkString("", ", ", "") + ":\n" + policies.map(p => p + " = " + specialisePolicy(p)).mkString("\n") + "\n"
+    policies.map(p => p + " = " + specialisePolicy(p)).mkString("\n") + "\n"
   }
 
 }

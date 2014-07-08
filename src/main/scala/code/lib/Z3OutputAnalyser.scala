@@ -83,7 +83,7 @@ object Z3OutputAnalyser {
 
           "Certification of analysis [" + a + "] " + result +
             ". Additional predicates set to false in this certification process are " + verifiedModel._2 + "\n\n" +
-            "Policies in analysis [" + a + "] specialised with respect to the model extended with false predicates from Set():\n" + new InputAnalyser(inputPolicies).analyse(z3RawOutput, a)
+            "Policies in analysis [" + a + "] specialised with respect to the model extended with false predicates from Set():\n\n" + new InputAnalyser(inputPolicies).analyse(z3RawOutput, a)
         }
         else {
           "Analysis \"" + a + "\" is UNSAT"
