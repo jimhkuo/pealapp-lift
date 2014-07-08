@@ -5,7 +5,7 @@ import peal.antlr.util.ParserHelper
 import peal.domain.z3._
 import peal.domain.{PealBottom, PealFalse, PealTrue}
 import peal.synthesis.analysis.{AlwaysFalse, AlwaysTrue, Different, Satisfiable, _}
-import peal.verifier.OutputVerifier
+import peal.verifier.{Z3ModelValueParser, OutputVerifier}
 
 import scala.collection.JavaConversions._
 import scala.collection.mutable.ListBuffer
@@ -95,19 +95,22 @@ object Z3OutputAnalyser {
     out.toList
   }
 
+  private def getNaturalValue(value: String) = {
+    Z3ModelValueParser.parseToRational(value).fold(r => r.value + " (" + value + ")", b => b.toString)
+  }
 
   private def getReasons(model: Model, includeNames: Set[String], excludeNames: Set[String], constsMap: Map[String, PealAst]) = {
     val assignments = model.assignments.filterNot(_.value == "")
     val predicates = for (define: Assignment <- assignments if constsMap.contains(define.name)) yield {
-      define.name + " is " + define.value
+      define.name + " is " + getNaturalValue(define.value)
     }
 
     val conds = for (define: Assignment <- assignments if includeNames.contains(define.name)) yield {
-      define.name + " is " + define.value
+      define.name + " is " + getNaturalValue(define.value)
     }
 
     val additionals = for (define: Assignment <- assignments if !includeNames.contains(define.name) && !constsMap.contains(define.name) && excludeNames.filter(define.name.startsWith(_)).isEmpty) yield {
-      define.name + " is " + define.value
+      define.name + " is " + getNaturalValue(define.value)
     }
 
     (predicates ++ conds ++ additionals).mkString("\n")
