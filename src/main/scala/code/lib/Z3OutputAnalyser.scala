@@ -40,6 +40,9 @@ object Z3OutputAnalyser {
     def append(node: Node) {
       nodes = nodes.append(node)
     }
+    def append(s: String) {
+      nodes = nodes.append(<span>{s}<br/></span>)
+    }
     override def toString = nodes.toString()
   }
 
@@ -52,23 +55,25 @@ object Z3OutputAnalyser {
     sortedAnalyses.foreach {
       a =>
         val section = MutableNodeSeq()
-        section.append(<span>Result of analysis [{analyses(a).analysisName}]<br/><br/></span>)
+        section.append(<h5>Result of analysis [{analyses(a).analysisName}]</h5>)
         analyses(a) match {
           case s: AlwaysTrue =>
             if (z3OutputModels(a).satResult == Unsat) {
-              section.append(<span>{s.cond} is always true<br/></span>)
+              section.append(s.cond + " is always true")
             }
             else {
-              section.append(<span>{s.cond} is NOT always true<br/></span>)
-              section.append(<span>For example, when<br/>{getReasons(z3OutputModels(a), Set(), Set("always_true_", "cond"), constsMap)}</span>)
+              section.append(s.cond + " is NOT always true")
+              section.append("For example, when")
+              section.append(getReasons(z3OutputModels(a), Set(), Set("always_true_", "cond"), constsMap))
             }
           case s: AlwaysFalse =>
             if (z3OutputModels(a).satResult == Unsat) {
-              section.append(<span>{s.cond} is always false<br/></span>)
+              section.append(s.cond + " is always false")
             }
             else {
-              section.append(<span>{s.cond} is NOT always false<br/></span>)
-              section.append(<span>For example, when<br/>{getReasons(z3OutputModels(a), Set(), Set("always_false_", "cond"), constsMap)}</span>)
+              section.append(s.cond + " is NOT always false")
+              section.append("For example, when")
+              section.append(getReasons(z3OutputModels(a), Set(), Set("always_false_", "cond"), constsMap))
             }
 //          case s: Satisfiable =>
 //            if (z3OutputModels(a).satResult == Unsat) {
@@ -123,7 +128,7 @@ object Z3OutputAnalyser {
         }
 
         section.append(<span>{cert}</span>)
-        entireAnalysis = entireAnalysis ++ <pre>{section.nodes}</pre>
+        entireAnalysis = entireAnalysis ++ <p>{section.nodes}</p>
     }
     entireAnalysis
   }
