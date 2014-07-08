@@ -9,12 +9,13 @@ import peal.verifier.{Z3ModelValueParser, OutputVerifier}
 
 import scala.collection.JavaConversions._
 import scala.collection.mutable.ListBuffer
+import scala.xml.NodeSeq
 
 object Z3OutputAnalyser {
-  def execute(analyses: Map[String, AnalysisGenerator], constsMap: Map[String, PealAst], inputPolicies: String, z3RawOutput: String)(implicit ov: OutputVerifier): List[String] = {
+  def execute(analyses: Map[String, AnalysisGenerator], constsMap: Map[String, PealAst], inputPolicies: String, z3RawOutput: String)(implicit ov: OutputVerifier): NodeSeq = {
     val z3OutputParser = ParserHelper.getZ3OutputParser(z3RawOutput)
     val z3OutputModels = z3OutputParser.results().toMap
-    val out = ListBuffer[String]()
+    var out = NodeSeq.Empty
 
     val sortedAnalyses = analyses.keys.toSeq.sortWith(_ < _)
     sortedAnalyses.foreach {
@@ -90,9 +91,9 @@ object Z3OutputAnalyser {
         }
 
         buffer.append(cert)
-        out.append(buffer.toString())
+        out = out :+ <pre>{buffer.toString()}</pre>
     }
-    out.toList
+    out
   }
 
   private def getNaturalValue(value: String) = {

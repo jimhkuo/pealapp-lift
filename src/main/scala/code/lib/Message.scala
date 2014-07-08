@@ -17,6 +17,7 @@ case object Clear
 case object Generate
 
 case object GenerateDomainSpecifics
+
 case object GenerateWithRange
 
 case object Download
@@ -52,11 +53,13 @@ case object Analysis1
 case object SynthesisAndCallZ3
 
 case object SynthesisAndCallZ3QuietAnalysis
+
 case object SynthesisExtendedAndCallZ3QuietAnalysis
 
 case object LazySynthesisAndCallZ3
 
 case object ExtendedSynthesisAndCallZ3
+
 case object RunAndCertifyExtendedResults
 
 case object NewSynthesisAndCallZ3
