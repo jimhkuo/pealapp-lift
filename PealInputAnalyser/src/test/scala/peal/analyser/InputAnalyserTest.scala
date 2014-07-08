@@ -18,7 +18,7 @@ class InputAnalyserTest extends ShouldMatchersForJUnit {
     ConsoleLogger.log2(input)
     val out = new InputAnalyser(input).analyse(model, "name1")
     ConsoleLogger.log2(out)
-    out should be ("uses cond1\nb1 = min () default 1.0")
+    out should be ("b1 = min () default 1.0\n")
   }
 
   @Test
@@ -29,7 +29,7 @@ class InputAnalyserTest extends ShouldMatchersForJUnit {
     ConsoleLogger.log2(input)
     val out = new InputAnalyser(input).analyse(model, "name1")
     ConsoleLogger.log2(out)
-    out should be ("uses cond1\nb1 = min (([q1] 0.6)) default 0.5")
+    out should be ("b1 = min (([q1] 0.6)) default 0.5\n")
   }
 
   @Test
@@ -39,7 +39,7 @@ class InputAnalyserTest extends ShouldMatchersForJUnit {
     val model = "Result of analysis [name1 = always_true? cond1]:\nsat\n(model \n  (define-fun cond1 () Bool\n    false)\n  (define-fun q1 () Bool\n    true)\n  (define-fun always_true_name1 () Bool\n    false)\n)"
     ConsoleLogger.log2(input)
     val out = new InputAnalyser(input).analyse(model, "name1")
-    out should be ("uses cond1\nb1 = max (([q1] 0.8) (q2? 0.8)) default 0.0")
+    out should be ("b1 = max (([q1] 0.8) (q2? 0.8)) default 0.0\n")
   }
 
   @Test
@@ -49,7 +49,7 @@ class InputAnalyserTest extends ShouldMatchersForJUnit {
     val model = "Result of analysis [name1 = always_true? cond1]:\nsat\n(model \n  (define-fun cond1 () Bool\n    false)\n  (define-fun q1 () Bool\n    true)\n  (define-fun q2 () Bool\n    true)\n  (define-fun always_true_name1 () Bool\n    false)\n)"
     ConsoleLogger.log2(input)
     val out = new InputAnalyser(input).analyse(model, "name1")
-    out should be ("uses cond1\nb1 = + (([q1 q2] 0.6)) default 0.5")
+    out should be ("b1 = + (([q1 q2] 0.6)) default 0.5\n")
   }
 
   @Test
@@ -59,7 +59,7 @@ class InputAnalyserTest extends ShouldMatchersForJUnit {
     val model = "Result of analysis [name1 = always_true? cond1]:\nsat\n(model \n  (define-fun cond1 () Bool\n    false)\n  (define-fun q1 () Bool\n    true)\n  (define-fun q2 () Bool\n    true)\n  (define-fun always_true_name1 () Bool\n    false)\n)"
     ConsoleLogger.log2(input)
     val out = new InputAnalyser(input).analyse(model, "name1")
-    out should be ("uses cond1\nb1 = * (([q1 q2] 0.64)) default 0.0")
+    out should be ("b1 = * (([q1 q2] 0.64)) default 0.0\n")
   }
 
   @Test
@@ -70,7 +70,7 @@ class InputAnalyserTest extends ShouldMatchersForJUnit {
     ConsoleLogger.log2(input)
     val out = new InputAnalyser(input).analyse(model, "name1")
     ConsoleLogger.log2(out)
-    out should be ("uses cond1\nb1 = * (([q1] 1.0) (q2? 1.0)) default 0.5")
+    out should be ("b1 = * (([q1] 1.0) (q2? 1.0)) default 0.5\n")
   }
 
   @Test
@@ -80,7 +80,7 @@ class InputAnalyserTest extends ShouldMatchersForJUnit {
     val model = "Result of analysis [name1 = always_false? cond1]:\nsat\n(model \n  (define-fun cond1 () Bool\n    true)\n  (define-fun always_false_name1 () Bool\n    true)\n  (define-fun q1 () Bool\n    false)\n  (define-fun q2 () Bool\n    false)\n)"
     ConsoleLogger.log2(input)
     val out = new InputAnalyser(input).analyse(model, "name1")
-    out should be ("uses cond1\nb1 = * () default 0.5")
+    out should be ("b1 = * () default 0.5\n")
   }
 
   @Test
@@ -90,7 +90,7 @@ class InputAnalyserTest extends ShouldMatchersForJUnit {
     val model = "Result of analysis [name1 = satisfiable? cond1]:\nsat\n(model \n  (define-fun cond1 () Bool\n    true)\n  (define-fun satisfiable_name1 () Bool\n    true)\n  (define-fun q1 () Bool\n    false)\n  (define-fun q2 () Bool\n    false)\n)"
     ConsoleLogger.log2(input)
     val out = new InputAnalyser(input).analyse(model, "name1")
-    out should be ("uses cond1\nb1 = * () default 0.5")
+    out should be ("b1 = * () default 0.5\n")
   }
 
   @Test
@@ -100,7 +100,7 @@ class InputAnalyserTest extends ShouldMatchersForJUnit {
     val model = "Result of analysis [name1 = different? cond1 cond2]:\nsat\n(model \n  (define-fun cond1 () Bool\n    true)\n  (define-fun different_name1 () Bool\n    true)\n  (define-fun q1 () Bool\n    false)\n  (define-fun q3 () Bool\n    true)\n  (define-fun q2 () Bool\n    false)\n  (define-fun cond2 () Bool\n    false)\n)"
     ConsoleLogger.log2(input)
     val out = new InputAnalyser(input).analyse(model, "name1")
-    out should be ("uses cond1, cond2\nb1 = * () default 0.5\nb2 = * (([q3] 1.0) (q4? 1.0)) default 0.5")
+    out should be ("b1 = * () default 0.5\nb2 = * (([q3] 1.0) (q4? 1.0)) default 0.5\n")
   }
 
   @Test
@@ -110,7 +110,7 @@ class InputAnalyserTest extends ShouldMatchersForJUnit {
     val model = "Result of analysis [name1 = implies? cond1 cond2]:\nsat\n(model \n  (define-fun cond1 () Bool\n    true)\n  (define-fun implies_name1 () Bool\n    true)\n  (define-fun q1 () Bool\n    false)\n  (define-fun q3 () Bool\n    true)\n  (define-fun q2 () Bool\n    false)\n  (define-fun cond2 () Bool\n    false)\n)"
     ConsoleLogger.log2(input)
     val out = new InputAnalyser(input).analyse(model, "name1")
-    out should be ("uses cond1, cond2\nb1 = * () default 0.5\nb2 = * (([q3] 1.0) (q4? 1.0)) default 0.5")
+    out should be ("b1 = * () default 0.5\nb2 = * (([q3] 1.0) (q4? 1.0)) default 0.5\n")
   }
 
   @Test
@@ -122,7 +122,7 @@ class InputAnalyserTest extends ShouldMatchersForJUnit {
     ConsoleLogger.log2(input)
     val out = new InputAnalyser(input).analyse(model, "analysis1")
     ConsoleLogger.log1(out)
-    out should be ("uses cond1\nb5 = max (([q2 q0 q4] 0.3937)) default 0\nb6 = + (([q2 q3] 0.0736)) default 0.2814\nb4 = min (([q0 q5 q2 q4] 0.0736)) default 0.9265\nb0 = * (([q5] 0.988)) default 0.6085\nb2 = max (([q5 q3 q4] 0.1726)) default 0.2029\nb3 = + (([q2] 0.8261)) default 0\nb7 = * (([q2] 0.547)) default 0.6631\nb1 = min (([q3 q4 q5 q0] 0.234)) default 0.1661")
+    out should be ("b5 = max (([q2 q0 q4] 0.3937)) default 0\nb6 = + (([q2 q3] 0.0736)) default 0.2814\nb4 = min (([q0 q5 q2 q4] 0.0736)) default 0.9265\nb0 = * (([q5] 0.988)) default 0.6085\nb2 = max (([q5 q3 q4] 0.1726)) default 0.2029\nb3 = + (([q2] 0.8261)) default 0\nb7 = * (([q2] 0.547)) default 0.6631\nb1 = min (([q3 q4 q5 q0] 0.234)) default 0.1661\n")
   }
 
   @Test
@@ -134,7 +134,7 @@ class InputAnalyserTest extends ShouldMatchersForJUnit {
     ConsoleLogger.log2(input)
     val out = new InputAnalyser(input).analyse(model, "analysis1")
     ConsoleLogger.log1(out)
-    out should be ("uses cond1\nb1 = * () default 0\nb7 = min (([q2] 0.7567) (q1? 0.9557)) default 0.7636\nb6 = min (([q5 q3 q2] 0) (q1? 0.2133)) default 0.2424\nb5 = * () default 0.2009\nb4 = + (([q2] 0.2009)) default 0.1326\nb2 = + (([q5 q2] 1.2454)) default 0.6451\nb3 = max (([q5 q3] 0.1135) (q1? 0)) default 0.9094\nb0 = max (([q5 q3 q2] 0.6971)) default 0")
+    out should be ("b1 = * () default 0\nb7 = min (([q2] 0.7567) (q1? 0.9557)) default 0.7636\nb6 = min (([q5 q3 q2] 0) (q1? 0.2133)) default 0.2424\nb5 = * () default 0.2009\nb4 = + (([q2] 0.2009)) default 0.1326\nb2 = + (([q5 q2] 1.2454)) default 0.6451\nb3 = max (([q5 q3] 0.1135) (q1? 0)) default 0.9094\nb0 = max (([q5 q3 q2] 0.6971)) default 0\n")
   }
 
   @Test
@@ -146,7 +146,7 @@ class InputAnalyserTest extends ShouldMatchersForJUnit {
     ConsoleLogger.log2(input)
     val out = new InputAnalyser(input).analyse(model, "analysis1")
     ConsoleLogger.log1(out)
-    out should be ("uses cond1\nb1 = * () default 0\nb7 = min (([q2] 0.7567) (q1? 0.9557)) default 0.7636\nb6 = min (([q5 q3 q2] 0) (q1? 0.2133)) default 0.2424\nb5 = * () default 0.2009\nb4 = + (([q2] 0.2009)) default 0.1326\nb2 = + (([q5 q2] 1.2454)) default 0.6451\nb3 = max (([q5 q3] 0.1135) (q1? 0)) default 0.9094\nb0 = max (([q5 q3 q2] 0.6971)) default 0")
+    out should be ("b1 = * () default 0\nb7 = min (([q2] 0.7567) (q1? 0.9557)) default 0.7636\nb6 = min (([q5 q3 q2] 0) (q1? 0.2133)) default 0.2424\nb5 = * () default 0.2009\nb4 = + (([q2] 0.2009)) default 0.1326\nb2 = + (([q5 q2] 1.2454)) default 0.6451\nb3 = max (([q5 q3] 0.1135) (q1? 0)) default 0.9094\nb0 = max (([q5 q3 q2] 0.6971)) default 0\n")
   }
 
   @Test
@@ -158,7 +158,7 @@ class InputAnalyserTest extends ShouldMatchersForJUnit {
     ConsoleLogger.log2(input)
     val out = new InputAnalyser(input).analyse(model, "name1")
     ConsoleLogger.log1(out)
-    out should be ("uses cond3\nb1 = min () default 1.0\nb2 = min () default 1.0")
+    out should be ("b1 = min () default 1.0\nb2 = min () default 1.0\n")
   }
 
   @Test
@@ -170,7 +170,7 @@ class InputAnalyserTest extends ShouldMatchersForJUnit {
     ConsoleLogger.log2(input)
     val out = new InputAnalyser(input).analyse(model, "name1")
     ConsoleLogger.log1(out)
-    out should be ("uses cond3\nb1 = min () default 1.0\nb2 = min () default 1.0")
+    out should be ("b1 = min () default 1.0\nb2 = min () default 1.0\n")
   }
 
   @Test
@@ -182,6 +182,6 @@ class InputAnalyserTest extends ShouldMatchersForJUnit {
     ConsoleLogger.log2(input)
     val out = new InputAnalyser(input).analyse(model, "name1")
     ConsoleLogger.log1(out)
-    out should be ("uses cond3\nb1 = max () default 50000.0\nb2 = min (([hasOtherLicense] 0.4) (hasUSLicense? 0.9) (hasUKLicense? 0.6) (hasEULicense? 0.7)) default 0.0\nb_minOne = + () default -1.0\nb4 = + (([accidentFreeForYears speaksEnglish travelsAlone femaleDriver] 0.45)) default 0.0")
+    out should be ("b1 = max () default 50000.0\nb2 = min (([hasOtherLicense] 0.4) (hasUSLicense? 0.9) (hasUKLicense? 0.6) (hasEULicense? 0.7)) default 0.0\nb_minOne = + () default -1.0\nb4 = + (([accidentFreeForYears speaksEnglish travelsAlone femaleDriver] 0.45)) default 0.0\n")
   }
 }

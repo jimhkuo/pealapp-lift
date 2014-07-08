@@ -6,7 +6,8 @@ import peal.antlr.{Z3OutputParser, Z3OutputLexer, PealProgramParser, PealProgram
 object ParserHelper {
 
   def getPealParser(input: String) = {
-    val charStream = new ANTLRStringStream(input)
+    val cleanedInput = input.split("\n").filterNot(s => s.trim.startsWith("%")).mkString("\n")
+    val charStream = new ANTLRStringStream(cleanedInput)
     val lexer = new PealProgramLexer(charStream)
     val tokenStream = new CommonTokenStream(lexer)
     new PealProgramParser(tokenStream)

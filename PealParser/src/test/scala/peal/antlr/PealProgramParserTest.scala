@@ -19,6 +19,7 @@ class PealProgramParserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
       "POLICIES\nb1 = + ((q1 x) (q2 0.9)) default 1\n" +
         "b2 = + ((q3 x) (q4 0.8)) default 1\n" +
         "%b1 = + ((q3 x) (q2 0.7)) default 1\n" +
+        "%b1 = + ((q3 x) (q2 0.6)) default 1\n" +
         "POLICY_SETS\npSet = + (b1,b2)\n" +
         "CONDITIONS\ncond = q4"
 
