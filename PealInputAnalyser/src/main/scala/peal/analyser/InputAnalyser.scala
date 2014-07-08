@@ -48,7 +48,7 @@ class InputAnalyser(input: String) {
     case Implies(_, c1, c2) => c1 :: c2 :: Nil
   }
 
-  def analyse(rawModel: String, analysisName: String): String = {
+  def analyse(rawModel: String, analysisName: String): List[String] = {
 
     implicit val I = Z3ModelExtractor.extractIUsingRational(rawModel)(analysisName)
     ConsoleLogger.log1(I)
@@ -100,7 +100,7 @@ class InputAnalyser(input: String) {
     val policies = bs.toSet
     ConsoleLogger.log2(policies)
 
-    policies.map(p => p + " = " + specialisePolicy(p)).mkString("\n") + "\n"
+    policies.map(p => p + " = " + specialisePolicy(p)).toList
   }
 
 }
