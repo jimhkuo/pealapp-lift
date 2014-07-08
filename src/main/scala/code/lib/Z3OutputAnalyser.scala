@@ -13,12 +13,13 @@ import scala.xml.{Node, NodeSeq}
 
 
 object Z3OutputAnalyser {
+
   trait NodeAppender {
-    def appendNode(node: Node) : NodeSeq => NodeSeq
+    def appendNode(node: Node): NodeSeq => NodeSeq
   }
 
   implicit object NodeAppenderObj extends NodeAppender {
-    override def appendNode(node: Node) = (nodes : NodeSeq) => {
+    override def appendNode(node: Node) = (nodes: NodeSeq) => {
       nodes :+ node
     }
   }
@@ -32,7 +33,8 @@ object Z3OutputAnalyser {
   }
 
   object MutableNodeSeq {
-    def apply(nodes : NodeSeq) = new MutableNodeSeq(nodes)
+    def apply(nodes: NodeSeq) = new MutableNodeSeq(nodes)
+
     def apply() = new MutableNodeSeq(NodeSeq.Empty)
   }
 
@@ -44,16 +46,21 @@ object Z3OutputAnalyser {
     def append(node: Node) {
       nodes = nodes.append(node)
     }
+
     def append(s: String) {
       append(s.split("\n").toList)
     }
+
     def append(lines: List[String]) {
-      lines.foreach{
+      lines.foreach {
         l =>
-        nodes = nodes.append(<span>{l}<br/></span>)
+          nodes = nodes.append(<span>
+            {l}<br/>
+          </span>)
       }
 
     }
+
     override def toString = nodes.toString()
   }
 
@@ -66,7 +73,9 @@ object Z3OutputAnalyser {
     sortedAnalyses.foreach {
       a =>
         val section = MutableNodeSeq()
-        section.append(<h4>Result of analysis [{analyses(a).analysisName}]</h4>)
+        section.append(<h4>Result of analysis [
+          {analyses(a).analysisName}
+          ]</h4>)
         analyses(a) match {
           case s: AlwaysTrue =>
             if (z3OutputModels(a).satResult == Unsat) {
@@ -93,7 +102,7 @@ object Z3OutputAnalyser {
             else {
               section.append(s.cond + " is satisfiable\n")
               section.append("For example, when")
-                section.append(getReasons(z3OutputModels(a), Set(), Set("satisfiable_", "cond"), constsMap))
+              section.append(getReasons(z3OutputModels(a), Set(), Set("satisfiable_", "cond"), constsMap))
             }
           case s: Different =>
             if (z3OutputModels(a).satResult == Unsat) {
@@ -142,13 +151,19 @@ object Z3OutputAnalyser {
           section.append("\nOutput of analysis [" + a + "] is UNSAT: so no certification performed and no specialized policies reported.")
         }
 
-        entireAnalysis = entireAnalysis ++ <p>{section.nodes}</p>
+        entireAnalysis = entireAnalysis ++ <p>
+          {section.nodes}
+        </p>
     }
     entireAnalysis
   }
 
   private def getNaturalValue(value: String) = {
-    Z3ModelValueParser.parseToRational(value).fold(r => r.value + " (" + value + ")", b => b.toString)
+    try {
+      Z3ModelValueParser.parseToRational(value).fold(r => r.value + " (" + value + ")", b => b.toString)
+    } catch {
+      case e: Throwable => value
+    }
   }
 
   private def getReasons(model: Model, includeNames: Set[String], excludeNames: Set[String], constsMap: Map[String, PealAst]) = {

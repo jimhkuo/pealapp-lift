@@ -36,7 +36,7 @@ object Z3ModelValueParser {
       Rational(v)
     } catch {
       case e: NumberFormatException =>
-        ConsoleLogger.log1("Rational(" + v + ") failed, v is " + v)
+        ConsoleLogger.log1("Rational(" + v + ") failed, v is " + v + e.getStackTrace.mkString("\n"))
         val rational(numer, denom) = v
         Rational(numer, denom)
     }
