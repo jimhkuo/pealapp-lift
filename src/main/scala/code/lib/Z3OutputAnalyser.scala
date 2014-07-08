@@ -72,8 +72,8 @@ object Z3OutputAnalyser {
             }
         }
 
-        buffer.append("\n\n")
         val cert = if (z3OutputModels(a).satResult == Sat) {
+          buffer.append("\n\n")
           val verifiedModel = ov.verifyModel(z3RawOutput, a)
           val result = verifiedModel._1 match {
             case PealTrue => "succeeded"
