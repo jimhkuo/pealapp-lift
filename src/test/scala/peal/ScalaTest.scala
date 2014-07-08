@@ -37,18 +37,18 @@ class ScalaTest extends ShouldMatchersForJUnit {
 
   @Test
   def testNodeSeq() {
-    trait NodeAppender[N] {
+    trait NodeAppender {
       def appendNode(node: Node) : NodeSeq => NodeSeq
     }
 
-    implicit object NodeAppenderObj extends NodeAppender[NodeSeq] {
+    implicit object NodeAppenderObj extends NodeAppender {
       override def appendNode(node: Node) = (nodes : NodeSeq) => {
         nodes :+ node
       }
     }
 
     implicit def fops(ns: NodeSeq): Object {def appendNode(node: Node): NodeSeq} = new {
-      val witness = implicitly[NodeAppender[NodeSeq]]
+      val witness = implicitly[NodeAppender]
 
       final def appendNode(node: Node): NodeSeq = {
         witness.appendNode(node)(ns)
