@@ -110,6 +110,7 @@ class PealCometActor extends CometActor with Loggable {
             </div>
             <div class="tab-pane" id="extended">
               <div class="col-sm-5">
+                {SHtml.ajaxButton("Display results of all analyses in pretty printed form and perform independent certification of results", () => {this ! SynthesisExtendedAndCallZ3QuietAnalysis; _Noop}, "class" -> "btn btn-success btn-sm", "style" -> "margin:2px;")}
                 {SHtml.ajaxButton("Generate, show, and run Z3 code; display results in pretty-printed and raw form", () => {this ! RunAndCertifyExtendedResults; _Noop}, "class" -> "btn btn-success btn-sm", "style" -> "margin:2px;")}
                 {SHtml.ajaxButton("Generate, show, and run Z3 code, display results in raw Z3 form", () => {this ! ExtendedSynthesisAndCallZ3; _Noop}, "class" -> "btn btn-success btn-sm", "style" -> "margin:2px;")}
               </div>
@@ -152,6 +153,12 @@ class PealCometActor extends CometActor with Loggable {
       this ! SaveFile(newSynthesis, lapseTime)
     case DisplayLazy => this ! Result(<pre>{performLazySynthesis(inputPolicies)}</pre>)
     case LazySynthesisAndCallZ3 => onCallZ3(performLazySynthesis(inputPolicies))
+    case SynthesisAndCallZ3 =>
+      val (constsMap,  conds, pSets, analyses, domainSpecific) = parseInput(inputPolicies)
+      onCallEagerZ3(true, constsMap, conds,  pSets, analyses, domainSpecific)
+    case SynthesisAndCallZ3QuietAnalysis =>
+      val (constsMap,  conds, pSets, analyses, domainSpecific) = parseInput(inputPolicies)
+      onCallEagerZ3(false, constsMap, conds,  pSets, analyses, domainSpecific)
     case ExtendedSynthesisAndCallZ3 =>
       val (constsMap,  conds, pSets, analyses, domainSpecific) = parseInput(inputPolicies)
       this.constsMap = constsMap
@@ -162,7 +169,12 @@ class PealCometActor extends CometActor with Loggable {
       val (constsMap,  conds, pSets, analyses, domainSpecific) = parseInput(inputPolicies)
       this.constsMap = constsMap
       this.analyses = analyses
-      certifyResults(performExtendedSynthesis(inputPolicies))
+      certifyResults(true, performExtendedSynthesis(inputPolicies))
+    case SynthesisExtendedAndCallZ3QuietAnalysis =>
+      val (constsMap,  conds, pSets, analyses, domainSpecific) = parseInput(inputPolicies)
+      this.constsMap = constsMap
+      this.analyses = analyses
+      certifyResults(false, performExtendedSynthesis(inputPolicies))
     case PrepareLazy =>
       partialUpdate(JqId("result") ~> JqHtml(Text("Synthesising... Please wait...")))
       this ! DownloadLazy
@@ -171,12 +183,6 @@ class PealCometActor extends CometActor with Loggable {
       val lazySynthesis = performLazySynthesis(inputPolicies)
       val lapseTime = System.nanoTime() - start
       this ! SaveFile(lazySynthesis, lapseTime)
-    case SynthesisAndCallZ3 =>
-      val (constsMap,  conds, pSets, analyses, domainSpecific) = parseInput(inputPolicies)
-      onCallEagerZ3(true, constsMap, conds,  pSets, analyses, domainSpecific)
-    case SynthesisAndCallZ3QuietAnalysis =>
-      val (constsMap,  conds, pSets, analyses, domainSpecific) = parseInput(inputPolicies)
-      onCallEagerZ3(false, constsMap, conds,  pSets, analyses, domainSpecific)
     case Display =>
       val (constsMap, conds,  pSets, analyses, domainSpecific) = parseInput(inputPolicies)
       onDisplay(constsMap, conds,  pSets, analyses, domainSpecific)
@@ -363,14 +369,16 @@ class PealCometActor extends CometActor with Loggable {
     }
   }
 
-  private def certifyResults(z3SMTInput: String) {
+  private def certifyResults(verbose: Boolean, z3SMTInput: String) {
     try {
       val z3RawOutput = Z3Caller.call(z3SMTInput)
       implicit val ov = new ExtendedOutputVerifier(inputPolicies)
       val analysedResults = Z3OutputAnalyser.execute(analyses, constsMap, inputPolicies, z3RawOutput)
       val analysedNodes = for (a <- analysedResults) yield <pre>{a}</pre>
-
-      this ! Result(<pre>Generated Z3 code:<br/><br/>{z3SMTInput}</pre><span>{analysedNodes}</span><pre>Z3 Raw Output:<br/>{z3RawOutput}</pre>)
+      verbose match {
+        case true => this ! Result(<pre>Generated Z3 code:<br/><br/>{z3SMTInput}</pre><span>{analysedNodes}</span><pre>Z3 Raw Output:<br/>{z3RawOutput}</pre>)
+        case false =>this ! Result(<span>{analysedNodes}</span>)
+      }
     } catch {
       case e: Exception =>  dealWithIt(e)
     }
