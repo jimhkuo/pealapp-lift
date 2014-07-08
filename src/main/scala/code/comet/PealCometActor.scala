@@ -420,7 +420,7 @@ class PealCometActor extends CometActor with Loggable {
         }
       }
 
-      this ! Result(<pre>{verificationResults.mkString("")}</pre><pre>Analysed results:<br/>{analysedResults}</pre><pre>Policies specialised with respect to models generated for satisfiable analyses:<br/><br/>{unfoldedInputs.mkString("\n\n")}</pre><pre>Generated Z3 code:<br/><br/>{z3SMTInput}</pre><pre>Z3 Raw Output:<br/>{z3RawOutput}</pre>)
+      this ! Result(<pre>Generated Z3 code:<br/><br/>{z3SMTInput}</pre><pre>{verificationResults.mkString("")}</pre><pre>Analysed results:<br/>{analysedResults}</pre><pre>Policies specialised with respect to models generated for satisfiable analyses:<br/><br/>{unfoldedInputs.mkString("\n\n")}</pre><pre>Z3 Raw Output:<br/>{z3RawOutput}</pre>)
     } catch {
       case e: Exception =>  dealWithIt(e)
     }
