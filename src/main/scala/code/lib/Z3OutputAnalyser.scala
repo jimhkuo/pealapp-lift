@@ -9,72 +9,74 @@ import peal.verifier.{Z3ModelValueParser, OutputVerifier}
 
 import scala.collection.JavaConversions._
 import scala.collection.mutable.ListBuffer
-import scala.xml.NodeSeq
+import scala.xml.{Node, NodeSeq}
+
 
 object Z3OutputAnalyser {
+
   def execute(analyses: Map[String, AnalysisGenerator], constsMap: Map[String, PealAst], inputPolicies: String, z3RawOutput: String)(implicit ov: OutputVerifier): NodeSeq = {
     val z3OutputParser = ParserHelper.getZ3OutputParser(z3RawOutput)
     val z3OutputModels = z3OutputParser.results().toMap
-    var out = NodeSeq.Empty
+    var entireAnalysis = NodeSeq.Empty
 
     val sortedAnalyses = analyses.keys.toSeq.sortWith(_ < _)
     sortedAnalyses.foreach {
       a =>
-        val buffer = new StringBuilder()
-        buffer.append("Result of analysis [" + analyses(a).analysisName + "]\n\n")
+        val section = new StringBuilder()
+        section.append("Result of analysis [" + analyses(a).analysisName + "]\n\n")
         analyses(a) match {
           case s: AlwaysTrue =>
             if (z3OutputModels(a).satResult == Unsat) {
-              buffer.append(s.cond + " is always true\n")
+              section.append(s.cond + " is always true\n")
             }
             else {
-              buffer.append(s.cond + " is NOT always true\n")
-              buffer.append("For example, when\n" + getReasons(z3OutputModels(a), Set(), Set("always_true_", "cond"), constsMap))
+              section.append(s.cond + " is NOT always true\n")
+              section.append("For example, when\n" + getReasons(z3OutputModels(a), Set(), Set("always_true_", "cond"), constsMap))
             }
           case s: AlwaysFalse =>
             if (z3OutputModels(a).satResult == Unsat) {
-              buffer.append(s.cond + " is always false\n")
+              section.append(s.cond + " is always false\n")
             }
             else {
-              buffer.append(s.cond + " is NOT always false\n")
-              buffer.append("For example, when\n" + getReasons(z3OutputModels(a), Set(), Set("always_false_", "cond"), constsMap))
+              section.append(s.cond + " is NOT always false\n")
+              section.append("For example, when\n" + getReasons(z3OutputModels(a), Set(), Set("always_false_", "cond"), constsMap))
             }
           case s: Satisfiable =>
             if (z3OutputModels(a).satResult == Unsat) {
-              buffer.append(s.cond + " is NOT satisfiable\n")
+              section.append(s.cond + " is NOT satisfiable\n")
             }
             else {
-              buffer.append(s.cond + " is satisfiable\n")
-              buffer.append("For example, when\n" + getReasons(z3OutputModels(a), Set(), Set("satisfiable_", "cond"), constsMap))
+              section.append(s.cond + " is satisfiable\n")
+              section.append("For example, when\n" + getReasons(z3OutputModels(a), Set(), Set("satisfiable_", "cond"), constsMap))
             }
           case s: Different =>
             if (z3OutputModels(a).satResult == Unsat) {
-              buffer.append(s.lhs + " and " + s.rhs + " are NOT different\n")
+              section.append(s.lhs + " and " + s.rhs + " are NOT different\n")
             }
             else {
-              buffer.append(s.lhs + " and " + s.rhs + " are different\n")
-              buffer.append("For example, when\n" + getReasons(z3OutputModels(a), Set(s.lhs, s.rhs), Set("different_", "cond"), constsMap))
+              section.append(s.lhs + " and " + s.rhs + " are different\n")
+              section.append("For example, when\n" + getReasons(z3OutputModels(a), Set(s.lhs, s.rhs), Set("different_", "cond"), constsMap))
             }
           case s: Equivalent =>
             if (z3OutputModels(a).satResult == Unsat) {
-              buffer.append(s.lhs + " and " + s.rhs + " are equivalent\n")
+              section.append(s.lhs + " and " + s.rhs + " are equivalent\n")
             }
             else {
-              buffer.append(s.lhs + " and " + s.rhs + " are NOT equivalent\n")
-              buffer.append("For example, when\n" + getReasons(z3OutputModels(a), Set(s.lhs, s.rhs), Set("equivalent_", "cond"), constsMap))
+              section.append(s.lhs + " and " + s.rhs + " are NOT equivalent\n")
+              section.append("For example, when\n" + getReasons(z3OutputModels(a), Set(s.lhs, s.rhs), Set("equivalent_", "cond"), constsMap))
             }
           case s: Implies =>
             if (z3OutputModels(a).satResult == Unsat) {
-              buffer.append(s.lhs + " implies " + s.rhs + "\n")
+              section.append(s.lhs + " implies " + s.rhs + "\n")
             }
             else {
-              buffer.append(s.lhs + " does not imply " + s.rhs + "\n")
-              buffer.append("For example, when\n" + getReasons(z3OutputModels(a), Set(s.lhs, s.rhs), Set("implies_", "cond"), constsMap))
+              section.append(s.lhs + " does not imply " + s.rhs + "\n")
+              section.append("For example, when\n" + getReasons(z3OutputModels(a), Set(s.lhs, s.rhs), Set("implies_", "cond"), constsMap))
             }
         }
 
         val cert = if (z3OutputModels(a).satResult == Sat) {
-          buffer.append("\n\n")
+          section.append("\n\n")
           val verifiedModel = ov.verifyModel(z3RawOutput, a)
           val result = verifiedModel._1 match {
             case PealTrue => "succeeded"
@@ -90,10 +92,10 @@ object Z3OutputAnalyser {
           "\nOutput of analysis [" + a + "] is UNSAT: so no certification performed and no specialized policies reported."
         }
 
-        buffer.append(cert)
-        out = out :+ <pre>{buffer.toString()}</pre>
+        section.append(cert)
+        entireAnalysis = entireAnalysis :+ <pre>{section.toString()}</pre>
     }
-    out
+    entireAnalysis
   }
 
   private def getNaturalValue(value: String) = {

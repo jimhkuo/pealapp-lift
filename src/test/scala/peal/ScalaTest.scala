@@ -8,6 +8,7 @@ import org.junit.Test
 import org.scalatest.junit.ShouldMatchersForJUnit
 
 import scala.sys.process._
+import scala.xml.{Elem, Node, NodeSeq}
 
 class ScalaTest extends ShouldMatchersForJUnit {
 
@@ -25,7 +26,7 @@ class ScalaTest extends ShouldMatchersForJUnit {
       }
     }
 
-    implicit def fops[G[_] : Functor, A](fa: G[A]) = new {
+    implicit def fops[G[_] : Functor, A](fa: G[A]): Object {val witness: Functor[G]; def mapX[B](f: (A) => B): G[B]} = new {
       val witness = implicitly[Functor[G]]
       final def mapX[B](f: A => B): G[B] = witness.mapY(f)(fa)
     }
@@ -35,14 +36,39 @@ class ScalaTest extends ShouldMatchersForJUnit {
   }
 
   @Test
+  def testNodeSeq() {
+    trait NodeAppender[N] {
+      def appendNode(node: Node) : NodeSeq => NodeSeq
+    }
+
+    implicit object NodeAppenderObj extends NodeAppender[NodeSeq] {
+      override def appendNode(node: Node) = (nodes : NodeSeq) => {
+        nodes :+ node
+      }
+    }
+
+    implicit def fops(ns: NodeSeq)(implicit witness: NodeAppender[NodeSeq]): Object {def appendNode(node: Node): NodeSeq} = new {
+      final def appendNode(node: Node): NodeSeq = {
+        witness.appendNode(node)(ns)
+      }
+    }
+
+    val nodes: NodeSeq = <span>hi</span>
+    println(nodes)
+    println(nodes.appendNode(<span>Hi2</span>))
+    println(nodes)
+
+  }
+  @Test
   def testS() {
-      println(s"aa${if (Set(1).nonEmpty) {" "}}")
-      println(s"bb${if (Set().nonEmpty) {" "}}")
+    println(s"aa${if (Set(1).nonEmpty) {" "}}")
+    println(s"bb${if (Set().nonEmpty) {" "}}")
   }
   @Test
   def testOption() {
-      println(Some(2).fold("none")(_.toString + " string"))
+    println(Some(2).fold("none")(_.toString + " string"))
   }
+
 
   @Test
   def testLeft() {
