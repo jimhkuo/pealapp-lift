@@ -10,6 +10,7 @@ import peal.verifier.util.ScoreEvaluator
 import peal.verifier.{OutputVerifier, Z3ModelExtractor}
 
 import scala.collection.JavaConversions._
+import scala.xml.{NodeSeq, Node}
 
 
 class InputAnalyser(input: String) {
@@ -47,7 +48,7 @@ class InputAnalyser(input: String) {
     case Implies(_, c1, c2) => c1 :: c2 :: Nil
   }
 
-  def analyse(rawModel: String, analysisName: String): List[String] = {
+  def analyse(rawModel: String, analysisName: String): NodeSeq = {
 
     implicit val I = Z3ModelExtractor.extractIUsingRational(rawModel)(analysisName)
     ConsoleLogger.log1(I)
@@ -63,7 +64,7 @@ class InputAnalyser(input: String) {
       rational.value
     }
 
-    def specialisePolicy(p: String): String = {
+    def specialisePolicy(p: String): Node = {
       pols(p) match {
         case Pol(rs, o, s, name) =>
           val okRules = rs.filter(r => I.get(r.q.name) != None && I.get(r.q.name) == Some(Right(PealTrue)))
@@ -78,10 +79,10 @@ class InputAnalyser(input: String) {
           ConsoleLogger.log1(okRules)
 
           if (okRules.isEmpty) {
-            o + " (" + undefined + ") default " + ScoreEvaluator.trueScore(s, p + "_default_U").value
+            <span>{p} = {o} ({undefined}) default {ScoreEvaluator.trueScore(s, p + "_default_U").value}<br/></span>
           }
           else {
-            s"$o (([${okRules.map(r => r.q.name).mkString("", " ", "")}] ${accumulateScores(o, okRules.toSet, p)})${undefined}) default ${ScoreEvaluator.trueScore(s, p + "_default_U").value}"
+            <span>{p} = {o} (([{okRules.map(r => r.q.name).mkString("", " ", "")}] {accumulateScores(o, okRules.toSet, p)}){undefined}) default {ScoreEvaluator.trueScore(s, p + "_default_U").value}<br/></span>
           }
       }
     }
@@ -98,7 +99,7 @@ class InputAnalyser(input: String) {
     val policies = bs.toSet
     ConsoleLogger.log2(policies)
 
-    policies.map(p => p + " = " + specialisePolicy(p)).toList
+    policies.map(p => specialisePolicy(p)).toList
   }
 
 }

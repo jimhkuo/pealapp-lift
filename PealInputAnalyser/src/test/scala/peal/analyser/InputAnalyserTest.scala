@@ -1,10 +1,8 @@
 package peal.analyser
 
-import org.junit.{Ignore, Test}
+import org.junit.Test
 import org.scalatest.junit.ShouldMatchersForJUnit
 import peal.util.ConsoleLogger
-import peal.verifier.explicit.ExplicitOutputVerifier
-import peal.verifier.extended.ExtendedOutputVerifier
 
 
 class InputAnalyserTest extends ShouldMatchersForJUnit {
@@ -17,8 +15,8 @@ class InputAnalyserTest extends ShouldMatchersForJUnit {
 
     ConsoleLogger.log2(input)
     val out = new InputAnalyser(input).analyse(model, "name1")
-    ConsoleLogger.log2(out)
-    out should be (List("b1 = min () default 1.0"))
+    ConsoleLogger.log2(out.text)
+    out.text should be ("b1 = min () default 1.0")
   }
 
   @Test
@@ -181,7 +179,7 @@ class InputAnalyserTest extends ShouldMatchersForJUnit {
 
     ConsoleLogger.log2(input)
     val out = new InputAnalyser(input).analyse(model, "name1")
-    ConsoleLogger.log1(out)
-    out should be ("b1 = max () default 50000.0\nb2 = min (([hasOtherLicense] 0.4) (hasUSLicense? 0.9) (hasUKLicense? 0.6) (hasEULicense? 0.7)) default 0.0\nb_minOne = + () default -1.0\nb4 = + (([accidentFreeForYears speaksEnglish travelsAlone femaleDriver] 0.45)) default 0.0\n".split("\n").toList)
+    ConsoleLogger.log1(out.text)
+    out.text should be ("b1 = max () default 50000.0b2 = min (([hasOtherLicense] 0.4) (hasUSLicense? 0.9) (hasUKLicense? 0.6) (hasEULicense? 0.7)) default 0.0b_minOne = + () default -1.0b4 = + (([accidentFreeForYears speaksEnglish travelsAlone femaleDriver] 0.45)) default 0.0")
   }
 }
