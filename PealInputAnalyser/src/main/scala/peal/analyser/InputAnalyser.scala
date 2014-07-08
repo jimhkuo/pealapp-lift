@@ -13,8 +13,9 @@ import scala.collection.JavaConversions._
 import scala.xml.{NodeSeq, Node}
 
 
-class InputAnalyser(input: String) {
 
+
+class InputAnalyser(input: String) {
   private val pealProgramParser = ParserHelper.getPealParser(input)
   pealProgramParser.program()
   private val conds = pealProgramParser.conds
@@ -99,7 +100,7 @@ class InputAnalyser(input: String) {
     val policies = bs.toSet
     ConsoleLogger.log2(policies)
 
-    policies.map(p => specialisePolicy(p)).toList
+    policies.map(p => specialisePolicy(p)).toList.sortWith(_.text < _.text)
   }
 
 }
