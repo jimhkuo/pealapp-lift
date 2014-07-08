@@ -337,38 +337,11 @@ class PealCometActor extends CometActor with Loggable {
     val z3RawOutput = Z3Caller.call(z3SMTInput)
     try {
       ConsoleLogger.log(z3RawOutput)
-//      val z3OutputParser = ParserHelper.getZ3OutputParser(z3RawOutput)
-//      val z3OutputModels = z3OutputParser.results().toMap
-//      ConsoleLogger.log(z3OutputModels)
-//
-//
-//      val analysesResults = for (analysis <- sortedAnalyses if (z3OutputModels(analysis).satResult == Sat)) yield {
-//        val verifiedModel = new ExplicitOutputVerifier(inputPolicies).verifyModel(z3RawOutput, analysis)
-//        val result = verifiedModel._1 match {
-//          case PealTrue => "succeeded"
-//          case PealFalse => "failed"
-//          case PealBottom => "was inconclusive"
-//        }
-//        "Certification of analysis [" + analysis + "] " + result +
-//          ". Additional predicates set to false in this certification process are " + verifiedModel._2 + "\n"
-//      }
-//
-//      val verificationResults = "Independent certification of correctness of Z3 model computed for satisfiable analyses:\n\n" + analysesResults.mkString
-//
       implicit val ov = new ExplicitOutputVerifier(inputPolicies)
-
       val analysedResults = Z3OutputAnalyser.execute(analyses, constsMap, inputPolicies, z3RawOutput)
-
-//      val unfoldedInputs = for (analysis <- sortedAnalyses) yield {
-//        if (z3OutputModels(analysis).satResult == Sat) {
-//          "Analysis \"" + analysis + "\" " + new InputAnalyser(inputPolicies).analyse(z3RawOutput, analysis)
-//        }
-//        else {
-//          "Analysis \"" + analysis + "\" is UNSAT"
-//        }
-//      }
+      val analysedNodes = for (a <- analysedResults) yield <pre>{a}</pre>
       verbose match {
-        case true => this ! Result(<pre>Generated Z3 code:<br/><br/>{z3SMTInput}</pre><pre>Analysed results:<br/>{analysedResults}</pre><pre>Z3 Raw Output:<br/>{z3RawOutput}</pre>)
+        case true => this ! Result(<pre>Generated Z3 code:<br/><br/>{z3SMTInput}</pre><span>{analysedNodes}</span><pre>Z3 Raw Output:<br/>{z3RawOutput}</pre>)
         case false => this ! Result(<pre>Analysed results:<br/>{analysedResults}</pre>)
       }
     } catch {
