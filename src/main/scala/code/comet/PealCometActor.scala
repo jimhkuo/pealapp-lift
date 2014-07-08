@@ -43,53 +43,9 @@ class PealCometActor extends CometActor with Loggable {
     "name1 = always_true? cond1\n" +
     "name2 = always_true? cond2\n"
 
-  val defaultInput = "POLICIES\n" +
-    "b1 = min ((q1 0.2) (q2 0.4) (q3 0.9)) default 1\n" +
-    "b2 = + ((q4 0.1) (q5 0.2) (q6 0.6)) default 0\n" +
-    "POLICY_SETS\n" +
-    "pSet1 = max(b1, b2)\n" +
-    "pSet2 = min(b1, b2)\n" +
-    "CONDITIONS\n" +
-    "cond1 = pSet1 <= 0.5\n" +
-    "cond2 = 0.6 < pSet2\n" +
-    "cond3 = cond1 && cond2\n" +
-    "cond4 = cond1 || cond2\n" +
-    "cond5 = !cond4\n" +
-    "DOMAIN_SPECIFICS\n" +
-    "(declare-const a Real)\n" +
-    "(declare-const b Real)\n" +
-    "(assert (= q1 (< a (+ b 1))))\n" +
-    "ANALYSES\n" +
-    "name1 = always_true? cond1\n" +
-    "name2 = equivalent? cond1 cond2\n" +
-    "name3 = different? cond1 cond2\n" +
-    "name4 = implies? cond4 cond3\n" +
-    "name5 = always_false? cond2\n" +
-    "name6 = satisfiable? cond4\n"
-
-  val nonConstantDefaultInput = "POLICIES\n" +
-    "b1 = min ((q1 0.2) (q2 0.4) (q3 0.9)) default 0.8*z\n" +
-    "b2 = + ((q4 0.1*x) (q5 y*0.2) (q6 y)) default 0\n" +
-    "POLICY_SETS\n" +
-    "pSet1 = max(b1, b2)\n" +
-    "pSet2 = min(b1, b2)\n" +
-    "CONDITIONS\n" +
-    "cond1 = pSet1 <= 0.5\n" +
-    "cond2 = 0.6 < pSet2\n" +
-    "cond3 = 0.5 < pSet2\n" +
-    "cond4 = 0.4 < pSet2\n" +
-    "DOMAIN_SPECIFICS\n" +
-    "(declare-const a Real)\n" +
-    "(declare-const b Real)\n" +
-    "(assert (= q1 (< a (+ b 1))))\n" +
-    "ANALYSES\n" +
-    "name1 = always_true? cond1\n" +
-    "name2 = always_false? cond1\n" +
-    "name3 = satisfiable? cond2\n" +
-    "name4 = equivalent? cond1 cond2\n" +
-    "name5 = different? cond1 cond2\n" +
-    "name6 = implies? cond1 cond2\n"
-  var inputPolicies = defaultInput
+  val socialNetworkExample = "POLICIES\nb1 = + ((lowCostTransaction 0.3) (enoughMutualFriends 0.1) (enoughMutualFriendsNormalized 0.2)) default 0\nb2 = min ((highCostTransaction 0.1) (aFriendOfAliceUnfriendedBob 0.2) (aFriendOfAliceVouchesForBob 0.6)) default 1\nPOLICY_SETS\npSet1 = min(b1,b2)\nCONDITIONS\ncond1 = 0.5 < pSet1\ncond2 = 0.6 < pSet1\nDOMAIN_SPECIFICS\n(declare-const amountAlicePays Real)\n(declare-const numberOfMutualFriends Real)\n(declare-const numberOfBobsFriends Real)\n(assert (= lowCostTransaction (< amountAlicePays 100)))\n(assert (= highCostTransaction (< 1000 amountAlicePays)))\n(assert (= enoughMutualFriends (< 4 numberOfMutualFriends)))\n(assert (= enoughMutualFriendsNormalized (< numberOfBobsFriends (* 100 numberOfMutualFriends))))\nANALYSES\nname1 = satisfiable? cond1\nname2 = always_true? cond1\nname3 = always_false? cond1\nname4 = implies? cond2 cond1\nname5 = equivalent? cond1 cond2\n"
+  val carRentalExample = "POLICIES\nb1 = max ((isLuxuryCar 150000) (isSedan 60000) (isCompact 30000)) default 50000\nb2 = min ((hasUSLicense 0.9) (hasUKLicense 0.6) (hasEULicense 0.7) (hasOtherLicense 0.4 [-0.1,0.1])) default 0\nb3 = max ((someOffRoadDriving 0.8) (onlyCityUsage 0.4) (onlyLongDistanceUsage 0.2) (mixedUsage 0.25)) default 0.3\nb4 = + ((accidentFreeForYears 0.05*x) (speaksEnglish 0.05) (travelsAlone -0.2) (femaleDriver 0.1)) default 0\nb_minOne = + () default -1\nPOLICY_SETS\npSet0 = +(b2,b_minOne)\npSet1 = *(b1,pSet0)\npSet_b4 = b4\nCONDITIONS\ncond1 = pSet1 <= 50000\ncond2 = 0.4 < pSet_b4\ncond3 = cond1 && cond2\ncond4 = 0.6 < pSet_b4\ncond5 = cond1 && cond4\nDOMAIN_SPECIFICS\n(assert (and (<= 0 x) (<= x 10)))\n(assert (or (not isLuxuryCar) (not someOffRoadDriving)))\n(assert (and (implies isLuxuryCar (and (not isSedan) (not isCompact))) (implies isSedan (and (not isLuxuryCar) (not isCompact))) (implies isCompact (and (not isSedan) (not isLuxuryCar)))))\n(assert (implies onlyCityUsage (not mixedUsage)))\n(assert (implies onlyLongDistanceUsage (not mixedUsage)))\n(assert (implies onlyCityUsage (not someOffRoadDriving)))\n(assert (implies onlyLongDistanceUsage (not someOffRoadDriving)))\nANALYSES\nname1 = satisfiable? cond3\nname2 = always_true? cond3\nname3 = always_false? cond3\nname4 = satisfiable? cond5\nname5 = equivalent? cond3 cond5\n"
+  var inputPolicies = socialNetworkExample
   var z3RawOutput = ""
   var extendedSynthesis = ""
   var constsMap: Map[String, PealAst] = Map()
@@ -105,11 +61,11 @@ class PealCometActor extends CometActor with Loggable {
       <form class="lift:form.ajax">
         <div class="row">
           <div class="col-sm-12">
-          <h3>1. Enter policies, policy sets, conditions, and analyses in the text area below:</h3>
-          <h6>Or click on one of the blue buttons to generate a valid input</h6>
+          <h3>1. Generate PEALT input:</h3>
+          <h6>Enter policies, policy sets, conditions and analyses in the text area or generate such input by clicking one of the blue buttons.</h6>
           <div>
-            {SHtml.ajaxButton("Constant-score sample", () => {this ! Reset; _Noop}, "class" -> "btn btn-primary btn-sm", "style" -> "margin:2px;")}
-            {SHtml.ajaxButton("Non-constant score sample", () => {this ! ResetNonConstant; _Noop}, "class" -> "btn btn-primary btn-sm", "style" -> "margin:2px;")}
+            {SHtml.ajaxButton("Social Network Access Control example", () => {this ! Reset; _Noop}, "class" -> "btn btn-primary btn-sm", "style" -> "margin:2px;")}
+            {SHtml.ajaxButton("Car Rental Risks example", () => {this ! ResetNonConstant; _Noop}, "class" -> "btn btn-primary btn-sm", "style" -> "margin:2px;")}
             {SHtml.ajaxButton("Majority-voting sample, n =", () => {this ! MajorityVoting; _Noop}, "class" -> "btn btn-primary btn-sm", "style" -> "margin:2px;")}
             {SHtml.ajaxText(majorityVotingCount.toString, s => {majorityVotingCount = s.toInt; _Noop}, "id" -> "n", "size" -> "10")}
           </div>
@@ -135,11 +91,12 @@ class PealCometActor extends CometActor with Loggable {
             {SHtml.ajaxTextarea(inputPolicies, s => {inputPolicies = s; _Noop}, "id" -> "policies", "class" -> "form-control", "rows" -> "20")}
           </div>
           <div class="col-sm-5">
-            <h4>2. Choose a synthesis method. Then click on one of the green synthesiser buttons:</h4>
+            <h4>2. Analyze PEALT input:</h4>
+            <h6>Choose method of code generation for analyses. Then choose analysis option by clicking any of the green buttons.</h6>
             <ul class="nav nav-tabs">
-              <li class="active"><a href="#explicit" data-toggle="tab">Explicit Synthesis</a></li>
+              <li class="active"><a href="#explicit" data-toggle="tab">Non-negative, constant scores</a></li>
               <li><a href="#symbolic" data-toggle="tab" style="display:none">Symbolic Synthesis</a></li>
-              <li><a href="#extended" data-toggle="tab">Extended Synthesis</a></li>
+              <li><a href="#extended" data-toggle="tab">General scores</a></li>
               <li><a href="#new" data-toggle="tab" style="display:none">New Synthesis</a></li>
             </ul>
           </div>
@@ -250,7 +207,7 @@ class PealCometActor extends CometActor with Loggable {
       partialUpdate(JqId("policies") ~> JqVal(inputPolicies))
     case Reset =>
       this ! Message("")
-      inputPolicies = defaultInput
+      inputPolicies = socialNetworkExample
       partialUpdate(JqId("policies") ~> JqVal(inputPolicies))
     case ResetNewDefault =>
       this ! Message("")
@@ -258,7 +215,7 @@ class PealCometActor extends CometActor with Loggable {
       partialUpdate(JqId("policies") ~> JqVal(inputPolicies))
     case ResetNonConstant =>
       this ! Message("")
-      inputPolicies = nonConstantDefaultInput
+      inputPolicies = carRentalExample
       partialUpdate(JqId("policies") ~> JqVal(inputPolicies))
     case Generate =>
       this ! Message("")

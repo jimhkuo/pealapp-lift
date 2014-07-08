@@ -11,13 +11,11 @@ class Boot {
     LiftRules.addToPackages("code")
 
     val entries = List(
-      Menu.i("PEALT tool") / "index",
-//      Menu.i("Debug info") / "debug",
+      Menu.i("Editor and runner") / "index",
       Menu.i("About PEALT") / "aboutpealt",
-      Menu.i("User guide") / "userguide"
-//      Menu.i("Hello world") / "helloworld"
-      //      Menu.i("Download") / "download"
-      //    ,  Menu(Loc("Static", Link(List("static"), true, "/static/index"), "Some static page"))
+      Menu.i("User guide") / "userguide",
+      Menu.i("Case studies") / "casestudies",
+      Menu.i("Acknowledgements") / "acknowledgements"
     )
     LiftRules.setSiteMap(SiteMap(entries: _*))
 
