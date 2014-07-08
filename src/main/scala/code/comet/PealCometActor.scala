@@ -65,7 +65,7 @@ class PealCometActor extends CometActor with Loggable {
           <h6>Enter policies, policy sets, conditions and analyses in the text area or generate such input by clicking one of the blue buttons.</h6>
           <div>
             {SHtml.ajaxButton("Social Network Access Control example", () => {this ! Reset; _Noop}, "class" -> "btn btn-primary btn-sm", "style" -> "margin:2px;")}
-            {SHtml.ajaxButton("Car Rental Risks example", () => {this ! ResetNonConstant; _Noop}, "class" -> "btn btn-primary btn-sm", "style" -> "margin:2px;")}
+            {SHtml.ajaxButton("Car Rental Risks example", () => {this ! ResetNonConstant; _Noop}, "class" -> "btn btn-info btn-sm", "style" -> "margin:2px;")}
             {SHtml.ajaxButton("Majority-voting sample, n =", () => {this ! MajorityVoting; _Noop}, "class" -> "btn btn-primary btn-sm", "style" -> "margin:2px;")}
             {SHtml.ajaxText(majorityVotingCount.toString, s => {majorityVotingCount = s.toInt; _Noop}, "id" -> "n", "size" -> "10")}
           </div>
@@ -78,7 +78,7 @@ class PealCometActor extends CometActor with Loggable {
             {SHtml.ajaxText(randomModelParamWithDomain, s => {randomModelParamWithDomain = s; _Noop}, "id" -> "r", "size" -> "30")}
           </div>
           <div>
-            {SHtml.ajaxButton("Random sample with ranges: n, m_min, m_max, m_+, m_*, p, th, delta", () => {this ! GenerateWithRange; _Noop}, "class" -> "btn btn-primary btn-sm", "style" -> "margin:2px;")}
+            {SHtml.ajaxButton("Random sample with ranges: n, m_min, m_max, m_+, m_*, p, th, delta", () => {this ! GenerateWithRange; _Noop}, "class" -> "btn btn-info btn-sm", "style" -> "margin:2px;")}
             {SHtml.ajaxText(randomModelWithRangeParam, s => {randomModelWithRangeParam = s; _Noop}, "id" -> "r", "size" -> "30")}
           </div>
           <div>
