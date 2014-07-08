@@ -109,18 +109,17 @@ class PealCometActor extends CometActor with Loggable {
                 {SHtml.ajaxButton("Generate Z3 code and a link to it below", () => {this ! Prepare; _Noop}, "class" -> "btn btn-success btn-sm", "style" -> "margin:2px;")}
               </div>
             </div>
+            <div class="tab-pane" id="extended">
+              <div class="col-sm-5">
+                {SHtml.ajaxButton("Generate, show, and run Z3 code, display results in raw Z3 form", () => {this ! ExtendedSynthesisAndCallZ3; _Noop}, "class" -> "btn btn-success btn-sm", "style" -> "margin:2px;")}
+                {SHtml.ajaxButton("Generate and run Z3 code, display results in raw and policy specific form, and certify results", () => {this ! RunAndCertifyExtendedResults; _Noop}, "class" -> "btn btn-success btn-sm", "style" -> "margin:2px;")}
+              </div>
+            </div>
             <div class="tab-pane" id="symbolic">
               <div class="col-sm-5">
                 {SHtml.ajaxButton("Generate, show, and run Z3 code, display results in raw Z3 form", () => {this ! LazySynthesisAndCallZ3; _Noop}, "class" -> "btn btn-success btn-sm", "style" -> "margin:2px;")}
                 {SHtml.ajaxButton("Generate and show Z3 code", () => {this ! DisplayLazy; _Noop}, "class" -> "btn btn-success btn-sm", "style" -> "margin:2px;")}
                 {SHtml.ajaxButton("Generate Z3 code and a link to it below", () => {this ! PrepareLazy; _Noop}, "class" -> "btn btn-success btn-sm", "style" -> "margin:2px;")}
-              </div>
-            </div>
-            <div class="tab-pane" id="extended">
-              <div class="col-sm-5">
-                <p><br/>The following is broken into separate steps as generation of Z3 results from extended synthesis sometimes takes a long time</p>
-                {SHtml.ajaxButton("Generate, show, and run Z3 code, display results in raw Z3 form", () => {this ! ExtendedSynthesisAndCallZ3; _Noop}, "class" -> "btn btn-success btn-sm", "style" -> "margin:2px;")}
-                {SHtml.ajaxButton("Certify Z3 results", () => {this ! CertifyExtendedResults; _Noop}, "class" -> "btn btn-success btn-sm", "style" -> "margin:2px;")}
               </div>
             </div>
             <div class="tab-pane" id="new">
@@ -160,7 +159,11 @@ class PealCometActor extends CometActor with Loggable {
       this.analyses = analyses
       extendedSynthesis = performExtendedSynthesis(inputPolicies)
       onCallZ3(extendedSynthesis)
-    case CertifyExtendedResults => certifyResults(extendedSynthesis)
+    case RunAndCertifyExtendedResults =>
+      val (constsMap,  conds, pSets, analyses, domainSpecific) = parseInput(inputPolicies)
+      this.constsMap = constsMap
+      this.analyses = analyses
+      certifyResults(performExtendedSynthesis(inputPolicies))
     case PrepareLazy =>
       partialUpdate(JqId("result") ~> JqHtml(Text("Synthesising... Please wait...")))
       this ! DownloadLazy
@@ -363,14 +366,14 @@ class PealCometActor extends CometActor with Loggable {
         }
       }
       verbose match {
-        case true => this ! Result(<pre>{z3SMTInput}</pre><pre>Analysed results:<br/>{analysedResults}</pre><pre>Policies specialised with respect to models generated for satisfiable analyses:<br/><br/>{unfoldedInputs.mkString("\n\n")}</pre><pre>{verificationResults}</pre><pre>Z3 Raw Output:<br/>{z3RawOutput}</pre>)
+        case true => this ! Result(<pre>Generated Z3 code:<br/><br/>{z3SMTInput}</pre><pre>Analysed results:<br/>{analysedResults}</pre><pre>Policies specialised with respect to models generated for satisfiable analyses:<br/><br/>{unfoldedInputs.mkString("\n\n")}</pre><pre>{verificationResults}</pre><pre>Z3 Raw Output:<br/>{z3RawOutput}</pre>)
         case false => this ! Result(<pre>Analysed results:<br/>{analysedResults}</pre><pre>Policies specialised with respect to models generated for satisfiable analyses:<br/><br/>{unfoldedInputs.mkString("\n\n")}</pre><pre>{verificationResults}</pre>)
       }
     } catch {
       case e: Exception =>
         e.printStackTrace()
         verbose match {
-          case true => this ! Result(<pre>{z3SMTInput}</pre> <pre>Z3 Raw Output:<br/>{z3RawOutput}</pre>)
+          case true => this ! Result(<pre>Generated Z3 code:<br/><br/>{z3SMTInput}</pre> <pre>Z3 Raw Output:<br/>{z3RawOutput}</pre>)
           case false => this ! Result(<pre>Result analysis failed, returned model contains unexpected string:<br/>{z3RawOutput}</pre><pre>{e.getMessage}</pre>)
         }
     }
@@ -380,7 +383,7 @@ class PealCometActor extends CometActor with Loggable {
     try {
       z3RawOutput = Z3Caller.call(z3SMTInput)
 
-      this ! Result(<pre>{z3SMTInput}</pre><pre>Z3 Raw Output:<br/>{z3RawOutput}</pre>)
+      this ! Result(<pre>Generated Z3 code:<br/><br/>{z3SMTInput}</pre><pre>Z3 Raw Output:<br/>{z3RawOutput}</pre>)
     } catch {
       case e: Exception =>  dealWithIt(e)
     }
@@ -388,7 +391,7 @@ class PealCometActor extends CometActor with Loggable {
 
   private def certifyResults(z3SMTInput: String) {
     try {
-      if (z3RawOutput == "") throw new RuntimeException("Need to generate Z3 results first")
+      val z3RawOutput = Z3Caller.call(z3SMTInput)
       val z3OutputParser = ParserHelper.getZ3OutputParser(z3RawOutput)
       val z3OutputModels = z3OutputParser.results().toMap
       val sortedAnalyses = analyses.keys.toSeq.sortWith(_ < _)
@@ -417,7 +420,7 @@ class PealCometActor extends CometActor with Loggable {
         }
       }
 
-      this ! Result(<pre>{verificationResults.mkString("")}</pre><pre>Analysed results:<br/>{analysedResults}</pre><pre>Policies specialised with respect to models generated for satisfiable analyses:<br/><br/>{unfoldedInputs.mkString("\n\n")}</pre><pre>{z3SMTInput}</pre> <pre>Z3 Raw Output:<br/>{z3RawOutput}</pre>)
+      this ! Result(<pre>{verificationResults.mkString("")}</pre><pre>Analysed results:<br/>{analysedResults}</pre><pre>Policies specialised with respect to models generated for satisfiable analyses:<br/><br/>{unfoldedInputs.mkString("\n\n")}</pre><pre>Generated Z3 code:<br/><br/>{z3SMTInput}</pre><pre>Z3 Raw Output:<br/>{z3RawOutput}</pre>)
     } catch {
       case e: Exception =>  dealWithIt(e)
     }
