@@ -342,7 +342,7 @@ class PealCometActor extends CometActor with Loggable {
       val analysedNodes = for (a <- analysedResults) yield <pre>{a}</pre>
       verbose match {
         case true => this ! Result(<pre>Generated Z3 code:<br/><br/>{z3SMTInput}</pre><span>{analysedNodes}</span><pre>Z3 Raw Output:<br/>{z3RawOutput}</pre>)
-        case false => this ! Result(<pre>Analysed results:<br/>{analysedResults}</pre>)
+        case false => this ! Result(<span>{analysedNodes}</span>)
       }
     } catch {
       case e: Exception =>
@@ -369,8 +369,9 @@ class PealCometActor extends CometActor with Loggable {
       val z3RawOutput = Z3Caller.call(z3SMTInput)
       implicit val ov = new ExtendedOutputVerifier(inputPolicies)
       val analysedResults = Z3OutputAnalyser.execute(analyses, constsMap, inputPolicies, z3RawOutput)
+      val analysedNodes = for (a <- analysedResults) yield <pre>{a}</pre>
 
-      this ! Result(<pre>Generated Z3 code:<br/><br/>{z3SMTInput}</pre><pre>Analysed results:<br/>{analysedResults}</pre><pre>Z3 Raw Output:<br/>{z3RawOutput}</pre>)
+      this ! Result(<pre>Generated Z3 code:<br/><br/>{z3SMTInput}</pre><span>{analysedNodes}</span><pre>Z3 Raw Output:<br/>{z3RawOutput}</pre>)
     } catch {
       case e: Exception =>  dealWithIt(e)
     }

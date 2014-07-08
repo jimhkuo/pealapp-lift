@@ -20,7 +20,7 @@ object Z3OutputAnalyser {
     sortedAnalyses.foreach {
       a =>
         val buffer = new StringBuilder()
-        buffer.append("Result of analysis [" + analyses(a).analysisName + "]\n")
+        buffer.append("Result of analysis [" + analyses(a).analysisName + "]\n\n")
         analyses(a) match {
           case s: AlwaysTrue =>
             if (z3OutputModels(a).satResult == Unsat) {
@@ -32,42 +32,42 @@ object Z3OutputAnalyser {
             }
           case s: AlwaysFalse =>
             if (z3OutputModels(a).satResult == Unsat) {
-              buffer.append(s.cond + " is always false")
+              buffer.append(s.cond + " is always false\n")
             }
             else {
-              buffer.append(s.cond + " is NOT always false")
+              buffer.append(s.cond + " is NOT always false\n")
               buffer.append("For example, when\n" + getReasons(z3OutputModels(a), Set(), Set("always_false_", "cond"), constsMap))
             }
           case s: Satisfiable =>
             if (z3OutputModels(a).satResult == Unsat) {
-              buffer.append(s.cond + " is NOT satisfiable")
+              buffer.append(s.cond + " is NOT satisfiable\n")
             }
             else {
-              buffer.append(s.cond + " is satisfiable")
+              buffer.append(s.cond + " is satisfiable\n")
               buffer.append("For example, when\n" + getReasons(z3OutputModels(a), Set(), Set("satisfiable_", "cond"), constsMap))
             }
           case s: Different =>
             if (z3OutputModels(a).satResult == Unsat) {
-              buffer.append(s.lhs + " and " + s.rhs + " are NOT different")
+              buffer.append(s.lhs + " and " + s.rhs + " are NOT different\n")
             }
             else {
-              buffer.append(s.lhs + " and " + s.rhs + " are different")
+              buffer.append(s.lhs + " and " + s.rhs + " are different\n")
               buffer.append("For example, when\n" + getReasons(z3OutputModels(a), Set(s.lhs, s.rhs), Set("different_", "cond"), constsMap))
             }
           case s: Equivalent =>
             if (z3OutputModels(a).satResult == Unsat) {
-              buffer.append(s.lhs + " and " + s.rhs + " are equivalent")
+              buffer.append(s.lhs + " and " + s.rhs + " are equivalent\n")
             }
             else {
-              buffer.append(s.lhs + " and " + s.rhs + " are NOT equivalent")
+              buffer.append(s.lhs + " and " + s.rhs + " are NOT equivalent\n")
               buffer.append("For example, when\n" + getReasons(z3OutputModels(a), Set(s.lhs, s.rhs), Set("equivalent_", "cond"), constsMap))
             }
           case s: Implies =>
             if (z3OutputModels(a).satResult == Unsat) {
-              buffer.append(s.lhs + " implies " + s.rhs)
+              buffer.append(s.lhs + " implies " + s.rhs + "\n")
             }
             else {
-              buffer.append(s.lhs + " does not imply " + s.rhs)
+              buffer.append(s.lhs + " does not imply " + s.rhs + "\n")
               buffer.append("For example, when\n" + getReasons(z3OutputModels(a), Set(s.lhs, s.rhs), Set("implies_", "cond"), constsMap))
             }
         }
