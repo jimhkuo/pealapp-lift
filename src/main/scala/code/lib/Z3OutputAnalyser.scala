@@ -37,6 +37,10 @@ object Z3OutputAnalyser {
   }
 
   class MutableNodeSeq(var nodes: NodeSeq) {
+    def append(moreNodes: NodeSeq) {
+      nodes = nodes ++ moreNodes
+    }
+
     def append(node: Node) {
       nodes = nodes.append(node)
     }
