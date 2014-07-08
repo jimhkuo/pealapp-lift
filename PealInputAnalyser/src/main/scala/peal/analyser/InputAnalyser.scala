@@ -80,10 +80,10 @@ class InputAnalyser(input: String) {
           ConsoleLogger.log1(okRules)
 
           if (okRules.isEmpty) {
-            <span>{p} = {o} ({undefined}) default {ScoreEvaluator.trueScore(s, p + "_default_U").value}<br/></span>
+            <span>{p} = {o} ({undefined}) default <span style="font-weight: bold;color:red">{ScoreEvaluator.trueScore(s, p + "_default_U").value}</span><br/></span>
           }
           else {
-            <span>{p} = {o} (([{okRules.map(r => r.q.name).mkString("", " ", "")}] {accumulateScores(o, okRules.toSet, p)}){undefined}) default {ScoreEvaluator.trueScore(s, p + "_default_U").value}<br/></span>
+            <span>{p} = {o} (([{okRules.map(r => r.q.name).mkString("", " ", "")}] <span style="font-weight: bold;color:red">{accumulateScores(o, okRules.toSet, p)}</span>){undefined}) default {ScoreEvaluator.trueScore(s, p + "_default_U").value}<br/></span>
           }
       }
     }
