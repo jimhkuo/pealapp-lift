@@ -94,9 +94,9 @@ class PealCometActor extends CometActor with Loggable {
             <h4>2. Analyze PEALT input:</h4>
             <h6>Choose method of code generation for analyses. Then choose analysis option by clicking any of the green buttons.</h6>
             <ul class="nav nav-tabs">
-              <li class="active"><a href="#explicit" data-toggle="tab">Non-negative, constant scores</a></li>
+              <li class="active"><a href="#explicit" data-toggle="tab" style="color:#428bca">Non-negative, constant scores</a></li>
+              <li><a href="#extended" data-toggle="tab" style="color:#5bc0de">General scores</a></li>
               <li><a href="#symbolic" data-toggle="tab" style="display:none">Symbolic Synthesis</a></li>
-              <li><a href="#extended" data-toggle="tab">General scores</a></li>
               <li><a href="#new" data-toggle="tab" style="display:none">New Synthesis</a></li>
             </ul>
           </div>
