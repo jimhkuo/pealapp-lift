@@ -61,7 +61,7 @@ class PealCometActor extends CometActor with Loggable {
       <form class="lift:form.ajax">
         <div class="row">
           <div class="col-sm-12">
-          <h3>1. Generate PEALT input:</h3>
+          <h4>1. Generate PEALT input:</h4>
           <h6>Enter policies, policy sets, conditions and analyses in the text area or generate such input by clicking one of the blue buttons.</h6>
           <div>
             {SHtml.ajaxButton("Social Network Access Control example", () => {this ! Reset; _Noop}, "class" -> "btn btn-primary btn-sm", "style" -> "margin:2px;")}
@@ -103,16 +103,15 @@ class PealCometActor extends CometActor with Loggable {
           <div class="tab-content">
             <div class="tab-pane active" id="explicit">
               <div class="col-sm-5">
-                {SHtml.ajaxButton("Display results of all analyses in pretty printed form and perform verification", () => {this ! SynthesisAndCallZ3QuietAnalysis; _Noop}, "class" -> "btn btn-success btn-sm", "style" -> "margin:2px;")}
-                {SHtml.ajaxButton("Generate, show, and run Z3 code, display results in pretty-printed and raw form", () => {this ! SynthesisAndCallZ3; _Noop}, "class" -> "btn btn-success btn-sm", "style" -> "margin:2px;")}
-                {SHtml.ajaxButton("Generate and show Z3 code", () => {this ! Display; _Noop}, "class" -> "btn btn-success btn-sm", "style" -> "margin:2px;")}
-                {SHtml.ajaxButton("Generate Z3 code and a link to it below", () => {this ! Prepare; _Noop}, "class" -> "btn btn-success btn-sm", "style" -> "margin:2px;")}
+                {SHtml.ajaxButton("Display results of all analyses in pretty printed form and perform independent certification of results", () => {this ! SynthesisAndCallZ3QuietAnalysis; _Noop}, "class" -> "btn btn-success btn-sm", "style" -> "margin:2px;")}
+                {SHtml.ajaxButton("Generate, show, and run Z3 code; display results in pretty-printed and raw form", () => {this ! SynthesisAndCallZ3; _Noop}, "class" -> "btn btn-success btn-sm", "style" -> "margin:2px;")}
+                {SHtml.ajaxButton("Generate, show, and run Z3 code, display results in raw Z3 form", () => {this ! Display; _Noop}, "class" -> "btn btn-success btn-sm", "style" -> "margin:2px;")}
               </div>
             </div>
             <div class="tab-pane" id="extended">
               <div class="col-sm-5">
+                {SHtml.ajaxButton("Generate, show, and run Z3 code; display results in pretty-printed and raw form", () => {this ! RunAndCertifyExtendedResults; _Noop}, "class" -> "btn btn-success btn-sm", "style" -> "margin:2px;")}
                 {SHtml.ajaxButton("Generate, show, and run Z3 code, display results in raw Z3 form", () => {this ! ExtendedSynthesisAndCallZ3; _Noop}, "class" -> "btn btn-success btn-sm", "style" -> "margin:2px;")}
-                {SHtml.ajaxButton("Generate and run Z3 code, display results in raw and policy specific form, and certify results", () => {this ! RunAndCertifyExtendedResults; _Noop}, "class" -> "btn btn-success btn-sm", "style" -> "margin:2px;")}
               </div>
             </div>
             <div class="tab-pane" id="symbolic">
