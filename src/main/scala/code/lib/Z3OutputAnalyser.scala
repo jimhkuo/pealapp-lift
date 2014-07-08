@@ -86,7 +86,7 @@ object Z3OutputAnalyser {
             "Policies in analysis [" + a + "] specialised with respect to the model extended with false predicates from Set():\n\n" + new InputAnalyser(inputPolicies).analyse(z3RawOutput, a)
         }
         else {
-          "\nAnalysis \"" + a + "\" is UNSAT"
+          "\nOutput of analysis [" + a + "] is UNSAT: so no certification performed and no specialized policies reported."
         }
 
         buffer.append(cert)
