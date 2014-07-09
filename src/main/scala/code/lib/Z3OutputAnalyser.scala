@@ -3,7 +3,7 @@ package code.lib
 import peal.analyser.InputAnalyser
 import peal.antlr.util.ParserHelper
 import peal.domain.z3._
-import peal.domain.{PealBottom, PealFalse, PealTrue}
+import peal.domain.{Rational, PealBottom, PealFalse, PealTrue}
 import peal.synthesis.analysis._
 import peal.verifier.{OutputVerifier, Z3ModelValueParser}
 
@@ -100,14 +100,20 @@ object Z3OutputAnalyser {
           section.append("\nOutput of analysis [" + a + "] is UNSAT: so no certification performed and no specialized policies reported.")
         }
         val style = "font-family: Monaco, Menlo, Consolas, \"Courier New\", monospace;display: block;padding: 9.5px;margin: 0 0 10px;font-size: 13px;line-height: 1.428571429;color: #333;word-break: break-all;word-wrap: break-word;background-color: #f5f5f5;border: 1px solid #ccc;border-radius: 4px;"
-        entireAnalysis = entireAnalysis ++ <p style={style}>{section.nodes}</p>
+        entireAnalysis = entireAnalysis ++ <p style={style}>
+          {section.nodes}
+        </p>
     }
     entireAnalysis
   }
 
   private def getNaturalValue(value: String) = {
+    def printValue(r: Rational): String = {
+      if (r.denominator != BigDecimal("1")) r.value + " (" + value + ")"
+      else r.value.toString()
+    }
     try {
-      Z3ModelValueParser.parseToRational(value).fold(r => r.value + " (" + value + ")", b => b.toString)
+      Z3ModelValueParser.parseToRational(value).fold(r => printValue(r), b => b.toString)
     } catch {
       case e: Throwable => value
     }
