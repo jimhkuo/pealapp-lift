@@ -24,7 +24,7 @@ b2 = min ((hasUSLicense 0.9) (hasUKLicense 0.6) (hasEULicense 0.7) (hasOtherLice
 % policy that captures potential risk dependent on type of intended car usage
 % this policy happens not to be used in the conditions below
 b3 = max ((someOffRoadDriving 0.8) (onlyCityUsage 0.4) (onlyLongDistanceUsage 0.2) (mixedUsage 0.25)) default 0.3
-% policy that accumulates some signale that may serve as additional trust indicators
+% policy that accumulates some signals that may serve as additional trust indicators
 b4 = + ((accidentFreeForYears 0.05*x) (speaksEnglish 0.05) (travelsAlone -0.2) (femaleDriver 0.1)) default 0
 % the next policy is just defining a 'constant' -1, to be used as sub-expression in a policy set
 b_minOne = + () default -1
@@ -50,7 +50,7 @@ b_minOne = + () default -1
 <p>
 
     If we want to compose a policy with a real number, e.g. to write an expression b4 - 1, PEALT requires us to
-    write the real number -1 as a policy expression and to compose these policies with +. This is an artefact of the
+    write the real number -1 as a policy expression and to compose these policies with +. This is an artifact of the
     language definition and its parsing. Therefore, we use b_minOne = + () default -1 as a means of defining such a
     value. In general, we can define a real number r as in b_r = op () default r where op is any allowed operator
     for policies (max, min, +, and *).
@@ -59,13 +59,12 @@ b_minOne = + () default -1
 <p>
 
     The intuitive meaning of a policy is that we first collect all score expressions of predicates that are true in
-    that policy. If that set is empy, the policy returns its default score. Otherwise, it returns the result of
+    that policy. If that set is empty, the policy returns its default score. Otherwise, it returns the result of
     applying its operator to that set of score expressions. For example, if isLuxuryCar is true and isSedan and
     isCompact are false, then policy b1 evaluates to 150000.
 </p>
 
-<pre>
-POLICY_SETS
+<pre>POLICY_SETS
 % policy set that 'converts' the trust expressed in b2 into risk
 pSet0 = +(b2,b_minOne)
 % policy set that multiplies risk with potential financial loss
@@ -75,37 +74,35 @@ pSet_b4 = b4
 </pre>
 <p>
 
-    It is an artefact of the PEALT input language that we cannot write a policy name within a policy set directly.
+    It is an artifact of the PEALT input language that we cannot write a policy name within a policy set directly.
     Rather, we have to either cast it into a policy set (e.g. as done in declaring pSet_b4 as policy b4) or we have
     to apply policy set composition operators (min, max, +, and *) to policies (e.g. in pSet0) or to a mix of
     policies and policy sets (e.g. in pSet1). The input language does not support the application of these operators
     to more than two arguments at a time.
 
 </p>
-<pre>
-CONDITIONS
+<pre>CONDITIONS
 % condition that the risk aware potential financial loss is below a certain bound
 cond1 = pSet1 &lt;= 50000
 % condition that the accumulated trust is above a certain threshold
 cond2 = 0.4 &lt; pSet_b4
 % condition that insists that two previous conditions have to hold
-cond3 = cond1 && cond2
+cond3 = cond1 &amp;&amp; cond2
 % variant of condition cond2 with a higher threshold
 cond4 = 0.6 &lt; pSet_b4
 % variant of condition cond3 for that higher threshold
-cond5 = cond1 && cond4
+cond5 = cond1 &amp;&amp; cond4
 </pre>
 <p>
     The definition of conditions follows very similar conventions as that of defining policy sets. The composition
-    operators are negation (!), conjunction (&&), disjunction (||), and comparison operators (&lt; and &lt;=).
+    operators are negation (!), conjunction (&amp;&amp;), disjunction (||), and comparison operators (&lt; and &lt;=).
 
     All of these operators have to be applied one at a time in defining conditions. For example, in order to define
-    a condition cond3 as !cond1 && (0.4 < pSet4) we have to declare
+    a condition cond3 as !cond1 &amp;&amp; (0.4 &lt; pSet4) we have to declare
 </p>
-<pre>
-cond1_neg = !cond1
+<pre>cond1_neg = !cond1
 cond2 = 0.4 &lt; pSet4
-cond3 = cond1_neg && cond2
+cond3 = cond1_neg &amp;&amp; cond2
 </pre>
 <p>
     by inventing suitable intermediate variables such as cond1_neg. We realize that this may make specifications
@@ -122,9 +119,9 @@ cond3 = cond1_neg && cond2
 
 <ul>
     <li> although max, min, +, and * are still composition operators for policies, only max and min are allowed
-        composition operators used within section POLICY_SETS
+        composition operators used within section POLICY_SETS</li>
     <li> comparisons are restricted to the forms th &lt; pSet and pSet &lt;= th where pSet is a policy set and th a
-        non-negative, constant real
+        non-negative, constant real</li>
 </ul>
 <p>
     Note that we still can express conditions such as pSet &lt;= th but we have to state this as
@@ -138,8 +135,7 @@ cond = !cond_aux
     policies that have multiplication as composition operator.
 
 </p>
-<pre>
-DOMAIN_SPECIFICS
+<pre>DOMAIN_SPECIFICS
 % real x models the number of years driven without accident, has to be non-negative and is 'truncated' at value 10
 (assert (and (&lt;= 0 x) (&lt;= x 10)))
 % capturing a company policy: luxury cars must not be used for off road driving
@@ -148,11 +144,11 @@ DOMAIN_SPECIFICS
 (assert (and (implies isLuxuryCar (and (not isSedan) (not isCompact))) (implies isSedan (and (not isLuxuryCar) (not isCompact))) (implies isCompact (and (not isSedan) (not isLuxuryCar)))))
 % capturing that cars that are only used in cities are not used in a mixed sense
 (assert (implies onlyCityUsage (not mixedUsage)))
-% capturing that cars used only for longdistance driving are not used in a mixed sense
+% capturing that cars used only for long distance driving are not used in a mixed sense
 (assert (implies onlyLongDistanceUsage (not mixedUsage)))
 % capturing domain constraints (or company policy?) that city driving cannot happen off road
 (assert (implies onlyCityUsage (not someOffRoadDriving)))
-% capturing that cars used only for longdistance driving must drive off road
+% capturing that cars used only for long distance driving must drive off road
 (assert (implies onlyLongDistanceUsage (not someOffRoadDriving)))
 </pre>
 <p>
@@ -162,14 +158,13 @@ DOMAIN_SPECIFICS
     which we now want to highlight:
 </p>
 <ul>
-    <li> we can use "%" to write comments in that section, our Z3 code generation will still ignore this text
+    <li> we can use "%" to write comments in that section, our Z3 code generation will still ignore this text</li>
     <li> one should not explicitly declare variables in this section with Z3 statements if these variables are
         implicit in earlier PEALT declarations (e.g. we will automatically generate such declarations for
-        isLuxuryCar of type Boolean and x of type Real)
+        isLuxuryCar of type Boolean and x of type Real)</li>
 </ul>
 
-<pre>
-ANALYSES
+<pre>ANALYSES
 % is condition cond3 satisfiable?
 name1 = satisfiable? cond3
 % is condition cond3 always true? this would suggest a specification error
@@ -186,11 +181,11 @@ name5 = equivalent? cond3 cond5
     sets, and conditions. The supported analyses are
 </p>
 <ul>
-    <li> satisfiable? cond; can we make condition cond true?
-    <li> always_false? cond; can condition cond never be made true?
-    <li> always_true? cond; can condition cond never be made false?
-    <li> implies? cond1 cond2; does the truth of cond1 logically imply the truth of cond2?
-    <li> equivalent? cond1 cond2; are conditions cond1 and cond2 logically equivalent?of cond2?
+    <li> satisfiable? cond; can we make condition cond true?</li>
+    <li> always_false? cond; can condition cond never be made true?</li>
+    <li> always_true? cond; can condition cond never be made false?</li>
+    <li> implies? cond1 cond2; does the truth of cond1 logically imply the truth of cond2?</li>
+    <li> equivalent? cond1 cond2; are conditions cond1 and cond2 logically equivalent?of cond2?</li>
 </ul>
 <p>
 
@@ -206,8 +201,7 @@ name5 = equivalent? cond3 cond5
     and shows some values that are internal to our method of Z3 code generation (e.g. the variable b2_score
     represents the score to which policy b2 evaluates in this model):
 </p>
-<pre>
-Result of analysis [ name1 = satisfiable? cond3 ]
+<pre>Result of analysis [ name1 = satisfiable? cond3 ]
 
 cond3 is satisfiable, for example, when:
 onlyLongDistanceUsage is False
