@@ -7,267 +7,44 @@
 <body class="lift:content_id=main">
 <div id="main" class="lift:surround?with=default;at=content">
 
-<!--<span class="lift:embed?what=_embedme">-->
-<!--replaced with embedded content-->
-<!--</span>-->
 <div class="col-sm-12">
 <h4>Getting started</h4>
 
 <p>
-    PEALT input consists of text statements delimited by \n (NEWLINE) characters. The sections of the input
-    are divided by keywords, POLICIES,
-    POLICY_SETS, CONDITIONS, DOMAIN_SPECIFICS (optional), and ANALYSES. The details of the language grammar is
-    documented in the aforementioned technical report. This guide aims to give some basic ideas to get users started.
-
+    PEALT input consists of text statements delimited with \n (NEWLINE) characters. The input is divided into
+    sections by keywords POLICIES, POLICY_SETS, CONDITIONS, DOMAIN_SPECIFICS (optional), and ANALYSES.
+    We illustrate this with the car rental risks example provided in the tool interface. It specified four policies:
 </p>
-
-
-<!--<h4>POLICIES</h4>-->
-
-<p>
-    Multiple input policies can be defined in section POLICIES. Policy has the format
-    [policy name] = [operator] (<i>rule*</i>) default <i>th</i>. We explain the syntax with the aid of a simple example.
-    A valid policy may be,
-</p>
-
-<pre>b1 = min ((q1 0.2) (q2 0.4) (q3 0.9)) default 1.0</pre>
-
-<p>Here, b1 is the policy name, min is the operator, followed by zero or more rules in a pair of brackets. Each
-    rule is a
-    tuple of (predicate name, score).
-    Finally, the statement ends with the "default" keyword and a default score (1.0).
-    The names of predicates, policies, policy sets, and conditions are strings starting with a letter,
-    followed by more
-    letters or numbers.
-</p>
-
-<p>
-
-    Predicates do not need to be declared. The Peal parser will read in a policy and automatically recognise the
-    left
-    hand sides of the rule tuples as predicates.
-
-    A predicate is a boolean value, a true value means the associated score is applicable, otherwise it means
-    the tuple has no effect in the container policy.
-    If all predicates are false, then the policy is assigned the default score.
-    If a predicate name appears in more than one policy, it simply means
-    the same boolean variable controls application of associated scores in those policies.
-</p>
-
-<p>
-    If the operator is changed to +, *, or max, the score of the policy is aggregated accordingly.
-</p>
-
-<p>
-    Note that while violating this does not cause an error, the policy name should be unique. Internally,
-    policies are
-    held in a map with policy names as the key, thus the policies will be overridden by later ones of the same
-    name.
-</p>
-
-<p>At the risk of spelling out the obvious, the above statement says b1 is evaluated to the minimum
-    of all scores where the predicates are true. If all predicates are false, then b1 is assigned the default
-    score 1.
-</p>
-
-
-<!--<h4>POLICY_SETS</h4>-->
-
-<p>
-    Policy sets aggregate the scores of previously defined policies. A policy set can simply be equal to a policy, or
-    aggregation of two policy sets by max or min operator (binary). For example, assuming we have policies b1, b2, and
-    b3, then we can do,
-</p>
-
-        <pre>pSet1 = b1
-pSet2 = max(b1, b2)</pre>
-
-<p>If we wish to express a nested structure, we can achieve this by referring to already declared variable,
-    as the policy set operators are binary. For example,</p>
-
-<pre>pSet3 = min(b3, pSet2)</pre>
-
-<p>is the allowed input to express pSet3 = min(b3, max(b1, b2)), which is not allowed input syntax.</p>
-
-<p>
-    The domain specifics section contains Z3 specific code that will simply be appended to the end of generated code.
-    It is users' responsibilities to enter valid inputs accepted by the Z3 SMT solver.
-    And to ensure that Boolean predicates that occur in rules do not (in fact must not) be redeclared as Boolean
-    predicates
-    in DOMAIN_SPECIFICS if they are referred to in that part.
-</p>
-
-<h4>Supported conditions and analyses</h4>
-
-<p>Supported analyses, conditions and their usage are documented in the technical report.
-    This section gives examples of the supported formats.
-</p>
-
-<p>A condition definition has the format [condition name] = [condition content]. As previously alluded to, condition name is a string.
-    Condition content is the truth value of some condition.
-    Let q1, pSet1 be defined predicate, respectively policy set, and th is a (numerical) threshold value.
-    Valid examples of condition content are:</p>
-
-<pre>pSet1 &lt;= th</pre>
-<p>pSet1 is less than or equal to th.</p>
-<pre>th &lt; pSet1</pre>
-<p>pSet1 is greater than th.</p>
-<pre>q1</pre>
-<p>the proposition q1 (as a condition).</p>
-<pre>!q1</pre>
-<p>the negation of the proposition q1 (as a condition).</p>
-<pre>!cond3</pre>
-<p>the negation of condition cond3.</p>
-<pre>cond2 &amp;&amp; cond3</pre>
-<p>the conjunction of cond2 and cond3.</p>
-<pre>cond4 || cond5</pre>
-<p>the disjunction of cond4 and cond5.</p>
-
-<p>In this early alpha version of PEALT, the language grammar is quite restrictive.
-    Every line can only have one operator (i.e., !, ||, and &amp;&amp;). For example,
-    in order to express
-cond8 = !q1 &amp;&amp; (cond1 || !cond2) (which is not a valid input), it is necessary to break
-    down the single line expression into the following:
-</p>
-
-<pre>not_cond2 = !cond2
-or_cond = cond1 || not_cond2
-not_q1 = !q1
-cond8 = not_q1 &amp;&amp; or_cond</pre>
-
-<p>We are looking into improving the language in future versions of PEALT.</p>
-
-<p>The format of an analysis is [analysis name] = [analysis type] [condition name].
-    The list of supported analyses are shown below (? character is part of analysis type),
-    hopefully their intentions are intuitive from the type names used:</p>
-
-        <pre>analysis1 = always_true? cond1
-analysis2 = always_false? cond1
-analysis3 = satisfiable? cond1
-analysis4 = equivalent? cond1 cond2
-analysis5 = different? cond1 cond2
-analysis6 = implies? cond1 cond2</pre>
-<h4>Simple example</h4>
-
-<p>Given the following input,</p>
-        <pre>POLICIES
-b1 = min ((q1 0.2) (q2 0.4) (q3 0.9)) default 1
-b2 = + ((q4 0.1) (q5 0.2) (q6 0.6)) default 0
-POLICY_SETS
-pSet1 = max(b1, b2)
-CONDITIONS
-cond1 = pSet1 &lt;= 0.5
-cond2 = pSet1 &lt;= 0.6
-ANALYSES
-name1 = always_true? cond1
-name2 = equivalent? cond1 cond2
-name3 = different? cond1 cond2
-name4 = implies? cond1 cond2
+<pre>POLICIES
+% policy capturing risk of financial loss dependent on type of rented car
+b1 = max ((isLuxuryCar 150000) (isSedan 60000) (isCompact 30000)) default 50000
+% policy capturing trust in rentee dependent on type of his or her driving license
+% trust score for 'hasOtherLicense' contains non-deterministic uncertainty and so is in [0.3,0.5]
+b2 = min ((hasUSLicense 0.9) (hasUKLicense 0.6) (hasEULicense 0.7) (hasOtherLicense 0.4 [-0.1,0.1])) default 0
+% policy that captures potential risk dependent on type of intended car usage
+% this policy happens not to be used in the conditions below
+b3 = max ((someOffRoadDriving 0.8) (onlyCityUsage 0.4) (onlyLongDistanceUsage 0.2) (mixedUsage 0.25)) default 0.3
+% policy that accumulates some signale that may serve as additional trust indicators
+b4 = + ((accidentFreeForYears 0.05*x) (speaksEnglish 0.05) (travelsAlone -0.2) (femaleDriver 0.1)) default 0
+% the next policy is just defining a 'constant' -1, to be used as sub-expression in a policy set
+b_minOne = + () default -1
 </pre>
-<p>this sets up two policies b1, and b2. Policy b1 gets the minimum of the scores associated with q1, q2 and q3
-    when any of them is true.
-    If q1, q2, and q3 are all false, then b1 = 1 (the default score).
-    The score of b2 is evaluated in a similar manner, the only difference is that the score aggregation operator
-    is changed to
-    addition operator +.</p>
 
-<p>Policy set pSet1 represents the combined score of b1 and b2 using the max operator.</p>
-
-<p>Then we define two conditions, each asserting the score of pSet1 is less than or equal to some value.
-    In our example, we compare pSet1 to 0.5 and 0.6.</p>
-
-<p>Finally, we define four analyses. We get
-    these pretty printed results by clicking the "Display results of all analyses in pretty printed form"
-    button.</p>
-
-        <pre>Analysed results:
-
-Result of analysis [name1 = always_true? cond1]
-cond1 is NOT always true
-For example, when
-q5 is false
-q1 is true
-q6 is true
-q4 is false
-
-Result of analysis [name2 = equivalent? cond1 cond2]
-cond1 and cond2 are NOT equivalent
-For example, when
-q5 is false
-q1 is true
-q6 is true
-q4 is false
-cond1 is false
-cond2 is true
-
-Result of analysis [name3 = different? cond1 cond2]
-cond1 and cond2 are different
-For example, when
-q5 is false
-q1 is true
-q6 is true
-q4 is false
-cond1 is false
-cond2 is true
-
-Result of analysis [name4 = implies? cond1 cond2]
-cond1 implies cond2</pre>
-
-<p>We check that whether cond1 is always true, whether cond1 and cond2 are equivalent, respectively different. Lastly,
-    we check if cond1 implies cond2. Whenever the outcome of an analysis can be supported by a model,
-    such a model is provided in the output.</p>
+    <p>
+    Note the use of "%" to insert comment lines into PEALT input. The predicate names 'isLuxuryCar' etc. do not have
+    to be explicitly declared as predicates, their type is implicitly inferred through their occurrence in a rule.
+    </p>
 
 
-<h4>PEALT usage constraints</h4>
-
-<p>We now describe the illicit combinations, which we want to automatically disable in future version of the
-    tool:</p>
-
-<p>
-    Usage constraint 1: explicit synthesis should not be used when any + policy occurring within an analysis
-    contains some negative or non-constant score or when any such * policy has scores not in the unit interval
-    [0,1]; it should also not be used when any min or max policy occurring in an analysis contains some
-    non-constant
-    score (negative but constant ones are OK then).
-</p>
-
-<p>
-    Usage constraint 2: symbolic synthesis should not be used when any min or max policy occurring within an
-    analysis contains some non-constant score (negative but constant ones are OK then).
-</p>
-
-<p>
-    <!--It is therefore safe to use explicit synthesis for positive, constant scores only.-->
-    For example, it is safe to use explicit synthesis for constant scores in the unit interval.
-    <!--can currently not be generated  -->
-    <!--domain specific information contains complex features such as  quantification or functions.-->
-    Also, it is safe to use symbolic synthesis for both positive and negative scores
-    when only + and * policies have non-constant scores.
-</p>
-
-<p>
-    In this early alpha version of PEALT, the app will return no result if any stage of processing exhausts the system
-    resource. For example,
-    PEALT may produce no output if a model generated for <i>n</i> greater than 20 of majority voting is supplied.
-</p>
-
-<p>Additionally, pretty printed output is currently not available for inputs with domain specifics,
-    and symbolic synthesis results. This problem will be rectified in due course.
-</p>
-
-<p>
-    Please contact Jim Kuo (google for contact info) with any queries or feedback regarding the PEALT tool.
-</p>
-
-<!--<h3>Abstract</h3>-->
-<!--<p>This little application demonstrates the logical synthesis from Peal policies.</p>-->
-<!--<p>We explore how best to do the synthesis of logical formula that capture whether a-->
-<!--Peal policy evaluates below or strictly above some threshold. We confine our attention for now-->
-<!--to scores that are non-negative. We will consider the consistency of conjunctions of predicates,-->
-<!--and investigate what research issues and trade-offs such consideration brings to this synthesis process.</p>-->
-<!--<p>By Michael Huth and Jim Huan-Pu Kuo</p>-->
-
-
+    <p>
+    The scores within rules may be constants (e.g. 30000 in policy b1 above), negative numbers (e.g. -0.2 is policy
+    b4 above), variables, or constants multiplied with variables (e.g. 0.05*x in policy b4 above). All variables
+    within score expressions of rules are implictly assigned the type Real. Additionally, a score expression s may
+    be followed by an interval [l,u] where l and u are constant real numbers such that l &lt;= u. For example, in
+    policy b2 we have rule (hasOtherLicense 0.4 [-0.1,0.1]). The meaning of this score expression is that it can be
+    any number 0.4 + z where z is in the interval [-0.1,0.1]. This models non-deterministic uncertainty of score
+    expressions.
+    </p>
 </div>
 </div>
 
