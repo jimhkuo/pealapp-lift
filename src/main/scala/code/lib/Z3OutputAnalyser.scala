@@ -8,7 +8,7 @@ import peal.synthesis.analysis._
 import peal.verifier.{OutputVerifier, Z3ModelValueParser}
 
 import scala.collection.JavaConversions._
-import scala.xml.{Node, NodeSeq}
+import scala.xml.NodeSeq
 
 
 object Z3OutputAnalyser {
@@ -100,9 +100,7 @@ object Z3OutputAnalyser {
           section.append("\nOutput of analysis [" + a + "] is UNSAT: so no certification performed and no specialized policies reported.")
         }
 
-        entireAnalysis = entireAnalysis ++ <p>
-          {section.nodes}
-        </p>
+        entireAnalysis = entireAnalysis ++ <p style="border-style:dotted;border-width:1px;padding:3px;">{section.nodes}</p>
     }
     entireAnalysis
   }
