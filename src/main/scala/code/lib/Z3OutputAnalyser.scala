@@ -4,65 +4,14 @@ import peal.analyser.InputAnalyser
 import peal.antlr.util.ParserHelper
 import peal.domain.z3._
 import peal.domain.{PealBottom, PealFalse, PealTrue}
-import peal.synthesis.analysis.{AlwaysFalse, AlwaysTrue, Different, Satisfiable, _}
-import peal.verifier.{Z3ModelValueParser, OutputVerifier}
+import peal.synthesis.analysis._
+import peal.verifier.{OutputVerifier, Z3ModelValueParser}
 
 import scala.collection.JavaConversions._
-import scala.collection.mutable.ListBuffer
 import scala.xml.{Node, NodeSeq}
 
 
 object Z3OutputAnalyser {
-
-  trait NodeAppender {
-    def appendNode(node: Node): NodeSeq => NodeSeq
-  }
-
-  implicit object NodeAppenderObj extends NodeAppender {
-    override def appendNode(node: Node) = (nodes: NodeSeq) => {
-      nodes :+ node
-    }
-  }
-
-  implicit def fops(ns: NodeSeq) = new {
-    val witness = implicitly[NodeAppender]
-
-    final def append(node: Node): NodeSeq = {
-      witness.appendNode(node)(ns)
-    }
-  }
-
-  object MutableNodeSeq {
-    def apply(nodes: NodeSeq) = new MutableNodeSeq(nodes)
-
-    def apply() = new MutableNodeSeq(NodeSeq.Empty)
-  }
-
-  class MutableNodeSeq(var nodes: NodeSeq) {
-    def append(moreNodes: NodeSeq) {
-      nodes = nodes ++ moreNodes
-    }
-
-    def append(node: Node) {
-      nodes = nodes.append(node)
-    }
-
-    def append(s: String) {
-      append(s.split("\n").toList)
-    }
-
-    def append(lines: List[String]) {
-      lines.foreach {
-        l =>
-          nodes = nodes.append(<span>
-            {l}<br/>
-          </span>)
-      }
-
-    }
-
-    override def toString = nodes.toString()
-  }
 
   def execute(analyses: Map[String, AnalysisGenerator], constsMap: Map[String, PealAst], inputPolicies: String, z3RawOutput: String)(implicit ov: OutputVerifier): NodeSeq = {
     val z3OutputParser = ParserHelper.getZ3OutputParser(z3RawOutput)

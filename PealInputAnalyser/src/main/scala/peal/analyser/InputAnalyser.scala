@@ -12,9 +12,6 @@ import peal.verifier.{OutputVerifier, Z3ModelExtractor}
 import scala.collection.JavaConversions._
 import scala.xml.{NodeSeq, Node}
 
-
-
-
 class InputAnalyser(input: String) {
   private val pealProgramParser = ParserHelper.getPealParser(input)
   pealProgramParser.program()
