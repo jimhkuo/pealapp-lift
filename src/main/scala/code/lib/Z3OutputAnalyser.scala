@@ -31,8 +31,7 @@ object Z3OutputAnalyser {
               section.append(s.cond + " is always true")
             }
             else {
-              section.append(s.cond + " is NOT always true")
-              section.append("For example, when")
+              section.append(s.cond + " is NOT always true, for example, when:")
               section.append(getReasons(z3OutputModels(a), Set(), Set("always_true_", "cond"), constsMap))
             }
           case s: AlwaysFalse =>
@@ -40,44 +39,39 @@ object Z3OutputAnalyser {
               section.append(s.cond + " is always false")
             }
             else {
-              section.append(s.cond + " is NOT always false")
-              section.append("For example, when")
+              section.append(s.cond + " is NOT always false, for example, when:")
               section.append(getReasons(z3OutputModels(a), Set(), Set("always_false_", "cond"), constsMap))
             }
           case s: Satisfiable =>
             if (z3OutputModels(a).satResult == Unsat) {
-              section.append(s.cond + " is NOT satisfiable\n")
+              section.append(s.cond + " is NOT satisfiable")
             }
             else {
-              section.append(s.cond + " is satisfiable\n")
-              section.append("For example, when")
+              section.append(s.cond + " is satisfiable, for example, when:")
               section.append(getReasons(z3OutputModels(a), Set(), Set("satisfiable_", "cond"), constsMap))
             }
           case s: Different =>
             if (z3OutputModels(a).satResult == Unsat) {
-              section.append(s.lhs + " and " + s.rhs + " are NOT different\n")
+              section.append(s.lhs + " and " + s.rhs + " are NOT different")
             }
             else {
-              section.append(s.lhs + " and " + s.rhs + " are different\n")
-              section.append("For example, when")
+              section.append(s.lhs + " and " + s.rhs + " are different, for example, when:")
               section.append(getReasons(z3OutputModels(a), Set(s.lhs, s.rhs), Set("different_", "cond"), constsMap))
             }
           case s: Equivalent =>
             if (z3OutputModels(a).satResult == Unsat) {
-              section.append(s.lhs + " and " + s.rhs + " are equivalent\n")
+              section.append(s.lhs + " and " + s.rhs + " are equivalent")
             }
             else {
-              section.append(s.lhs + " and " + s.rhs + " are NOT equivalent\n")
-              section.append("For example, when")
+              section.append(s.lhs + " and " + s.rhs + " are NOT equivalent, for example, when:")
               section.append(getReasons(z3OutputModels(a), Set(s.lhs, s.rhs), Set("equivalent_", "cond"), constsMap))
             }
           case s: Implies =>
             if (z3OutputModels(a).satResult == Unsat) {
-              section.append(s.lhs + " implies " + s.rhs + "\n")
+              section.append(s.lhs + " implies " + s.rhs)
             }
             else {
-              section.append(s.lhs + " does not imply " + s.rhs + "\n")
-              section.append("For example, when")
+              section.append(s.lhs + " does not imply " + s.rhs + ", for example, when:")
               section.append(getReasons(z3OutputModels(a), Set(s.lhs, s.rhs), Set("implies_", "cond"), constsMap))
             }
         }
