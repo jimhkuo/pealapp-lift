@@ -99,8 +99,8 @@ object Z3OutputAnalyser {
         else {
           section.append("\nOutput of analysis [" + a + "] is UNSAT: so no certification performed and no specialized policies reported.")
         }
-
-        entireAnalysis = entireAnalysis ++ <p style="border-style:dotted;border-width:1px;padding:3px;">{section.nodes}</p>
+        val style = "font-family: Monaco, Menlo, Consolas, \"Courier New\", monospace;display: block;padding: 9.5px;margin: 0 0 10px;font-size: 13px;line-height: 1.428571429;color: #333;word-break: break-all;word-wrap: break-word;background-color: #f5f5f5;border: 1px solid #ccc;border-radius: 4px;"
+        entireAnalysis = entireAnalysis ++ <p style={style}>{section.nodes}</p>
     }
     entireAnalysis
   }
