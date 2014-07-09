@@ -43,8 +43,8 @@ class PealCometActor extends CometActor with Loggable {
     "name1 = always_true? cond1\n" +
     "name2 = always_true? cond2\n"
 
-  val socialNetworkExample = "POLICIES\nb1 = + ((lowCostTransaction 0.3) (enoughMutualFriends 0.1) (enoughMutualFriendsNormalized 0.2)) default 0\nb2 = min ((highCostTransaction 0.1) (aFriendOfAliceUnfriendedBob 0.2) (aFriendOfAliceVouchesForBob 0.6)) default 1\nPOLICY_SETS\npSet1 = min(b1,b2)\nCONDITIONS\ncond1 = 0.5 < pSet1\ncond2 = 0.6 < pSet1\nDOMAIN_SPECIFICS\n(declare-const amountAlicePays Real)\n(declare-const numberOfMutualFriends Real)\n(declare-const numberOfBobsFriends Real)\n(assert (= lowCostTransaction (< amountAlicePays 100)))\n(assert (= highCostTransaction (< 1000 amountAlicePays)))\n(assert (= enoughMutualFriends (< 4 numberOfMutualFriends)))\n(assert (= enoughMutualFriendsNormalized (< numberOfBobsFriends (* 100 numberOfMutualFriends))))\nANALYSES\nname1 = satisfiable? cond1\nname2 = always_true? cond1\nname3 = always_false? cond1\nname4 = implies? cond2 cond1\nname5 = equivalent? cond1 cond2\n"
-  val carRentalExample = "POLICIES\nb1 = max ((isLuxuryCar 150000) (isSedan 60000) (isCompact 30000)) default 50000\nb2 = min ((hasUSLicense 0.9) (hasUKLicense 0.6) (hasEULicense 0.7) (hasOtherLicense 0.4 [-0.1,0.1])) default 0\nb3 = max ((someOffRoadDriving 0.8) (onlyCityUsage 0.4) (onlyLongDistanceUsage 0.2) (mixedUsage 0.25)) default 0.3\nb4 = + ((accidentFreeForYears 0.05*x) (speaksEnglish 0.05) (travelsAlone -0.2) (femaleDriver 0.1)) default 0\nb_minOne = + () default -1\nPOLICY_SETS\npSet0 = +(b2,b_minOne)\npSet1 = *(b1,pSet0)\npSet_b4 = b4\nCONDITIONS\ncond1 = pSet1 <= 50000\ncond2 = 0.4 < pSet_b4\ncond3 = cond1 && cond2\ncond4 = 0.6 < pSet_b4\ncond5 = cond1 && cond4\nDOMAIN_SPECIFICS\n(assert (and (<= 0 x) (<= x 10)))\n(assert (or (not isLuxuryCar) (not someOffRoadDriving)))\n(assert (and (implies isLuxuryCar (and (not isSedan) (not isCompact))) (implies isSedan (and (not isLuxuryCar) (not isCompact))) (implies isCompact (and (not isSedan) (not isLuxuryCar)))))\n(assert (implies onlyCityUsage (not mixedUsage)))\n(assert (implies onlyLongDistanceUsage (not mixedUsage)))\n(assert (implies onlyCityUsage (not someOffRoadDriving)))\n(assert (implies onlyLongDistanceUsage (not someOffRoadDriving)))\nANALYSES\nname1 = satisfiable? cond3\nname2 = always_true? cond3\nname3 = always_false? cond3\nname4 = satisfiable? cond5\nname5 = equivalent? cond3 cond5\n"
+  val socialNetworkExample = "POLICIES\n% policy that accumulates trust indicators for a PayPal type payment transaction\nb1 = + ((lowCostTransaction 0.3) (enoughMutualFriends 0.1) (enoughMutualFriendsNormalized 0.2)) default 0\n% policy that extracts the worst possible signal for distrusting such a transaction\nb2 = min ((highCostTransaction 0.1) (aFriendOfAliceUnfriendedBob 0.2) (aFriendOfAliceVouchesForBob 0.6)) default 1\nPOLICY_SETS\n% policy set that conservatively (given threshold type th < cond below) combines both policies above\npSet1 = min(b1,b2)\nCONDITIONS\n% asking whether combined trust score is above a certain threshold\ncond1 = 0.5 < pSet1\n% asking whether the combined trust score is above a higher such threshold\ncond2 = 0.6 < pSet1\nDOMAIN_SPECIFICS\n% the amount of the pondered online transaction\n(declare-const amountAlicePays Real)\n% the number of friends that payer and payee share\n(declare-const numberOfMutualFriends Real)\n% number of friends of payee\n(declare-const numberOfBobsFriends Real)\n% definition of what a low cost transaction represents\n(assert (= lowCostTransaction (< amountAlicePays 100)))\n% definition of what a high cost transaction represents\n% note that these transaction types are not logical negations of each other\n(assert (= highCostTransaction (< 1000 amountAlicePays)))\n% definition of that it means to have enough mutual friends for this intended transaction\n(assert (= enoughMutualFriends (< 4 numberOfMutualFriends)))\n% a variant of such a definition that may be more resilient to abnormal values, e.g. for celebrities\n(assert (= enoughMutualFriendsNormalized (< numberOfBobsFriends (* 100 numberOfMutualFriends))))\nANALYSES\n% asking whether the combined trust score can exceed threshold 0.5\nname1 = satisfiable? cond1\n% asking whether the above condition is always true, which would suggest a specification error\nname2 = always_true? cond1\n% asking whether the above condition is always false, which would suggest a specification error\nname3 = always_false? cond1\n% asking whether one threshold behavior implies another, should be the case as 0.5 < 0.6 holds\nname4 = implies? cond2 cond1\n% asking whether both threshold behaviors are equivalent, this may be true or false in general\n% but it is false in this instance\nname5 = equivalent? cond1 cond2"
+  val carRentalExample = "POLICIES\n% policy capturing risk of financial loss dependent on type of rented car\nb1 = max ((isLuxuryCar 150000) (isSedan 60000) (isCompact 30000)) default 50000\n% policy capturing trust in rentee dependent on type of his or her driving license\n% trust score for 'hasOtherLicense' contains non-deterministic uncertainty and so is in [0.3,0.5]\nb2 = min ((hasUSLicense 0.9) (hasUKLicense 0.6) (hasEULicense 0.7) (hasOtherLicense 0.4 [-0.1,0.1])) default 0\n% policy that captures potential risk dependent on type of intended car usage\n% this policy happens not to be used in the conditions below\nb3 = max ((someOffRoadDriving 0.8) (onlyCityUsage 0.4) (onlyLongDistanceUsage 0.2) (mixedUsage 0.25)) default 0.3\n% policy that accumulates some signale that may serve as additional trust indicators\nb4 = + ((accidentFreeForYears 0.05*x) (speaksEnglish 0.05) (travelsAlone -0.2) (femaleDriver 0.1)) default 0\n% the next policy is just defining a 'constant' -1, to be used as sub-expression in a policy set\nb_minOne = + () default -1\nPOLICY_SETS\n% policy set that 'converts' the trust expressed in b2 into risk\npSet0 = +(b2,b_minOne)\n% policy set that multiplies risk with potential financial loss\npSet1 = *(b1,pSet0)\n% casting policy p4 into a policy set\npSet_b4 = b4\nCONDITIONS\n% condition that the risk aware potential financial loss is below a certain bound\ncond1 = pSet1 <= 50000\n% condition that the accumulated trust is above a certain threshold\ncond2 = 0.4 < pSet_b4\n% condition that insists that two previous conditions have to hold\ncond3 = cond1 && cond2\n% variant of condition cond2 with a higher threshold\ncond4 = 0.6 < pSet_b4\n% variant of condition cond3 for that higher threshold\ncond5 = cond1 && cond4\nDOMAIN_SPECIFICS\n% real x models the number of years driven without accident, has to be non-negative and is 'truncated' at value 10\n(assert (and (<= 0 x) (<= x 10)))\n% capturing a company policy: luxury cars must not be used for off road driving \n(assert (or (not isLuxuryCar) (not someOffRoadDriving)))\n% capturing that the different types of rental cars are mutually exclusive\n(assert (and (implies isLuxuryCar (and (not isSedan) (not isCompact))) (implies isSedan (and (not isLuxuryCar) (not isCompact))) (implies isCompact (and (not isSedan) (not isLuxuryCar)))))\n% capturing that cars that are only used in cities are not used in a mixed sense\n(assert (implies onlyCityUsage (not mixedUsage)))\n% capturing that cars used only for longdistance driving are not used in a mixed sense\n(assert (implies onlyLongDistanceUsage (not mixedUsage)))\n% capturing domain constraints (or company policy?) that city driving cannot happen off road\n(assert (implies onlyCityUsage (not someOffRoadDriving)))\n% capturing that cars used only for longdistance driving must drive off road\n(assert (implies onlyLongDistanceUsage (not someOffRoadDriving)))\nANALYSES\n% is condition cond3 satisfiable?\nname1 = satisfiable? cond3\n% is condition cond3 always true? this would suggest a specification error\nname2 = always_true? cond3\n% is condition cond3 always false? this also would suggest a specification error\nname3 = always_false? cond3\n% is condition cond5 satisfiable?\nname4 = satisfiable? cond5\n% are conditions cond3 and cond5 equivalent?\nname5 = equivalent? cond3 cond5"
   var inputPolicies = socialNetworkExample
   var z3RawOutput = ""
   var extendedSynthesis = ""
@@ -105,7 +105,7 @@ class PealCometActor extends CometActor with Loggable {
             <div class="tab-pane active" id="explicit">
               <div class="col-sm-5">
                 {SHtml.ajaxButton("Display results of all analyses in pretty printed form and perform independent certification of results", () => {this ! SynthesisAndCallZ3QuietAnalysis; _Noop}, "class" -> "btn btn-success btn-sm", "style" -> "margin:2px;")}
-                {SHtml.ajaxButton("Generate, show, and run Z3 code; display results in pretty-printed and raw form", () => {this ! SynthesisAndCallZ3; _Noop}, "class" -> "btn btn-success btn-sm", "style" -> "margin:2px;")}
+                {SHtml.ajaxButton("Generate, show, and run Z3 code; display results in pretty-printed and raw form", () => {this ! RunAndCertifyExplicitResults; _Noop}, "class" -> "btn btn-success btn-sm", "style" -> "margin:2px;")}
                 {SHtml.ajaxButton("Generate, show, and run Z3 code, display results in raw Z3 form", () => {this ! ExplicitSynthesisAndCallZ3; _Noop}, "class" -> "btn btn-success btn-sm", "style" -> "margin:2px;")}
               </div>
             </div>
@@ -154,28 +154,42 @@ class PealCometActor extends CometActor with Loggable {
       this ! SaveFile(newSynthesis, lapseTime)
     case DisplayLazy => this ! Result(<pre>{performLazySynthesis(inputPolicies)}</pre>)
     case LazySynthesisAndCallZ3 => onCallZ3(performLazySynthesis(inputPolicies))
-    case SynthesisAndCallZ3 =>
-      val (constsMap,  conds, pSets, analyses, domainSpecific) = parseInput(inputPolicies)
-      onCallEagerZ3(true, constsMap, conds,  pSets, analyses, domainSpecific)
     case SynthesisAndCallZ3QuietAnalysis =>
       val (constsMap,  conds, pSets, analyses, domainSpecific) = parseInput(inputPolicies)
-      onCallEagerZ3(false, constsMap, conds,  pSets, analyses, domainSpecific)
+      this.constsMap = constsMap
+      this.analyses = analyses
+      implicit val ov = new ExplicitOutputVerifier(inputPolicies)
+      certifyResults(false, performExtendedSynthesis(inputPolicies))
+    case RunAndCertifyExplicitResults =>
+      val (constsMap,  conds, pSets, analyses, domainSpecific) = parseInput(inputPolicies)
+      this.constsMap = constsMap
+      this.analyses = analyses
+      implicit val ov = new ExplicitOutputVerifier(inputPolicies)
+      certifyResults(true, performExplicitSynthesis(inputPolicies))
+    case ExplicitSynthesisAndCallZ3 =>
+      val (constsMap,  conds, pSets, analyses, domainSpecific) = parseInput(inputPolicies)
+      this.constsMap = constsMap
+      this.analyses = analyses
+      explicitSynthesis = performExplicitSynthesis(inputPolicies)
+      onCallZ3(explicitSynthesis)
+    case SynthesisExtendedAndCallZ3QuietAnalysis =>
+      val (constsMap,  conds, pSets, analyses, domainSpecific) = parseInput(inputPolicies)
+      this.constsMap = constsMap
+      this.analyses = analyses
+      implicit val ov = new ExtendedOutputVerifier(inputPolicies)
+      certifyResults(false, performExtendedSynthesis(inputPolicies))
+    case RunAndCertifyExtendedResults =>
+      val (constsMap,  conds, pSets, analyses, domainSpecific) = parseInput(inputPolicies)
+      this.constsMap = constsMap
+      this.analyses = analyses
+      implicit val ov = new ExtendedOutputVerifier(inputPolicies)
+      certifyResults(true, performExtendedSynthesis(inputPolicies))
     case ExtendedSynthesisAndCallZ3 =>
       val (constsMap,  conds, pSets, analyses, domainSpecific) = parseInput(inputPolicies)
       this.constsMap = constsMap
       this.analyses = analyses
       extendedSynthesis = performExtendedSynthesis(inputPolicies)
       onCallZ3(extendedSynthesis)
-    case RunAndCertifyExtendedResults =>
-      val (constsMap,  conds, pSets, analyses, domainSpecific) = parseInput(inputPolicies)
-      this.constsMap = constsMap
-      this.analyses = analyses
-      certifyResults(true, performExtendedSynthesis(inputPolicies))
-    case SynthesisExtendedAndCallZ3QuietAnalysis =>
-      val (constsMap,  conds, pSets, analyses, domainSpecific) = parseInput(inputPolicies)
-      this.constsMap = constsMap
-      this.analyses = analyses
-      certifyResults(false, performExtendedSynthesis(inputPolicies))
     case PrepareLazy =>
       partialUpdate(JqId("result") ~> JqHtml(Text("Synthesising... Please wait...")))
       this ! DownloadLazy
@@ -184,12 +198,6 @@ class PealCometActor extends CometActor with Loggable {
       val lazySynthesis = performLazySynthesis(inputPolicies)
       val lapseTime = System.nanoTime() - start
       this ! SaveFile(lazySynthesis, lapseTime)
-    case ExplicitSynthesisAndCallZ3 =>
-      val (constsMap,  conds, pSets, analyses, domainSpecific) = parseInput(inputPolicies)
-      this.constsMap = constsMap
-      this.analyses = analyses
-      explicitSynthesis = performExplicitSynthesis(inputPolicies)
-      onCallZ3(explicitSynthesis)
     case Prepare =>
       partialUpdate(JqId("result") ~> JqHtml(Text("Synthesising... Please wait...")))
       this ! Download
@@ -343,34 +351,34 @@ class PealCometActor extends CometActor with Loggable {
     this ! SaveFile(z3SMTInput, lapseTime)
   }
 
-  private def onCallEagerZ3(verbose: Boolean, constsMap: Map[String, PealAst], conds: Map[String, Condition], pSets: Map[String, PolicySet], analyses: Map[String, AnalysisGenerator], domainSpecifics: Array[String]) {
-    val declarations = for (name <- constsMap.keys) yield "(declare-const " + name + " Bool)\n"
-    val declarations1 = for (name <- conds.keys) yield "(declare-const " + name + " Bool)\n"
-    val sortedKeys = conds.keys.toSeq.sortWith(_ < _)
-    val body = for (cond <- sortedKeys) yield {"(assert (= " + cond + " " + conds(cond).synthesis(constsMap) + "))\n"}
-    val sortedAnalyses = analyses.keys.toSeq.sortWith(_ < _)
-    val generatedAnalyses = for (analysis <- sortedAnalyses) yield {"(echo \"Result of analysis [" + analyses(analysis).analysisName + "]:\")\n" + analyses(analysis).z3SMTInput}
-
-    val z3SMTInput = declarations.mkString("") +declarations1.mkString("") + body.mkString("") + domainSpecifics.mkString("", "\n","\n") + generatedAnalyses.mkString("")
-
-    val z3RawOutput = Z3Caller.call(z3SMTInput)
-    try {
-      ConsoleLogger.log(z3RawOutput)
-      implicit val ov = new ExplicitOutputVerifier(inputPolicies)
-      val analysedResults = Z3OutputAnalyser.execute(analyses, constsMap, inputPolicies, z3RawOutput)
-      verbose match {
-        case true => this ! Result(<pre>Generated Z3 code:<br/><br/>{z3SMTInput}</pre><span>{analysedResults}</span><pre>Z3 Raw Output:<br/>{z3RawOutput}</pre>)
-        case false => this ! Result(<span>{analysedResults}</span>)
-      }
-    } catch {
-      case e: Exception =>
-        e.printStackTrace()
-        verbose match {
-          case true => this ! Result(<pre>Generated Z3 code:<br/><br/>{z3SMTInput}</pre> <pre>Z3 Raw Output:<br/>{z3RawOutput}</pre>)
-          case false => this ! Result(<pre>Result analysis failed, returned model contains unexpected string:<br/>{z3RawOutput}</pre><pre>{e.getMessage}</pre>)
-        }
-    }
-  }
+//  private def onCallEagerZ3(verbose: Boolean, constsMap: Map[String, PealAst], conds: Map[String, Condition], pSets: Map[String, PolicySet], analyses: Map[String, AnalysisGenerator], domainSpecifics: Array[String]) {
+//    val declarations = for (name <- constsMap.keys) yield "(declare-const " + name + " Bool)\n"
+//    val declarations1 = for (name <- conds.keys) yield "(declare-const " + name + " Bool)\n"
+//    val sortedKeys = conds.keys.toSeq.sortWith(_ < _)
+//    val body = for (cond <- sortedKeys) yield {"(assert (= " + cond + " " + conds(cond).synthesis(constsMap) + "))\n"}
+//    val sortedAnalyses = analyses.keys.toSeq.sortWith(_ < _)
+//    val generatedAnalyses = for (analysis <- sortedAnalyses) yield {"(echo \"Result of analysis [" + analyses(analysis).analysisName + "]:\")\n" + analyses(analysis).z3SMTInput}
+//
+//    val z3SMTInput = declarations.mkString("") +declarations1.mkString("") + body.mkString("") + domainSpecifics.mkString("", "\n","\n") + generatedAnalyses.mkString("")
+//
+//    val z3RawOutput = Z3Caller.call(z3SMTInput)
+//    try {
+//      ConsoleLogger.log(z3RawOutput)
+//      implicit val ov = new ExplicitOutputVerifier(inputPolicies)
+//      val analysedResults = Z3OutputAnalyser.execute(analyses, constsMap, inputPolicies, z3RawOutput)
+//      verbose match {
+//        case true => this ! Result(<pre>Generated Z3 code:<br/><br/>{z3SMTInput}</pre><span>{analysedResults}</span><pre>Z3 Raw Output:<br/>{z3RawOutput}</pre>)
+//        case false => this ! Result(<span>{analysedResults}</span>)
+//      }
+//    } catch {
+//      case e: Exception =>
+//        e.printStackTrace()
+//        verbose match {
+//          case true => this ! Result(<pre>Generated Z3 code:<br/><br/>{z3SMTInput}</pre> <pre>Z3 Raw Output:<br/>{z3RawOutput}</pre>)
+//          case false => this ! Result(<pre>Result analysis failed, returned model contains unexpected string:<br/>{z3RawOutput}</pre><pre>{e.getMessage}</pre>)
+//        }
+//    }
+//  }
 
   private def onCallZ3(z3SMTInput : String) {
     try {

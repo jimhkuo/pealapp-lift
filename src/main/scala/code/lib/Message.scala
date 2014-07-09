@@ -50,7 +50,7 @@ case object DisplayNew
 
 case object Analysis1
 
-case object SynthesisAndCallZ3
+case object RunAndCertifyExplicitResults
 
 case object SynthesisAndCallZ3QuietAnalysis
 
