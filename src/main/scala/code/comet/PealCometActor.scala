@@ -351,35 +351,6 @@ class PealCometActor extends CometActor with Loggable {
     this ! SaveFile(z3SMTInput, lapseTime)
   }
 
-//  private def onCallEagerZ3(verbose: Boolean, constsMap: Map[String, PealAst], conds: Map[String, Condition], pSets: Map[String, PolicySet], analyses: Map[String, AnalysisGenerator], domainSpecifics: Array[String]) {
-//    val declarations = for (name <- constsMap.keys) yield "(declare-const " + name + " Bool)\n"
-//    val declarations1 = for (name <- conds.keys) yield "(declare-const " + name + " Bool)\n"
-//    val sortedKeys = conds.keys.toSeq.sortWith(_ < _)
-//    val body = for (cond <- sortedKeys) yield {"(assert (= " + cond + " " + conds(cond).synthesis(constsMap) + "))\n"}
-//    val sortedAnalyses = analyses.keys.toSeq.sortWith(_ < _)
-//    val generatedAnalyses = for (analysis <- sortedAnalyses) yield {"(echo \"Result of analysis [" + analyses(analysis).analysisName + "]:\")\n" + analyses(analysis).z3SMTInput}
-//
-//    val z3SMTInput = declarations.mkString("") +declarations1.mkString("") + body.mkString("") + domainSpecifics.mkString("", "\n","\n") + generatedAnalyses.mkString("")
-//
-//    val z3RawOutput = Z3Caller.call(z3SMTInput)
-//    try {
-//      ConsoleLogger.log(z3RawOutput)
-//      implicit val ov = new ExplicitOutputVerifier(inputPolicies)
-//      val analysedResults = Z3OutputAnalyser.execute(analyses, constsMap, inputPolicies, z3RawOutput)
-//      verbose match {
-//        case true => this ! Result(<pre>Generated Z3 code:<br/><br/>{z3SMTInput}</pre><span>{analysedResults}</span><pre>Z3 Raw Output:<br/>{z3RawOutput}</pre>)
-//        case false => this ! Result(<span>{analysedResults}</span>)
-//      }
-//    } catch {
-//      case e: Exception =>
-//        e.printStackTrace()
-//        verbose match {
-//          case true => this ! Result(<pre>Generated Z3 code:<br/><br/>{z3SMTInput}</pre> <pre>Z3 Raw Output:<br/>{z3RawOutput}</pre>)
-//          case false => this ! Result(<pre>Result analysis failed, returned model contains unexpected string:<br/>{z3RawOutput}</pre><pre>{e.getMessage}</pre>)
-//        }
-//    }
-//  }
-
   private def onCallZ3(z3SMTInput : String) {
     try {
       z3RawOutput = Z3Caller.call(z3SMTInput)
