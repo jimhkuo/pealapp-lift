@@ -159,7 +159,7 @@ class PealCometActor extends CometActor with Loggable {
       this.constsMap = constsMap
       this.analyses = analyses
       implicit val ov = new ExplicitOutputVerifier(inputPolicies)
-      certifyResults(false, performExtendedSynthesis(inputPolicies))
+      certifyResults(false, performExplicitSynthesis(inputPolicies))
     case RunAndCertifyExplicitResults =>
       val (constsMap,  conds, pSets, analyses, domainSpecific) = parseInput(inputPolicies)
       this.constsMap = constsMap
@@ -400,7 +400,12 @@ class PealCometActor extends CometActor with Loggable {
         case false =>this ! Result(<span>{analysedResults}</span>)
       }
     } catch {
-      case e: Exception =>  dealWithIt(e)
+        case e: Exception =>
+         e.printStackTrace()
+         verbose match {
+           case true => this ! Result(<pre>Generated Z3 code:<br/><br/>{z3SMTInput}</pre> <pre>Z3 Raw Output:<br/>{z3RawOutput}</pre>)
+           case false => this ! Result(<pre>Result analysis failed, returned model contains unexpected string:<br/>{z3RawOutput}</pre><pre>{e.getMessage}</pre>)
+        }
     }
   }
 
