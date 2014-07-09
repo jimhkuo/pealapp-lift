@@ -30,13 +30,13 @@ b4 = + ((accidentFreeForYears 0.05*x) (speaksEnglish 0.05) (travelsAlone -0.2) (
 b_minOne = + () default -1
 </pre>
 
-    <p>
+<p>
     Note the use of "%" to insert comment lines into PEALT input. The predicate names 'isLuxuryCar' etc. do not have
     to be explicitly declared as predicates, their type is implicitly inferred through their occurrence in a rule.
-    </p>
+</p>
 
 
-    <p>
+<p>
     The scores within rules may be constants (e.g. 30000 in policy b1 above), negative numbers (e.g. -0.2 is policy
     b4 above), variables, or constants multiplied with variables (e.g. 0.05*x in policy b4 above). All variables
     within score expressions of rules are implictly assigned the type Real. Additionally, a score expression s may
@@ -44,7 +44,203 @@ b_minOne = + () default -1
     policy b2 we have rule (hasOtherLicense 0.4 [-0.1,0.1]). The meaning of this score expression is that it can be
     any number 0.4 + z where z is in the interval [-0.1,0.1]. This models non-deterministic uncertainty of score
     expressions.
-    </p>
+</p>
+
+
+<p>
+
+    If we want to compose a policy with a real number, e.g. to write an expression b4 - 1, PEALT requires us to
+    write the real number -1 as a policy expression and to compose these policies with +. This is an artefact of the
+    language definition and its parsing. Therefore, we use b_minOne = + () default -1 as a means of defining such a
+    value. In general, we can define a real number r as in b_r = op () default r where op is any allowed operator
+    for policies (max, min, +, and *).
+</p>
+
+<p>
+
+    The intuitive meaning of a policy is that we first collect all score expressions of predicates that are true in
+    that policy. If that set is empy, the policy returns its default score. Otherwise, it returns the result of
+    applying its operator to that set of score expressions. For example, if isLuxuryCar is true and isSedan and
+    isCompact are false, then policy b1 evaluates to 150000.
+</p>
+
+<pre>
+POLICY_SETS
+% policy set that 'converts' the trust expressed in b2 into risk
+pSet0 = +(b2,b_minOne)
+% policy set that multiplies risk with potential financial loss
+pSet1 = *(b1,pSet0)
+% casting policy p4 into a policy set
+pSet_b4 = b4
+</pre>
+<p>
+
+    It is an artefact of the PEALT input language that we cannot write a policy name within a policy set directly.
+    Rather, we have to either cast it into a policy set (e.g. as done in declaring pSet_b4 as policy b4) or we have
+    to apply policy set composition operators (min, max, +, and *) to policies (e.g. in pSet0) or to a mix of
+    policies and policy sets (e.g. in pSet1). The input language does not support the application of these operators
+    to more than two arguments at a time.
+
+</p>
+<pre>
+CONDITIONS
+% condition that the risk aware potential financial loss is below a certain bound
+cond1 = pSet1 &lt;= 50000
+% condition that the accumulated trust is above a certain threshold
+cond2 = 0.4 &lt; pSet_b4
+% condition that insists that two previous conditions have to hold
+cond3 = cond1 && cond2
+% variant of condition cond2 with a higher threshold
+cond4 = 0.6 &lt; pSet_b4
+% variant of condition cond3 for that higher threshold
+cond5 = cond1 && cond4
+</pre>
+<p>
+    The definition of conditions follows very similar conventions as that of defining policy sets. The composition
+    operators are negation (!), conjunction (&&), disjunction (||), and comparison operators (&lt; and &lt;=).
+
+    All of these operators have to be applied one at a time in defining conditions. For example, in order to define
+    a condition cond3 as !cond1 && (0.4 < pSet4) we have to declare
+</p>
+<pre>
+cond1_neg = !cond1
+cond2 = 0.4 &lt; pSet4
+cond3 = cond1_neg && cond2
+</pre>
+<p>
+    by inventing suitable intermediate variables such as cond1_neg. We realize that this may make specifications
+    more verbose than necessary but it did simplify the front end of our input processing.
+</p>
+
+<p>
+
+    <strong>Syntactic restrictions for non-negative, constant score method:</strong>
+    If conditions contain policies whose scores are non-negative and constant and if we want to use a code
+    generation method that exploits this, said method comes with further syntactic restrictions (which we can avoid
+    by just choosing the other code generation method):
+</p>
+
+<ul>
+    <li> although max, min, +, and * are still composition operators for policies, only max and min are allowed
+        composition operators used within section POLICY_SETS
+    <li> comparisons are restricted to the forms th &lt; pSet and pSet &lt;= th where pSet is a policy set and th a
+        non-negative, constant real
+</ul>
+<p>
+    Note that we still can express conditions such as pSet &lt;= th but we have to state this as
+</p>
+<pre>
+cond_aux = th &lt; pSet
+cond = !cond_aux
+</pre>
+<p>
+    if we want to use that method. And using this code generation method may yield more scalable results for
+    policies that have multiplication as composition operator.
+
+</p>
+<pre>
+DOMAIN_SPECIFICS
+% real x models the number of years driven without accident, has to be non-negative and is 'truncated' at value 10
+(assert (and (&lt;= 0 x) (&lt;= x 10)))
+% capturing a company policy: luxury cars must not be used for off road driving
+(assert (or (not isLuxuryCar) (not someOffRoadDriving)))
+% capturing that the different types of rental cars are mutually exclusive
+(assert (and (implies isLuxuryCar (and (not isSedan) (not isCompact))) (implies isSedan (and (not isLuxuryCar) (not isCompact))) (implies isCompact (and (not isSedan) (not isLuxuryCar)))))
+% capturing that cars that are only used in cities are not used in a mixed sense
+(assert (implies onlyCityUsage (not mixedUsage)))
+% capturing that cars used only for longdistance driving are not used in a mixed sense
+(assert (implies onlyLongDistanceUsage (not mixedUsage)))
+% capturing domain constraints (or company policy?) that city driving cannot happen off road
+(assert (implies onlyCityUsage (not someOffRoadDriving)))
+% capturing that cars used only for longdistance driving must drive off road
+(assert (implies onlyLongDistanceUsage (not someOffRoadDriving)))
+</pre>
+<p>
+    In section DOMAIN_SPECIFICS, we can enter any input that is legal syntax for the Z3 input language (not for the
+    PEALT input language). This allows for an easy manner of formulating domain knowledge and of generating code for
+    it (essentially just cut and paste of that code). But there are some issues that this simplicity brings and
+    which we now want to highlight:
+</p>
+<ul>
+    <li> we can use "%" to write comments in that section, our Z3 code generation will still ignore this text
+    <li> one should not explicitly declare variables in this section with Z3 statements if these variables are
+        implicit in earlier PEALT declarations (e.g. we will automatically generate such declarations for
+        isLuxuryCar of type Boolean and x of type Real)
+</ul>
+
+<pre>
+ANALYSES
+% is condition cond3 satisfiable?
+name1 = satisfiable? cond3
+% is condition cond3 always true? this would suggest a specification error
+name2 = always_true? cond3
+% is condition cond3 always false? this also would suggest a specification error
+name3 = always_false? cond3
+% is condition cond5 satisfiable?
+name4 = satisfiable? cond5
+% are conditions cond3 and cond5 equivalent?
+name5 = equivalent? cond3 cond5
+</pre>
+<p>
+    In section ANALYSES, we can declare any number of analyses using the same naming format as for polices, policy
+    sets, and conditions. The supported analyses are
+</p>
+<ul>
+    <li> satisfiable? cond; can we make condition cond true?
+    <li> always_false? cond; can condition cond never be made true?
+    <li> always_true? cond; can condition cond never be made false?
+    <li> implies? cond1 cond2; does the truth of cond1 logically imply the truth of cond2?
+    <li> equivalent? cond1 cond2; are conditions cond1 and cond2 logically equivalent?of cond2?
+</ul>
+<p>
+
+    In the tool, all these analyses internally reduce to one of form satisfiable? and the SMT solver Z3 will then
+    determine whether the answer is yes (reporting outcome 'SAT' and a model supporting that claim), no (reporting
+    outcome 'UNSAT') but it may also report outcome 'UNKNOWN' meaning that it could not decide this question.
+</p>
+
+<p>
+
+    Let us discuss what PEALT reports on the first analysis above. First, it reports that the condition is
+    satisfiable along with a model that supports this claim -- the model is generated here in pretty printed form
+    and shows some values that are internal to our method of Z3 code generation (e.g. the variable b2_score
+    represents the score to which policy b2 evaluates in this model):
+</p>
+<pre>
+Result of analysis [ name1 = satisfiable? cond3 ]
+
+cond3 is satisfiable, for example, when:
+onlyLongDistanceUsage is False
+speaksEnglish is True
+isLuxuryCar is False
+isCompact is True
+hasOtherLicense is True
+onlyCityUsage is False
+isSedan is False
+travelsAlone is True
+accidentFreeForYears is True
+femaleDriver is True
+someOffRoadDriving is True
+b_minOne_score is -1.0
+b1_isLuxuryCar_U is 0.0
+b2_hasOtherLicense_U is 0.0
+b1_score is 30000.0
+b3_score is 0.8 (4.0/5.0)
+b2_score is 0.4 (2.0/5.0)
+x is 10.0
+b4_score is 0.45 (9.0/20.0)
+</pre>
+<p>
+
+    There are two concerns with such information. First, even if we trust the Z3 solver used to produce it, there
+    may be flaws in our Z3 code generator and so the claim that the condition is satisfiable may be wrong or the
+    model above may not be the right one to support that claim. Second, for larger models it may be difficult for
+    users to relate all this model information to the input expressions that they declared in PEALT.
+
+    PEALT addresses the first concern by independently certifying that the model information indeed supports the
+    claimed analysis...
+</p>
+
 </div>
 </div>
 
