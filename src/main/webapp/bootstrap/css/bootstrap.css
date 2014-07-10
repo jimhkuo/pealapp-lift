@@ -3848,6 +3848,7 @@ textarea.input-group-sm > .input-group-btn > .btn {
 
 .nav-tabs {
   border-bottom: 1px solid #dddddd;
+  margin-bottom: 2px;
 }
 
 .nav-tabs > li {
@@ -3890,7 +3891,7 @@ textarea.input-group-sm > .input-group-btn > .btn {
   color: #5bc0de;
 }
 .nav-tabs > li > a {
-  color: #428bca;
+  color: #959595;
 }
 .nav-tabs > li.active > a {
   color: black;
