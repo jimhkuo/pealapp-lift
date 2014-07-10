@@ -46,7 +46,7 @@ class InputAnalyser(input: String) {
     case Implies(_, c1, c2) => c1 :: c2 :: Nil
   }
 
-  def analyse(rawModel: String, analysisName: String): NodeSeq = {
+  def analyse(rawModel: String, analysisName: String, additional:Set[String] = Set()): NodeSeq = {
 
     implicit val I = Z3ModelExtractor.extractIUsingRational(rawModel)(analysisName)
     ConsoleLogger.log1(I)
