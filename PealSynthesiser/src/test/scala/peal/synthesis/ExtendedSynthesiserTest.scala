@@ -87,7 +87,7 @@ class ExtendedSynthesiserTest extends ShouldMatchersForJUnit with Z3ModelMatcher
 
     val generator = new ExtendedSynthesiser(input)
     println(generator.generate())
-    generator.generate() should be ("(declare-const q1 Bool)\n(declare-const b1_default_U Real)\n(assert (and (<= b1_default_U 0.2) (<= -0.2 b1_default_U)))\n(declare-const cond1 Bool)\n(declare-const b1_q1_U Real)\n(assert (and (<= b1_q1_U 0.1) (<= -0.1 b1_q1_U)))\n(declare-const b1_score Real)\n(declare-const pSet1_score Real)\n\n(assert (= cond1 (<= b1_score 0.5)))\n(assert (= b1_score (ite q1 (+ 0.5 b1_q1_U) (+ 1.0 b1_default_U))))\n(echo \"Result of analysis [name1 = always_true? cond1]:\")\n(push)\n(declare-const always_true_name1 Bool)\n(assert (= always_true_name1 cond1))\n(assert (not always_true_name1))\n(check-sat)\n(get-model)\n(pop)\n")
+    generator.generate() should be ("(declare-const q1 Bool)\n(declare-const b1_default_U Real)\n(assert (and (<= b1_default_U 0.2) (<= -0.2 b1_default_U)))\n(declare-const b1_score Real)\n(declare-const pSet1_score Real)\n(declare-const cond1 Bool)\n(declare-const b1_q1_U Real)\n(assert (and (<= b1_q1_U 0.1) (<= -0.1 b1_q1_U)))\n\n(assert (= cond1 (<= b1_score 0.5)))\n(assert (= b1_score (ite q1 (+ 0.5 b1_q1_U) (+ 1.0 b1_default_U))))\n(echo \"Result of analysis [name1 = always_true? cond1]:\")\n(push)\n(declare-const always_true_name1 Bool)\n(assert (= always_true_name1 cond1))\n(assert (not always_true_name1))\n(check-sat)\n(get-model)\n(pop)\n")
   }
 
   @Test
