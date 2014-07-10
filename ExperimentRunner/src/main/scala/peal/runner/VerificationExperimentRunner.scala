@@ -1,6 +1,6 @@
 package peal.runner
 
-import peal.verifier.extended.ExtendedOutputVerifier
+import peal.verifier.OutputVerifier
 
 import scala.concurrent.Await
 import scala.concurrent.duration._
@@ -83,7 +83,7 @@ class VerificationExperimentRunner(doDomainSpecifics: Boolean, system: ActorSyst
         pealProgramParser.program()
 
         //TODO call verifier here
-        val verifier = new ExtendedOutputVerifier(model)
+        val verifier = new OutputVerifier(model)
 
         pealProgramParser.analyses.keys.toSeq.sortWith(_ < _).foreach {
           k =>

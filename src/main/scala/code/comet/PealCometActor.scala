@@ -1,30 +1,23 @@
 package code.comet
 
+import code.lib.{Failed, Message, Result, SaveFile, _}
 import net.liftweb._
-import http._
-import net.liftweb.http.js.jquery.JqJE._
-import net.liftweb.http.js.JsCmds._
-import peal.analyser.InputAnalyser
-import peal.util.ConsoleLogger
-import peal.verifier.explicit.ExplicitOutputVerifier
-import peal.verifier.extended.ExtendedOutputVerifier
-import scala.xml.Text
 import net.liftweb.common.Loggable
-import scala.collection.JavaConversions._
-import peal.synthesis._
-import scala.Predef._
-import peal.synthesis.analysis._
-import code.lib._
-import peal.model.{RandomScoreModelGenerator, MajorityVotingGenerator, ConstantScoreModelGenerator}
-import peal.domain.{PealFalse, PealBottom, PealTrue, PolicySet}
-import peal.domain.z3.{Sat, PealAst, Term}
+import net.liftweb.http._
+import net.liftweb.http.js.JsCmds._
+import net.liftweb.http.js.jquery.JqJE.{JqId, _}
 import peal.antlr.util.ParserHelper
+import peal.domain.PolicySet
+import peal.domain.z3.{PealAst, Term}
+import peal.model.{ConstantScoreModelGenerator, MajorityVotingGenerator, RandomScoreModelGenerator}
+import peal.synthesis._
+import peal.synthesis.analysis._
+import peal.verifier.OutputVerifier
 import peal.z3.Z3Caller
-import net.liftweb.http.js.jquery.JqJE.JqId
-import code.lib.Message
-import code.lib.Result
-import code.lib.SaveFile
-import code.lib.Failed
+
+import scala.Predef._
+import scala.collection.JavaConversions._
+import scala.xml.Text
 
 class PealCometActor extends CometActor with Loggable {
 
@@ -158,13 +151,11 @@ class PealCometActor extends CometActor with Loggable {
       val (constsMap,  conds, pSets, analyses, domainSpecific) = parseInput(inputPolicies)
       this.constsMap = constsMap
       this.analyses = analyses
-      implicit val ov = new ExplicitOutputVerifier(inputPolicies)
       certifyResults(false, performExplicitSynthesis(inputPolicies))
     case RunAndCertifyExplicitResults =>
       val (constsMap,  conds, pSets, analyses, domainSpecific) = parseInput(inputPolicies)
       this.constsMap = constsMap
       this.analyses = analyses
-      implicit val ov = new ExplicitOutputVerifier(inputPolicies)
       certifyResults(true, performExplicitSynthesis(inputPolicies))
     case ExplicitSynthesisAndCallZ3 =>
       val (constsMap,  conds, pSets, analyses, domainSpecific) = parseInput(inputPolicies)
@@ -176,13 +167,11 @@ class PealCometActor extends CometActor with Loggable {
       val (constsMap,  conds, pSets, analyses, domainSpecific) = parseInput(inputPolicies)
       this.constsMap = constsMap
       this.analyses = analyses
-      implicit val ov = new ExtendedOutputVerifier(inputPolicies)
       certifyResults(false, performExtendedSynthesis(inputPolicies))
     case RunAndCertifyExtendedResults =>
       val (constsMap,  conds, pSets, analyses, domainSpecific) = parseInput(inputPolicies)
       this.constsMap = constsMap
       this.analyses = analyses
-      implicit val ov = new ExtendedOutputVerifier(inputPolicies)
       certifyResults(true, performExtendedSynthesis(inputPolicies))
     case ExtendedSynthesisAndCallZ3 =>
       val (constsMap,  conds, pSets, analyses, domainSpecific) = parseInput(inputPolicies)
@@ -364,7 +353,7 @@ class PealCometActor extends CometActor with Loggable {
   private def certifyResults(verbose: Boolean, z3SMTInput: String) {
     try {
       val z3RawOutput = Z3Caller.call(z3SMTInput)
-      implicit val ov = new ExtendedOutputVerifier(inputPolicies)
+      implicit val ov = new OutputVerifier(inputPolicies)
       val analysedResults = Z3OutputAnalyser.execute(analyses, constsMap, inputPolicies, z3RawOutput)
       verbose match {
         case true => this ! Result(<pre>Generated Z3 code:<br/><br/>{z3SMTInput}</pre><span>{analysedResults}</span><pre>Z3 Raw Output:<br/>{z3RawOutput}</pre>)
