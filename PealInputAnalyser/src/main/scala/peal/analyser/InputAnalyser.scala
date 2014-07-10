@@ -69,7 +69,7 @@ class InputAnalyser(input: String) {
           val okRules = rs.filter(r => I.get(r.q.name) != None && I.get(r.q.name) == Some(Right(PealTrue)))
           val undefinedRules = rs.filter(r => I.get(r.q.name) == None)
           val undefined = if (undefinedRules.nonEmpty) {
-            (if (okRules.nonEmpty) " " else "") + undefinedRules.map(r => "(" + r.q.name + "? " + ScoreEvaluator.trueScore(r.score, p + "_" + r.q.name + "_U").value + ")").mkString(" ")
+            (if (okRules.nonEmpty) " " else "") + undefinedRules.map(r => "(" + r.q.name + "? " + ScoreEvaluator.trueScore(r.score, p + "_" + r.q.name + "_U").value + ")").mkString("<span style=\"font-weight: bold;color:green\">"," ","</span>")
           }
           else {
             ""
@@ -81,7 +81,7 @@ class InputAnalyser(input: String) {
             <span>{p} = {o} ({undefined}) default <span style="font-weight: bold;color:red">{ScoreEvaluator.trueScore(s, p + "_default_U").value}</span><br/></span>
           }
           else {
-            <span>{p} = {o} ((<span style="font-weight: bold;color:blue">[</span>{okRules.map(r => r.q.name).mkString("", " ", "")}<span style="font-weight: bold;color:blue">]</span> <span style="font-weight: bold;color:red">{accumulateScores(o, okRules.toSet, p)}</span>){undefined}) default {ScoreEvaluator.trueScore(s, p + "_default_U").value}<br/></span>
+            <span>{p} = {o} ((<span style="font-weight: bold;color:red">[</span>{okRules.map(r => r.q.name).mkString("", " ", "")}<span style="font-weight: bold;color:red">]</span> <span style="font-weight: bold;color:red">{accumulateScores(o, okRules.toSet, p)}</span>){undefined}) default {ScoreEvaluator.trueScore(s, p + "_default_U").value}<br/></span>
           }
       }
     }
