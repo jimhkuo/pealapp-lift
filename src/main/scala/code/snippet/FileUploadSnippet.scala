@@ -17,7 +17,7 @@ class FileUploadSnippet extends Loggable {
       case Full(FileParamHolder(_, mimeType, fileName, file)) =>
         ConsoleLogger.log("%s of type %s is %d bytes long" format (fileName, mimeType, file.length) )
         val chars = new String(file)
-        ConsoleLogger.log1(chars)
+        ConsoleLogger.log(chars)
 
       case _ => ConsoleLogger.log("No file?")
     }

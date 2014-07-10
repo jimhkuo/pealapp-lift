@@ -13,7 +13,8 @@ case class SaveFile(result: String, lapseTime: Long)
 case object Init
 
 case object Clear
-case object Upload
+
+case object UploadFile
 
 case object Generate
 

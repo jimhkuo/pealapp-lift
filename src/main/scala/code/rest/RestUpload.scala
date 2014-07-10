@@ -1,9 +1,8 @@
 package code.rest
 
-import code.lib.Z3SMTData
 import net.liftweb.http.rest.RestHelper
 
-object Upload extends RestHelper {
+object RestUpload extends RestHelper {
 
   serve {
     case "upload" :: Nil Post req =>
