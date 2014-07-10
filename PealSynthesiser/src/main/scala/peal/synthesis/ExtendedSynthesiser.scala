@@ -96,11 +96,8 @@ class ExtendedSynthesiser(input: String) extends Synthesiser {
 
   def generate() = {
     val declarations = for (name <- predicateNames) yield "(declare-const " + name + " Bool)\n"
-    val allRealDeclarations = variableScores ++ variableDefaultScores ++ pols.keySet().map(_ + "_score") ++ pSets.keySet().map(_ + "_score")
+    val allRealDeclarations = (variableScores ++ variableDefaultScores ++ pols.keySet().map(_ + "_score") ++ pSets.keySet().map(_ + "_score")).toList.sorted
     val allVariableDeclarations = for (name <- allRealDeclarations) yield "(declare-const " + name + " Real)\n"
-    //    val variableDeclarations = for (name <- variableScores ++ variableDefaultScores) yield "(declare-const " + name + " Real)\n"
-    //    val policyScoreDeclarations = for (name <- pols.keySet()) yield "(declare-const " + name + "_score" + " Real)\n"
-    //    val policySetScoreDeclarations = for (name <- pSets.keySet()) yield "(declare-const " + name + "_score" + " Real)\n"
     val condDeclarations = for (name <- conds.keys) yield "(declare-const " + name + " Bool)\n"
     val domainSpecifics = input.split("\n").dropWhile(!_.startsWith("DOMAIN_SPECIFICS")).takeWhile(!_.startsWith("ANALYSES")).drop(1).filterNot(_.trim.startsWith("%"))
 

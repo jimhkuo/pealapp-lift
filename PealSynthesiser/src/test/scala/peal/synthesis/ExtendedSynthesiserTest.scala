@@ -7,7 +7,7 @@ import peal.util.Z3ModelMatcher
 class ExtendedSynthesiserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
 
   @Test
-  def testDuplicateDeclarations() {
+  def testNoDuplicateDeclarations() {
     val input = "POLICIES\nfuel = +((gasoline 0.1) (coal 0.02) (wood 0.09)) default 0\nignition = +((matches 0.2) (gas_stove 0.1) (electrical_sparc 0.05)) default 0\noxygen = +() default 1\nfire = *((True fuel_score) (True ignition_score) (True oxygen_score)) default 1\nPOLICY_SETS\npSet1 = fire\nCONDITIONS\ncond1 = 0.0734 < pSet1\ncond2 = 0.0735 < pSet1\ncond3 = pSet1 <= 0.0735\ncond45 = coal\ncond4 = cond45 && cond3\nDOMAIN_SPECIFICS\n(assert True)\nANALYSES\nname1 = satisfiable? cond1\nname2 = satisfiable? cond2\nname3 = satisfiable? cond4"
     val generator = new ExtendedSynthesiser(input)
     println(generator.generate())
@@ -17,19 +17,16 @@ class ExtendedSynthesiserTest extends ShouldMatchersForJUnit with Z3ModelMatcher
       "(declare-const coal Bool)\n(declare-const wood Bool)\n" +
       "(declare-const matches Bool)\n" +
       "(declare-const True Bool)\n\n" +
+      "(declare-const fire_score Real)\n" +
       "(declare-const fuel_score Real)\n" +
       "(declare-const ignition_score Real)\n" +
       "(declare-const oxygen_score Real)\n" +
+      "(declare-const pSet1_score Real)\n" +
       "(declare-const cond45 Bool)\n" +
       "(declare-const cond3 Bool)\n" +
       "(declare-const cond2 Bool)\n" +
       "(declare-const cond4 Bool)\n" +
       "(declare-const cond1 Bool)\n\n" +
-//      "(declare-const fuel_score Real)\n" +
-//      "(declare-const oxygen_score Real)\n" +
-//      "(declare-const ignition_score Real)\n" +
-      "(declare-const fire_score Real)\n" +
-      "(declare-const pSet1_score Real)\n" +
       "(assert True)\n(assert (= cond45 coal))\n(assert (= cond1 (< 0.0734 fire_score)))\n(assert (= cond2 (< 0.0735 fire_score)))\n(assert (= cond3 (<= fire_score 0.0735)))\n(assert (= cond4 (and coal (<= fire_score 0.0735))))\n(assert (= oxygen_score 1.0))\n(assert (= ignition_score (ite (or matches gas_stove electrical_sparc) (+ (ite matches 0.2 0.0) (ite gas_stove 0.1 0.0) (ite electrical_sparc 0.05 0.0)) 0.0)))\n(assert (= fuel_score (ite (or gasoline coal wood) (+ (ite gasoline 0.1 0.0) (ite coal 0.02 0.0) (ite wood 0.09 0.0)) 0.0)))\n(assert (= fire_score (ite (or True True True) (* (ite True fuel_score 1.0) (ite True ignition_score 1.0) (ite True oxygen_score 1.0)) 1.0)))\n(echo \"Result of analysis [name1 = satisfiable? cond1]:\")\n(push)\n(declare-const satisfiable_name1 Bool)\n(assert (= satisfiable_name1 cond1))\n(assert satisfiable_name1)\n(check-sat)\n(get-model)\n(pop)\n(echo \"Result of analysis [name2 = satisfiable? cond2]:\")\n(push)\n(declare-const satisfiable_name2 Bool)\n(assert (= satisfiable_name2 cond2))\n(assert satisfiable_name2)\n(check-sat)\n(get-model)\n(pop)\n(echo \"Result of analysis [name3 = satisfiable? cond4]:\")\n(push)\n(declare-const satisfiable_name3 Bool)\n(assert (= satisfiable_name3 cond4))\n(assert satisfiable_name3)\n(check-sat)\n(get-model)\n(pop)\n")
   }
 
