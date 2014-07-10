@@ -16,6 +16,7 @@ libraryDependencies += "com.novocode" % "junit-interface" % "0.8" % "test->defau
 
 libraryDependencies += "org.scalatest" % "scalatest_2.10" % "1.9.1" % "test"
 
+libraryDependencies += "commons-fileupload" % "commons-fileupload" % "1.3.1"
 
 //Lift stuff
 seq(com.github.siasia.WebPlugin.webSettings :_*)

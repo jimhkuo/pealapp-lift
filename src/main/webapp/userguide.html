@@ -97,15 +97,17 @@ cond5 = cond1 &amp;&amp; cond4
     The definition of conditions follows very similar conventions as that of defining policy sets. The composition
     operators are negation (!), conjunction (&amp;&amp;), disjunction (||), and comparison operators (&lt; and &lt;=).
 
-    All of these operators have to be applied one at a time in defining conditions. For example, in order to define
-    a condition cond3 as !cond1 &amp;&amp; (0.4 &lt; pSet4) we have to declare
+    All of these operators have to be applied one at a time in defining conditions. For example, in order to define a condition
+    cond3 as !isLuxuryCar &amp;&amp; (0.4 &lt; pSet4) we have to declare
 </p>
-<pre>cond1_neg = !cond1
+<pre>isLuxuryCar_cond = isLuxuryCar
+cond1 = !isLuxuryCar_cond
 cond2 = 0.4 &lt; pSet4
-cond3 = cond1_neg &amp;&amp; cond2
+cond3 = cond &amp;&amp; cond2
 </pre>
 <p>
-    by inventing suitable intermediate variables such as cond1_neg. We realize that this may make specifications
+    by inventing suitable intermediate condition variables such as isLuxuryCar_cond, cond1, and cond2.
+    We realize that this may make specifications
     more verbose than necessary but it did simplify the front end of our input processing.
 </p>
 

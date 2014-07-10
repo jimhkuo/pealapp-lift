@@ -6,6 +6,7 @@ import net.liftweb.common.Loggable
 import net.liftweb.http._
 import net.liftweb.http.js.JsCmds._
 import net.liftweb.http.js.jquery.JqJE.{JqId, _}
+import org.apache.commons.fileupload.disk.DiskFileItemFactory
 import peal.antlr.util.ParserHelper
 import peal.domain.PolicySet
 import peal.domain.z3.{PealAst, Term}
@@ -48,6 +49,7 @@ class PealCometActor extends CometActor with Loggable {
   var randomModelParam = "5, 5, 4, 3, 2, 7, 0.5, 0.1"
   var randomModelWithRangeParam = "2, 4, 3, 2, 1, 6, 0.5, 0.1"
   var randomModelParamWithDomain = "2, 3, 1, 1, 1, 9, 0.5, 0.1"
+  var upload = ""
 
   def render = {
     this ! Init
@@ -77,6 +79,8 @@ class PealCometActor extends CometActor with Loggable {
           </div>
           <div>
             {SHtml.ajaxButton("Clear text area", () => {this ! Clear; _Noop}, "class" -> "btn btn-warning btn-sm", "style" -> "margin:2px;")}
+            {SHtml.ajaxButton("Upload", () => {this ! Upload; _Noop}, "class" -> "btn btn-warning btn-sm", "style" -> "margin:2px;")}
+            {SHtml.ajaxText(upload, s => {upload = s; _Noop}, "id" -> "r", "size" -> "30")}
           </div>
           </div>
         </div>
@@ -239,6 +243,7 @@ class PealCometActor extends CometActor with Loggable {
       this ! Message("")
       inputPolicies = ConstantScoreModelGenerator.generate(true, randomModelParamWithDomain.split(Array(' ', ',')).filterNot(_ == ""):_*)
       partialUpdate(JqId("policies") ~> JqVal(inputPolicies))
+    case Upload =>
   }
 
   private def clearIntermediateResults {
