@@ -79,7 +79,7 @@ class PealCometActor extends CometActor with Loggable {
           </div>
           <div>
             {SHtml.ajaxButton("Clear text area", () => {this ! Clear; _Noop}, "class" -> "btn btn-warning btn-sm", "style" -> "margin:2px;")}
-            {SHtml.ajaxButton("Upload", () => {this ! Upload; _Noop}, "class" -> "btn btn-warning btn-sm", "style" -> "margin:2px;")}
+            {SHtml.ajaxButton("Upload", () => {this ! code.rest.Upload; _Noop}, "class" -> "btn btn-warning btn-sm", "style" -> "margin:2px;")}
             {SHtml.ajaxText(upload, s => {upload = s; _Noop}, "id" -> "r", "size" -> "30")}
           </div>
           </div>
@@ -243,7 +243,7 @@ class PealCometActor extends CometActor with Loggable {
       this ! Message("")
       inputPolicies = ConstantScoreModelGenerator.generate(true, randomModelParamWithDomain.split(Array(' ', ',')).filterNot(_ == ""):_*)
       partialUpdate(JqId("policies") ~> JqVal(inputPolicies))
-    case Upload =>
+    case code.rest.Upload =>
   }
 
   private def clearIntermediateResults {
