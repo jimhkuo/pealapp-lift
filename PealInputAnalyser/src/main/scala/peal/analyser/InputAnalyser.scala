@@ -6,11 +6,11 @@ import peal.domain.operator._
 import peal.synthesis._
 import peal.synthesis.analysis._
 import peal.util.ConsoleLogger
+import peal.verifier.Z3ModelExtractor
 import peal.verifier.util.ScoreEvaluator
-import peal.verifier.{OutputVerifier, Z3ModelExtractor}
 
 import scala.collection.JavaConversions._
-import scala.xml.{NodeSeq, Node}
+import scala.xml.{Node, NodeSeq}
 
 class InputAnalyser(input: String) {
   private val pealProgramParser = ParserHelper.getPealParser(input)
