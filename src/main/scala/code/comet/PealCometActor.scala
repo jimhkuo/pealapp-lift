@@ -81,12 +81,14 @@ class PealCometActor extends CometActor with CometListener {
           <div>
             {SHtml.ajaxButton("Clear text area", () => {this ! Clear; _Noop}, "class" -> "btn btn-warning btn-sm", "style" -> "margin:2px;")}
           </div>
-          <div>
+          <div style="display:none;">
             {SHtml.ajaxButton("Clear text area", () => {this ! Clear; _Noop}, "class" -> "btn btn-warning btn-sm", "style" -> "margin:2px;")}
             {SHtml.ajaxButton("Upload", () => {this ! UploadFile; _Noop}, "class" -> "btn btn-warning btn-sm", "style" -> "margin:2px;")}
-            <form id="file-upload" action="/upload" method="POST" enctype="multipart/form-data">
-              <input type="file" name="file[]" />
-              <input type="submit" name="Submit"/>
+            <form data-lift="FileUploadSnippet?form=post;multipart=true">
+              <label for="file">
+                Upload a Peal file: <input id="file" class="btn btn-warning btn-sm"></input>
+              </label>
+              <input type="submit" value="Submit" class="btn btn-warning btn-sm" style="margin:2px;"></input>
             </form>
           </div>
           </div>
@@ -251,7 +253,7 @@ class PealCometActor extends CometActor with CometListener {
       inputPolicies = ConstantScoreModelGenerator.generate(true, randomModelParamWithDomain.split(Array(' ', ',')).filterNot(_ == ""):_*)
       partialUpdate(JqId("policies") ~> JqVal(inputPolicies))
     case s: String =>
-      println("String received")
+      ConsoleLogger.log1("String received")
       if (s != "") {
         inputPolicies = s
         partialUpdate(JqId("policies") ~> JqVal(inputPolicies))
