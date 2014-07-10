@@ -14,7 +14,7 @@ class ExtendedSynthesiser(input: String) extends Synthesiser {
   val pSets = pealProgramParser.pSets
   val allRules = pealProgramParser.pols.values().flatMap(pol => pol.rules)
   val predicateNames = allRules.map(r => r.q.name).toSet
-  val nonConstantDefaultScores = pols.foldLeft(Set[String]())((acc, tuple) => {
+  val variableDefaultScores: Set[String] = pols.foldLeft(Set[String]())((acc, tuple) => {
     tuple._2 match {
       case p: Pol =>
         def addVariables(set: Set[String]) = p.score.underlyingScore.fold(score => set, variable => set ++ variable.names)
@@ -22,7 +22,7 @@ class ExtendedSynthesiser(input: String) extends Synthesiser {
       case _ => acc
     }
   })
-  val nonConstantScores = allRules.foldLeft(Set[String]())((acc, rule) => {
+  val variableScores: Set[String] = allRules.foldLeft(Set[String]())((acc, rule) => {
     def addVariables(set: Set[String]) = rule.score.underlyingScore.fold(score => set, variable => set ++ variable.names)
     addVariables(acc)
   })
@@ -96,9 +96,11 @@ class ExtendedSynthesiser(input: String) extends Synthesiser {
 
   def generate() = {
     val declarations = for (name <- predicateNames) yield "(declare-const " + name + " Bool)\n"
-    val variableDeclarations = for (name <- nonConstantScores ++ nonConstantDefaultScores) yield "(declare-const " + name + " Real)\n"
-    val policyScoreDeclarations = for (name <- pols.keySet()) yield "(declare-const " + name + "_score" + " Real)\n"
-    val policySetScoreDeclarations = for (name <- pSets.keySet()) yield "(declare-const " + name + "_score" + " Real)\n"
+    val allRealDeclarations = variableScores ++ variableDefaultScores ++ pols.keySet().map(_ + "_score") ++ pSets.keySet().map(_ + "_score")
+    val allVariableDeclarations = for (name <- allRealDeclarations) yield "(declare-const " + name + " Real)\n"
+    //    val variableDeclarations = for (name <- variableScores ++ variableDefaultScores) yield "(declare-const " + name + " Real)\n"
+    //    val policyScoreDeclarations = for (name <- pols.keySet()) yield "(declare-const " + name + "_score" + " Real)\n"
+    //    val policySetScoreDeclarations = for (name <- pSets.keySet()) yield "(declare-const " + name + "_score" + " Real)\n"
     val condDeclarations = for (name <- conds.keys) yield "(declare-const " + name + " Bool)\n"
     val domainSpecifics = input.split("\n").dropWhile(!_.startsWith("DOMAIN_SPECIFICS")).takeWhile(!_.startsWith("ANALYSES")).drop(1).filterNot(_.trim.startsWith("%"))
 
@@ -113,11 +115,9 @@ class ExtendedSynthesiser(input: String) extends Synthesiser {
 
     declarations.mkString("") +
       policyDefaultDeclaration.mkString("", "\n", "\n") +
-      variableDeclarations.mkString("") +
+      allVariableDeclarations.mkString("") +
       condDeclarations.mkString("") +
       predicateDeclaration.mkString("", "\n", "\n") +
-      policyScoreDeclarations.mkString("") +
-      policySetScoreDeclarations.mkString("") +
       domainSpecifics.mkString("", "\n", "\n") +
       condDetails.mkString("", "\n", "\n") +
       policyComposition.mkString("", "\n", "\n") +

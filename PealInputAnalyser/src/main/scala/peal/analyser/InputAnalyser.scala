@@ -33,7 +33,7 @@ class InputAnalyser(input: String) {
     case GreaterThanThCondition(lhs, rhs) => extractPolicySet(lhs)::: rhs.fold(b => List(), p => extractPolicySet(p))
     //it turns out the use of either.get is ok here
     case OrCondition(lhs, rhs) => extractPolicySet(conds(lhs).getPol.get) ::: extractPolicySet(conds(rhs).getPol.get)
-    case AndCondition(lhs, rhs) => extractPolicySet(conds(lhs).getPol.get) ::: extractPolicySet(conds(rhs).getPol.get)
+    case AndCondition(lhs, rhs) => pullPolicies(conds(lhs)) ::: pullPolicies(conds(rhs))
     case NotCondition(c) => extractPolicySet(conds(c).getPol.get)
   }
 
