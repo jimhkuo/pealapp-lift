@@ -54,7 +54,7 @@ class PealCometActor extends CometActor with CometListener {
 
   def render: RenderOut = {
     this ! Init
-    <div class="col-lg-12">
+    <div>
       <form class="lift:form.ajax">
         <div class="row">
           <div class="col-sm-12">
@@ -250,10 +250,6 @@ class PealCometActor extends CometActor with CometListener {
       this ! Message("")
       inputPolicies = ConstantScoreModelGenerator.generate(true, randomModelParamWithDomain.split(Array(' ', ',')).filterNot(_ == ""):_*)
       partialUpdate(JqId("policies") ~> JqVal(inputPolicies))
-    case UploadFile(content) =>
-        this ! Message("")
-        inputPolicies = content
-        partialUpdate(JqId("policies") ~> JqVal(inputPolicies))
     case s: String =>
       println("String received")
       inputPolicies = s
