@@ -46,9 +46,9 @@ class InputAnalyser(input: String) {
     case Implies(_, c1, c2) => c1 :: c2 :: Nil
   }
 
-  def analyse(rawModel: String, analysisName: String, additional:Set[String] = Set()): NodeSeq = {
+  def analyse(rawModel: String, analysisName: String, overrides:Set[String] = Set()): NodeSeq = {
 
-    implicit val I = Z3ModelExtractor.extractIUsingRational(rawModel)(analysisName)
+    implicit val I = Z3ModelExtractor.extractIUsingRational(rawModel)(analysisName) ++ overrides.map(o => (o, Right(PealFalse)))
     ConsoleLogger.log1(I)
 
     def accumulateScores(operator: Operator, rules: Set[Rule], policyName: String): BigDecimal = {

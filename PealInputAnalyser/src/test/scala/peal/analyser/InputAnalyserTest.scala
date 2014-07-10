@@ -14,7 +14,7 @@ class InputAnalyserTest extends ShouldMatchersForJUnit {
     val model = "Result of analysis [name1 = satisfiable? cond3]:\nsat\n(model \n  (define-fun onlyLongDistanceUsage () Bool\n    false)\n  (define-fun speaksEnglish () Bool\n    true)\n  (define-fun isLuxuryCar () Bool\n    false)\n  (define-fun cond3 () Bool\n    true)\n  (define-fun cond5 () Bool\n    false)\n  (define-fun isCompact () Bool\n    false)\n  (define-fun hasOtherLicense () Bool\n    true)\n  (define-fun cond2 () Bool\n    true)\n  (define-fun cond1 () Bool\n    true)\n  (define-fun satisfiable_name1 () Bool\n    true)\n  (define-fun onlyCityUsage () Bool\n    false)\n  (define-fun b_minOne_score () Real\n    (- 1.0))\n  (define-fun b2_hasOtherLicense_U () Real\n    0.0)\n  (define-fun b1_score () Real\n    50000.0)\n  (define-fun b3_score () Real\n    (/ 1.0 4.0))\n  (define-fun isSedan () Bool\n    false)\n  (define-fun travelsAlone () Bool\n    true)\n  (define-fun cond4 () Bool\n    false)\n  (define-fun accidentFreeForYears () Bool\n    true)\n  (define-fun mixedUsage () Bool\n    true)\n  (define-fun femaleDriver () Bool\n    true)\n  (define-fun b2_score () Real\n    (/ 2.0 5.0))\n  (define-fun someOffRoadDriving () Bool\n    false)\n  (define-fun x () Real\n    10.0)\n  (define-fun b4_score () Real\n    (/ 9.0 20.0))\n)"
 
     ConsoleLogger.log2(input)
-    val out = new InputAnalyser(input).analyse(model, "name1")
+    val out = new InputAnalyser(input).analyse(model, "name1", Set("hasUSLicense", "hasUKLicense", "hasEULicense"))
     ConsoleLogger.log1(out.text)
     out.text should be ("b1 = max () default 50000.0" +
       "b2 = min (([hasOtherLicense] 0.4)) default 0.0" +
