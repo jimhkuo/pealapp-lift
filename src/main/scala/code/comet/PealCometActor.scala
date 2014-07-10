@@ -252,8 +252,10 @@ class PealCometActor extends CometActor with CometListener {
       partialUpdate(JqId("policies") ~> JqVal(inputPolicies))
     case s: String =>
       println("String received")
-      inputPolicies = s
-      partialUpdate(JqId("policies") ~> JqVal(inputPolicies))
+      if (s != "") {
+        inputPolicies = s
+        partialUpdate(JqId("policies") ~> JqVal(inputPolicies))
+      }
   }
 
   private def clearIntermediateResults {
