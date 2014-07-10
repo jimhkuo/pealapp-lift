@@ -28,16 +28,6 @@ class ExtendedSynthesiser(input: String) extends Synthesiser {
   })
   val analyses = pealProgramParser.analyses
 
-  private def predicateDeclaration = {
-    for {
-      p <- pols
-      r <- p._2.rules if r.score.scoreRange != None
-    } yield {
-      "(declare-const " + p._1 + "_" + r.q.name + "_U Real)\n" +
-        "(assert (and (<= " + p._1 + "_" + r.q.name + "_U " + r.score.scoreRange.get.maxValue + ") (<= " + r.score.scoreRange.get.minValue + " " + p._1 + "_" + r.q.name + "_U)))"
-    }
-  }
-
   private def policyDefaultDeclaration = {
     for {
       p <- pols if p._2.score.scoreRange != None
@@ -91,6 +81,16 @@ class ExtendedSynthesiser(input: String) extends Synthesiser {
             case Max | Min => firstCase(p).mkString("", "\n", "\n") + secondCase(p) + "\n" + thirdCase(p)
           }
       }
+    }
+  }
+
+  private def predicateDeclaration = {
+    for {
+      p <- pols
+      r <- p._2.rules if r.score.scoreRange != None
+    } yield {
+      "(declare-const " + p._1 + "_" + r.q.name + "_U Real)\n" +
+        "(assert (and (<= " + p._1 + "_" + r.q.name + "_U " + r.score.scoreRange.get.maxValue + ") (<= " + r.score.scoreRange.get.minValue + " " + p._1 + "_" + r.q.name + "_U)))"
     }
   }
 
