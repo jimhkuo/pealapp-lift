@@ -10,11 +10,11 @@ case class Result(output: NodeSeq)
 
 case class SaveFile(result: String, lapseTime: Long)
 
+case class UploadFile(content: String)
+
 case object Init
 
 case object Clear
-
-case object UploadFile
 
 case object Generate
 

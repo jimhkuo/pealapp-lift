@@ -1,18 +1,17 @@
 package code.comet
 
 import code.lib._
-import net.liftweb._
 import net.liftweb.common.Loggable
 import net.liftweb.http._
 import net.liftweb.http.js.JsCmds._
-import net.liftweb.http.js.jquery.JqJE.{JqId, _}
-import org.apache.commons.fileupload.disk.DiskFileItemFactory
+import net.liftweb.http.js.jquery.JqJE._
 import peal.antlr.util.ParserHelper
 import peal.domain.PolicySet
 import peal.domain.z3.{PealAst, Term}
 import peal.model.{ConstantScoreModelGenerator, MajorityVotingGenerator, RandomScoreModelGenerator}
 import peal.synthesis._
 import peal.synthesis.analysis._
+import peal.util.ConsoleLogger
 import peal.verifier.OutputVerifier
 import peal.z3.Z3Caller
 
@@ -20,7 +19,9 @@ import scala.Predef._
 import scala.collection.JavaConversions._
 import scala.xml.Text
 
-class PealCometActor extends CometActor with Loggable {
+class PealCometActor extends CometActor with CometListener {
+
+  def registerWith = CometServer
 
   val inputForNewSynthesis = "POLICIES\n" +
     "b1 = min ((q1 0.2) (q2 0.4) (q3 0.9)) default 0.4\n" +
@@ -51,7 +52,7 @@ class PealCometActor extends CometActor with Loggable {
   var randomModelParamWithDomain = "2, 3, 1, 1, 1, 9, 0.5, 0.1"
   var uploadFile = ""
 
-  def render = {
+  def render: RenderOut = {
     this ! Init
     <div class="col-lg-12">
       <form class="lift:form.ajax">
@@ -249,12 +250,20 @@ class PealCometActor extends CometActor with Loggable {
       this ! Message("")
       inputPolicies = ConstantScoreModelGenerator.generate(true, randomModelParamWithDomain.split(Array(' ', ',')).filterNot(_ == ""):_*)
       partialUpdate(JqId("policies") ~> JqVal(inputPolicies))
-    case UploadFile =>
+    case UploadFile(content) =>
+        this ! Message("")
+        inputPolicies = content
+        partialUpdate(JqId("policies") ~> JqVal(inputPolicies))
+    case s: String =>
+      println("String received")
+      inputPolicies = s
+      partialUpdate(JqId("policies") ~> JqVal(inputPolicies))
   }
 
   private def clearIntermediateResults {
     z3RawOutput = ""
     extendedSynthesis = ""
+    explicitSynthesis = ""
     constsMap = Map()
     analyses = Map()
   }
