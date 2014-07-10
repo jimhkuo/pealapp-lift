@@ -236,7 +236,7 @@ PEALT addresses the first concern by independently certifying that the model inf
     underspecified truth values of some predicates within rules. We then chose one such predicate, set it to false and repeat our
     compositional certification process until it succeeds. This is seen in the PEALT output
 </p>
-<pre>Certification of analysis [name1] succeeded. Additional predicates set to false in this certification process are Set(hasUSLicense, hasUKLicense, hasEULicense)
+<pre>Certification of analysis [name1] succeeded. Additional predicates set to false in this certification process are Set(hasUSLicense, hasUKLicense)
 </pre>
 <p>
 which tells us that this certification worked but that it had to incrementally set three predicates
@@ -249,7 +249,7 @@ Once certification has been achieved, PEALT outputs all policies that occurred i
 <pre>Policies in analysis [name1] specialised with respect to the model extended with false predicates from Set():
 
 b1 = max () default 50000.0
-b2 = min (([hasOtherLicense] 0.4)) default 0.0
+b2 = min (([hasOtherLicense] 0.4) (hasEULicense? 0.7)) default 0.0
 b4 = + (([accidentFreeForYears speaksEnglish travelsAlone femaleDriver] 0.45)) default 0.0
 b_minOne = + () default -1.0
 </pre>
