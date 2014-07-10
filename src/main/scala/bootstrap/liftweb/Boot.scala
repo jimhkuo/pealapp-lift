@@ -1,6 +1,7 @@
 package bootstrap.liftweb
 
 import net.liftweb.http.{Req, StreamingResponse, LiftRules}
+import net.liftweb.sitemap.Menu.{WithSlash, Menuable}
 import net.liftweb.sitemap.{SiteMap, Menu}
 import net.liftweb.common.Full
 import scala.Nil
@@ -10,7 +11,7 @@ class Boot {
   def boot {
     LiftRules.addToPackages("code")
 
-    val entries = List(
+    val entries: List[Menuable with WithSlash] = List(
       Menu.i("Editor and runner") / "index",
       Menu.i("About PEALT") / "aboutpealt",
       Menu.i("User guide") / "userguide",
