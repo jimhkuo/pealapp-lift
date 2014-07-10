@@ -35,6 +35,7 @@ class InputAnalyser(input: String) {
     case OrCondition(lhs, rhs) => extractPolicySet(conds(lhs).getPol.get) ::: extractPolicySet(conds(rhs).getPol.get)
     case AndCondition(lhs, rhs) => pullPolicies(conds(lhs)) ::: pullPolicies(conds(rhs))
     case NotCondition(c) => extractPolicySet(conds(c).getPol.get)
+    case PredicateCondition(p) => Nil
   }
 
   private def pullCond(analysis: AnalysisGenerator) = analysis match {

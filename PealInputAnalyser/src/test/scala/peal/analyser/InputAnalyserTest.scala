@@ -14,10 +14,7 @@ class InputAnalyserTest extends ShouldMatchersForJUnit {
     val model = "Result of analysis [name3 = satisfiable? cond45]:\nsat\n(model \n  (define-fun satisfiable_name3 () Bool\n    true)\n  (define-fun ignition_score () Real\n    (/ 7.0 20.0))\n  (define-fun gas_stove () Bool\n    true)\n  (define-fun wood () Bool\n    true)\n  (define-fun cond45 () Bool\n    true)\n  (define-fun coal () Bool\n    true)\n  (define-fun fire_score () Real\n    (/ 147.0 2000.0))\n  (define-fun electrical_sparc () Bool\n    true)\n  (define-fun True () Bool\n    true)\n  (define-fun matches () Bool\n    true)\n  (define-fun fuel_score () Real\n    (/ 21.0 100.0))\n  (define-fun oxygen_score () Real\n    1.0)\n  (define-fun gasoline () Bool\n    true)\n)"
 
     val out = new InputAnalyser(input).analyse(model, "name3")
-    out.text should be ("b1 = max () default 50000.0" +
-      "b2 = min (([hasOtherLicense] 0.4)) default 0.0" +
-      "b4 = + (([accidentFreeForYears speaksEnglish travelsAlone femaleDriver] 0.45)) default 0.0" +
-      "b_minOne = + () default -1.0")
+    out.text should be ("") //no policy involved
   }
 
   @Test
