@@ -10,12 +10,10 @@ class InputAnalyserTest extends ShouldMatchersForJUnit {
   @Test
   def testPredicateCondition() {
     ConsoleLogger.enable(1)
-    val input = "POLICIES\nfuel = +((gasoline 0.1) (coal 0.02) (wood 0.09)) default 0\nignition = +((matches 0.2) (gas_stove 0.1) (electrical_sparc 0.05)) default 0\noxygen = +() default 1\nfire = *((True fuel_score) (True ignition_score) (True oxygen_score)) default 1\nPOLICY_SETS\npSet1 = fire\nCONDITIONS\ncond1 = 0.0734 < pSet1\ncond2 = 0.0735 < pSet1\ncond3 = pSet1 <= 0.0735\ncond45 = coal\ncond4 = cond45 && cond3\nDOMAIN_SPECIFICS\n(assert True)\nANALYSES\nname1 = satisfiable? cond1\nname2 = satisfiable? cond2\nname3 = satisfiable? cond4"
-    val model = "Result of analysis [name1 = satisfiable? cond1]:\nsat\n(model \n  (define-fun ignition_score () Real\n    (/ 7.0 20.0))\n  (define-fun cond3 () Bool\n    true)\n  (define-fun wood () Bool\n    true)\n  (define-fun cond2 () Bool\n    false)\n  (define-fun cond1 () Bool\n    true)\n  (define-fun True () Bool\n    true)\n  (define-fun satisfiable_name1 () Bool\n    true)\n  (define-fun fire_score () Real\n    (/ 147.0 2000.0))\n  (define-fun oxygen_score () Real\n    1.0)\n  (define-fun cond4 () Bool\n    true)\n  (define-fun gas_stove () Bool\n    true)\n  (define-fun cond45 () Bool\n    true)\n  (define-fun coal () Bool\n    true)\n  (define-fun electrical_sparc () Bool\n    true)\n  (define-fun fuel_score () Real\n    (/ 21.0 100.0))\n  (define-fun matches () Bool\n    true)\n  (define-fun gasoline () Bool\n    true)\n)"
+    val input = "POLICIES\nfuel = +((gasoline 0.1) (coal 0.02) (wood 0.09)) default 0\nignition = +((matches 0.2) (gas_stove 0.1) (electrical_sparc 0.05)) default 0\noxygen = +() default 1\nfire = *((True fuel_score) (True ignition_score) (True oxygen_score)) default 1\nPOLICY_SETS\npSet1 = fire\nCONDITIONS\ncond45 = coal\nANALYSES\nname3 = satisfiable? cond45"
+    val model = "Result of analysis [name3 = satisfiable? cond45]:\nsat\n(model \n  (define-fun satisfiable_name3 () Bool\n    true)\n  (define-fun ignition_score () Real\n    (/ 7.0 20.0))\n  (define-fun gas_stove () Bool\n    true)\n  (define-fun wood () Bool\n    true)\n  (define-fun cond45 () Bool\n    true)\n  (define-fun coal () Bool\n    true)\n  (define-fun fire_score () Real\n    (/ 147.0 2000.0))\n  (define-fun electrical_sparc () Bool\n    true)\n  (define-fun True () Bool\n    true)\n  (define-fun matches () Bool\n    true)\n  (define-fun fuel_score () Real\n    (/ 21.0 100.0))\n  (define-fun oxygen_score () Real\n    1.0)\n  (define-fun gasoline () Bool\n    true)\n)"
 
-//    ConsoleLogger.log2(input)
-    val out = new InputAnalyser(input).analyse(model, "name1")
-//    ConsoleLogger.log1(out.text)
+    val out = new InputAnalyser(input).analyse(model, "name3")
     out.text should be ("b1 = max () default 50000.0" +
       "b2 = min (([hasOtherLicense] 0.4)) default 0.0" +
       "b4 = + (([accidentFreeForYears speaksEnglish travelsAlone femaleDriver] 0.45)) default 0.0" +
