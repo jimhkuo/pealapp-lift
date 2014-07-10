@@ -81,7 +81,7 @@ class PealCometActor extends CometActor with CometListener {
           <div>
             {SHtml.ajaxButton("Clear text area", () => {this ! Clear; _Noop}, "class" -> "btn btn-warning btn-sm", "style" -> "margin:2px;")}
           </div>
-          <div style="display:none">
+          <div>
             {SHtml.ajaxButton("Clear text area", () => {this ! Clear; _Noop}, "class" -> "btn btn-warning btn-sm", "style" -> "margin:2px;")}
             {SHtml.ajaxButton("Upload", () => {this ! UploadFile; _Noop}, "class" -> "btn btn-warning btn-sm", "style" -> "margin:2px;")}
             <form id="file-upload" action="/upload" method="POST" enctype="multipart/form-data">
