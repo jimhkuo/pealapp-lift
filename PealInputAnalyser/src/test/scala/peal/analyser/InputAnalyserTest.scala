@@ -38,6 +38,16 @@ class InputAnalyserTest extends ShouldMatchersForJUnit {
   }
 
   @Test
+  def testNotCondition() {
+    ConsoleLogger.enable(1)
+    val input = "POLICIES\nfuel = +((gasoline 0.1) (coal 0.02) (wood 0.09)) default 0\nignition = +((matches 0.2) (gas_stove 0.1) (electrical_sparc 0.05)) default 0\noxygen = +() default 1\nfire = *((True fuel_score) (True ignition_score) (True oxygen_score)) default 1\nPOLICY_SETS\npSet1 = fuel\nCONDITIONS\ncond45 = coal\ncond4 = !cond45 \nDOMAIN_SPECIFICS\n(assert True)\nANALYSES\nname3 = satisfiable? cond4"
+    val model = "Result of analysis [name3 = satisfiable? cond4]:\nsat\n(model \n  (define-fun gasoline () Bool\n    true)\n  (define-fun wood () Bool\n    true)\n  (define-fun fire_score () Real\n    (/ 133.0 2000.0))\n  (define-fun True () Bool\n    true)\n  (define-fun oxygen_score () Real\n    1.0)\n  (define-fun satisfiable_name3 () Bool\n    true)\n  (define-fun cond4 () Bool\n    true)\n  (define-fun gas_stove () Bool\n    true)\n  (define-fun coal () Bool\n    false)\n  (define-fun cond45 () Bool\n    false)\n  (define-fun electrical_sparc () Bool\n    true)\n  (define-fun fuel_score () Real\n    (/ 19.0 100.0))\n  (define-fun matches () Bool\n    true)\n  (define-fun ignition_score () Real\n    (/ 7.0 20.0))\n)"
+    val out = new InputAnalyser(input).analyse(model, "name3")
+    ConsoleLogger.log1(out.text)
+    out.text should be ("")
+  }
+
+  @Test
   def testSomeBottomPredicates() {
     ConsoleLogger.enable(1)
     val input = "POLICIES\nb1 = max ((isLuxuryCar 150000) (isSedan 60000) (isCompact 30000)) default 50000\nb2 = min ((hasUSLicense 0.9) (hasUKLicense 0.6) (hasEULicense 0.7) (hasOtherLicense 0.4 [-0.1,0.1])) default 0\nb3 = max ((someOffRoadDriving 0.8) (onlyCityUsage 0.4) (onlyLongDistanceUsage 0.2) (mixedUsage 0.25)) default 0.3\nb4 = + ((accidentFreeForYears 0.05*x) (speaksEnglish 0.05) (travelsAlone -0.2) (femaleDriver 0.1)) default 0\nb_minOne = + () default -1\nPOLICY_SETS\npSet0 = +(b2,b_minOne)\npSet1 = *(b1,pSet0)\npSet_b4 = b4\nCONDITIONS\ncond1 = pSet1 <= 50000\ncond2 = 0.4 < pSet_b4\ncond3 = cond1 && cond2\ncond4 = 0.6 < pSet_b4\ncond5 = cond1 && cond4\nDOMAIN_SPECIFICS\n(assert (and (<= 0 x) (<= x 10)))\n(assert (or (not isLuxuryCar) (not someOffRoadDriving)))\n(assert (and (implies isLuxuryCar (and (not isSedan) (not isCompact))) (implies isSedan (and (not isLuxuryCar) (not isCompact))) (implies isCompact (and (not isSedan) (not isLuxuryCar)))))\n(assert (implies onlyCityUsage (not mixedUsage)))\n(assert (implies onlyLongDistanceUsage (not mixedUsage)))\n(assert (implies onlyCityUsage (not someOffRoadDriving)))\n(assert (implies onlyLongDistanceUsage (not someOffRoadDriving)))\nANALYSES\nname1 = satisfiable? cond3"

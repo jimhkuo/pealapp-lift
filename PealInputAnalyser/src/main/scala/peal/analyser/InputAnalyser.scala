@@ -34,7 +34,7 @@ class InputAnalyser(input: String) {
     //it turns out the use of either.get is ok here
     case OrCondition(lhs, rhs) => pullPolicies(conds(lhs)) ::: pullPolicies(conds(rhs))
     case AndCondition(lhs, rhs) => pullPolicies(conds(lhs)) ::: pullPolicies(conds(rhs))
-    case NotCondition(c) => extractPolicySet(conds(c).getPol.get)
+    case NotCondition(c) => pullPolicies(conds(c))
     case PredicateCondition(p) => Nil
   }
 
