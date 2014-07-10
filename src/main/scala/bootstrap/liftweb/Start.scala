@@ -9,7 +9,7 @@ import peal.util.ConsoleLogger
 
 object Start extends App {
 
-  ConsoleLogger.enable()
+  ConsoleLogger.enable(1)
 
   val connector = new SelectChannelConnector()
   if (args.length > 0) {
