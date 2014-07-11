@@ -19,13 +19,14 @@ class InputAnalyser(input: String) {
   private val pols = pealProgramParser.pols
   private val analyses = pealProgramParser.analyses
 
+  //TODO pull in score policies here
   private def extractPolicySet(pSet: PolicySet): List[String] = pSet match {
     case BasicPolicySet(p, n) => extractPolicySet(p)
     case MaxPolicySet(l, r, _) => extractPolicySet(l) ::: extractPolicySet(r)
     case MinPolicySet(l, r, _) => extractPolicySet(l) ::: extractPolicySet(r)
     case PlusPolicySet(l, r, _) => extractPolicySet(l) ::: extractPolicySet(r)
     case MulPolicySet(l, r, _) => extractPolicySet(l) ::: extractPolicySet(r)
-    case Pol(rs, o, s, n) => n :: Nil
+    case Pol(rules, _, defaultScore, policyName) => policyName :: Nil
   }
 
   private def pullPolicies(cond: Condition): List[String] = cond match {
