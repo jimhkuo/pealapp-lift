@@ -21,7 +21,7 @@ class FileUploadSnippet extends Loggable {
         val content = new String(file)
         ConsoleLogger.log("FileUploadSnippet:" + content)
         CometServer ! UploadFile(content)
-        S.redirectTo("/")
+//        S.redirectTo("/")
       case _ => ConsoleLogger.log("No file?")
     }
 
