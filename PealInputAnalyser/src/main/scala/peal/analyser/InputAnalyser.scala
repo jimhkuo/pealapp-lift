@@ -71,9 +71,9 @@ class InputAnalyser(input: String) {
 
     def specialisePolicy(p: String): Node = {
       pols(p) match {
-        case Pol(rs, o, s, name) =>
-          val okRules = rs.filter(r => I.get(r.q.name) != None && I.get(r.q.name) == Some(Right(PealTrue)))
-          val undefinedRules = rs.filter(r => I.get(r.q.name) == None)
+        case Pol(rules, operator, defaultScore, name) =>
+          val okRules = rules.filter(r => I.get(r.q.name) != None && I.get(r.q.name) == Some(Right(PealTrue)))
+          val undefinedRules = rules.filter(r => I.get(r.q.name) == None)
           val undefined = if (undefinedRules.nonEmpty) {
             (if (okRules.nonEmpty) " " else "") + undefinedRules.map(r => "(" + r.q.name + "? " + ScoreEvaluator.trueScore(r.score, p + "_" + r.q.name + "_U").value + ")").mkString(" ")
           }
@@ -84,10 +84,10 @@ class InputAnalyser(input: String) {
           ConsoleLogger.log1(okRules)
 
           if (okRules.isEmpty) {
-            <span>{p} = {o} (<span style="font-weight: bold;color:green">{undefined}</span>) default <span style="font-weight: bold;color:red">{ScoreEvaluator.trueScore(s, p + "_default_U").value}</span><br/></span>
+            <span>{p} = {operator} (<span style="font-weight: bold;color:green">{undefined}</span>) default <span style="font-weight: bold;color:red">{ScoreEvaluator.trueScore(defaultScore, p + "_default_U").value}</span><br/></span>
           }
           else {
-            <span>{p} = {o} ((<span style="font-weight: bold;color:red">[</span>{okRules.map(r => r.q.name).mkString("", " ", "")}<span style="font-weight: bold;color:red">]</span> <span style="font-weight: bold;color:red">{accumulateScores(o, okRules.toSet, p)}</span>)<span style="font-weight: bold;color:green">{undefined}</span>) default {ScoreEvaluator.trueScore(s, p + "_default_U").value}<br/></span>
+            <span>{p} = {operator} ((<span style="font-weight: bold;color:red">[</span>{okRules.map(r => r.q.name).mkString("", " ", "")}<span style="font-weight: bold;color:red">]</span> <span style="font-weight: bold;color:red">{accumulateScores(operator, okRules.toSet, p)}</span>)<span style="font-weight: bold;color:green">{undefined}</span>) default {ScoreEvaluator.trueScore(defaultScore, p + "_default_U").value}<br/></span>
           }
       }
     }
