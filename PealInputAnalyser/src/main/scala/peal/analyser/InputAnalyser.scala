@@ -21,7 +21,8 @@ class InputAnalyser(input: String) {
 
   private def pullPolicyFromScore(s : Score) = {
     val names = s.underlyingScore.fold(b => List(), f => f.toNaturalExpression.split(Array('+','*')).toList)
-    names.map(_.dropRight("_score".length)).filter(pols.containsKey(_))
+    println(names)
+    names.map(_.trim).map(_.dropRight("_score".length)).filter(pols.containsKey(_))
   }
   //TODO pull in score policies here
   private def extractPolicySet(pSet: PolicySet): List[String] = pSet match {
