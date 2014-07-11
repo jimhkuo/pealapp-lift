@@ -8,6 +8,16 @@ import peal.util.ConsoleLogger
 class InputAnalyserTest extends ShouldMatchersForJUnit {
 
   @Test
+  def testRecursiveAnalysis() {
+    ConsoleLogger.enable()
+    val input = "POLICIES\nb1 = + ((q0 0.5)(q1 0.5) ) default 0\nb2 = + () default b1_score\nPOLICY_SETS\npSet = b2\nCONDITIONS\ncond = 0.5 < pSet\nANALYSES\nanalysis = always_true? cond"
+    val model = "Result of analysis [analysis = always_true? cond]:\nsat\n(model \n  (define-fun cond () Bool\n    false)\n  (define-fun q0 () Bool\n    false)\n  (define-fun b2_score () Real\n    (/ 1.0 2.0))\n  (define-fun b1_score () Real\n    (/ 1.0 2.0))\n  (define-fun q1 () Bool\n    true)\n  (define-fun always_true_analysis () Bool\n    false)\n)"
+
+    val out = new InputAnalyser(input).analyse(model, "analysis")
+    out.text should be ("b1 = + (([q1] 0.5)) default0b2 = + () default 0.5")
+  }
+
+  @Test
   def testPredicateCondition() {
     ConsoleLogger.enable(1)
     val input = "POLICIES\nfuel = +((gasoline 0.1) (coal 0.02) (wood 0.09)) default 0\nignition = +((matches 0.2) (gas_stove 0.1) (electrical_sparc 0.05)) default 0\noxygen = +() default 1\nfire = *((True fuel_score) (True ignition_score) (True oxygen_score)) default 1\nPOLICY_SETS\npSet1 = fire\nCONDITIONS\ncond45 = coal\nANALYSES\nname3 = satisfiable? cond45"
