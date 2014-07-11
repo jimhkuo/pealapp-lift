@@ -173,7 +173,7 @@ class OutputVerifier(input: String) {
       out
     }
 
-    //TODO need to analyse pSet and do some recursive stuff
+    //TODO need to analyse pSet and do some recursive stuff, may be localised
     pSet.fold(score => score, pSet => extractScore(pSet).value)
   }
 }
