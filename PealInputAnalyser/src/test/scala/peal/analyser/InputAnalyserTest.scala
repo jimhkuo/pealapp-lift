@@ -14,7 +14,7 @@ class InputAnalyserTest extends ShouldMatchersForJUnit {
     val model = "Result of analysis [analysis = always_true? cond]:\nsat\n(model \n  (define-fun cond () Bool\n    false)\n  (define-fun q0 () Bool\n    false)\n  (define-fun b2_score () Real\n    (/ 1.0 2.0))\n  (define-fun b1_score () Real\n    (/ 1.0 2.0))\n  (define-fun q1 () Bool\n    true)\n  (define-fun always_true_analysis () Bool\n    false)\n)"
 
     val out = new InputAnalyser(input).analyse(model, "analysis")
-    out.text should be ("b1 = + (([q1] 0.5)) default0b2 = + () default 0.5")
+    out.text should be ("b1 = + (([q1] 0.5)) default0.0b2 = + () default 0.5")
   }
 
   @Test
