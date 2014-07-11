@@ -8,6 +8,17 @@ import peal.util.ConsoleLogger
 class InputAnalyserTest extends ShouldMatchersForJUnit {
 
   @Test
+  def testRecursiveAnalysisByScores() {
+    ConsoleLogger.enable()
+    val input = "POLICIES\nb1 = + ((q0 0.5)(q1 0.5) ) default 0\nb2 = + ((q3 0.5)(q4 0.5) ) default 0\nb3 = + ((q5 b2_score)) default 0\nPOLICY_SETS\npSet = b3\nCONDITIONS\ncond = 0.5 < pSet\nANALYSES\nanalysis = always_true? cond\nb1 = + ((q0 0.5)(q1 0.5) ) default 0\nb2 = + ((q3 0.5)(q4 0.5) ) default 0\nb3 = + () default b1_score + b2_score\nPOLICY_SETS\npSet = b3\nCONDITIONS\ncond = 0.5 < pSet\nANALYSES\nanalysis = always_true? cond"
+    val model = "Result of analysis [analysis = always_true? cond]:\nsat\n(model \n  (define-fun q5 () Bool\n    false)\n  (define-fun q0 () Bool\n    false)\n  (define-fun b1_score () Real\n    (/ 1.0 2.0))\n  (define-fun q3 () Bool\n    false)\n  (define-fun q4 () Bool\n    false)\n  (define-fun always_true_analysis () Bool\n    false)\n  (define-fun cond () Bool\n    false)\n  (define-fun b3_score () Real\n    0.0)\n  (define-fun b2_score () Real\n    0.0)\n  (define-fun q1 () Bool\n    true)\n)"
+    ConsoleLogger.log(input)
+    val out = new InputAnalyser(input).analyse(model, "analysis")
+    ConsoleLogger.log(out.text)
+    out.text should be("b3 = + () default 0.0")
+  }
+
+  @Test
   def testMultipleRecursiveAnalysisByDefaultScore() {
     ConsoleLogger.enable()
     val input = "POLICIES\nb1 = + ((q0 0.5)(q1 0.5) ) default 0\nb2 = + ((q3 0.5)(q4 0.5) ) default 0\nb3 = + () default b1_score + b2_score\nPOLICY_SETS\npSet = b3\nCONDITIONS\ncond = 0.5 < pSet\nANALYSES\nanalysis = always_true? cond"

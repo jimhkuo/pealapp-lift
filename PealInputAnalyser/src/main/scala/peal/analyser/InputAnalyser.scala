@@ -10,6 +10,7 @@ import peal.verifier.Z3ModelExtractor
 import peal.verifier.util.ScoreEvaluator
 
 import scala.collection.JavaConversions._
+import scala.collection.mutable
 import scala.xml.{Node, NodeSeq}
 
 class InputAnalyser(input: String) {
@@ -19,44 +20,53 @@ class InputAnalyser(input: String) {
   private val pols = pealProgramParser.pols
   private val analyses = pealProgramParser.analyses
 
-  private def pullPolicyFromScore(s : Score) = {
-    val names = s.underlyingScore.fold(b => List(), f => f.toNaturalExpression.split(Array('+','*')).toList)
-    println(names)
-    names.map(_.trim).map(_.dropRight("_score".length)).filter(pols.containsKey(_))
-  }
-  //TODO pull in score policies here
-  private def extractPolicySet(pSet: PolicySet): List[String] = pSet match {
-    case BasicPolicySet(p, n) => extractPolicySet(p)
-    case MaxPolicySet(l, r, _) => extractPolicySet(l) ::: extractPolicySet(r)
-    case MinPolicySet(l, r, _) => extractPolicySet(l) ::: extractPolicySet(r)
-    case PlusPolicySet(l, r, _) => extractPolicySet(l) ::: extractPolicySet(r)
-    case MulPolicySet(l, r, _) => extractPolicySet(l) ::: extractPolicySet(r)
-    case Pol(rules, _, defaultScore, policyName) => pullPolicyFromScore(defaultScore) ::: (policyName :: Nil)
-  }
 
-  private def pullPolicies(cond: Condition): List[String] = cond match {
-    case LessThanThCondition(lhs, rhs) => extractPolicySet(lhs) ::: rhs.fold(b => List(), p => extractPolicySet(p))
-    case GreaterThanThCondition(lhs, rhs) => extractPolicySet(lhs)::: rhs.fold(b => List(), p => extractPolicySet(p))
-    //it turns out the use of either.get is ok here
-    case OrCondition(lhs, rhs) => pullPolicies(conds(lhs)) ::: pullPolicies(conds(rhs))
-    case AndCondition(lhs, rhs) => pullPolicies(conds(lhs)) ::: pullPolicies(conds(rhs))
-    case NotCondition(c) => pullPolicies(conds(c))
-    case PredicateCondition(p) => Nil
-  }
-
-  private def pullCond(analysis: AnalysisGenerator) = analysis match {
-    case AlwaysTrue(_, c) => c :: Nil
-    case AlwaysFalse(_, c) => c :: Nil
-    case Satisfiable(_, c) => c :: Nil
-    case Different(_, c1, c2) => c1 :: c2 :: Nil
-    case Equivalent(_, c1, c2) => c1 :: c2 :: Nil
-    case Implies(_, c1, c2) => c1 :: c2 :: Nil
-  }
-
-  def analyse(rawModel: String, analysisName: String, overrides:Set[String] = Set()): NodeSeq = {
+  def analyse(rawModel: String, analysisName: String, overrides: Set[String] = Set()): NodeSeq = {
 
     implicit val I = Z3ModelExtractor.extractIUsingRational(rawModel)(analysisName) ++ overrides.map(o => (o, Right(PealFalse)))
     ConsoleLogger.log1(I)
+
+    def pullPoliciesFromScores(scores: List[Score]) :List[String] = {
+      val names = scores.map(_.underlyingScore.fold(b => List(), f => f.toNaturalExpression.split(Array('+', '*')).toList)).flatten
+      names.map(_.trim).map(_.dropRight("_score".length)).filter(pols.containsKey(_))
+    }
+
+    //TODO pull in score policies here
+    def extractPolicySet(pSet: PolicySet)(implicit I: Map[String, Either[Rational, ThreeWayBoolean]]): List[String] = pSet match {
+      case BasicPolicySet(p, n) => extractPolicySet(p)
+      case MaxPolicySet(l, r, _) => extractPolicySet(l) ::: extractPolicySet(r)
+      case MinPolicySet(l, r, _) => extractPolicySet(l) ::: extractPolicySet(r)
+      case PlusPolicySet(l, r, _) => extractPolicySet(l) ::: extractPolicySet(r)
+      case MulPolicySet(l, r, _) => extractPolicySet(l) ::: extractPolicySet(r)
+      case Pol(rules, _, defaultScore, policyName) =>
+        val okScores: List[Score] = rules.filter(r => I.get(r.q.name) != None && I.get(r.q.name) == Some(Right(PealTrue))).map(_.score).toList
+
+        if (okScores.isEmpty) {
+          pullPoliciesFromScores(List(defaultScore)) ::: (policyName :: Nil)
+        }
+        else {
+          pullPoliciesFromScores(okScores) ::: (policyName :: Nil)
+        }
+    }
+
+    def pullPolicies(cond: Condition): List[String] = cond match {
+      case LessThanThCondition(lhs, rhs) => extractPolicySet(lhs) ::: rhs.fold(b => List(), p => extractPolicySet(p))
+      case GreaterThanThCondition(lhs, rhs) => extractPolicySet(lhs) ::: rhs.fold(b => List(), p => extractPolicySet(p))
+      //it turns out the use of either.get is ok here
+      case OrCondition(lhs, rhs) => pullPolicies(conds(lhs)) ::: pullPolicies(conds(rhs))
+      case AndCondition(lhs, rhs) => pullPolicies(conds(lhs)) ::: pullPolicies(conds(rhs))
+      case NotCondition(c) => pullPolicies(conds(c))
+      case PredicateCondition(p) => Nil
+    }
+
+    def pullCond(analysis: AnalysisGenerator) = analysis match {
+      case AlwaysTrue(_, c) => c :: Nil
+      case AlwaysFalse(_, c) => c :: Nil
+      case Satisfiable(_, c) => c :: Nil
+      case Different(_, c1, c2) => c1 :: c2 :: Nil
+      case Equivalent(_, c1, c2) => c1 :: c2 :: Nil
+      case Implies(_, c1, c2) => c1 :: c2 :: Nil
+    }
 
     def accumulateScores(operator: Operator, rules: Set[Rule], policyName: String): BigDecimal = {
       val rational = operator match {
@@ -106,5 +116,6 @@ class InputAnalyser(input: String) {
 
     policies.map(p => specialisePolicy(p)).toList.sortWith(_.text < _.text)
   }
+
 
 }
