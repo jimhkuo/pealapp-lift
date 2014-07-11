@@ -31,7 +31,6 @@ class InputAnalyser(input: String) {
       names.map(_.trim).map(_.dropRight("_score".length)).filter(pols.containsKey(_))
     }
 
-    //TODO pull in score policies here
     def extractPolicySet(pSet: PolicySet)(implicit I: Map[String, Either[Rational, ThreeWayBoolean]]): List[String] = pSet match {
       case BasicPolicySet(p, n) => extractPolicySet(p)
       case MaxPolicySet(l, r, _) => extractPolicySet(l) ::: extractPolicySet(r)
