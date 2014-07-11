@@ -17,9 +17,8 @@ class FileUploadSnippet extends Loggable {
 
     def processForm() = upload match {
       case Full(FileParamHolder(_, mimeType, fileName, file)) =>
-        ConsoleLogger.log("%s of type %s is %d bytes long" format(fileName, mimeType, file.length))
+        ConsoleLogger.log1("%s of type %s is %d bytes long" format(fileName, mimeType, file.length))
         val content = new String(file)
-        ConsoleLogger.log("FileUploadSnippet:" + content)
         CometServer ! UploadFile(content)
 //        S.redirectTo("/")
       case _ => ConsoleLogger.log("No file?")
