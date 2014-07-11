@@ -141,6 +141,7 @@ class OutputVerifier(input: String) {
 
       val out = pSet match {
         case BasicPolicySet(pol, name) => extractScore(pol)
+        //TODO recursive evaluation occurs here?
         case Pol(rules, op, score, policyName) =>
           if (rules.exists(r => I.getOrElse(r.q.name, Right(PealBottom)).fold(score => PealBottom, pealBool => pealBool) == PealBottom)) {
             //should log
