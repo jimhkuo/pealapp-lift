@@ -26,9 +26,11 @@ class InputAnalyser(input: String) {
     implicit val I = Z3ModelExtractor.extractIUsingRational(rawModel)(analysisName) ++ overrides.map(o => (o, Right(PealFalse)))
     ConsoleLogger.log1(I)
 
+    //TODO recursion needed as we need to go as deep as it gets
     def pullPoliciesFromScores(scores: List[Score]) :List[String] = {
       val names = scores.map(_.underlyingScore.fold(b => List(), f => f.toNaturalExpression.split(Array('+', '*')).toList)).flatten
       names.map(_.trim).map(_.dropRight("_score".length)).filter(pols.containsKey(_))
+      //TODO need to call extractPolicySet for each of pSets(policyName), and return aggregrated results
     }
 
     def extractPolicySet(pSet: PolicySet)(implicit I: Map[String, Either[Rational, ThreeWayBoolean]]): List[String] = pSet match {
