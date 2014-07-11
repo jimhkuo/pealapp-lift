@@ -10,7 +10,7 @@ case class Result(output: NodeSeq)
 
 case class SaveFile(result: String, lapseTime: Long)
 
-case class UploadFile(content: String)
+case class UploadFile(id: String, content: String)
 
 case object Init
 

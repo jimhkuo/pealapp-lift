@@ -19,8 +19,9 @@ class FileUploadSnippet extends Loggable {
       case Full(FileParamHolder(_, mimeType, fileName, file)) =>
         ConsoleLogger.log1("%s of type %s is %d bytes long" format(fileName, mimeType, file.length))
         val content = new String(file)
-        CometServer ! UploadFile(content)
-//        S.redirectTo("/")
+        val id = for (sess <- S.session) yield sess.uniqueId
+        CometServer ! UploadFile(id.toList(0), content)
+      //        S.redirectTo("/")
       case _ => ConsoleLogger.log("No file?")
     }
 
