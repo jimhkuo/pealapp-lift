@@ -253,7 +253,7 @@ class PealCometActor extends CometActor with CometListener {
       inputPolicies = ConstantScoreModelGenerator.generate(true, randomModelParamWithDomain.split(Array(' ', ',')).filterNot(_ == ""):_*)
       partialUpdate(JqId("policies") ~> JqVal(inputPolicies))
     case UploadFile(s) =>
-      ConsoleLogger.log("UploadFile(s) received, s = " + s)
+      ConsoleLogger.log1("UploadFile(s) received, s = " + s)
       if (s != "") {
         inputPolicies = s
         partialUpdate(JqId("policies") ~> JqVal(inputPolicies))
