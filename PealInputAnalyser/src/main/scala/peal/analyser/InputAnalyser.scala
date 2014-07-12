@@ -31,6 +31,7 @@ class InputAnalyser(input: String) {
       names.map(_.trim).map(_.dropRight("_score".length)).filter(pols.containsKey(_))
       //TODO need to enumerate through names, if a name is a policy, get pols(name) and call extractPolicySet on it
       //TODO need to watch for the terminating condition, may use similar fixed point strategy
+      //TODO need to change the return type to Set[String]
     }
 
     def extractPolicySet(pSet: PolicySet)(implicit I: Map[String, Either[Rational, ThreeWayBoolean]]): List[String] = pSet match {
