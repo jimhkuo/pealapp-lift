@@ -30,6 +30,7 @@ class InputAnalyser(input: String) {
       val names = scores.map(_.underlyingScore.fold(b => List(), f => f.toNaturalExpression.split(Array('+', '*')).toList)).flatten
       names.map(_.trim).map(_.dropRight("_score".length)).filter(pols.containsKey(_))
       //TODO need to enumerate through names, if a name is a policy, get pols(name) and call extractPolicySet on it
+      //TODO need to watch for the terminating condition
     }
 
     def extractPolicySet(pSet: PolicySet)(implicit I: Map[String, Either[Rational, ThreeWayBoolean]]): List[String] = pSet match {
