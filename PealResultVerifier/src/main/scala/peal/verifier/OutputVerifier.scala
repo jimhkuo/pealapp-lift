@@ -10,6 +10,8 @@ import peal.verifier.util.ScoreEvaluator
 
 import scala.collection.JavaConversions._
 
+
+//TODO Need to change this to use a different certification strategy, as in our discussion email
 class OutputVerifier(input: String) {
   val pealProgramParser = ParserHelper.getPealParser(input)
   pealProgramParser.program()
@@ -141,7 +143,6 @@ class OutputVerifier(input: String) {
 
       val out = pSet match {
         case BasicPolicySet(pol, name) => extractScore(pol)
-        //TODO recursive evaluation occurs here?
         case Pol(rules, op, score, policyName) =>
           if (rules.exists(r => I.getOrElse(r.q.name, Right(PealBottom)).fold(score => PealBottom, pealBool => pealBool) == PealBottom)) {
             //should log
@@ -174,7 +175,6 @@ class OutputVerifier(input: String) {
       out
     }
 
-    //TODO need to analyse pSet and do some recursive stuff, may be localised
     pSet.fold(score => score, pSet => extractScore(pSet).value)
   }
 }

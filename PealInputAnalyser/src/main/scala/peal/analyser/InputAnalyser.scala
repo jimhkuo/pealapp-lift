@@ -10,7 +10,6 @@ import peal.verifier.Z3ModelExtractor
 import peal.verifier.util.ScoreEvaluator
 
 import scala.collection.JavaConversions._
-import scala.collection.mutable
 import scala.xml.{Node, NodeSeq}
 
 class InputAnalyser(input: String) {
@@ -30,7 +29,7 @@ class InputAnalyser(input: String) {
     def pullPoliciesFromScores(scores: List[Score]) :List[String] = {
       val names = scores.map(_.underlyingScore.fold(b => List(), f => f.toNaturalExpression.split(Array('+', '*')).toList)).flatten
       names.map(_.trim).map(_.dropRight("_score".length)).filter(pols.containsKey(_))
-      //TODO need to call extractPolicySet for each of pSets(policyName), and return aggregrated results
+      //TODO need to enumerate through names, if a name is a policy, get pols(name) and call extractPolicySet on it
     }
 
     def extractPolicySet(pSet: PolicySet)(implicit I: Map[String, Either[Rational, ThreeWayBoolean]]): List[String] = pSet match {
