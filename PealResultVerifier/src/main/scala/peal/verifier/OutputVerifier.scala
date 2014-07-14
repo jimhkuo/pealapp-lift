@@ -30,6 +30,7 @@ class OutputVerifier(input: String) {
 
   val conds = pealProgramParser.conds.toMap
   val analyses = pealProgramParser.analyses
+  val pols = pealProgramParser.pols
   val predicateNames: Seq[String] = pealProgramParser.pols.values().flatMap(pol => pol.rules).map(r => r.q.name).toSeq.distinct
 
   def verifyModel(rawModel: String, analysisName: String): (ThreeWayBoolean, Set[String]) = {
@@ -184,9 +185,11 @@ class OutputVerifier(input: String) {
 
       val out = pSet match {
         case BasicPolicySet(pol, name) => extractScore(pol)
-        case p: Pol =>
-          //TODO  eventually return  I(pSet_score);
-          certPol(p)
+        case Pol(_,_,_,name) =>
+          I.get(name) match {
+            case Some(x) if x.isLeft => x.fold(r => r, tw => throw new RuntimeException("should be a ration but is not"))
+            case None => certPol(pols(name))
+          }
         case MaxPolicySet(lhs, rhs, n) => extractScore(lhs).max(extractScore(rhs))
         case MinPolicySet(lhs, rhs, n) => extractScore(lhs).min(extractScore(rhs))
         case PlusPolicySet(lhs, rhs, n) => extractScore(lhs) + extractScore(rhs)

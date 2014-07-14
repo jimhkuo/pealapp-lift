@@ -194,6 +194,7 @@ class OutputVerifierTest extends ShouldMatchersForJUnit {
   @Test
   def testEvaluateFormulaSomePredicatesAreNotDefinedInI() {
     //Needs resetting bottom to false iteration logic
+    ConsoleLogger.enable()
     val input = "POLICIES\nb1 = min ((q1 0.2) (q2 0.4) (q3 0.1)) default 2*x + y\nPOLICY_SETS\npSet1 = b1\nCONDITIONS\ncond1 = 0.5 < pSet1\nANALYSES\nname1 = always_true? cond1"
     val model = "Result of analysis [name1 = always_true? cond1]:\nsat\n(model \n  (define-fun cond1 () Bool\n    false)\n  (define-fun b1_score () Real\n    (/ 1.0 10.0))\n  (define-fun q3 () Bool\n    true)\n  (define-fun always_true_name1 () Bool\n    false)\n)"
     println(input)
