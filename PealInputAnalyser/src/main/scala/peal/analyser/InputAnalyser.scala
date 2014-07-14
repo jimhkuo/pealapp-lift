@@ -28,11 +28,11 @@ class InputAnalyser(input: String) {
     def pullPoliciesFromScores(scores: Set[Score]): Set[String] = {
       val newPolicyNames = scores.map(_.underlyingScore.fold(b => List(), f => f.toNaturalExpression.split(Array('+', '*')).toList)).flatten
       var pSets: Set[String] = newPolicyNames.map(_.toString.trim).map(_.dropRight("_score".length)).filter(pols.containsKey(_)).toSet
-      var newSets: Set[String] = pSets.map(pols(_)).foldLeft(Set[String]())((acc, pol) => acc ++ extractPolicySet(pol))
+      var nextLayerSets: Set[String] = pSets.map(pols(_)).foldLeft(Set[String]())((acc, pol) => acc ++ extractPolicySet(pol))
 
-      while (newSets != pSets) {
-        pSets = newSets
-        newSets = pSets.map(pols(_)).foldLeft(Set[String]())((acc, pol) => acc ++ extractPolicySet(pol))
+      while (nextLayerSets != pSets) {
+        pSets = nextLayerSets
+        nextLayerSets = pSets.map(pols(_)).foldLeft(Set[String]())((acc, pol) => acc ++ extractPolicySet(pol))
       }
       pSets
     }
