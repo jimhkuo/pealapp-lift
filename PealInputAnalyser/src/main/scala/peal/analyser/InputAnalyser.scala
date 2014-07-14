@@ -25,13 +25,17 @@ class InputAnalyser(input: String) {
     implicit val I = Z3ModelExtractor.extractIUsingRational(rawModel)(analysisName) ++ overrides.map(o => (o, Right(PealFalse)))
     ConsoleLogger.log1(I)
 
-    //TODO recursion needed as we need to go as deep as it gets
     def pullPoliciesFromScores(scores: Set[Score]): Set[String] = {
-      val names = scores.map(_.underlyingScore.fold(b => List(), f => f.toNaturalExpression.split(Array('+', '*')).toList)).flatten
-      names.map(_.toString.trim).map(_.dropRight("_score".length)).filter(pols.containsKey(_)).toSet
-      //TODO need to enumerate through names, if a name is a policy, get pols(name) and call extractPolicySet on it
-      //TODO need to watch for the terminating condition, may use similar fixed point strategy
-      //TODO need to change the return type to Set[String]
+      val potentialPolicyNames = scores.map(_.underlyingScore.fold(b => List(), f => f.toNaturalExpression.split(Array('+', '*')).toList)).flatten
+      var pSets: Set[String] = potentialPolicyNames.map(_.toString.trim).map(_.dropRight("_score".length)).filter(pols.containsKey(_)).toSet
+      var newSets: Set[String] = pSets.map(pols(_)).foldLeft(Set[String]())((acc, pol) => acc ++ extractPolicySet(pol))
+
+      while (newSets != pSets) {
+        pSets = newSets
+        val tempSets: Set[Pol] = pSets.map(pols(_))
+        newSets = pSets.map(pols(_)).foldLeft(Set[String]())((acc, pol) => acc ++ extractPolicySet(pol))
+      }
+      pSets
     }
 
     def extractPolicySet(pSet: PolicySet)(implicit I: Map[String, Either[Rational, ThreeWayBoolean]]): Set[String] = pSet match {

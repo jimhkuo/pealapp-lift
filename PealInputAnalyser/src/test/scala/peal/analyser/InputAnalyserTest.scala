@@ -7,7 +7,6 @@ import peal.util.ConsoleLogger
 
 class InputAnalyserTest extends ShouldMatchersForJUnit {
 
-  @Ignore("wip")
   @Test
   def testRecursiveToTheEnd() {
     ConsoleLogger.enable()
