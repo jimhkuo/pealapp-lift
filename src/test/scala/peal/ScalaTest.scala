@@ -12,6 +12,16 @@ import scala.xml.{Elem, Node, NodeSeq}
 
 class ScalaTest extends ShouldMatchersForJUnit {
 
+  def computNum: Unit => Int = x => 100
+
+  @Test
+  def testFunction() {
+//      val x :Int = computNum
+//      val y :(=> Int) = computNum
+
+      var map = Map[Int, () => Int](1 -> (() => 1))
+//      var map1 = Map[Int, () => Int](1 -> { 1 })
+  }
   @Test
   def testImplicit() {
     trait Functor[F[_]] {
