@@ -26,47 +26,47 @@ class InputAnalyser(input: String) {
     ConsoleLogger.log1(I)
 
     //TODO recursion needed as we need to go as deep as it gets
-    def pullPoliciesFromScores(scores: List[Score]) :List[String] = {
+    def pullPoliciesFromScores(scores: Set[Score]): Set[String] = {
       val names = scores.map(_.underlyingScore.fold(b => List(), f => f.toNaturalExpression.split(Array('+', '*')).toList)).flatten
-      names.map(_.trim).map(_.dropRight("_score".length)).filter(pols.containsKey(_))
+      names.map(_.toString.trim).map(_.dropRight("_score".length)).filter(pols.containsKey(_)).toSet
       //TODO need to enumerate through names, if a name is a policy, get pols(name) and call extractPolicySet on it
       //TODO need to watch for the terminating condition, may use similar fixed point strategy
       //TODO need to change the return type to Set[String]
     }
 
-    def extractPolicySet(pSet: PolicySet)(implicit I: Map[String, Either[Rational, ThreeWayBoolean]]): List[String] = pSet match {
+    def extractPolicySet(pSet: PolicySet)(implicit I: Map[String, Either[Rational, ThreeWayBoolean]]): Set[String] = pSet match {
       case BasicPolicySet(p, n) => extractPolicySet(p)
-      case MaxPolicySet(l, r, _) => extractPolicySet(l) ::: extractPolicySet(r)
-      case MinPolicySet(l, r, _) => extractPolicySet(l) ::: extractPolicySet(r)
-      case PlusPolicySet(l, r, _) => extractPolicySet(l) ::: extractPolicySet(r)
-      case MulPolicySet(l, r, _) => extractPolicySet(l) ::: extractPolicySet(r)
+      case MaxPolicySet(l, r, _) => extractPolicySet(l) ++ extractPolicySet(r)
+      case MinPolicySet(l, r, _) => extractPolicySet(l) ++ extractPolicySet(r)
+      case PlusPolicySet(l, r, _) => extractPolicySet(l) ++ extractPolicySet(r)
+      case MulPolicySet(l, r, _) => extractPolicySet(l) ++ extractPolicySet(r)
       case Pol(rules, _, defaultScore, policyName) =>
-        val okScores: List[Score] = rules.filter(r => I.get(r.q.name) != None && I.get(r.q.name) == Some(Right(PealTrue))).map(_.score).toList
+        val okScores: Set[Score] = rules.filter(r => I.get(r.q.name) != None && I.get(r.q.name) == Some(Right(PealTrue))).map(_.score).toSet
 
         if (okScores.isEmpty) {
-          pullPoliciesFromScores(List(defaultScore)) ::: (policyName :: Nil)
+          pullPoliciesFromScores(Set(defaultScore)) + policyName
         }
         else {
-          pullPoliciesFromScores(okScores) ::: (policyName :: Nil)
+          pullPoliciesFromScores(okScores) + policyName
         }
     }
 
-    def pullPolicies(cond: Condition): List[String] = cond match {
-      case LessThanThCondition(lhs, rhs) => extractPolicySet(lhs) ::: rhs.fold(b => List(), p => extractPolicySet(p))
-      case GreaterThanThCondition(lhs, rhs) => extractPolicySet(lhs) ::: rhs.fold(b => List(), p => extractPolicySet(p))
-      case OrCondition(lhs, rhs) => pullPolicies(conds(lhs)) ::: pullPolicies(conds(rhs))
-      case AndCondition(lhs, rhs) => pullPolicies(conds(lhs)) ::: pullPolicies(conds(rhs))
+    def pullPolicies(cond: Condition): Set[String] = cond match {
+      case LessThanThCondition(lhs, rhs) => extractPolicySet(lhs) ++ rhs.fold(b => Set(), p => extractPolicySet(p))
+      case GreaterThanThCondition(lhs, rhs) => extractPolicySet(lhs) ++ rhs.fold(b => Set(), p => extractPolicySet(p))
+      case OrCondition(lhs, rhs) => pullPolicies(conds(lhs)) ++ pullPolicies(conds(rhs))
+      case AndCondition(lhs, rhs) => pullPolicies(conds(lhs)) ++ pullPolicies(conds(rhs))
       case NotCondition(c) => pullPolicies(conds(c))
-      case PredicateCondition(p) => Nil
+      case PredicateCondition(p) => Set()
     }
 
     def pullCond(analysis: AnalysisGenerator) = analysis match {
-      case AlwaysTrue(_, c) => c :: Nil
-      case AlwaysFalse(_, c) => c :: Nil
-      case Satisfiable(_, c) => c :: Nil
-      case Different(_, c1, c2) => c1 :: c2 :: Nil
-      case Equivalent(_, c1, c2) => c1 :: c2 :: Nil
-      case Implies(_, c1, c2) => c1 :: c2 :: Nil
+      case AlwaysTrue(_, c) => Set(c)
+      case AlwaysFalse(_, c) => Set(c)
+      case Satisfiable(_, c) => Set(c)
+      case Different(_, c1, c2) => Set(c1, c2)
+      case Equivalent(_, c1, c2) => Set(c1, c2)
+      case Implies(_, c1, c2) => Set(c1, c2)
     }
 
     def accumulateScores(operator: Operator, rules: Set[Rule], policyName: String): BigDecimal = {

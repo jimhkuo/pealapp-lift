@@ -1,12 +1,13 @@
 package peal.analyser
 
-import org.junit.Test
+import org.junit.{Ignore, Test}
 import org.scalatest.junit.ShouldMatchersForJUnit
 import peal.util.ConsoleLogger
 
 
 class InputAnalyserTest extends ShouldMatchersForJUnit {
 
+  @Ignore("wip")
   @Test
   def testRecursiveToTheEnd() {
     ConsoleLogger.enable()
