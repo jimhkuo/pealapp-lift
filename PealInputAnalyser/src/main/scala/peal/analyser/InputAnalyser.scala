@@ -26,8 +26,8 @@ class InputAnalyser(input: String) {
     ConsoleLogger.log1(I)
 
     def pullPoliciesFromScores(scores: Set[Score]): Set[String] = {
-      val potentialPolicyNames = scores.map(_.underlyingScore.fold(b => List(), f => f.toNaturalExpression.split(Array('+', '*')).toList)).flatten
-      var pSets: Set[String] = potentialPolicyNames.map(_.toString.trim).map(_.dropRight("_score".length)).filter(pols.containsKey(_)).toSet
+      val newPolicyNames = scores.map(_.underlyingScore.fold(b => List(), f => f.toNaturalExpression.split(Array('+', '*')).toList)).flatten
+      var pSets: Set[String] = newPolicyNames.map(_.toString.trim).map(_.dropRight("_score".length)).filter(pols.containsKey(_)).toSet
       var newSets: Set[String] = pSets.map(pols(_)).foldLeft(Set[String]())((acc, pol) => acc ++ extractPolicySet(pol))
 
       while (newSets != pSets) {
