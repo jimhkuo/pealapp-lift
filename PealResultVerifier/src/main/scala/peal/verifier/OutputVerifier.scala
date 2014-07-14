@@ -12,6 +12,7 @@ import scala.collection.JavaConversions._
 
 
 //TODO Need to change this to use a different certification strategy, as in our discussion email
+//TODO what to do about explicit synthesis??
 //check certValue(bi, I) == I(bi), record results (True, False, or bottom)
 //
 //certValue(pSet,I) {
@@ -150,6 +151,32 @@ class OutputVerifier(input: String) {
     }
   }
 
+  private def certPol(pSet: PolicySet)(implicit I: Map[String, Either[Rational, ThreeWayBoolean]]): Rational = pSet match {
+    case Pol(rules, op, score, policyName) =>
+      //TODO can forget about all these
+      if (rules.exists(r => I.getOrElse(r.q.name, Right(PealBottom)).fold(score => PealBottom, pealBool => pealBool) == PealBottom)) {
+        //should log
+        val notDefined = rules.filter(r => I.getOrElse(r.q.name, Right(PealBottom)).fold(score => PealBottom, pealBool => pealBool) == PealBottom)
+        throw new RuntimeException("PealBottom reached in certValue because some predicates are not defined in I: " + notDefined + " in " + policyName + " " + rules)
+      }
+      else if (!rules.exists(r => I(r.q.name).fold(score => PealBottom, bool => bool) == PealTrue)) {
+        ScoreEvaluator.trueScore(score, policyName + "_default_U")
+      }
+      else {
+        val okScores = rules.filter(r => I(r.q.name).fold(score => PealBottom, bool => bool) == PealTrue).map(r => ScoreEvaluator.trueScore(r.score, policyName + "_" + r.q.name + "_U"))
+        ConsoleLogger.log2("okScores are: " + okScores + " op is " + op)
+        val decimal = op match {
+          case Min => okScores.reduceLeft((acc, score) => acc.min(score))
+          case Max => okScores.reduceLeft((acc, score) => acc.max(score))
+          case Plus => okScores.reduceLeft((acc, score) => acc + score)
+          case Mul => okScores.reduceLeft((acc, score) => acc * score)
+        }
+        ConsoleLogger.log2("op X " + op + " " + policyName + ": " + (for (o <- okScores) yield o).mkString(" ") + ": " + decimal)
+        decimal
+      }
+
+  }
+
   //if certValue is not BigDecimal, throw exception to be handled in the upper layer
   private def certValue(pSet: Either[BigDecimal, PolicySet])(implicit I: Map[String, Either[Rational, ThreeWayBoolean]]): BigDecimal = {
 
@@ -157,29 +184,9 @@ class OutputVerifier(input: String) {
 
       val out = pSet match {
         case BasicPolicySet(pol, name) => extractScore(pol)
-        case Pol(rules, op, score, policyName) =>
-          //TODO  return  I(pSet_score);
-          //TODO can forget about all these
-          if (rules.exists(r => I.getOrElse(r.q.name, Right(PealBottom)).fold(score => PealBottom, pealBool => pealBool) == PealBottom)) {
-            //should log
-            val notDefined = rules.filter(r => I.getOrElse(r.q.name, Right(PealBottom)).fold(score => PealBottom, pealBool => pealBool) == PealBottom)
-            throw new RuntimeException("PealBottom reached in certValue because some predicates are not defined in I: " + notDefined + " in " + policyName + " " + rules)
-          }
-          else if (!rules.exists(r => I(r.q.name).fold(score => PealBottom, bool => bool) == PealTrue)) {
-            ScoreEvaluator.trueScore(score, policyName + "_default_U")
-          }
-          else {
-            val okScores = rules.filter(r => I(r.q.name).fold(score => PealBottom, bool => bool) == PealTrue).map(r => ScoreEvaluator.trueScore(r.score, policyName + "_" + r.q.name + "_U"))
-            ConsoleLogger.log2("okScores are: " + okScores + " op is " + op)
-            val decimal = op match {
-              case Min => okScores.reduceLeft((acc, score) => acc.min(score))
-              case Max => okScores.reduceLeft((acc, score) => acc.max(score))
-              case Plus => okScores.reduceLeft((acc, score) => acc + score)
-              case Mul => okScores.reduceLeft((acc, score) => acc * score)
-            }
-            ConsoleLogger.log2("op X " + op + " " + policyName + ": " + (for (o <- okScores) yield o).mkString(" ") + ": " + decimal)
-            decimal
-          }
+        case p: Pol =>
+          //TODO  eventually return  I(pSet_score);
+          certPol(p)
         case MaxPolicySet(lhs, rhs, n) => extractScore(lhs).max(extractScore(rhs))
         case MinPolicySet(lhs, rhs, n) => extractScore(lhs).min(extractScore(rhs))
         case PlusPolicySet(lhs, rhs, n) => extractScore(lhs) + extractScore(rhs)

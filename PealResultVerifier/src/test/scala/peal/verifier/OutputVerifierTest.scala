@@ -19,8 +19,8 @@ class OutputVerifierTest extends ShouldMatchersForJUnit {
       "cond2 = q2\n" +
       "ANALYSES\nname1 = always_true? cond2"
     val model = "Result of analysis [name1 = always_true? cond2]:\nsat\n(model \n  (define-fun q5 () Bool\n    true)\n  (define-fun b1_score () Real\n    (/ 9.0 10.0))\n  (define-fun q3 () Bool\n    true)\n  (define-fun q2 () Bool\n    false)\n  (define-fun cond2 () Bool\n    false)\n  (define-fun q4 () Bool\n    true)\n  (define-fun b2_score () Real\n    (/ 9.0 10.0))\n  (define-fun q6 () Bool\n    true)\n  (define-fun q1 () Bool\n    false)\n  (define-fun always_true_name1 () Bool\n    false)\n)"
-    //    println(input)
-    //    println(model)
+        println(input)
+        println(model)
     new OutputVerifier(input).verifyModel(model, "name1")._1 should be(PealTrue)
   }
 
