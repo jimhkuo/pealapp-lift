@@ -32,7 +32,6 @@ class InputAnalyser(input: String) {
 
       while (newSets != pSets) {
         pSets = newSets
-        val tempSets: Set[Pol] = pSets.map(pols(_))
         newSets = pSets.map(pols(_)).foldLeft(Set[String]())((acc, pol) => acc ++ extractPolicySet(pol))
       }
       pSets
