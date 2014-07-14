@@ -12,6 +12,17 @@ import scala.collection.JavaConversions._
 
 
 //TODO Need to change this to use a different certification strategy, as in our discussion email
+//check certValue(bi, I) == I(bi), record results (True, False, or bottom)
+//
+//certValue(pSet,I) {
+//if (pSet == score) { return I(score); }
+//elseif (pSet == pol) {
+//return I(pSet_score);
+//}
+//elseif (pSet == op(pS1, pS2)) {
+//return op(certValue(pS1, I), certValue(pS2, I));  // this uses pS1_score and pS2_score to compose the final value
+//}
+//}
 class OutputVerifier(input: String) {
   val pealProgramParser = ParserHelper.getPealParser(input)
   pealProgramParser.program()
@@ -22,6 +33,9 @@ class OutputVerifier(input: String) {
 
   def verifyModel(rawModel: String, analysisName: String): (ThreeWayBoolean, Set[String]) = {
     implicit val I = Z3ModelExtractor.extractIUsingRational(rawModel)(analysisName)
+
+    //TODO check certValue(bi, I) == I(bi), record results (True, False, or bottom)
+
     verifyModel(rawModel, analysisName, Set())
   }
 
@@ -144,6 +158,8 @@ class OutputVerifier(input: String) {
       val out = pSet match {
         case BasicPolicySet(pol, name) => extractScore(pol)
         case Pol(rules, op, score, policyName) =>
+          //TODO  return  I(pSet_score);
+          //TODO can forget about all these
           if (rules.exists(r => I.getOrElse(r.q.name, Right(PealBottom)).fold(score => PealBottom, pealBool => pealBool) == PealBottom)) {
             //should log
             val notDefined = rules.filter(r => I.getOrElse(r.q.name, Right(PealBottom)).fold(score => PealBottom, pealBool => pealBool) == PealBottom)
