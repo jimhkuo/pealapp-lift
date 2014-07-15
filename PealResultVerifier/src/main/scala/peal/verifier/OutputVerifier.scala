@@ -13,20 +13,6 @@ import scala.collection.JavaConversions._
 import scala.collection.JavaConversions._
 import scala.collection.mutable
 
-
-//TODO Need to change this to use a different certification strategy, as in our discussion email
-//TODO what to do about explicit synthesis??
-//check certValue(bi, I) == I(bi), record results (True, False, or bottom)
-//
-//certValue(pSet,I) {
-//if (pSet == score) { return I(score); }
-//elseif (pSet == pol) {
-//return I(pSet_score);
-//}
-//elseif (pSet == op(pS1, pS2)) {
-//return op(certValue(pS1, I), certValue(pS2, I));  // this uses pS1_score and pS2_score to compose the final value
-//}
-//}
 class OutputVerifier(input: String) {
   val pealProgramParser = ParserHelper.getPealParser(input)
   pealProgramParser.program()
@@ -61,10 +47,10 @@ class OutputVerifier(input: String) {
       }
     }
 
-    val mapped = checkPols(initialI, Set())
+    val (newPolicyScoreEntries, remappedPredicates) = checkPols(initialI, Set())
 
-    implicit val I = initialI ++ mapped._1
-    (doAnalysis(analysisName), mapped._2)
+    implicit val I = initialI ++ newPolicyScoreEntries
+    (doAnalysis(analysisName), remappedPredicates)
   }
 
   def doAnalysis(analysisName: String)(implicit truthMapping: Map[String, Either[Rational, ThreeWayBoolean]]): ThreeWayBoolean = {
