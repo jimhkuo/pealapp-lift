@@ -26,15 +26,23 @@ class OutputVerifier(input: String) {
   def verifyModel(rawModel: String, analysisName: String): (ThreeWayBoolean, Set[String]) = {
     val initialI = Z3ModelExtractor.extractIUsingRational(rawModel)(analysisName)
 
-    def checkPols(valueMap: Map[String, Either[Rational, ThreeWayBoolean]], remap: Set[String]): (Map[String, Either[Rational, ThreeWayBoolean]],Set[String]) = {
+    def checkPols(valueMap: Map[String, Either[Rational, ThreeWayBoolean]], remap: Set[String]): (Map[String, Either[Rational, ThreeWayBoolean]], Set[String]) = {
       try {
         val newEntries: mutable.Map[String, Either[Rational, ThreeWayBoolean]] = for {
           (name, pol) <- pols
         } yield {
-          (name, Left[Rational, ThreeWayBoolean](certPol(pol)(valueMap)))
+          //TODO need to compare new entries to *_score
+          val polValue = certPol(pol)(valueMap)
+          valueMap.get(name + "_score") match {
+            case None =>
+            case Some(x) =>
+              val xValue = x.fold(r => r, b => throw new RuntimeException("checkPols: shouldn't get here"))
+              ConsoleLogger.log1("Comparing " + name + " and " + name +"_score")
+              if (xValue != polValue) throw new RuntimeException("pol certification failed, " + name + " came out to be " + polValue + "but should be " + x)
+          }
+          (name, Left[Rational, ThreeWayBoolean](polValue))
         }
 
-        //TODO need to compare new entries to *_score
         (newEntries.toMap, remap)
       } catch {
         case e: RuntimeException =>
