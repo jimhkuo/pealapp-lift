@@ -185,7 +185,7 @@ class OutputVerifier(input: String) {
         case BasicPolicySet(pol, name) => extractScore(pol)
         case Pol(_, _, _, name) =>
           I.get(name) match {
-            case Some(x) if x.isLeft => x.fold(r => r, tw => throw new RuntimeException("should be a ration but is not"))
+            case Some(x) if x.isLeft => x.fold(r => r, tw => throw new RuntimeException("should be a rational but is not"))
             case None => throw new RuntimeException("certValue.extractScore(), Pol " + name + " should have been set up by now") //certPol(pols(name))
           }
         case MaxPolicySet(lhs, rhs, n) => extractScore(lhs).max(extractScore(rhs))
