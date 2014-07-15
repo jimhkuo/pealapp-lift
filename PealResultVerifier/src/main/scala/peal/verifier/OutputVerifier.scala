@@ -7,6 +7,8 @@ import peal.synthesis._
 import peal.synthesis.analysis.{AlwaysFalse, AlwaysTrue, Different, Equivalent, Implies, Satisfiable}
 import peal.util.ConsoleLogger
 import peal.verifier.util.ScoreEvaluator
+import scala.collection.JavaConversions._
+
 
 import scala.collection.JavaConversions._
 
@@ -37,31 +39,36 @@ class OutputVerifier(input: String) {
     implicit val I = Z3ModelExtractor.extractIUsingRational(rawModel)(analysisName)
 
     //TODO check certValue(bi, I) == I(bi), record results (True, False, or bottom)
+    //TODO if an exception is thrown due to bottom predicate, pick one more to false and try again
+    //TODO report them
 
     verifyModel(rawModel, analysisName, Set())
   }
 
   def verifyModel(rawModel: String, analysisName: String, reMappedPredicates: Set[String])(implicit I: Map[String, Either[Rational, ThreeWayBoolean]]): (ThreeWayBoolean, Set[String]) = {
 
-    doAnalysis(analysisName, reMappedPredicates)(I) match {
-      case (PealBottom, s) =>
-
-        var truthMapping = I
-        val bottomPredicates = predicateNames.filterNot(truthMapping.contains).filterNot(s.contains)
-        if (bottomPredicates.isEmpty) {
-          return (PealBottom, s)
-        }
-        ConsoleLogger.log2("*** Trying again")
-        //        print("*")
-        (s + bottomPredicates.head).foreach {
-          m =>
-            ConsoleLogger.log2("*** set " + m + " to false")
-            //            print(m)
-            truthMapping += m -> Right(PealFalse)
-        }
-        verifyModel(rawModel, analysisName, s + bottomPredicates.head)(truthMapping)
-      case (r, s) => (r, s)
-    }
+    //TODO take out reMappedPredicates
+    doAnalysis(analysisName, reMappedPredicates)(I)
+    //If bottom returned it should simply fail
+//    match {
+//      case (PealBottom, s) =>
+//
+//        var truthMapping = I
+//        val bottomPredicates = predicateNames.filterNot(truthMapping.contains).filterNot(s.contains)
+//        if (bottomPredicates.isEmpty) {
+//          return (PealBottom, s)
+//        }
+//        ConsoleLogger.log2("*** Trying again")
+//        //        print("*")
+//        (s + bottomPredicates.head).foreach {
+//          m =>
+//            ConsoleLogger.log2("*** set " + m + " to false")
+//            //            print(m)
+//            truthMapping += m -> Right(PealFalse)
+//        }
+//        verifyModel(rawModel, analysisName, s + bottomPredicates.head)(truthMapping)
+//      case (r, s) => (r, s)
+//    }
   }
 
   def doAnalysis(analysisName: String, reMappedPredicates: Set[String])(implicit truthMapping: Map[String, Either[Rational, ThreeWayBoolean]]): (ThreeWayBoolean, Set[String]) = {
@@ -147,7 +154,7 @@ class OutputVerifier(input: String) {
       }
     } catch {
       case e: RuntimeException =>
-        //        e.printStackTrace()
+        e.printStackTrace()
         PealBottom
     }
   }
@@ -185,7 +192,7 @@ class OutputVerifier(input: String) {
 
       val out = pSet match {
         case BasicPolicySet(pol, name) => extractScore(pol)
-        case Pol(_,_,_,name) =>
+        case Pol(_, _, _, name) =>
           I.get(name) match {
             case Some(x) if x.isLeft => x.fold(r => r, tw => throw new RuntimeException("should be a ration but is not"))
             case None => certPol(pols(name))
