@@ -23,7 +23,7 @@ class OutputVerifier(input: String) {
   val predicateNames: Seq[String] = pealProgramParser.pols.values().flatMap(pol => pol.rules).map(r => r.q.name).toSeq.distinct
 
 
-  def verifyModel(rawModel: String, analysisName: String): (ThreeWayBoolean, Set[String]) = {
+  def verifyModel(rawModel: String, analysisName: String): (ThreeWayBoolean, Set[String], Map[String, Either[Rational, ThreeWayBoolean]]) = {
     val initialI = Z3ModelExtractor.extractIUsingRational(rawModel)(analysisName)
 
     def checkPols(valueMap: Map[String, Either[Rational, ThreeWayBoolean]], remap: Set[String]): (Map[String, Either[Rational, ThreeWayBoolean]], Set[String]) = {
@@ -58,7 +58,7 @@ class OutputVerifier(input: String) {
     val (newPolicyScoreEntries, remappedPredicates) = checkPols(initialI, Set())
 
     implicit val I = initialI ++ newPolicyScoreEntries
-    (doAnalysis(analysisName), remappedPredicates)
+    (doAnalysis(analysisName), remappedPredicates, newPolicyScoreEntries)
   }
 
   def doAnalysis(analysisName: String)(implicit truthMapping: Map[String, Either[Rational, ThreeWayBoolean]]): ThreeWayBoolean = {
