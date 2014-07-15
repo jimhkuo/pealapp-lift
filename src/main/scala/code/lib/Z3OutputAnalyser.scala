@@ -21,7 +21,7 @@ object Z3OutputAnalyser {
     //Conditions that are always false:
 
     //Add new button light blue
-    //Failure probabillity example
+    //Failure probabillity example, fire_fault_tree.pealt
 
     val z3OutputParser = ParserHelper.getZ3OutputParser(z3RawOutput)
     val z3OutputModels = z3OutputParser.results().toMap
