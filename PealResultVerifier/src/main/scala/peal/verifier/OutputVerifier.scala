@@ -65,9 +65,11 @@ class OutputVerifier(input: String) {
 
   def doAnalysis(analysisName: String)(implicit truthMapping: Map[String, Either[Rational, ThreeWayBoolean]]): ThreeWayBoolean = {
     ConsoleLogger.log1("I received: " + truthMapping)
-    //TODO do vacity check on all conds
+    //TODO do vacity (a_t?, a_f?) check on all conds
     //show above analysis results
     //title: Result of vacuity analyses of all declared conditions
+    //Conditions that are always true:
+    //Conditions that are always false:
     analyses(analysisName) match {
       case AlwaysTrue(_, condName) =>
         if (truthMapping(condName) == Right(PealFalse)) {
