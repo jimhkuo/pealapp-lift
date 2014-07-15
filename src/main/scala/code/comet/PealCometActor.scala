@@ -53,6 +53,9 @@ class PealCometActor extends CometActor with CometListener {
   var uploadFile = ""
 
   def render: RenderOut = {
+    val myId = for (sess <- S.session) yield sess.uniqueId
+    println("render " + myId.toList(0))
+
     this ! Init
     <div>
       <form class="lift:form.ajax">
@@ -263,6 +266,14 @@ class PealCometActor extends CometActor with CometListener {
       }
   }
 
+
+
+  override protected def localShutdown(): Unit = {
+    val myId = for (sess <- S.session) yield sess.uniqueId
+    println("shutting down " + myId.toList(0))
+    super.localShutdown()
+  }
+
   private def clearIntermediateResults {
     z3RawOutput = ""
     extendedSynthesis = ""
@@ -276,7 +287,7 @@ class PealCometActor extends CometActor with CometListener {
       new LazySynthesiser(policies).generate()
     } catch {
       case e: Exception =>
-        e.printStackTrace()
+//        e.printStackTrace()
         dealWithIt(e)
     }
   }
@@ -286,7 +297,7 @@ class PealCometActor extends CometActor with CometListener {
       new ExtendedSynthesiser(policies).generate()
     } catch {
       case e: Exception =>
-        e.printStackTrace()
+//        e.printStackTrace()
         dealWithIt(e)
     }
   }
@@ -296,7 +307,7 @@ class PealCometActor extends CometActor with CometListener {
       new NewSynthesiser(policies).generate()
     } catch {
       case e: Exception =>
-        e.printStackTrace()
+//        e.printStackTrace()
         dealWithIt(e)
     }
   }
@@ -306,7 +317,7 @@ class PealCometActor extends CometActor with CometListener {
       new EagerSynthesiser(policies).generate()
     } catch {
       case e: Exception =>
-        e.printStackTrace()
+//        e.printStackTrace()
         dealWithIt(e)
     }
   }
