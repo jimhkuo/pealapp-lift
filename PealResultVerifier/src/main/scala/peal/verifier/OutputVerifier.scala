@@ -11,6 +11,7 @@ import scala.collection.JavaConversions._
 
 
 import scala.collection.JavaConversions._
+import scala.collection.mutable
 
 
 //TODO Need to change this to use a different certification strategy, as in our discussion email
@@ -35,67 +36,81 @@ class OutputVerifier(input: String) {
   val pols = pealProgramParser.pols
   val predicateNames: Seq[String] = pealProgramParser.pols.values().flatMap(pol => pol.rules).map(r => r.q.name).toSeq.distinct
 
+
   def verifyModel(rawModel: String, analysisName: String): (ThreeWayBoolean, Set[String]) = {
-    implicit val I = Z3ModelExtractor.extractIUsingRational(rawModel)(analysisName)
+    val initialI = Z3ModelExtractor.extractIUsingRational(rawModel)(analysisName)
 
-    //TODO check certValue(bi, I) == I(bi), record results (True, False, or bottom)
-    //TODO if an exception is thrown due to bottom predicate, pick one more to false and try again
-    //TODO report them
+    def checkPols(valueMap: Map[String, Either[Rational, ThreeWayBoolean]], remap: Set[String]): (Map[String, Either[Rational, ThreeWayBoolean]],Set[String]) = {
+      try {
+        val newEntries: mutable.Map[String, Either[Rational, ThreeWayBoolean]] = for {
+          (name, pol) <- pols
+        } yield {
+          (name, Left[Rational, ThreeWayBoolean](certPol(pol)(valueMap)))
+        }
 
-    verifyModel(rawModel, analysisName, Set())
-  }
+        (newEntries.toMap, remap)
+      } catch {
+        case e: RuntimeException =>
+          val bottomPredicates = predicateNames.filterNot(valueMap.contains).filterNot(remap.contains)
+          if (bottomPredicates.isEmpty) {
+            throw e
+          }
+          val newRemap = (remap + bottomPredicates.head)
+          checkPols(valueMap ++ newRemap.map((_, Right(PealFalse))), newRemap)
+      }
+    }
 
-  def verifyModel(rawModel: String, analysisName: String, reMappedPredicates: Set[String])(implicit I: Map[String, Either[Rational, ThreeWayBoolean]]): (ThreeWayBoolean, Set[String]) = {
+    val mapped = checkPols(initialI, Set())
 
-    //TODO take out reMappedPredicates
-    doAnalysis(analysisName, reMappedPredicates)(I)
+    implicit val I = initialI ++ mapped._1
+    (doAnalysis(analysisName), mapped._2)
     //If bottom returned it should simply fail
-//    match {
-//      case (PealBottom, s) =>
-//
-//        var truthMapping = I
-//        val bottomPredicates = predicateNames.filterNot(truthMapping.contains).filterNot(s.contains)
-//        if (bottomPredicates.isEmpty) {
-//          return (PealBottom, s)
-//        }
-//        ConsoleLogger.log2("*** Trying again")
-//        //        print("*")
-//        (s + bottomPredicates.head).foreach {
-//          m =>
-//            ConsoleLogger.log2("*** set " + m + " to false")
-//            //            print(m)
-//            truthMapping += m -> Right(PealFalse)
-//        }
-//        verifyModel(rawModel, analysisName, s + bottomPredicates.head)(truthMapping)
-//      case (r, s) => (r, s)
-//    }
+    //    match {
+    //      case (PealBottom, s) =>
+    //
+    //        var truthMapping = valueMap
+    //        val bottomPredicates = predicateNames.filterNot(truthMapping.contains).filterNot(s.contains)
+    //        if (bottomPredicates.isEmpty) {
+    //          return (PealBottom, s)
+    //        }
+    //        ConsoleLogger.log2("*** Trying again")
+    //        //        print("*")
+    //        (s + bottomPredicates.head).foreach {
+    //          m =>
+    //            ConsoleLogger.log2("*** set " + m + " to false")
+    //            //            print(m)
+    //            truthMapping += m -> Right(PealFalse)
+    //        }
+    //        verifyModel(rawModel, analysisName, s + bottomPredicates.head)(truthMapping)
+    //      case (r, s) => (r, s)
+    //    }
   }
 
-  def doAnalysis(analysisName: String, reMappedPredicates: Set[String])(implicit truthMapping: Map[String, Either[Rational, ThreeWayBoolean]]): (ThreeWayBoolean, Set[String]) = {
+  def doAnalysis(analysisName: String)(implicit truthMapping: Map[String, Either[Rational, ThreeWayBoolean]]): ThreeWayBoolean = {
     analyses(analysisName) match {
       case AlwaysTrue(_, condName) =>
         if (truthMapping(condName) == Right(PealFalse)) {
-          return (cert(conds(condName), truthMapping(condName).right.get)(truthMapping), reMappedPredicates)
+          return (cert(conds(condName), truthMapping(condName).right.get)(truthMapping))
         }
         throw new RuntimeException(condName + " should be false but is not in " + analysisName)
       case AlwaysFalse(_, condName) =>
         if (truthMapping(condName) == Right(PealTrue)) {
-          return (cert(conds(condName), truthMapping(condName).right.get)(truthMapping), reMappedPredicates)
+          return (cert(conds(condName), truthMapping(condName).right.get)(truthMapping))
         }
         throw new RuntimeException(condName + " should be true but is not in " + analysisName)
       case Satisfiable(_, condName) =>
         if (truthMapping(condName) == Right(PealTrue)) {
-          return (cert(conds(condName), truthMapping(condName).right.get)(truthMapping), reMappedPredicates)
+          return (cert(conds(condName), truthMapping(condName).right.get)(truthMapping))
         }
         throw new RuntimeException(condName + " should be true but is not in " + analysisName)
       case Different(_, lhs, rhs) =>
         if (truthMapping.get(lhs) != truthMapping.get(rhs)) {
-          return (cert(conds(lhs), truthMapping(lhs).right.get)(truthMapping) && cert(conds(rhs), truthMapping(rhs).right.get)(truthMapping), reMappedPredicates)
+          return (cert(conds(lhs), truthMapping(lhs).right.get)(truthMapping) && cert(conds(rhs), truthMapping(rhs).right.get)(truthMapping))
         }
         throw new RuntimeException(lhs + " and " + rhs + " should be different but are not in " + analysisName)
       case Equivalent(_, lhs, rhs) =>
         if (truthMapping.get(lhs) != truthMapping.get(rhs)) {
-          return (cert(conds(lhs), truthMapping(lhs).right.get)(truthMapping) && cert(conds(rhs), truthMapping(rhs).right.get)(truthMapping), reMappedPredicates)
+          return (cert(conds(lhs), truthMapping(lhs).right.get)(truthMapping) && cert(conds(rhs), truthMapping(rhs).right.get)(truthMapping))
         }
         throw new RuntimeException(lhs + " and " + rhs + " should be different but are not in " + analysisName)
       case Implies(_, lhs, rhs) =>
@@ -104,7 +119,7 @@ class OutputVerifier(input: String) {
           val cert2: ThreeWayBoolean = cert(conds(rhs), truthMapping(rhs).right.get)(truthMapping)
           ConsoleLogger.log2("lhs is expected to be " + truthMapping(lhs).right.get + ", rhs is expected to be " + truthMapping(rhs).right.get)
           ConsoleLogger.log2("cert1 " + cert1 + " cert2 " + cert2)
-          return (cert1 && cert2, reMappedPredicates)
+          return (cert1 && cert2)
         }
         throw new RuntimeException(lhs + " should be true and " + rhs + " should be false, but are not in " + analysisName)
       case _ =>
