@@ -8,7 +8,7 @@ import peal.util.ConsoleLogger
 
 class OutputVerifierTest extends ShouldMatchersForJUnit {
 
-//  ConsoleLogger.enable(2)
+  //  ConsoleLogger.enable(2)
   @Test
   def testPredicateCondition() {
     val input = "POLICIES\nb1 = min ((q1 0.2) (q2 0.4) (q3 0.9)) default 1\n" +
@@ -19,8 +19,8 @@ class OutputVerifierTest extends ShouldMatchersForJUnit {
       "cond2 = q2\n" +
       "ANALYSES\nname1 = always_true? cond2"
     val model = "Result of analysis [name1 = always_true? cond2]:\nsat\n(model \n  (define-fun q5 () Bool\n    true)\n  (define-fun b1_score () Real\n    (/ 9.0 10.0))\n  (define-fun q3 () Bool\n    true)\n  (define-fun q2 () Bool\n    false)\n  (define-fun cond2 () Bool\n    false)\n  (define-fun q4 () Bool\n    true)\n  (define-fun b2_score () Real\n    (/ 9.0 10.0))\n  (define-fun q6 () Bool\n    true)\n  (define-fun q1 () Bool\n    false)\n  (define-fun always_true_name1 () Bool\n    false)\n)"
-        println(input)
-        println(model)
+    println(input)
+    println(model)
     new OutputVerifier(input).verifyModel(model, "name1")._1 should be(PealTrue)
   }
 
@@ -197,7 +197,7 @@ class OutputVerifierTest extends ShouldMatchersForJUnit {
     ConsoleLogger.enable(1)
     val input = "POLICIES\nb1 = min ((q1 0.2) (q2 0.4) (q3 0.1)) default 2*x + y\nPOLICY_SETS\npSet1 = b1\nCONDITIONS\ncond1 = 0.5 < pSet1\nANALYSES\nname1 = always_true? cond1"
     val model = "Result of analysis [name1 = always_true? cond1]:\nsat\n(model \n  (define-fun cond1 () Bool\n    false)\n  (define-fun b1_score () Real\n    (/ 1.0 10.0))\n  (define-fun q3 () Bool\n    true)\n  (define-fun always_true_name1 () Bool\n    false)\n)"
-//    println(input)
+    //    println(input)
     //    println(model)
     val model1: (ThreeWayBoolean, Set[String]) = new OutputVerifier(input).verifyModel(model, "name1")
     model1._1 should be(PealTrue)
@@ -209,7 +209,7 @@ class OutputVerifierTest extends ShouldMatchersForJUnit {
     val input = "POLICIES\nb1 = min ((q1 0.2) (q2 0.4) (q3 0.9)) default 0.8*z\nb2 = + ((q4 0.1*x) (q5 y*0.2) (q6 y)) default 0\nPOLICY_SETS\npSet1 = max(b1, b2)\npSet2 = min(b1, b2)\nCONDITIONS\ncond1 = pSet1 <= 0.5\ncond2 = 0.6 < pSet2\ncond3 = 0.5 < pSet2\ncond4 = 0.4 < pSet2\nDOMAIN_SPECIFICS\n(declare-const a Real)\n(declare-const b Real)\n(assert (= q1 (< a (+ b 1))))\nANALYSES\nname6 = implies? cond1 cond2"
     val model = "Result of analysis [name6 = implies? cond1 cond2]:\nsat\n(model \n  (define-fun b1_score () Real\n    (/ 1.0 2.0))\n  (define-fun cond3 () Bool\n    false)\n  (define-fun y () Real\n    (/ 5.0 12.0))\n  (define-fun q4 () Bool\n    true)\n  (define-fun cond2 () Bool\n    false)\n  (define-fun cond1 () Bool\n    true)\n  (define-fun q1 () Bool\n    false)\n  (define-fun q5 () Bool\n    true)\n  (define-fun b () Real\n    0.0)\n  (define-fun cond4 () Bool\n    true)\n  (define-fun q3 () Bool\n    false)\n  (define-fun a () Real\n    1.0)\n  (define-fun q2 () Bool\n    false)\n  (define-fun z () Real\n    (/ 5.0 8.0))\n  (define-fun b2_score () Real\n    (/ 1.0 2.0))\n  (define-fun implies_name6 () Bool\n    true)\n  (define-fun q6 () Bool\n    true)\n  (define-fun x () Real\n    0.0)\n)"
     println(input)
-    //    println(model)
+    println(model)
     val model1: (ThreeWayBoolean, Set[String]) = new OutputVerifier(input).verifyModel(model, "name6")
     model1._1 should be(PealTrue)
     println(model1._2)
@@ -217,6 +217,7 @@ class OutputVerifierTest extends ShouldMatchersForJUnit {
 
   @Test
   def testFailedCase1() {
+    ConsoleLogger.enable(1)
     val input = "POLICIES\nb1 = min ((q1 0.2) (q2 0.4) (q3 0.9)) default 0.8*z\nb2 = + ((q4 0.1*x) (q5 y*0.2) (q6 y)) default 0\nPOLICY_SETS\npSet1 = max(b1, b2)\npSet2 = min(b1, b2)\nCONDITIONS\ncond1 = pSet1 <= 0.5\ncond2 = 0.6 < pSet2\ncond3 = 0.5 < pSet2\ncond4 = 0.4 < pSet2\nDOMAIN_SPECIFICS\n(declare-const a Real)\n(declare-const b Real)\n(assert (= q1 (< a (+ b 1))))\nANALYSES\nname6 = implies? cond1 cond2"
     val model = "Result of analysis [name6 = implies? cond1 cond2]:\nsat\n(model \n  (define-fun b1_score () Real\n    (/ 9.0 20.0))\n  (define-fun cond3 () Bool\n    false)\n  (define-fun y () Real\n    (- (/ 1.0 6.0)))\n  (define-fun q4 () Bool\n    true)\n  (define-fun cond2 () Bool\n    false)\n  (define-fun cond1 () Bool\n    true)\n  (define-fun q1 () Bool\n    false)\n  (define-fun q5 () Bool\n    true)\n  (define-fun b () Real\n    (- 1.0))\n  (define-fun cond4 () Bool\n    true)\n  (define-fun q3 () Bool\n    false)\n  (define-fun a () Real\n    0.0)\n  (define-fun q2 () Bool\n    false)\n  (define-fun z () Real\n    (/ 9.0 16.0))\n  (define-fun b2_score () Real\n    (/ 1.0 2.0))\n  (define-fun implies_name6 () Bool\n    true)\n  (define-fun q6 () Bool\n    true)\n  (define-fun x () Real\n    7.0)\n)"
     println(input)
@@ -372,7 +373,7 @@ class OutputVerifierTest extends ShouldMatchersForJUnit {
   @Ignore("still fails")
   @Test
   def testReallyFailedCase3871405547660506467() {
-//    ConsolePrinter.enable()
+    //    ConsolePrinter.enable()
     val input = "POLICIES\nb0 = min ((q14 0*vl) (q0 0.7850)) default 0.8919\nb1 = * ((q6 0.6819) (q7 0.7271)) default 0.5390\nb2 = * ((q12 0.3504) (q0 0.4032)) default 3*vp\nb3 = + ((q3 0.3078) (q7 0.1332)) default 0.7163\nb4 = max ((q3 0.0948 [-0.1435,0.4347]) (q11 0.1327)) default 0.8418\nb5 = * ((q3 0.3235) (q9 2*v0 [-0.3561,0.7747])) default 0*vy\nb6 = max ((q14 0.5613) (q4 0.6564)) default 0.6351\nb7 = + ((q8 vx) (q2 0.9709)) default 0.5696 [-0.8854,0.0560]\nb8 = * ((q14 0.7031) (q5 0.6469)) default 0.3753\nb9 = min ((q11 0.3598) (q7 0.4311)) default 0.0868\nb10 = * ((q10 0.1041) (q12 0.6119)) default 0.8983\nb11 = + ((q1 0.4650) (q4 0.6019)) default 0.3478\nb12 = min ((q3 3*vu [-0.2797,0.6717]) (q9 2*vu)) default 0.0223\nb13 = max ((q5 0.9802) (q2 0.9236)) default 0.8039\nb14 = min ((q6 2*vk) (q13 0.4516)) default 2*vl\nb15 = max ((q13 0.3230) (q12 0.9485)) default 0.6186\nb16 = + ((q1 0.8562 [-0.9047,0.6472]) (q11 3*vb)) default 0.6468\nb17 = + ((q4 2*vl) (q11 0.8956)) default 0.5290\nb18 = min ((q6 0.0261) (q4 0.8287)) default 0.9865\nb19 = max ((q0 0.0663) (q10 0.5418)) default 0.7368\nPOLICY_SETS\np0_1 = min(b0,b1)\np2_3 = min(b2,b3)\np4_5 = min(b4,b5)\np6_7 = min(b6,b7)\np8_9 = min(b8,b9)\np10_11 = min(b10,b11)\np12_13 = min(b12,b13)\np14_15 = min(b14,b15)\np0_3 = max(p0_1,p2_3)\np4_7 = max(p4_5,p6_7)\np8_11 = max(p8_9,p10_11)\np12_15 = max(p12_13,p14_15)\np0_7 = +(p0_3,p4_7)\np8_15 = +(p8_11,p12_15)\np0_15 = *(p0_7,p8_15)\n\np16_17 = min(b16, b17)\np18_19 = +(b18, b19)\np0_15_0 = min(p0_15,p16_17)\np0_15_1 = max(p0_15_0,p18_19)\nCONDITIONS\ncond1 = 0.50 < p0_15_1\ncond2 = 0.60 < p0_15_1\nANALYSES\nanalysis2 = always_false? cond2"
     val model = "Result of analysis [analysis2 = always_false? cond2]:\nsat\n(model \n  (define-fun q0 () Bool\n    true)\n  (define-fun q13 () Bool\n    true)\n  (define-fun b12_q3_U () Real\n    (- (/ 2797.0 10000.0)))\n  (define-fun b1_score () Real\n    (/ 49580949.0 100000000.0))\n  (define-fun b14_score () Real\n    (/ 1129.0 2500.0))\n  (define-fun q4 () Bool\n    true)\n  (define-fun cond2 () Bool\n    true)\n  (define-fun cond1 () Bool\n    true)\n  (define-fun b16_q1_U () Real\n    (- (/ 4281.0 5000.0)))\n  (define-fun b3_score () Real\n    (/ 441.0 1000.0))\n  (define-fun v0 () Real\n    0.0)\n  (define-fun q9 () Bool\n    true)\n  (define-fun q1 () Bool\n    true)\n  (define-fun vl () Real\n    0.0)\n  (define-fun vb () Real\n    (/ 867987391.0 3906250000.0))\n  (define-fun vk () Real\n    (/ 1129.0 5000.0))\n  (define-fun b7_default_U () Real\n    (- (/ 4427.0 5000.0)))\n  (define-fun q3 () Bool\n    true)\n  (define-fun b8_score () Real\n    (/ 7031.0 10000.0))\n  (define-fun b2_score () Real\n    (/ 55188.0 390625.0))\n  (define-fun b4_q3_U () Real\n    (/ 379.0 10000.0))\n  (define-fun b12_score () Real\n    (/ 2797.0 5000.0))\n  (define-fun q12 () Bool\n    true)\n  (define-fun q6 () Bool\n    true)\n  (define-fun b18_score () Real\n    (/ 261.0 10000.0))\n  (define-fun b11_score () Real\n    (/ 10669.0 10000.0))\n  (define-fun b4_score () Real\n    (/ 1327.0 10000.0))\n  (define-fun q7 () Bool\n    true)\n  (define-fun b16_score () Real\n    (/ 2603962173.0 3906250000.0))\n  (define-fun b6_score () Real\n    (/ 1641.0 2500.0))\n  (define-fun q8 () Bool\n    true)\n  (define-fun b19_score () Real\n    (/ 2709.0 5000.0))\n  (define-fun q11 () Bool\n    true)\n  (define-fun b0_score () Real\n    0.0)\n  (define-fun q10 () Bool\n    true)\n  (define-fun q14 () Bool\n    true)\n  (define-fun b7_score () Real\n    (/ 1324675029.0 2810937500.0))\n  (define-fun b15_score () Real\n    (/ 1897.0 2000.0))\n  (define-fun b17_score () Real\n    (/ 2239.0 2500.0))\n  (define-fun vx () Real\n    (- (/ 5617856759.0 11243750000.0)))\n  (define-fun q5 () Bool\n    false)\n  (define-fun b10_score () Real\n    (/ 6369879.0 100000000.0))\n  (define-fun b13_score () Real\n    (/ 2309.0 2500.0))\n  (define-fun vu () Real\n    (/ 2797.0 10000.0))\n  (define-fun q2 () Bool\n    true)\n  (define-fun always_false_analysis2 () Bool\n    true)\n  (define-fun b9_score () Real\n    (/ 1799.0 5000.0))\n  (define-fun b5_q9_U () Real\n    (- (/ 3561.0 10000.0)))\n  (define-fun b5_score () Real\n    (- (/ 2303967.0 20000000.0)))\n)"
     Z3ModelExtractor.extractIUsingRational(model)("analysis2").foreach(t => println("(assert (= " + t._1 + " " + t._2.fold(l => l.z3Expression, r => r.toString.toLowerCase()) + "))"))
@@ -383,15 +384,15 @@ class OutputVerifierTest extends ShouldMatchersForJUnit {
     result._1 should be(PealTrue)
   }
 
-//  @Test
-//  def testHCII() {
-////    ConsolePrinter.enable()
-//    val input = "POLICIES\nb1 = max ((isLuxuryCar 150000) (isSedan 60000) (isCompact 30000)) default 50000\nb2 = min ((hasUSLicense 0.9) (hasUKLicense 0.6) (hasEULicense 0.7) (hasOtherLicense 0.4 [-0.1,0.1])) default 0\nb3 = max ((someOffRoadDriving 0.8) (onlyCityUsage 0.4) (onlyLongDistance 0.2) (mixedUsage 0.25)) default 0.3\nb4 = + ((accidentFreeForYears 0.05*x) (speaksEnglish 0.05) (travelsAlone -0.2) (femaleDriver 0.1)) default 0\nb_minOne = + () default -1\nPOLICY_SETS\npSet0 = +(b2,b_minOne)\npSet1 = *(b1,pSet0)\npSet_b4 = b4\nCONDITIONS\ncond1 = pSet1 <= 50000\ncond2 = 0.4 < pSet_b4\ncond3 = cond1 && cond2\ncond4 = 0.6 < pSet_b4\ncond5 = cond1 && cond4\nDOMAIN_SPECIFICS\n(assert (and (<= 0 x) (<= x 10)))\n(assert (or (not isLuxuryCar) (not someOffRoadDriving)))\n(assert (and (implies isLuxuryCar (and (not isSedan) (not isCompact))) (implies isSedan (and (not isLuxuryCar) (not isCompact))) (implies isCompact (and (not isSedan) (not isLuxuryCar)))))\n(assert (implies onlyCityUsage (not mixedUsage)))\n(assert (implies onlyLongDistance (not mixedUsage)))\n(assert (implies onlyCityUsage (not someOffRoadDriving)))\n(assert (implies onlyLongDistanceUsage (not someOffRoadDriving)))\nANALYSES\nname1 = satisfiable? cond3"
-//    val model = "(error \"line 39 column 17: unknown constant onlyLongDistanceUsage\")\n(error \"line 45 column 32: invalid command, '(' expected\")\nResult of analysis [name1 = satisfiable? cond3]:\nsat\n(model \n  (define-fun speaksEnglish () Bool\n    true)\n  (define-fun isLuxuryCar () Bool\n    false)\n  (define-fun cond3 () Bool\n    true)\n  (define-fun cond5 () Bool\n    false)\n  (define-fun isCompact () Bool\n    false)\n  (define-fun hasOtherLicense () Bool\n    true)\n  (define-fun cond2 () Bool\n    true)\n  (define-fun cond1 () Bool\n    true)\n  (define-fun satisfiable_name1 () Bool\n    true)\n  (define-fun onlyCityUsage () Bool\n    false)\n  (define-fun b_minOne_score () Real\n    (- 1.0))\n  (define-fun b2_hasOtherLicense_U () Real\n    0.0)\n  (define-fun onlyLongDistance () Bool\n    false)\n  (define-fun b1_score () Real\n    50000.0)\n  (define-fun b3_score () Real\n    (/ 1.0 4.0))\n  (define-fun isSedan () Bool\n    false)\n  (define-fun travelsAlone () Bool\n    true)\n  (define-fun cond4 () Bool\n    false)\n  (define-fun accidentFreeForYears () Bool\n    true)\n  (define-fun mixedUsage () Bool\n    true)\n  (define-fun femaleDriver () Bool\n    true)\n  (define-fun b2_score () Real\n    (/ 2.0 5.0))\n  (define-fun someOffRoadDriving () Bool\n    false)\n  (define-fun x () Real\n    10.0)\n  (define-fun b4_score () Real\n    (/ 9.0 20.0))\n)"
-//
-//    val result: (ThreeWayBoolean, Set[String]) = new ExtendedOutputVerifier(input).verifyModel(model, "name1")
-//    //    println(input)
-//    //    println(model)
-//    result._1 should be(PealTrue)
-//  }
+  //  @Test
+  //  def testHCII() {
+  ////    ConsolePrinter.enable()
+  //    val input = "POLICIES\nb1 = max ((isLuxuryCar 150000) (isSedan 60000) (isCompact 30000)) default 50000\nb2 = min ((hasUSLicense 0.9) (hasUKLicense 0.6) (hasEULicense 0.7) (hasOtherLicense 0.4 [-0.1,0.1])) default 0\nb3 = max ((someOffRoadDriving 0.8) (onlyCityUsage 0.4) (onlyLongDistance 0.2) (mixedUsage 0.25)) default 0.3\nb4 = + ((accidentFreeForYears 0.05*x) (speaksEnglish 0.05) (travelsAlone -0.2) (femaleDriver 0.1)) default 0\nb_minOne = + () default -1\nPOLICY_SETS\npSet0 = +(b2,b_minOne)\npSet1 = *(b1,pSet0)\npSet_b4 = b4\nCONDITIONS\ncond1 = pSet1 <= 50000\ncond2 = 0.4 < pSet_b4\ncond3 = cond1 && cond2\ncond4 = 0.6 < pSet_b4\ncond5 = cond1 && cond4\nDOMAIN_SPECIFICS\n(assert (and (<= 0 x) (<= x 10)))\n(assert (or (not isLuxuryCar) (not someOffRoadDriving)))\n(assert (and (implies isLuxuryCar (and (not isSedan) (not isCompact))) (implies isSedan (and (not isLuxuryCar) (not isCompact))) (implies isCompact (and (not isSedan) (not isLuxuryCar)))))\n(assert (implies onlyCityUsage (not mixedUsage)))\n(assert (implies onlyLongDistance (not mixedUsage)))\n(assert (implies onlyCityUsage (not someOffRoadDriving)))\n(assert (implies onlyLongDistanceUsage (not someOffRoadDriving)))\nANALYSES\nname1 = satisfiable? cond3"
+  //    val model = "(error \"line 39 column 17: unknown constant onlyLongDistanceUsage\")\n(error \"line 45 column 32: invalid command, '(' expected\")\nResult of analysis [name1 = satisfiable? cond3]:\nsat\n(model \n  (define-fun speaksEnglish () Bool\n    true)\n  (define-fun isLuxuryCar () Bool\n    false)\n  (define-fun cond3 () Bool\n    true)\n  (define-fun cond5 () Bool\n    false)\n  (define-fun isCompact () Bool\n    false)\n  (define-fun hasOtherLicense () Bool\n    true)\n  (define-fun cond2 () Bool\n    true)\n  (define-fun cond1 () Bool\n    true)\n  (define-fun satisfiable_name1 () Bool\n    true)\n  (define-fun onlyCityUsage () Bool\n    false)\n  (define-fun b_minOne_score () Real\n    (- 1.0))\n  (define-fun b2_hasOtherLicense_U () Real\n    0.0)\n  (define-fun onlyLongDistance () Bool\n    false)\n  (define-fun b1_score () Real\n    50000.0)\n  (define-fun b3_score () Real\n    (/ 1.0 4.0))\n  (define-fun isSedan () Bool\n    false)\n  (define-fun travelsAlone () Bool\n    true)\n  (define-fun cond4 () Bool\n    false)\n  (define-fun accidentFreeForYears () Bool\n    true)\n  (define-fun mixedUsage () Bool\n    true)\n  (define-fun femaleDriver () Bool\n    true)\n  (define-fun b2_score () Real\n    (/ 2.0 5.0))\n  (define-fun someOffRoadDriving () Bool\n    false)\n  (define-fun x () Real\n    10.0)\n  (define-fun b4_score () Real\n    (/ 9.0 20.0))\n)"
+  //
+  //    val result: (ThreeWayBoolean, Set[String]) = new ExtendedOutputVerifier(input).verifyModel(model, "name1")
+  //    //    println(input)
+  //    //    println(model)
+  //    result._1 should be(PealTrue)
+  //  }
 }

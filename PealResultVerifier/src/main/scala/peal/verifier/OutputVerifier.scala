@@ -48,6 +48,7 @@ class OutputVerifier(input: String) {
           (name, Left[Rational, ThreeWayBoolean](certPol(pol)(valueMap)))
         }
 
+        //TODO need to compare new entries to *_score
         (newEntries.toMap, remap)
       } catch {
         case e: RuntimeException =>
@@ -64,29 +65,10 @@ class OutputVerifier(input: String) {
 
     implicit val I = initialI ++ mapped._1
     (doAnalysis(analysisName), mapped._2)
-    //If bottom returned it should simply fail
-    //    match {
-    //      case (PealBottom, s) =>
-    //
-    //        var truthMapping = valueMap
-    //        val bottomPredicates = predicateNames.filterNot(truthMapping.contains).filterNot(s.contains)
-    //        if (bottomPredicates.isEmpty) {
-    //          return (PealBottom, s)
-    //        }
-    //        ConsoleLogger.log2("*** Trying again")
-    //        //        print("*")
-    //        (s + bottomPredicates.head).foreach {
-    //          m =>
-    //            ConsoleLogger.log2("*** set " + m + " to false")
-    //            //            print(m)
-    //            truthMapping += m -> Right(PealFalse)
-    //        }
-    //        verifyModel(rawModel, analysisName, s + bottomPredicates.head)(truthMapping)
-    //      case (r, s) => (r, s)
-    //    }
   }
 
   def doAnalysis(analysisName: String)(implicit truthMapping: Map[String, Either[Rational, ThreeWayBoolean]]): ThreeWayBoolean = {
+    ConsoleLogger.log1("I received: " + truthMapping)
     analyses(analysisName) match {
       case AlwaysTrue(_, condName) =>
         if (truthMapping(condName) == Right(PealFalse)) {
