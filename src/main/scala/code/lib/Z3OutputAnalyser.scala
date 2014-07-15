@@ -14,11 +14,13 @@ import scala.xml.NodeSeq
 object Z3OutputAnalyser {
 
   def execute(analyses: Map[String, AnalysisGenerator], constsMap: Map[String, PealAst], inputPolicies: String, z3RawOutput: String)(implicit ov: OutputVerifier): NodeSeq = {
-    //TODO do vacity (always_true?, always_false?) check on all conds
+    //TODO do vacity (always_true?, always_false?) UNSAT check on all conds
     //show above analysis results
     //title: Result of vacuity analyses of all declared conditions
-    //Conditions that are always true:
-    //Conditions that are always false:
+    //Conditions that are always true: UNSAT
+    //Conditions that are always false: UNSAT
+    //Conditions that may be true: UNKNOWN
+    //Conditions that may be false: UNKNOWN
 
     //Add new button light blue
     //Failure probabillity example, fire_fault_tree.pealt
