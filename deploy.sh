@@ -5,6 +5,6 @@ cd target
 NAME=`ls -tr PealApp-lift-* | tail -1`
 scp $NAME hk2109@markham.doc.ic.ac.uk:
 cd ..
-command="java -jar "$NAME" 55555"
+command="java -jar -Drun.mode=production "$NAME" 55555"
 echo $command
 ssh hk2109@markham.doc.ic.ac.uk $command&

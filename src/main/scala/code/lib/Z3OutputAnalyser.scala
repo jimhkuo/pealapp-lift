@@ -86,6 +86,8 @@ object Z3OutputAnalyser {
           }
 
           section.append("Certification of analysis [" + a + "] " + result + ". Additional predicates set to false in this certification process are " + verifiedModel._2)
+          section.append("Policies checked:")
+          verifiedModel._3.foreach(m => section.append(m._1 + " is " + m._2.fold(r => r.value, b => b)))
           section.append("\nPolicies in analysis [" + a + "] specialised with respect to the model extended with false predicates from Set():")
           section.append(<br/>)
           section.append(new InputAnalyser(inputPolicies).analyse(z3RawOutput, a, verifiedModel._2))

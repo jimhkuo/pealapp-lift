@@ -36,9 +36,11 @@ class OutputVerifier(input: String) {
           valueMap.get(name + "_score") match {
             case None =>
             case Some(x) =>
-              val xValue = x.fold(r => r, b => throw new RuntimeException("checkPols: shouldn't get here"))
+              val valueInI = x.fold(r => r, b => throw new RuntimeException("checkPols: shouldn't get here"))
               ConsoleLogger.log1("Comparing " + name + " and " + name +"_score")
-              if (xValue != polValue) throw new RuntimeException("pol certification failed, " + name + " came out to be " + polValue + "but should be " + x)
+              if (valueInI != polValue) {
+                throw new RuntimeException("pol certification failed, " + name + " came out to be " + polValue + "but should be " + x)
+              }
           }
           (name, Left[Rational, ThreeWayBoolean](polValue))
         }
@@ -50,7 +52,7 @@ class OutputVerifier(input: String) {
           if (bottomPredicates.isEmpty) {
             throw e
           }
-          val newRemap = (remap + bottomPredicates.head)
+          val newRemap = remap + bottomPredicates.head
           checkPols(valueMap ++ newRemap.map((_, Right(PealFalse))), newRemap)
       }
     }
