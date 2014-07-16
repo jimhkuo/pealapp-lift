@@ -1,15 +1,12 @@
 package bootstrap.liftweb
 
-import org.eclipse.jetty.server.nio.SelectChannelConnector
-import org.eclipse.jetty.server.Server
-import org.eclipse.jetty.webapp.WebAppContext
 import java.net.URL
 
-import peal.util.ConsoleLogger
+import org.eclipse.jetty.server.Server
+import org.eclipse.jetty.server.nio.SelectChannelConnector
+import org.eclipse.jetty.webapp.WebAppContext
 
 object Start extends App {
-
-//  ConsoleLogger.enable()
 
   val connector = new SelectChannelConnector()
   if (args.length > 0) {
@@ -27,8 +24,9 @@ object Start extends App {
 
   webctx.setWar(webappDirFromJar)
   webctx.setContextPath("/")
+  webctx.setInitParameter("org.eclipse.jetty.servlet.SessionCookie", "JSESSIONID"+ connector.getPort)
 
   server.setHandler(webctx)
-  server.start
-  server.join
+  server.start()
+  server.join()
 }
