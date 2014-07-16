@@ -91,10 +91,19 @@ class PealCometActor extends MainBody with CometListener {
 //        case Failure(e) => dealWithIt(e)
 //      }
     case RunAndCertifyExplicitResults =>
-      val (constsMap, _, _, analyses, _) = parseInput(inputPolicies)
-      PealCometHelper.performExplicitSynthesis(inputPolicies) match {
-        case Success(v) => certifyResults(true, constsMap, analyses, v)
+      val result = for {
+        parsedInput <- PealCometHelper.parseInput(inputPolicies)
+        synthesisResult <- PealCometHelper.performExplicitSynthesis(inputPolicies)
+      } yield {
+        (parsedInput, synthesisResult)
+      }
+
+      result match {
         case Failure(e) => dealWithIt(e)
+        case Success(v) => v match {
+          case (parsedInput: (Map[String, PealAst], Map[String, Condition], Map[String, PolicySet], Map[String, AnalysisGenerator], Array[String]), synthesisResult) =>
+            certifyResults(true, parsedInput._1, parsedInput._4, synthesisResult.toString)
+        }
       }
     case ExplicitSynthesisAndCallZ3 =>
       PealCometHelper.performExplicitSynthesis(inputPolicies) match {
@@ -102,16 +111,34 @@ class PealCometActor extends MainBody with CometListener {
         case Failure(e) => dealWithIt(e)
       }
     case SynthesisExtendedAndCallZ3QuietAnalysis =>
-      val (constsMap, _, _, analyses, _) = parseInput(inputPolicies)
-      PealCometHelper.performExtendedSynthesis(inputPolicies) match {
-        case Success(v) => certifyResults(false, constsMap, analyses, v)
+      val result = for {
+        parsedInput <- PealCometHelper.parseInput(inputPolicies)
+        synthesisResult <- PealCometHelper.performExtendedSynthesis(inputPolicies)
+      } yield {
+        (parsedInput, synthesisResult)
+      }
+
+      result match {
         case Failure(e) => dealWithIt(e)
+        case Success(v) => v match {
+          case (parsedInput: (Map[String, PealAst], Map[String, Condition], Map[String, PolicySet], Map[String, AnalysisGenerator], Array[String]), synthesisResult) =>
+            certifyResults(false, parsedInput._1, parsedInput._4, synthesisResult.toString)
+        }
       }
     case RunAndCertifyExtendedResults =>
-      val (constsMap, _, _, analyses, _) = parseInput(inputPolicies)
-      PealCometHelper.performExtendedSynthesis(inputPolicies) match {
-        case Success(v) => certifyResults(true, constsMap, analyses, v)
+      val result = for {
+        parsedInput <- PealCometHelper.parseInput(inputPolicies)
+        synthesisResult <- PealCometHelper.performExtendedSynthesis(inputPolicies)
+      } yield {
+        (parsedInput, synthesisResult)
+      }
+
+      result match {
         case Failure(e) => dealWithIt(e)
+        case Success(v) => v match {
+          case (parsedInput: (Map[String, PealAst], Map[String, Condition], Map[String, PolicySet], Map[String, AnalysisGenerator], Array[String]), synthesisResult) =>
+            certifyResults(true, parsedInput._1, parsedInput._4, synthesisResult.toString)
+        }
       }
     case ExtendedSynthesisAndCallZ3 =>
       PealCometHelper.performExtendedSynthesis(inputPolicies) match {
@@ -133,29 +160,6 @@ class PealCometActor extends MainBody with CometListener {
     val myId = for (sess <- S.session) yield sess.uniqueId
     println("shutting down " + myId.toList(0))
     super.localShutdown()
-  }
-
-  private def parseInput(input: String): (Map[String, PealAst], Map[String, Condition], Map[String, PolicySet], Map[String, AnalysisGenerator], Array[String]) = {
-    val pealProgramParser = ParserHelper.getPealParser(input)
-
-    try {
-      pealProgramParser.program()
-      val predicateNames: Seq[String] = pealProgramParser.pols.values().flatMap(pol => pol.rules).map(r => r.q.name).toSeq.distinct
-      val constsMap = predicateNames.toSeq.distinct.map(t => (t, Term(t))).toMap
-      val domainSpecifics = input.split("\n").dropWhile(!_.startsWith("DOMAIN_SPECIFICS")).takeWhile(!_.startsWith("ANALYSES")).drop(1)
-
-      (constsMap, pealProgramParser.conds.toMap, pealProgramParser.pSets.toMap, pealProgramParser.analyses.toMap, domainSpecifics)
-    } catch {
-      case e: Exception =>
-        e.printStackTrace()
-        dealWithIt(e)
-      case e2: NullPointerException =>
-        e2.printStackTrace()
-        dealWithIt(e2)
-      case e1: Throwable =>
-        e1.printStackTrace()
-        dealWithIt(e1)
-    }
   }
 
   private def onCallZ3(z3SMTInput: String) {
