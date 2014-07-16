@@ -1,7 +1,6 @@
 package bootstrap.liftweb
 
 import code.lib.Z3SMTData
-import code.rest.RestUpload
 import net.liftweb.common.Full
 import net.liftweb.http.{LiftRules, Req, StreamingResponse}
 import net.liftweb.sitemap.Menu.{Menuable, WithSlash}
@@ -10,7 +9,6 @@ import net.liftweb.sitemap.{Menu, SiteMap}
 class Boot {
   def boot {
     LiftRules.addToPackages("code")
-    LiftRules.statelessDispatch.append(RestUpload)
 
     val entries: List[Menuable with WithSlash] = List(
       Menu.i("Editor and runner") / "index",

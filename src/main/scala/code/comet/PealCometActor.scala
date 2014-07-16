@@ -7,6 +7,7 @@ import net.liftweb.http.js.jquery.JqJE._
 import peal.antlr.util.ParserHelper
 import peal.domain.PolicySet
 import peal.domain.z3.{PealAst, Term}
+import peal.helper.PealCometHelper
 import peal.model.{ConstantScoreModelGenerator, MajorityVotingGenerator, RandomScoreModelGenerator}
 import peal.synthesis._
 import peal.synthesis.analysis._
@@ -16,6 +17,7 @@ import peal.z3.Z3Caller
 
 import scala.Predef._
 import scala.collection.JavaConversions._
+import scala.util.{Failure, Success, Try}
 import scala.xml.Text
 
 class PealCometActor extends MainBody with CometListener {
@@ -69,20 +71,35 @@ class PealCometActor extends MainBody with CometListener {
       partialUpdate(JqId("policies") ~> JqVal(""))
     case SynthesisAndCallZ3QuietAnalysis =>
       val (constsMap,  conds, pSets, analyses, domainSpecific) = parseInput(inputPolicies)
+      //TODO this is WIP, fix!
       this.constsMap = constsMap
       this.analyses = analyses
-      certifyResults(false, performExplicitSynthesis(inputPolicies))
+      PealCometHelper.performExplicitSynthesis(inputPolicies) match {
+        case Success(v) => certifyResults(false, v)
+        case Failure(e) => dealWithIt(e)
+      }
+
     case RunAndCertifyExplicitResults =>
       val (constsMap,  conds, pSets, analyses, domainSpecific) = parseInput(inputPolicies)
       this.constsMap = constsMap
       this.analyses = analyses
-      certifyResults(true, performExplicitSynthesis(inputPolicies))
+//      certifyResults(true, PealCometHelper.performExplicitSynthesis(inputPolicies))
+
+      PealCometHelper.performExplicitSynthesis(inputPolicies) match {
+        case Success(v) => certifyResults(true, v)
+        case Failure(e) => dealWithIt(e)
+      }
+
     case ExplicitSynthesisAndCallZ3 =>
-      val (constsMap,  conds, pSets, analyses, domainSpecific) = parseInput(inputPolicies)
-      this.constsMap = constsMap
-      this.analyses = analyses
-      explicitSynthesis = performExplicitSynthesis(inputPolicies)
-      onCallZ3(explicitSynthesis)
+//      val (constsMap,  conds, pSets, analyses, domainSpecific) = parseInput(inputPolicies)
+//      this.constsMap = constsMap
+//      this.analyses = analyses
+      PealCometHelper.performExplicitSynthesis(inputPolicies) match {
+        case Success(v) => onCallZ3(v)
+        case Failure(e) => dealWithIt(e)
+      }
+
+//      onCallZ3(PealCometHelper.performExplicitSynthesis(inputPolicies))
     case SynthesisExtendedAndCallZ3QuietAnalysis =>
       val (constsMap,  conds, pSets, analyses, domainSpecific) = parseInput(inputPolicies)
       this.constsMap = constsMap
@@ -124,15 +141,6 @@ class PealCometActor extends MainBody with CometListener {
     analyses = Map()
   }
 
-  private def performLazySynthesis(policies: String): String = {
-    try {
-      new LazySynthesiser(policies).generate()
-    } catch {
-      case e: Exception =>
-        dealWithIt(e)
-    }
-  }
-
   private def performExtendedSynthesis(policies: String): String = {
     try {
       new ExtendedSynthesiser(policies).generate()
@@ -142,23 +150,14 @@ class PealCometActor extends MainBody with CometListener {
     }
   }
 
-  private def performNewSynthesis(policies: String): String = {
-    try {
-      new NewSynthesiser(policies).generate()
-    } catch {
-      case e: Exception =>
-        dealWithIt(e)
-    }
-  }
-
-  private def performExplicitSynthesis(policies: String): String = {
-    try {
-      new EagerSynthesiser(policies).generate()
-    } catch {
-      case e: Exception =>
-        dealWithIt(e)
-    }
-  }
+//  private def performExplicitSynthesis(policies: String): String = {
+//    try {
+//      new EagerSynthesiser(policies).generate()
+//    } catch {
+//      case e: Exception =>
+//        dealWithIt(e)
+//    }
+//  }
 
   private def parseInput(input: String): (Map[String, PealAst], Map[String, Condition], Map[String, PolicySet], Map[String, AnalysisGenerator], Array[String]) = {
     val pealProgramParser = ParserHelper.getPealParser(input)
@@ -181,35 +180,6 @@ class PealCometActor extends MainBody with CometListener {
         e1.printStackTrace()
         dealWithIt(e1)
     }
-  }
-
-  private def onDisplay(constsMap: Map[String, PealAst], conds: Map[String, Condition], pSets: Map[String, PolicySet], analyses: Map[String, AnalysisGenerator], domainSpecifics: Array[String]) {
-    val declarations = for (name <- constsMap.keys) yield "(declare-const " + name + " Bool)\n"
-    val condDeclarations = for (name <- conds.keys) yield "(declare-const " + name + " Bool)\n"
-    val sortedConds = conds.keys.toSeq.sortWith(_ < _)
-    val conditions = for (cond <- sortedConds) yield "(assert (= " + cond + " " + conds(cond).synthesis(constsMap) + "))\n"
-    val sortedAnalyses = analyses.keys.toSeq.sortWith(_ < _)
-    val generatedAnalyses = for (analysis <- sortedAnalyses) yield analyses(analysis).z3SMTInput + "\n"
-    val result = <pre>{declarations.mkString("") +
-      condDeclarations.mkString("") +
-      conditions.mkString("") +
-      domainSpecifics.map(s => s).mkString("") +
-      generatedAnalyses.mkString("")}
-    </pre>
-    this ! Result(result)
-  }
-
-  private def onDownload(constsMap: Map[String, PealAst], conds: Map[String, Condition], pSets: Map[String, PolicySet], analyses: Map[String, AnalysisGenerator], domainSpecifics: Array[String]) {
-    val declarations = for (name <- constsMap.keys) yield "(declare-const " + name + " Bool)\n"
-    val declarations1 = for (name <- conds.keys) yield "(declare-const " + name + " Bool)\n"
-    val sortedKeys = conds.keys.toSeq.sortWith(_ < _)
-    val start = System.nanoTime()
-    val body = for (cond <- sortedKeys) yield {"(assert (= " + cond + " " + conds(cond).synthesis(constsMap) + "))\n"}
-    val lapseTime = System.nanoTime() - start
-    val sortedAnalyses = analyses.keys.toSeq.sortWith(_ < _)
-    val generatedAnalyses = for (analysis <- sortedAnalyses) yield {analyses(analysis).z3SMTInput}
-    val z3SMTInput = declarations.mkString("") +declarations1.mkString("") + body.mkString("") + domainSpecifics.mkString("", "\n","\n") + generatedAnalyses.mkString("")
-    this ! SaveFile(z3SMTInput, lapseTime)
   }
 
   private def onCallZ3(z3SMTInput : String) {
