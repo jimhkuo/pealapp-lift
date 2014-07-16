@@ -80,19 +80,13 @@ class PealCometActor extends MainBody with CometListener {
     case RunAndCertifyExplicitResults =>
       performSynthesisAndCertify(PealCometHelper.performExplicitSynthesis, true)
     case ExplicitSynthesisAndCallZ3 =>
-      PealCometHelper.performExplicitSynthesis(inputPolicies) match {
-        case Success(v) => onCallZ3(v)
-        case Failure(e) => dealWithIt(e)
-      }
+      performSynthesisOnly(PealCometHelper.performExplicitSynthesis)
     case SynthesisExtendedAndCallZ3QuietAnalysis =>
       performSynthesisAndCertify(PealCometHelper.performExtendedSynthesis, false)
     case RunAndCertifyExtendedResults =>
       performSynthesisAndCertify(PealCometHelper.performExtendedSynthesis, true)
     case ExtendedSynthesisAndCallZ3 =>
-      PealCometHelper.performExtendedSynthesis(inputPolicies) match {
-        case Success(v) => onCallZ3(v)
-        case Failure(e) => dealWithIt(e)
-      }
+      performSynthesisOnly(PealCometHelper.performExtendedSynthesis)
   }
 
   private def onCallZ3(z3SMTInput: String) {
@@ -103,6 +97,11 @@ class PealCometActor extends MainBody with CometListener {
     } catch {
       case e: Exception => dealWithIt(e)
     }
+  }
+
+  private def performSynthesisOnly(synthesiser: String => Try[String]): Unit = synthesiser(inputPolicies) match {
+    case Success(v) => onCallZ3(v)
+    case Failure(e) => dealWithIt(e)
   }
 
   private def performSynthesisAndCertify(synthesiser: String => Try[String], isVerbose: Boolean) {
