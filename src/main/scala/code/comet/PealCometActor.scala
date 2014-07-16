@@ -33,14 +33,14 @@ class PealCometActor extends MainBody with CometListener {
     case Message(message) => partialUpdate(JqId("result") ~> JqHtml(Text(message)))
     case Failed(message) => partialUpdate(JqId("result") ~> JqHtml(<h3>Error:</h3> ++ Text(message)))
     case Result(output) => partialUpdate(JqId("result") ~> JqHtml(<h3>3. Generated output:</h3> ++ output))
-    case SocialNetworkAccessControl => updateInput(socialNetworkExample)
-    case CarRentalRisks => updateInput(carRentalExample)
-    case FireFaultTree => updateInput(fireFaultTreeExample)
-    case ResetMajorityVotingInput => updateInput(MajorityVotingGenerator.generateForCount(majorityVotingCount))
-    case GenerateConstantScoreInput => updateInput(ConstantScoreModelGenerator.generate(randomModelParam.split(Array(' ', ',')).filterNot(_ == ""): _*))
-    case GenerateConstantScoreWithDomainSpecifics => updateInput(ConstantScoreModelGenerator.generate(true, randomModelParamWithDomain.split(Array(' ', ',')).filterNot(_ == ""): _*))
-    case GenerateInputWithRange => updateInput(RandomScoreModelGenerator.generate(randomModelWithRangeParam.split(Array(' ', ',')).filterNot(_ == ""): _*))
-    case Clear => updateInput("")
+    case SocialNetworkAccessControl => updatePealInput(socialNetworkExample)
+    case CarRentalRisks => updatePealInput(carRentalExample)
+    case FireFaultTree => updatePealInput(fireFaultTreeExample)
+    case MajorityVoting => updatePealInput(MajorityVotingGenerator.generateForCount(majorityVotingCount))
+    case GenerateConstantScore => updatePealInput(ConstantScoreModelGenerator.generate(randomModelParam.split(Array(' ', ',')).filterNot(_ == ""): _*))
+    case GenerateConstantScoreWithDomainSpecifics => updatePealInput(ConstantScoreModelGenerator.generate(true, randomModelParamWithDomain.split(Array(' ', ',')).filterNot(_ == ""): _*))
+    case GenerateScoresWithRange => updatePealInput(RandomScoreModelGenerator.generate(randomModelWithRangeParam.split(Array(' ', ',')).filterNot(_ == ""): _*))
+    case Clear => updatePealInput("")
     case UploadFile(id, s) =>
       val myId = for (sess <- S.session) yield sess.uniqueId
       ConsoleLogger.log("id received: " + id)
@@ -65,7 +65,7 @@ class PealCometActor extends MainBody with CometListener {
       performSynthesisOnly(PealCometHelper.performExtendedSynthesis)
   }
 
-  private def updateInput(input: String) {
+  private def updatePealInput(input: String) {
     this ! Message("")
     inputPolicies = input
     partialUpdate(JqId("policies") ~> JqVal(inputPolicies))

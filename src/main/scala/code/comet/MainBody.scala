@@ -26,11 +26,11 @@ trait MainBody extends CometActor{
               {SHtml.ajaxButton("Social Network Access Control example", () => {this ! SocialNetworkAccessControl; _Noop}, "class" -> "btn btn-primary btn-sm", "style" -> "margin:2px;")}
               {SHtml.ajaxButton("Car Rental Risks example", () => {this ! CarRentalRisks; _Noop}, "class" -> "btn btn-info btn-sm", "style" -> "margin:2px;")}
               {SHtml.ajaxButton("Fire Fault Tree example", () => {this ! FireFaultTree; _Noop}, "class" -> "btn btn-info btn-sm", "style" -> "margin:2px;")}
-              {SHtml.ajaxButton("Majority-voting sample, n =", () => {this ! ResetMajorityVotingInput; _Noop}, "class" -> "btn btn-primary btn-sm", "style" -> "margin:2px;")}
+              {SHtml.ajaxButton("Majority-voting sample, n =", () => {this ! MajorityVoting; _Noop}, "class" -> "btn btn-primary btn-sm", "style" -> "margin:2px;")}
               {SHtml.ajaxText(majorityVotingCount.toString, s => {majorityVotingCount = s.toInt; _Noop}, "id" -> "n", "size" -> "10")}
             </div>
             <div>
-              {SHtml.ajaxButton("Random sample without domain specifics: n, m_min, m_max, m_+, m_*, p, th, delta", () => {this ! GenerateConstantScoreInput; _Noop}, "class" -> "btn btn-primary btn-sm", "style" -> "margin:2px;") }
+              {SHtml.ajaxButton("Random sample without domain specifics: n, m_min, m_max, m_+, m_*, p, th, delta", () => {this ! GenerateConstantScore; _Noop}, "class" -> "btn btn-primary btn-sm", "style" -> "margin:2px;") }
               {SHtml.ajaxText(randomModelParam, s => {randomModelParam = s; _Noop}, "id" -> "r", "size" -> "30")}
             </div>
             <div>
@@ -38,7 +38,7 @@ trait MainBody extends CometActor{
               {SHtml.ajaxText(randomModelParamWithDomain, s => {randomModelParamWithDomain = s; _Noop}, "id" -> "r", "size" -> "30")}
             </div>
             <div>
-              {SHtml.ajaxButton("Random sample with ranges: n, m_min, m_max, m_+, m_*, p, th, delta", () => {this ! GenerateInputWithRange; _Noop}, "class" -> "btn btn-info btn-sm", "style" -> "margin:2px;")}
+              {SHtml.ajaxButton("Random sample with ranges: n, m_min, m_max, m_+, m_*, p, th, delta", () => {this ! GenerateScoresWithRange; _Noop}, "class" -> "btn btn-info btn-sm", "style" -> "margin:2px;")}
               {SHtml.ajaxText(randomModelWithRangeParam, s => {randomModelWithRangeParam = s; _Noop}, "id" -> "r", "size" -> "30")}
             </div>
             <div>

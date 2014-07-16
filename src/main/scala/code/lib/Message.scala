@@ -16,11 +16,11 @@ case object Init
 
 case object Clear
 
-case object GenerateConstantScoreInput
+case object GenerateConstantScore
 
 case object GenerateConstantScoreWithDomainSpecifics
 
-case object GenerateInputWithRange
+case object GenerateScoresWithRange
 
 case object SocialNetworkAccessControl
 
@@ -30,7 +30,7 @@ case object CarRentalRisks
 
 case object FireFaultTree
 
-case object ResetMajorityVotingInput
+case object MajorityVoting
 
 case object ExplicitSynthesisAndCallZ3
 
