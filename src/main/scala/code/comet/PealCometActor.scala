@@ -68,12 +68,28 @@ class PealCometActor extends MainBody with CometListener {
       inputPolicies = ""
       partialUpdate(JqId("policies") ~> JqVal(""))
     case SynthesisAndCallZ3QuietAnalysis =>
-      val (constsMap, _, _, analyses, _) = parseInput(inputPolicies)
-      //TODO this is WIP, fix!
-      PealCometHelper.performExplicitSynthesis(inputPolicies) match {
-        case Success(v) => certifyResults(false, constsMap, analyses, v)
-        case Failure(e) => dealWithIt(e)
+
+      val result = for {
+        parsedInput <- PealCometHelper.parseInput(inputPolicies)
+        synthesisResult <- PealCometHelper.performExplicitSynthesis(inputPolicies)
+      } yield {
+        (parsedInput, synthesisResult)
       }
+
+      result match {
+        case Failure(e) => dealWithIt(e)
+        case Success(v) => v match {
+          case (parsedInput: (Map[String, PealAst], Map[String, Condition], Map[String, PolicySet], Map[String, AnalysisGenerator], Array[String]), synthesisResult) =>
+            certifyResults(false, parsedInput._1, parsedInput._4, synthesisResult.toString)
+        }
+      }
+
+//      val (constsMap, _, _, analyses, _) = parseInput(inputPolicies)
+//      //TODO this is WIP, fix!
+//      PealCometHelper.performExplicitSynthesis(inputPolicies) match {
+//        case Success(v) => certifyResults(false, constsMap, analyses, v)
+//        case Failure(e) => dealWithIt(e)
+//      }
     case RunAndCertifyExplicitResults =>
       val (constsMap, _, _, analyses, _) = parseInput(inputPolicies)
       PealCometHelper.performExplicitSynthesis(inputPolicies) match {
