@@ -89,12 +89,21 @@ class PealCometActor extends MainBody with CometListener {
       }
     case SynthesisExtendedAndCallZ3QuietAnalysis =>
       val (constsMap, _, _, analyses, _) = parseInput(inputPolicies)
-      certifyResults(false, constsMap, analyses, performExtendedSynthesis(inputPolicies))
+      PealCometHelper.performExtendedSynthesis(inputPolicies) match {
+        case Success(v) => certifyResults(false, constsMap, analyses, v)
+        case Failure(e) => dealWithIt(e)
+      }
     case RunAndCertifyExtendedResults =>
       val (constsMap, _, _, analyses, _) = parseInput(inputPolicies)
-      certifyResults(true, constsMap, analyses, performExtendedSynthesis(inputPolicies))
+      PealCometHelper.performExtendedSynthesis(inputPolicies) match {
+        case Success(v) => certifyResults(true, constsMap, analyses, v)
+        case Failure(e) => dealWithIt(e)
+      }
     case ExtendedSynthesisAndCallZ3 =>
-      onCallZ3(performExtendedSynthesis(inputPolicies))
+      PealCometHelper.performExtendedSynthesis(inputPolicies) match {
+        case Success(v) => onCallZ3(v)
+        case Failure(e) => dealWithIt(e)
+      }
     case UploadFile(id, s) =>
       val myId = for (sess <- S.session) yield sess.uniqueId
 
@@ -116,23 +125,6 @@ class PealCometActor extends MainBody with CometListener {
     z3RawOutput = ""
   }
 
-  private def performExtendedSynthesis(policies: String): String = {
-    try {
-      new ExtendedSynthesiser(policies).generate()
-    } catch {
-      case e: Exception =>
-        dealWithIt(e)
-    }
-  }
-
-  //  private def performExplicitSynthesis(policies: String): String = {
-  //    try {
-  //      new EagerSynthesiser(policies).generate()
-  //    } catch {
-  //      case e: Exception =>
-  //        dealWithIt(e)
-  //    }
-  //  }
 
   private def parseInput(input: String): (Map[String, PealAst], Map[String, Condition], Map[String, PolicySet], Map[String, AnalysisGenerator], Array[String]) = {
     val pealProgramParser = ParserHelper.getPealParser(input)
