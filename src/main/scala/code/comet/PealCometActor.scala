@@ -79,8 +79,8 @@ class PealCometActor extends MainBody with CometListener {
       performSynthesisAndCertify(PealCometHelper.performExplicitSynthesis, false)
     case RunAndCertifyExplicitResults =>
       performSynthesisAndCertify(PealCometHelper.performExplicitSynthesis, true)
-    case ExtendedSynthesisAndCallZ3 =>
-      PealCometHelper.performExtendedSynthesis(inputPolicies) match {
+    case ExplicitSynthesisAndCallZ3 =>
+      PealCometHelper.performExplicitSynthesis(inputPolicies) match {
         case Success(v) => onCallZ3(v)
         case Failure(e) => dealWithIt(e)
       }
@@ -88,8 +88,8 @@ class PealCometActor extends MainBody with CometListener {
       performSynthesisAndCertify(PealCometHelper.performExtendedSynthesis, false)
     case RunAndCertifyExtendedResults =>
       performSynthesisAndCertify(PealCometHelper.performExtendedSynthesis, true)
-    case ExplicitSynthesisAndCallZ3 =>
-      PealCometHelper.performExplicitSynthesis(inputPolicies) match {
+    case ExtendedSynthesisAndCallZ3 =>
+      PealCometHelper.performExtendedSynthesis(inputPolicies) match {
         case Success(v) => onCallZ3(v)
         case Failure(e) => dealWithIt(e)
       }
@@ -106,7 +106,7 @@ class PealCometActor extends MainBody with CometListener {
   }
 
   private def performSynthesisAndCertify(synthesiser: String => Try[String], isVerbose: Boolean) {
-    val result = for {
+    val result: Try[((Map[String, PealAst], Map[String, Condition], Map[String, PolicySet], Map[String, AnalysisGenerator], Array[String]), String)] = for {
       parsedInput <- PealCometHelper.parseInput(inputPolicies)
       synthesisResult <- synthesiser(inputPolicies)
     } yield {
@@ -115,10 +115,7 @@ class PealCometActor extends MainBody with CometListener {
 
     result match {
       case Failure(e) => dealWithIt(e)
-      case Success(v) => v match {
-        case (parsedInput: (Map[String, PealAst], Map[String, Condition], Map[String, PolicySet], Map[String, AnalysisGenerator], Array[String]), synthesisResult) =>
-          certifyResults(isVerbose, parsedInput._1, parsedInput._4, synthesisResult)
-      }
+      case Success(v) => certifyResults(isVerbose, v._1._1, v._1._4, v._2)
     }
   }
 
@@ -138,7 +135,7 @@ class PealCometActor extends MainBody with CometListener {
   }
 
   private def dealWithIt(e: Throwable) = {
-    //        e.printStackTrace()
+    e.printStackTrace()
     this ! Failed(e.getMessage)
     throw e
   }
