@@ -30,7 +30,7 @@ class PealCometActor extends MainBody with CometListener {
     println("render " + myId.toList(0))
 
     this ! Init
-    
+
     generateContents
   }
 
@@ -53,16 +53,16 @@ class PealCometActor extends MainBody with CometListener {
       partialUpdate(JqId("policies") ~> JqVal(inputPolicies))
     case Generate =>
       this ! Message("")
-      inputPolicies = ConstantScoreModelGenerator.generate(randomModelParam.split(Array(' ', ',')).filterNot(_ == ""):_*)
+      inputPolicies = ConstantScoreModelGenerator.generate(randomModelParam.split(Array(' ', ',')).filterNot(_ == ""): _*)
       partialUpdate(JqId("policies") ~> JqVal(inputPolicies))
     case GenerateDomainSpecifics =>
       this ! Message("")
-      inputPolicies = ConstantScoreModelGenerator.generate(true, randomModelParamWithDomain.split(Array(' ', ',')).filterNot(_ == ""):_*)
+      inputPolicies = ConstantScoreModelGenerator.generate(true, randomModelParamWithDomain.split(Array(' ', ',')).filterNot(_ == ""): _*)
       partialUpdate(JqId("policies") ~> JqVal(inputPolicies))
     case GenerateWithRange =>
       this ! Message("")
       clearIntermediateResults
-      inputPolicies = RandomScoreModelGenerator.generate(randomModelWithRangeParam.split(Array(' ', ',')).filterNot(_ == ""):_*)
+      inputPolicies = RandomScoreModelGenerator.generate(randomModelWithRangeParam.split(Array(' ', ',')).filterNot(_ == ""): _*)
       partialUpdate(JqId("policies") ~> JqVal(inputPolicies))
     case Clear =>
       this ! Message("")
@@ -70,52 +70,31 @@ class PealCometActor extends MainBody with CometListener {
       clearIntermediateResults
       partialUpdate(JqId("policies") ~> JqVal(""))
     case SynthesisAndCallZ3QuietAnalysis =>
-      val (constsMap,  conds, pSets, analyses, domainSpecific) = parseInput(inputPolicies)
+      val (constsMap, _, _, analyses, _) = parseInput(inputPolicies)
       //TODO this is WIP, fix!
-      this.constsMap = constsMap
-      this.analyses = analyses
       PealCometHelper.performExplicitSynthesis(inputPolicies) match {
-        case Success(v) => certifyResults(false, v)
+        case Success(v) => certifyResults(false, constsMap, analyses, v)
         case Failure(e) => dealWithIt(e)
       }
-
     case RunAndCertifyExplicitResults =>
-      val (constsMap,  conds, pSets, analyses, domainSpecific) = parseInput(inputPolicies)
-      this.constsMap = constsMap
-      this.analyses = analyses
-//      certifyResults(true, PealCometHelper.performExplicitSynthesis(inputPolicies))
-
+      val (constsMap, _, _, analyses, _) = parseInput(inputPolicies)
       PealCometHelper.performExplicitSynthesis(inputPolicies) match {
-        case Success(v) => certifyResults(true, v)
+        case Success(v) => certifyResults(true, constsMap, analyses, v)
         case Failure(e) => dealWithIt(e)
       }
-
     case ExplicitSynthesisAndCallZ3 =>
-//      val (constsMap,  conds, pSets, analyses, domainSpecific) = parseInput(inputPolicies)
-//      this.constsMap = constsMap
-//      this.analyses = analyses
       PealCometHelper.performExplicitSynthesis(inputPolicies) match {
         case Success(v) => onCallZ3(v)
         case Failure(e) => dealWithIt(e)
       }
-
-//      onCallZ3(PealCometHelper.performExplicitSynthesis(inputPolicies))
     case SynthesisExtendedAndCallZ3QuietAnalysis =>
-      val (constsMap,  conds, pSets, analyses, domainSpecific) = parseInput(inputPolicies)
-      this.constsMap = constsMap
-      this.analyses = analyses
-      certifyResults(false, performExtendedSynthesis(inputPolicies))
+      val (constsMap, _, _, analyses, _) = parseInput(inputPolicies)
+      certifyResults(false, constsMap, analyses, performExtendedSynthesis(inputPolicies))
     case RunAndCertifyExtendedResults =>
-      val (constsMap,  conds, pSets, analyses, domainSpecific) = parseInput(inputPolicies)
-      this.constsMap = constsMap
-      this.analyses = analyses
-      certifyResults(true, performExtendedSynthesis(inputPolicies))
+      val (constsMap, _, _, analyses, _) = parseInput(inputPolicies)
+      certifyResults(true, constsMap, analyses, performExtendedSynthesis(inputPolicies))
     case ExtendedSynthesisAndCallZ3 =>
-      val (constsMap,  conds, pSets, analyses, domainSpecific) = parseInput(inputPolicies)
-      this.constsMap = constsMap
-      this.analyses = analyses
-      extendedSynthesis = performExtendedSynthesis(inputPolicies)
-      onCallZ3(extendedSynthesis)
+      onCallZ3(performExtendedSynthesis(inputPolicies))
     case UploadFile(id, s) =>
       val myId = for (sess <- S.session) yield sess.uniqueId
 
@@ -135,10 +114,6 @@ class PealCometActor extends MainBody with CometListener {
 
   private def clearIntermediateResults() {
     z3RawOutput = ""
-    extendedSynthesis = ""
-    explicitSynthesis = ""
-    constsMap = Map()
-    analyses = Map()
   }
 
   private def performExtendedSynthesis(policies: String): String = {
@@ -150,14 +125,14 @@ class PealCometActor extends MainBody with CometListener {
     }
   }
 
-//  private def performExplicitSynthesis(policies: String): String = {
-//    try {
-//      new EagerSynthesiser(policies).generate()
-//    } catch {
-//      case e: Exception =>
-//        dealWithIt(e)
-//    }
-//  }
+  //  private def performExplicitSynthesis(policies: String): String = {
+  //    try {
+  //      new EagerSynthesiser(policies).generate()
+  //    } catch {
+  //      case e: Exception =>
+  //        dealWithIt(e)
+  //    }
+  //  }
 
   private def parseInput(input: String): (Map[String, PealAst], Map[String, Condition], Map[String, PolicySet], Map[String, AnalysisGenerator], Array[String]) = {
     val pealProgramParser = ParserHelper.getPealParser(input)
@@ -182,17 +157,17 @@ class PealCometActor extends MainBody with CometListener {
     }
   }
 
-  private def onCallZ3(z3SMTInput : String) {
+  private def onCallZ3(z3SMTInput: String) {
     try {
       z3RawOutput = Z3Caller.call(z3SMTInput)
 
       this ! Result(<pre>Generated Z3 code:<br/><br/>{z3SMTInput}</pre><pre>Z3 Raw Output:<br/>{z3RawOutput}</pre>)
     } catch {
-      case e: Exception =>  dealWithIt(e)
+      case e: Exception => dealWithIt(e)
     }
   }
 
-  private def certifyResults(verbose: Boolean, z3SMTInput: String) {
+  private def certifyResults(verbose: Boolean, constsMap: Map[String, PealAst], analyses: Map[String, AnalysisGenerator], z3SMTInput: String) {
     try {
       val z3RawOutput = Z3Caller.call(z3SMTInput)
       implicit val ov = new OutputVerifier(inputPolicies)
