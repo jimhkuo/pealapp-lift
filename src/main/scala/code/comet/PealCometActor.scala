@@ -89,7 +89,7 @@ class PealCometActor extends MainBody with CometListener {
       performSynthesisOnly(PealCometHelper.performExtendedSynthesis)
   }
 
-  private def onCallZ3(z3SMTInput: String) {
+  private def callZ3(z3SMTInput: String) {
     try {
       val z3RawOutput = Z3Caller.call(z3SMTInput)
 
@@ -100,7 +100,7 @@ class PealCometActor extends MainBody with CometListener {
   }
 
   private def performSynthesisOnly(synthesiser: String => Try[String]): Unit = synthesiser(inputPolicies) match {
-    case Success(v) => onCallZ3(v)
+    case Success(v) => callZ3(v)
     case Failure(e) => dealWithIt(e)
   }
 
@@ -114,11 +114,11 @@ class PealCometActor extends MainBody with CometListener {
 
     result match {
       case Failure(e) => dealWithIt(e)
-      case Success(v) => certifyResults(isVerbose, v._1._1, v._1._4, v._2)
+      case Success(v) => callZ3AndCertifyResults(isVerbose, v._1._1, v._1._4, v._2)
     }
   }
 
-  private def certifyResults(verbose: Boolean, constsMap: Map[String, PealAst], analyses: Map[String, AnalysisGenerator], z3SMTInput: String) {
+  private def callZ3AndCertifyResults(verbose: Boolean, constsMap: Map[String, PealAst], analyses: Map[String, AnalysisGenerator], z3SMTInput: String) {
     try {
       val z3RawOutput = Z3Caller.call(z3SMTInput)
       implicit val ov = new OutputVerifier(inputPolicies)
