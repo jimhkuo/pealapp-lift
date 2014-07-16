@@ -81,6 +81,4 @@ trait MainBody extends CometActor{
         </form>
       </div>
     }
-
-
 }
