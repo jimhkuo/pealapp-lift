@@ -30,5 +30,4 @@ object PealCometHelper {
 
     (constsMap, pealProgramParser.conds.toMap, pealProgramParser.pSets.toMap, pealProgramParser.analyses.toMap, domainSpecifics)
   }
-
 }
