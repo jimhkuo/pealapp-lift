@@ -64,11 +64,3 @@ mergeStrategy in assembly <<= (mergeStrategy in assembly) { (old) =>
 //Needed to get ScalaZ3 test to run repeatedly in sbt
 fork in Test := true
 
-//AKKA and spray stuff
-//resolvers += "Typesafe Repository" at "http://repo.typesafe.com/typesafe/releases/"
-//resolvers += "spray repo" at "http://repo.spray.io"
-//libraryDependencies += "com.typesafe.akka" %% "akka-actor" % "2.1.2"
-//libraryDependencies += "io.spray" % "spray-can" % "1.1-M7"
-//libraryDependencies += "io.spray" % "spray-routing" % "1.1-M7"
-//one-jar stuff
-//seq(com.github.retronym.SbtOneJar.oneJarSettings: _*)
