@@ -33,38 +33,14 @@ class PealCometActor extends MainBody with CometListener {
     case Message(message) => partialUpdate(JqId("result") ~> JqHtml(Text(message)))
     case Failed(message) => partialUpdate(JqId("result") ~> JqHtml(<h3>Error:</h3> ++ Text(message)))
     case Result(output) => partialUpdate(JqId("result") ~> JqHtml(<h3>3. Generated output:</h3> ++ output))
-    case SocialNetworkAccessControl =>
-      this ! Message("")
-      inputPolicies = socialNetworkExample
-      partialUpdate(JqId("policies") ~> JqVal(inputPolicies))
-    case CarRentalRisks =>
-      this ! Message("")
-      inputPolicies = carRentalExample
-      partialUpdate(JqId("policies") ~> JqVal(inputPolicies))
-    case FireFaultTree =>
-      this ! Message("")
-      inputPolicies = fireFaultTreeExample
-      partialUpdate(JqId("policies") ~> JqVal(inputPolicies))
-    case ResetMajorityVotingInput =>
-      this ! Message("")
-      inputPolicies = MajorityVotingGenerator.generateForCount(majorityVotingCount)
-      partialUpdate(JqId("policies") ~> JqVal(inputPolicies))
-    case GenerateConstantScoreInput =>
-      this ! Message("")
-      inputPolicies = ConstantScoreModelGenerator.generate(randomModelParam.split(Array(' ', ',')).filterNot(_ == ""): _*)
-      partialUpdate(JqId("policies") ~> JqVal(inputPolicies))
-    case GenerateConstantScoreWithDomainSpecifics =>
-      this ! Message("")
-      inputPolicies = ConstantScoreModelGenerator.generate(true, randomModelParamWithDomain.split(Array(' ', ',')).filterNot(_ == ""): _*)
-      partialUpdate(JqId("policies") ~> JqVal(inputPolicies))
-    case GenerateInputWithRange =>
-      this ! Message("")
-      inputPolicies = RandomScoreModelGenerator.generate(randomModelWithRangeParam.split(Array(' ', ',')).filterNot(_ == ""): _*)
-      partialUpdate(JqId("policies") ~> JqVal(inputPolicies))
-    case Clear =>
-      this ! Message("")
-      inputPolicies = ""
-      partialUpdate(JqId("policies") ~> JqVal(""))
+    case SocialNetworkAccessControl => updateInput(socialNetworkExample)
+    case CarRentalRisks => updateInput(carRentalExample)
+    case FireFaultTree => updateInput(fireFaultTreeExample)
+    case ResetMajorityVotingInput => updateInput(MajorityVotingGenerator.generateForCount(majorityVotingCount))
+    case GenerateConstantScoreInput => updateInput(ConstantScoreModelGenerator.generate(randomModelParam.split(Array(' ', ',')).filterNot(_ == ""): _*))
+    case GenerateConstantScoreWithDomainSpecifics => updateInput(ConstantScoreModelGenerator.generate(true, randomModelParamWithDomain.split(Array(' ', ',')).filterNot(_ == ""): _*))
+    case GenerateInputWithRange => updateInput(RandomScoreModelGenerator.generate(randomModelWithRangeParam.split(Array(' ', ',')).filterNot(_ == ""): _*))
+    case Clear => updateInput("")
     case UploadFile(id, s) =>
       val myId = for (sess <- S.session) yield sess.uniqueId
       ConsoleLogger.log("id received: " + id)
@@ -87,6 +63,12 @@ class PealCometActor extends MainBody with CometListener {
       performSynthesisAndCertify(PealCometHelper.performExtendedSynthesis, isVerbose = true)
     case ExtendedSynthesisAndCallZ3 =>
       performSynthesisOnly(PealCometHelper.performExtendedSynthesis)
+  }
+
+  private def updateInput(input: String) {
+    this ! Message("")
+    inputPolicies = input
+    partialUpdate(JqId("policies") ~> JqVal(inputPolicies))
   }
 
   private def performSynthesisOnly(synthesiser: String => Try[String]): Unit = synthesiser(inputPolicies) match {
