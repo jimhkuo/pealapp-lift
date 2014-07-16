@@ -41,21 +41,21 @@ trait MainBody extends CometActor{
             <h4>1. Generate PEALT input:</h4>
             <h6>Enter policies, policy sets, conditions and analyses in the text area or generate such input by clicking one of the blue buttons.</h6>
             <div>
-              {SHtml.ajaxButton("Social Network Access Control example", () => {this ! Reset; _Noop}, "class" -> "btn btn-primary btn-sm", "style" -> "margin:2px;")}
-              {SHtml.ajaxButton("Car Rental Risks example", () => {this ! ResetNonConstant; _Noop}, "class" -> "btn btn-info btn-sm", "style" -> "margin:2px;")}
-              {SHtml.ajaxButton("Majority-voting sample, n =", () => {this ! MajorityVoting; _Noop}, "class" -> "btn btn-primary btn-sm", "style" -> "margin:2px;")}
+              {SHtml.ajaxButton("Social Network Access Control example", () => {this ! ResetConstantInput; _Noop}, "class" -> "btn btn-primary btn-sm", "style" -> "margin:2px;")}
+              {SHtml.ajaxButton("Car Rental Risks example", () => {this ! ResetNonConstantInput; _Noop}, "class" -> "btn btn-info btn-sm", "style" -> "margin:2px;")}
+              {SHtml.ajaxButton("Majority-voting sample, n =", () => {this ! ResetMajorityVotingInput; _Noop}, "class" -> "btn btn-primary btn-sm", "style" -> "margin:2px;")}
               {SHtml.ajaxText(majorityVotingCount.toString, s => {majorityVotingCount = s.toInt; _Noop}, "id" -> "n", "size" -> "10")}
             </div>
             <div>
-              {SHtml.ajaxButton("Random sample without domain specifics: n, m_min, m_max, m_+, m_*, p, th, delta", () => {this ! Generate; _Noop}, "class" -> "btn btn-primary btn-sm", "style" -> "margin:2px;") }
+              {SHtml.ajaxButton("Random sample without domain specifics: n, m_min, m_max, m_+, m_*, p, th, delta", () => {this ! GenerateConstantScoreInput; _Noop}, "class" -> "btn btn-primary btn-sm", "style" -> "margin:2px;") }
               {SHtml.ajaxText(randomModelParam, s => {randomModelParam = s; _Noop}, "id" -> "r", "size" -> "30")}
             </div>
             <div>
-              {SHtml.ajaxButton("Random sample with domain specifics: n, m_min, m_max, m_+, m_*, p, th, delta", () => {this ! GenerateDomainSpecifics; _Noop}, "class" -> "btn btn-primary btn-sm", "style" -> "margin:2px;")}
+              {SHtml.ajaxButton("Random sample with domain specifics: n, m_min, m_max, m_+, m_*, p, th, delta", () => {this ! GenerateConstantScoreWithDomainSpecifics; _Noop}, "class" -> "btn btn-primary btn-sm", "style" -> "margin:2px;")}
               {SHtml.ajaxText(randomModelParamWithDomain, s => {randomModelParamWithDomain = s; _Noop}, "id" -> "r", "size" -> "30")}
             </div>
             <div>
-              {SHtml.ajaxButton("Random sample with ranges: n, m_min, m_max, m_+, m_*, p, th, delta", () => {this ! GenerateWithRange; _Noop}, "class" -> "btn btn-info btn-sm", "style" -> "margin:2px;")}
+              {SHtml.ajaxButton("Random sample with ranges: n, m_min, m_max, m_+, m_*, p, th, delta", () => {this ! GenerateInputWithRange; _Noop}, "class" -> "btn btn-info btn-sm", "style" -> "margin:2px;")}
               {SHtml.ajaxText(randomModelWithRangeParam, s => {randomModelWithRangeParam = s; _Noop}, "id" -> "r", "size" -> "30")}
             </div>
             <div>

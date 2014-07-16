@@ -26,32 +26,32 @@ class PealCometActor extends MainBody with CometListener {
     generateContents
   }
 
-  override def lowPriority = {
+  override def lowPriority: PartialFunction[Any, Unit] = {
     case Init =>
     case Message(message) => partialUpdate(JqId("result") ~> JqHtml(Text(message)))
     case Failed(message) => partialUpdate(JqId("result") ~> JqHtml(<h3>Error:</h3> ++ Text(message)))
     case Result(output) => partialUpdate(JqId("result") ~> JqHtml(<h3>3. Generated output:</h3> ++ output))
-    case Reset =>
+    case ResetConstantInput =>
       this ! Message("")
       inputPolicies = socialNetworkExample
       partialUpdate(JqId("policies") ~> JqVal(inputPolicies))
-    case ResetNonConstant =>
+    case ResetNonConstantInput =>
       this ! Message("")
       inputPolicies = carRentalExample
       partialUpdate(JqId("policies") ~> JqVal(inputPolicies))
-    case MajorityVoting =>
+    case ResetMajorityVotingInput =>
       this ! Message("")
       inputPolicies = MajorityVotingGenerator.generateForCount(majorityVotingCount)
       partialUpdate(JqId("policies") ~> JqVal(inputPolicies))
-    case Generate =>
+    case GenerateConstantScoreInput =>
       this ! Message("")
       inputPolicies = ConstantScoreModelGenerator.generate(randomModelParam.split(Array(' ', ',')).filterNot(_ == ""): _*)
       partialUpdate(JqId("policies") ~> JqVal(inputPolicies))
-    case GenerateDomainSpecifics =>
+    case GenerateConstantScoreWithDomainSpecifics =>
       this ! Message("")
       inputPolicies = ConstantScoreModelGenerator.generate(true, randomModelParamWithDomain.split(Array(' ', ',')).filterNot(_ == ""): _*)
       partialUpdate(JqId("policies") ~> JqVal(inputPolicies))
-    case GenerateWithRange =>
+    case GenerateInputWithRange =>
       this ! Message("")
       inputPolicies = RandomScoreModelGenerator.generate(randomModelWithRangeParam.split(Array(' ', ',')).filterNot(_ == ""): _*)
       partialUpdate(JqId("policies") ~> JqVal(inputPolicies))

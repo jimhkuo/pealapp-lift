@@ -16,11 +16,11 @@ case object Init
 
 case object Clear
 
-case object Generate
+case object GenerateConstantScoreInput
 
-case object GenerateDomainSpecifics
+case object GenerateConstantScoreWithDomainSpecifics
 
-case object GenerateWithRange
+case object GenerateInputWithRange
 
 case object Download
 
@@ -34,13 +34,13 @@ case object PrepareLazy
 
 case object PrepareNew
 
-case object Reset
+case object ResetConstantInput
 
 case object ResetNewDefault
 
-case object ResetNonConstant
+case object ResetNonConstantInput
 
-case object MajorityVoting
+case object ResetMajorityVotingInput
 
 case object ExplicitSynthesisAndCallZ3
 
