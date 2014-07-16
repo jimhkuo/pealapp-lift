@@ -26,7 +26,9 @@ class PealCometActor extends MainBody with CometListener {
     generateContents
   }
 
-  override def lowPriority: PartialFunction[Any, Unit] = {
+  override def lowPriority: PartialFunction[Any, Unit] = handleGUIMessages orElse handleSynthesisMessages
+
+  def handleGUIMessages: PartialFunction[Any, Unit] = {
     case Init =>
     case Message(message) => partialUpdate(JqId("result") ~> JqHtml(Text(message)))
     case Failed(message) => partialUpdate(JqId("result") ~> JqHtml(<h3>Error:</h3> ++ Text(message)))
@@ -59,6 +61,18 @@ class PealCometActor extends MainBody with CometListener {
       this ! Message("")
       inputPolicies = ""
       partialUpdate(JqId("policies") ~> JqVal(""))
+    case UploadFile(id, s) =>
+      val myId = for (sess <- S.session) yield sess.uniqueId
+
+      ConsoleLogger.log("id received: " + id)
+      ConsoleLogger.log1("UploadFile(s) received, s = " + s)
+      if (myId.toList(0) == id && s != "") {
+        inputPolicies = s
+        partialUpdate(JqId("policies") ~> JqVal(inputPolicies))
+      }
+  }
+
+  def handleSynthesisMessages: PartialFunction[Any, Unit] = {
     case SynthesisAndCallZ3QuietAnalysis =>
       val result = for {
         parsedInput <- PealCometHelper.parseInput(inputPolicies)
@@ -129,15 +143,7 @@ class PealCometActor extends MainBody with CometListener {
         case Success(v) => onCallZ3(v)
         case Failure(e) => dealWithIt(e)
       }
-    case UploadFile(id, s) =>
-      val myId = for (sess <- S.session) yield sess.uniqueId
 
-      ConsoleLogger.log("id received: " + id)
-      ConsoleLogger.log1("UploadFile(s) received, s = " + s)
-      if (myId.toList(0) == id && s != "") {
-        inputPolicies = s
-        partialUpdate(JqId("policies") ~> JqVal(inputPolicies))
-      }
   }
 
   private def onCallZ3(z3SMTInput: String) {
