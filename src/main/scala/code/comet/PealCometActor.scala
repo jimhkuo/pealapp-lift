@@ -24,13 +24,8 @@ class PealCometActor extends MainBody with CometListener {
 
   def registerWith = CometServer
 
-
   def render: RenderOut = {
-    val myId = for (sess <- S.session) yield sess.uniqueId
-    println("render " + myId.toList(0))
-
     this ! Init
-
     generateContents
   }
 
@@ -68,7 +63,6 @@ class PealCometActor extends MainBody with CometListener {
       inputPolicies = ""
       partialUpdate(JqId("policies") ~> JqVal(""))
     case SynthesisAndCallZ3QuietAnalysis =>
-
       val result = for {
         parsedInput <- PealCometHelper.parseInput(inputPolicies)
         synthesisResult <- PealCometHelper.performExplicitSynthesis(inputPolicies)
@@ -83,13 +77,6 @@ class PealCometActor extends MainBody with CometListener {
             certifyResults(false, parsedInput._1, parsedInput._4, synthesisResult.toString)
         }
       }
-
-//      val (constsMap, _, _, analyses, _) = parseInput(inputPolicies)
-//      //TODO this is WIP, fix!
-//      PealCometHelper.performExplicitSynthesis(inputPolicies) match {
-//        case Success(v) => certifyResults(false, constsMap, analyses, v)
-//        case Failure(e) => dealWithIt(e)
-//      }
     case RunAndCertifyExplicitResults =>
       val result = for {
         parsedInput <- PealCometHelper.parseInput(inputPolicies)
@@ -154,12 +141,6 @@ class PealCometActor extends MainBody with CometListener {
         inputPolicies = s
         partialUpdate(JqId("policies") ~> JqVal(inputPolicies))
       }
-  }
-
-  override protected def localShutdown(): Unit = {
-    val myId = for (sess <- S.session) yield sess.uniqueId
-    println("shutting down " + myId.toList(0))
-    super.localShutdown()
   }
 
   private def onCallZ3(z3SMTInput: String) {
