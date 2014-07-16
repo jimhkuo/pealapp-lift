@@ -22,11 +22,13 @@ case object GenerateConstantScoreWithDomainSpecifics
 
 case object GenerateInputWithRange
 
-case object ResetConstantInput
+case object SocialNetworkAccessControl
 
 case object ResetNewDefault
 
-case object ResetNonConstantInput
+case object CarRentalRisks
+
+case object FireFaultTree
 
 case object ResetMajorityVotingInput
 

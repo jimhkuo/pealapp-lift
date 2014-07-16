@@ -33,13 +33,17 @@ class PealCometActor extends MainBody with CometListener {
     case Message(message) => partialUpdate(JqId("result") ~> JqHtml(Text(message)))
     case Failed(message) => partialUpdate(JqId("result") ~> JqHtml(<h3>Error:</h3> ++ Text(message)))
     case Result(output) => partialUpdate(JqId("result") ~> JqHtml(<h3>3. Generated output:</h3> ++ output))
-    case ResetConstantInput =>
+    case SocialNetworkAccessControl =>
       this ! Message("")
       inputPolicies = socialNetworkExample
       partialUpdate(JqId("policies") ~> JqVal(inputPolicies))
-    case ResetNonConstantInput =>
+    case CarRentalRisks =>
       this ! Message("")
       inputPolicies = carRentalExample
+      partialUpdate(JqId("policies") ~> JqVal(inputPolicies))
+    case FireFaultTree =>
+      this ! Message("")
+      inputPolicies = fireFaultTreeExample
       partialUpdate(JqId("policies") ~> JqVal(inputPolicies))
     case ResetMajorityVotingInput =>
       this ! Message("")
