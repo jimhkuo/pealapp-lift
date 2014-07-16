@@ -10,9 +10,9 @@ object CometServer extends LiftActor with ListenerManager {
   private var msg : Any = ""
 
   override def lowPriority = {
-    case s =>
-      ConsoleLogger.log1("CometServer: " + s)
-      msg = s
+    case fileContentToBeUploaded =>
+      ConsoleLogger.log1("CometServer: " + fileContentToBeUploaded)
+      msg = fileContentToBeUploaded
       updateListeners()
   }
 

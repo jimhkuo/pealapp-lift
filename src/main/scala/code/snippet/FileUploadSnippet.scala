@@ -1,11 +1,11 @@
 package code.snippet
 
 import code.comet.CometServer
-import code.lib.{UploadFile, Z3SMTData}
-import net.liftweb.util.Helpers._
+import code.lib.UploadFile
+import net.liftweb.common.{Box, Empty, Full, Loggable}
 import net.liftweb.http.SHtml._
-import net.liftweb.http.{S, FileParamHolder}
-import net.liftweb.common.{Loggable, Full, Empty, Box}
+import net.liftweb.http.{FileParamHolder, S}
+import net.liftweb.util.Helpers._
 import peal.util.ConsoleLogger
 
 
@@ -21,7 +21,6 @@ class FileUploadSnippet extends Loggable {
         val content = new String(file)
         val id = for (sess <- S.session) yield sess.uniqueId
         CometServer ! UploadFile(id.toList(0), content)
-      //        S.redirectTo("/")
       case _ => ConsoleLogger.log("No file?")
     }
 
