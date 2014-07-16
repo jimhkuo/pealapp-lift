@@ -14,7 +14,7 @@ import peal.util.ConsoleLogger
 import peal.verifier.OutputVerifier
 import peal.z3.Z3Caller
 
-import scala.util.{Failure, Success}
+import scala.util.{Try, Failure, Success}
 import scala.xml.Text
 
 class PealCometActor extends MainBody with CometListener {
@@ -82,66 +82,47 @@ class PealCometActor extends MainBody with CometListener {
 
   def handleSynthesisActions: PartialFunction[Any, Unit] = {
     case SynthesisAndCallZ3QuietAnalysis =>
-      val result = for {
-        parsedInput <- PealCometHelper.parseInput(inputPolicies)
-        synthesisResult <- PealCometHelper.performExplicitSynthesis(inputPolicies)
-      } yield {
-        (parsedInput, synthesisResult)
-      }
-
-      result match {
-        case Failure(e) => dealWithIt(e)
-        case Success(v) => v match {
-          case (parsedInput: (Map[String, PealAst], Map[String, Condition], Map[String, PolicySet], Map[String, AnalysisGenerator], Array[String]), synthesisResult) =>
-            certifyResults(false, parsedInput._1, parsedInput._4, synthesisResult.toString)
-        }
-      }
+      doQuietSynthesisAndCertify(PealCometHelper.performExplicitSynthesis)
     case RunAndCertifyExplicitResults =>
-      val result = for {
-        parsedInput <- PealCometHelper.parseInput(inputPolicies)
-        synthesisResult <- PealCometHelper.performExplicitSynthesis(inputPolicies)
-      } yield {
-        (parsedInput, synthesisResult)
-      }
-
-      result match {
-        case Failure(e) => dealWithIt(e)
-        case Success(v) => v match {
-          case (parsedInput: (Map[String, PealAst], Map[String, Condition], Map[String, PolicySet], Map[String, AnalysisGenerator], Array[String]), synthesisResult) =>
-            certifyResults(true, parsedInput._1, parsedInput._4, synthesisResult.toString)
-        }
-      }
+      doSynthesisAndCertify(PealCometHelper.performExplicitSynthesis)
     case SynthesisExtendedAndCallZ3QuietAnalysis =>
-      val result = for {
-        parsedInput <- PealCometHelper.parseInput(inputPolicies)
-        synthesisResult <- PealCometHelper.performExtendedSynthesis(inputPolicies)
-      } yield {
-        (parsedInput, synthesisResult)
-      }
-
-      result match {
-        case Failure(e) => dealWithIt(e)
-        case Success(v) => v match {
-          case (parsedInput: (Map[String, PealAst], Map[String, Condition], Map[String, PolicySet], Map[String, AnalysisGenerator], Array[String]), synthesisResult) =>
-            certifyResults(false, parsedInput._1, parsedInput._4, synthesisResult.toString)
-        }
-      }
+      doQuietSynthesisAndCertify(PealCometHelper.performExtendedSynthesis)
     case RunAndCertifyExtendedResults =>
-      val result = for {
-        parsedInput <- PealCometHelper.parseInput(inputPolicies)
-        synthesisResult <- PealCometHelper.performExtendedSynthesis(inputPolicies)
-      } yield {
-        (parsedInput, synthesisResult)
-      }
+      doSynthesisAndCertify(PealCometHelper.performExtendedSynthesis)
+  }
 
-      result match {
-        case Failure(e) => dealWithIt(e)
-        case Success(v) => v match {
-          case (parsedInput: (Map[String, PealAst], Map[String, Condition], Map[String, PolicySet], Map[String, AnalysisGenerator], Array[String]), synthesisResult) =>
-            certifyResults(true, parsedInput._1, parsedInput._4, synthesisResult.toString)
-        }
-      }
+  private def doQuietSynthesisAndCertify(synthesiser: String => Try[String]) {
+    val result = for {
+      parsedInput <- PealCometHelper.parseInput(inputPolicies)
+      synthesisResult <- synthesiser(inputPolicies)
+    } yield {
+      (parsedInput, synthesisResult)
+    }
 
+    result match {
+      case Failure(e) => dealWithIt(e)
+      case Success(v) => v match {
+        case (parsedInput: (Map[String, PealAst], Map[String, Condition], Map[String, PolicySet], Map[String, AnalysisGenerator], Array[String]), synthesisResult) =>
+          certifyResults(false, parsedInput._1, parsedInput._4, synthesisResult)
+      }
+    }
+  }
+
+  private def doSynthesisAndCertify(synthesiser: String => Try[String]) {
+    val result = for {
+      parsedInput <- PealCometHelper.parseInput(inputPolicies)
+      synthesisResult <- synthesiser(inputPolicies)
+    } yield {
+      (parsedInput, synthesisResult)
+    }
+
+    result match {
+      case Failure(e) => dealWithIt(e)
+      case Success(v) => v match {
+        case (parsedInput: (Map[String, PealAst], Map[String, Condition], Map[String, PolicySet], Map[String, AnalysisGenerator], Array[String]), synthesisResult) =>
+          certifyResults(true, parsedInput._1, parsedInput._4, synthesisResult)
+      }
+    }
   }
 
   private def onCallZ3(z3SMTInput: String) {
