@@ -91,7 +91,17 @@ class PealCometActor extends MainBody with CometListener {
       }
   }
 
-  private def performSynthesisAndCertify(synthesiser: String => Try[String], verbose: Boolean) {
+  private def onCallZ3(z3SMTInput: String) {
+    try {
+      val z3RawOutput = Z3Caller.call(z3SMTInput)
+
+      this ! Result(<pre>Generated Z3 code:<br/><br/>{z3SMTInput}</pre><pre>Z3 Raw Output:<br/>{z3RawOutput}</pre>)
+    } catch {
+      case e: Exception => dealWithIt(e)
+    }
+  }
+
+  private def performSynthesisAndCertify(synthesiser: String => Try[String], isVerbose: Boolean) {
     val result = for {
       parsedInput <- PealCometHelper.parseInput(inputPolicies)
       synthesisResult <- synthesiser(inputPolicies)
@@ -103,18 +113,8 @@ class PealCometActor extends MainBody with CometListener {
       case Failure(e) => dealWithIt(e)
       case Success(v) => v match {
         case (parsedInput: (Map[String, PealAst], Map[String, Condition], Map[String, PolicySet], Map[String, AnalysisGenerator], Array[String]), synthesisResult) =>
-          certifyResults(verbose, parsedInput._1, parsedInput._4, synthesisResult)
+          certifyResults(isVerbose, parsedInput._1, parsedInput._4, synthesisResult)
       }
-    }
-  }
-
-  private def onCallZ3(z3SMTInput: String) {
-    try {
-      val z3RawOutput = Z3Caller.call(z3SMTInput)
-
-      this ! Result(<pre>Generated Z3 code:<br/><br/>{z3SMTInput}</pre><pre>Z3 Raw Output:<br/>{z3RawOutput}</pre>)
-    } catch {
-      case e: Exception => dealWithIt(e)
     }
   }
 
