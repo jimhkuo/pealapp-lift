@@ -76,15 +76,15 @@ class PealCometActor extends MainBody with CometListener {
 
   def handleSynthesisActions: PartialFunction[Any, Unit] = {
     case SynthesisAndCallZ3QuietAnalysis =>
-      performSynthesisAndCertify(PealCometHelper.performExplicitSynthesis, false)
+      performSynthesisAndCertify(PealCometHelper.performExplicitSynthesis, isVerbose = false)
     case RunAndCertifyExplicitResults =>
-      performSynthesisAndCertify(PealCometHelper.performExplicitSynthesis, true)
+      performSynthesisAndCertify(PealCometHelper.performExplicitSynthesis, isVerbose = true)
     case ExplicitSynthesisAndCallZ3 =>
       performSynthesisOnly(PealCometHelper.performExplicitSynthesis)
     case SynthesisExtendedAndCallZ3QuietAnalysis =>
-      performSynthesisAndCertify(PealCometHelper.performExtendedSynthesis, false)
+      performSynthesisAndCertify(PealCometHelper.performExtendedSynthesis, isVerbose = false)
     case RunAndCertifyExtendedResults =>
-      performSynthesisAndCertify(PealCometHelper.performExtendedSynthesis, true)
+      performSynthesisAndCertify(PealCometHelper.performExtendedSynthesis, isVerbose = true)
     case ExtendedSynthesisAndCallZ3 =>
       performSynthesisOnly(PealCometHelper.performExtendedSynthesis)
   }
