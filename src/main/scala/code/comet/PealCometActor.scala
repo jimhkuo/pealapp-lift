@@ -4,9 +4,8 @@ import code.lib._
 import net.liftweb.http._
 import net.liftweb.http.js.JsCmds._
 import net.liftweb.http.js.jquery.JqJE._
-import peal.antlr.util.ParserHelper
 import peal.domain.PolicySet
-import peal.domain.z3.{PealAst, Term}
+import peal.domain.z3.PealAst
 import peal.helper.PealCometHelper
 import peal.model.{ConstantScoreModelGenerator, MajorityVotingGenerator, RandomScoreModelGenerator}
 import peal.synthesis._
@@ -15,9 +14,7 @@ import peal.util.ConsoleLogger
 import peal.verifier.OutputVerifier
 import peal.z3.Z3Caller
 
-import scala.Predef._
-import scala.collection.JavaConversions._
-import scala.util.{Failure, Success, Try}
+import scala.util.{Failure, Success}
 import scala.xml.Text
 
 class PealCometActor extends MainBody with CometListener {
