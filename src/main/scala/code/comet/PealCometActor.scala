@@ -266,8 +266,6 @@ class PealCometActor extends CometActor with CometListener {
       }
   }
 
-
-
   override protected def localShutdown(): Unit = {
     val myId = for (sess <- S.session) yield sess.uniqueId
     println("shutting down " + myId.toList(0))
@@ -287,7 +285,6 @@ class PealCometActor extends CometActor with CometListener {
       new LazySynthesiser(policies).generate()
     } catch {
       case e: Exception =>
-//        e.printStackTrace()
         dealWithIt(e)
     }
   }
@@ -297,7 +294,6 @@ class PealCometActor extends CometActor with CometListener {
       new ExtendedSynthesiser(policies).generate()
     } catch {
       case e: Exception =>
-//        e.printStackTrace()
         dealWithIt(e)
     }
   }
@@ -307,7 +303,6 @@ class PealCometActor extends CometActor with CometListener {
       new NewSynthesiser(policies).generate()
     } catch {
       case e: Exception =>
-//        e.printStackTrace()
         dealWithIt(e)
     }
   }
@@ -317,7 +312,6 @@ class PealCometActor extends CometActor with CometListener {
       new EagerSynthesiser(policies).generate()
     } catch {
       case e: Exception =>
-//        e.printStackTrace()
         dealWithIt(e)
     }
   }
@@ -404,6 +398,7 @@ class PealCometActor extends CometActor with CometListener {
   }
 
   private def dealWithIt(e: Throwable) = {
+    //        e.printStackTrace()
     this ! Failed(e.getMessage)
     throw e
   }
