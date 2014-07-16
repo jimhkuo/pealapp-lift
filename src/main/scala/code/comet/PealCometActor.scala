@@ -26,9 +26,9 @@ class PealCometActor extends MainBody with CometListener {
     generateContents
   }
 
-  override def lowPriority: PartialFunction[Any, Unit] = handleGUIMessages orElse handleSynthesisMessages
+  override def lowPriority: PartialFunction[Any, Unit] = handleBasicActions orElse handleSynthesisActions
 
-  def handleGUIMessages: PartialFunction[Any, Unit] = {
+  def handleBasicActions: PartialFunction[Any, Unit] = {
     case Init =>
     case Message(message) => partialUpdate(JqId("result") ~> JqHtml(Text(message)))
     case Failed(message) => partialUpdate(JqId("result") ~> JqHtml(<h3>Error:</h3> ++ Text(message)))
@@ -63,16 +63,24 @@ class PealCometActor extends MainBody with CometListener {
       partialUpdate(JqId("policies") ~> JqVal(""))
     case UploadFile(id, s) =>
       val myId = for (sess <- S.session) yield sess.uniqueId
-
       ConsoleLogger.log("id received: " + id)
-      ConsoleLogger.log1("UploadFile(s) received, s = " + s)
       if (myId.toList(0) == id && s != "") {
         inputPolicies = s
         partialUpdate(JqId("policies") ~> JqVal(inputPolicies))
       }
+    case ExtendedSynthesisAndCallZ3 =>
+      PealCometHelper.performExtendedSynthesis(inputPolicies) match {
+        case Success(v) => onCallZ3(v)
+        case Failure(e) => dealWithIt(e)
+      }
+    case ExplicitSynthesisAndCallZ3 =>
+      PealCometHelper.performExplicitSynthesis(inputPolicies) match {
+        case Success(v) => onCallZ3(v)
+        case Failure(e) => dealWithIt(e)
+      }
   }
 
-  def handleSynthesisMessages: PartialFunction[Any, Unit] = {
+  def handleSynthesisActions: PartialFunction[Any, Unit] = {
     case SynthesisAndCallZ3QuietAnalysis =>
       val result = for {
         parsedInput <- PealCometHelper.parseInput(inputPolicies)
@@ -103,11 +111,6 @@ class PealCometActor extends MainBody with CometListener {
             certifyResults(true, parsedInput._1, parsedInput._4, synthesisResult.toString)
         }
       }
-    case ExplicitSynthesisAndCallZ3 =>
-      PealCometHelper.performExplicitSynthesis(inputPolicies) match {
-        case Success(v) => onCallZ3(v)
-        case Failure(e) => dealWithIt(e)
-      }
     case SynthesisExtendedAndCallZ3QuietAnalysis =>
       val result = for {
         parsedInput <- PealCometHelper.parseInput(inputPolicies)
@@ -137,11 +140,6 @@ class PealCometActor extends MainBody with CometListener {
           case (parsedInput: (Map[String, PealAst], Map[String, Condition], Map[String, PolicySet], Map[String, AnalysisGenerator], Array[String]), synthesisResult) =>
             certifyResults(true, parsedInput._1, parsedInput._4, synthesisResult.toString)
         }
-      }
-    case ExtendedSynthesisAndCallZ3 =>
-      PealCometHelper.performExtendedSynthesis(inputPolicies) match {
-        case Success(v) => onCallZ3(v)
-        case Failure(e) => dealWithIt(e)
       }
 
   }
