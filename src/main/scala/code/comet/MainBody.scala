@@ -66,16 +66,6 @@ trait MainBody extends CometActor{
             <div>
               {SHtml.ajaxButton("Clear text area", () => {this ! Clear; _Noop}, "class" -> "btn btn-warning btn-sm", "style" -> "margin:2px;")}
             </div>
-            <div style="display:none;">
-              {SHtml.ajaxButton("Clear text area", () => {this ! Clear; _Noop}, "class" -> "btn btn-warning btn-sm", "style" -> "margin:2px;")}
-              {SHtml.ajaxButton("Upload", () => {this ! UploadFile; _Noop}, "class" -> "btn btn-warning btn-sm", "style" -> "margin:2px;")}
-              <form data-lift="FileUploadSnippet?form=post;multipart=true">
-                <label for="file">
-                  Upload a Peal file: <input id="file" class="btn btn-warning btn-sm"></input>
-                </label>
-                <input type="submit" value="Submit" class="btn btn-warning btn-sm" style="margin:2px;"></input>
-              </form>
-            </div>
             </div>
           </div>
           <div class="row" style="margin-top: 5px">
@@ -88,8 +78,6 @@ trait MainBody extends CometActor{
               <ul class="nav nav-tabs">
                 <li class="active"><a href="#explicit" class="nonScore" data-toggle="tab">Non-negative, constant scores</a></li>
                 <li><a href="#extended" data-toggle="tab" class="generalScore">General scores</a></li>
-                <li><a href="#symbolic" data-toggle="tab" style="display:none">Symbolic Synthesis</a></li>
-                <li><a href="#new" data-toggle="tab" style="display:none">New Synthesis</a></li>
               </ul>
             </div>
             <div class="tab-content">
@@ -105,21 +93,6 @@ trait MainBody extends CometActor{
                   {SHtml.ajaxButton("Display results of all analyses in pretty printed form and perform independent certification of results", () => {this ! SynthesisExtendedAndCallZ3QuietAnalysis; _Noop}, "class" -> "btn btn-info btn-sm", "style" -> "margin:2px;")}
                   {SHtml.ajaxButton("Generate, show, and run Z3 code; display results in pretty-printed and raw form", () => {this ! RunAndCertifyExtendedResults; _Noop}, "class" -> "btn btn-info btn-sm", "style" -> "margin:2px;")}
                   {SHtml.ajaxButton("Generate, show, and run Z3 code, display results in raw Z3 form", () => {this ! ExtendedSynthesisAndCallZ3; _Noop}, "class" -> "btn btn-info btn-sm", "style" -> "margin:2px;")}
-                </div>
-              </div>
-              <div class="tab-pane" id="symbolic">
-                <div class="col-sm-5">
-                  {SHtml.ajaxButton("Generate, show, and run Z3 code, display results in raw Z3 form", () => {this ! LazySynthesisAndCallZ3; _Noop}, "class" -> "btn btn-success btn-sm", "style" -> "margin:2px;")}
-                  {SHtml.ajaxButton("Generate and show Z3 code", () => {this ! DisplayLazy; _Noop}, "class" -> "btn btn-success btn-sm", "style" -> "margin:2px;")}
-                  {SHtml.ajaxButton("Generate Z3 code and a link to it below", () => {this ! PrepareLazy; _Noop}, "class" -> "btn btn-success btn-sm", "style" -> "margin:2px;")}
-                </div>
-              </div>
-              <div class="tab-pane" id="new">
-                <div class="col-sm-5">
-                  {SHtml.ajaxButton("Generate valid sample for this synthesis", () => {this ! ResetNewDefault; _Noop}, "class" -> "btn btn-primary btn-sm", "style" -> "margin:2px;")}
-                  {SHtml.ajaxButton("Generate, show, and run Z3 code, display results in raw Z3 form", () => {this ! NewSynthesisAndCallZ3; _Noop}, "class" -> "btn btn-success btn-sm", "style" -> "margin:2px;")}
-                  {SHtml.ajaxButton("Generate and show Z3 code", () => {this ! DisplayNew; _Noop}, "class" -> "btn btn-success btn-sm", "style" -> "margin:2px;")}
-                  {SHtml.ajaxButton("Generate Z3 code and a link to it below", () => {this ! PrepareNew; _Noop}, "class" -> "btn btn-success btn-sm", "style" -> "margin:2px;")}
                 </div>
               </div>
             </div>

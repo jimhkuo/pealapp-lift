@@ -1,7 +1,6 @@
 package code.comet
 
 import code.lib._
-import net.liftweb.common.Loggable
 import net.liftweb.http._
 import net.liftweb.http.js.JsCmds._
 import net.liftweb.http.js.jquery.JqJE._
@@ -35,18 +34,39 @@ class PealCometActor extends MainBody with CometListener {
 
   override def lowPriority = {
     case Init =>
-    case DisplayNew => this ! Result(<pre>{performNewSynthesis(inputPolicies)}</pre>)
-    case NewSynthesisAndCallZ3 => onCallZ3(performNewSynthesis(inputPolicies))
-    case PrepareNew =>
-      partialUpdate(JqId("result") ~> JqHtml(Text("Synthesising... Please wait...")))
-      this ! DownloadNew
-    case DownloadNew =>
-      val start = System.nanoTime()
-      val newSynthesis = performNewSynthesis(inputPolicies)
-      val lapseTime = System.nanoTime() - start
-      this ! SaveFile(newSynthesis, lapseTime)
-    case DisplayLazy => this ! Result(<pre>{performLazySynthesis(inputPolicies)}</pre>)
-    case LazySynthesisAndCallZ3 => onCallZ3(performLazySynthesis(inputPolicies))
+    case Message(message) => partialUpdate(JqId("result") ~> JqHtml(Text(message)))
+    case Failed(message) => partialUpdate(JqId("result") ~> JqHtml(<h3>Error:</h3> ++ Text(message)))
+    case Result(output) => partialUpdate(JqId("result") ~> JqHtml(<h3>3. Generated output:</h3> ++ output))
+    case Reset =>
+      this ! Message("")
+      inputPolicies = socialNetworkExample
+      partialUpdate(JqId("policies") ~> JqVal(inputPolicies))
+    case ResetNonConstant =>
+      this ! Message("")
+      inputPolicies = carRentalExample
+      partialUpdate(JqId("policies") ~> JqVal(inputPolicies))
+    case MajorityVoting =>
+      this ! Message("")
+      inputPolicies = MajorityVotingGenerator.generateForCount(majorityVotingCount)
+      partialUpdate(JqId("policies") ~> JqVal(inputPolicies))
+    case Generate =>
+      this ! Message("")
+      inputPolicies = ConstantScoreModelGenerator.generate(randomModelParam.split(Array(' ', ',')).filterNot(_ == ""):_*)
+      partialUpdate(JqId("policies") ~> JqVal(inputPolicies))
+    case GenerateDomainSpecifics =>
+      this ! Message("")
+      inputPolicies = ConstantScoreModelGenerator.generate(true, randomModelParamWithDomain.split(Array(' ', ',')).filterNot(_ == ""):_*)
+      partialUpdate(JqId("policies") ~> JqVal(inputPolicies))
+    case GenerateWithRange =>
+      this ! Message("")
+      clearIntermediateResults
+      inputPolicies = RandomScoreModelGenerator.generate(randomModelWithRangeParam.split(Array(' ', ',')).filterNot(_ == ""):_*)
+      partialUpdate(JqId("policies") ~> JqVal(inputPolicies))
+    case Clear =>
+      this ! Message("")
+      inputPolicies = ""
+      clearIntermediateResults
+      partialUpdate(JqId("policies") ~> JqVal(""))
     case SynthesisAndCallZ3QuietAnalysis =>
       val (constsMap,  conds, pSets, analyses, domainSpecific) = parseInput(inputPolicies)
       this.constsMap = constsMap
@@ -79,66 +99,6 @@ class PealCometActor extends MainBody with CometListener {
       this.analyses = analyses
       extendedSynthesis = performExtendedSynthesis(inputPolicies)
       onCallZ3(extendedSynthesis)
-    case PrepareLazy =>
-      partialUpdate(JqId("result") ~> JqHtml(Text("Synthesising... Please wait...")))
-      this ! DownloadLazy
-    case DownloadLazy =>
-      val start = System.nanoTime()
-      val lazySynthesis = performLazySynthesis(inputPolicies)
-      val lapseTime = System.nanoTime() - start
-      this ! SaveFile(lazySynthesis, lapseTime)
-    case Prepare =>
-      partialUpdate(JqId("result") ~> JqHtml(Text("Synthesising... Please wait...")))
-      this ! Download
-    case Download =>
-      val (constsMap, conds,  pSets, analyses, domainSpecific) = parseInput(inputPolicies)
-      onDownload(constsMap, conds,  pSets, analyses, domainSpecific)
-    case SaveFile(result, lapseTime) =>
-      Z3SMTData.set(result)
-      this ! Result(<p>Output prepared, lapse time:
-        <span style="color:red;font-weight: bold;">
-          {"%.2f".format(lapseTime.toDouble / 1000000)}
-        </span>
-        ms, please click
-        <a href="download">here</a>
-        to download the file</p>)
-    case Result(output) => partialUpdate(JqId("result") ~> JqHtml(<h3>3. Generated output:</h3> ++ output))
-    case Message(message) => partialUpdate(JqId("result") ~> JqHtml(Text(message)))
-    case Failed(message) => partialUpdate(JqId("result") ~> JqHtml(<h3>Error:</h3> ++ Text(message)))
-    case Clear =>
-      this ! Message("")
-      inputPolicies = ""
-      clearIntermediateResults
-      partialUpdate(JqId("policies") ~> JqVal(""))
-    case MajorityVoting =>
-      this ! Message("")
-      inputPolicies = MajorityVotingGenerator.generateForCount(majorityVotingCount)
-      partialUpdate(JqId("policies") ~> JqVal(inputPolicies))
-    case Reset =>
-      this ! Message("")
-      inputPolicies = socialNetworkExample
-      partialUpdate(JqId("policies") ~> JqVal(inputPolicies))
-    case ResetNewDefault =>
-      this ! Message("")
-      inputPolicies = inputForNewSynthesis
-      partialUpdate(JqId("policies") ~> JqVal(inputPolicies))
-    case ResetNonConstant =>
-      this ! Message("")
-      inputPolicies = carRentalExample
-      partialUpdate(JqId("policies") ~> JqVal(inputPolicies))
-    case Generate =>
-      this ! Message("")
-      inputPolicies = ConstantScoreModelGenerator.generate(randomModelParam.split(Array(' ', ',')).filterNot(_ == ""):_*)
-      partialUpdate(JqId("policies") ~> JqVal(inputPolicies))
-    case GenerateWithRange =>
-      this ! Message("")
-      clearIntermediateResults
-      inputPolicies = RandomScoreModelGenerator.generate(randomModelWithRangeParam.split(Array(' ', ',')).filterNot(_ == ""):_*)
-      partialUpdate(JqId("policies") ~> JqVal(inputPolicies))
-    case GenerateDomainSpecifics =>
-      this ! Message("")
-      inputPolicies = ConstantScoreModelGenerator.generate(true, randomModelParamWithDomain.split(Array(' ', ',')).filterNot(_ == ""):_*)
-      partialUpdate(JqId("policies") ~> JqVal(inputPolicies))
     case UploadFile(id, s) =>
       val myId = for (sess <- S.session) yield sess.uniqueId
 
@@ -156,7 +116,7 @@ class PealCometActor extends MainBody with CometListener {
     super.localShutdown()
   }
 
-  private def clearIntermediateResults {
+  private def clearIntermediateResults() {
     z3RawOutput = ""
     extendedSynthesis = ""
     explicitSynthesis = ""
