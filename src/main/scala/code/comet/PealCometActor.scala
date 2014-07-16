@@ -30,9 +30,9 @@ class PealCometActor extends MainBody with CometListener {
 
   def handleBasicActions: PartialFunction[Any, Unit] = {
     case Init =>
-    case Message(message) => partialUpdate(JqId("result") ~> JqHtml(Text(message)))
-    case Failed(message) => partialUpdate(JqId("result") ~> JqHtml(<h3>Error:</h3> ++ Text(message)))
-    case Result(output) => partialUpdate(JqId("result") ~> JqHtml(<h3>3. Generated output:</h3> ++ output))
+    case Message(text) => partialUpdate(JqId("result") ~> JqHtml(Text(text)))
+    case Failed(text) => partialUpdate(JqId("result") ~> JqHtml(<h3>Error:</h3> ++ Text(text)))
+    case Result(html) => partialUpdate(JqId("result") ~> JqHtml(<h3>3. Generated output:</h3> ++ html))
     case SocialNetworkAccessControl => updatePealInput(socialNetworkExample)
     case CarRentalRisks => updatePealInput(carRentalExample)
     case FireFaultTree => updatePealInput(fireFaultTreeExample)
@@ -41,12 +41,11 @@ class PealCometActor extends MainBody with CometListener {
     case GenerateConstantScoreWithDomainSpecifics => updatePealInput(ConstantScoreModelGenerator.generate(true, randomModelParamWithDomain.split(Array(' ', ',')).filterNot(_ == ""): _*))
     case GenerateScoresWithRange => updatePealInput(RandomScoreModelGenerator.generate(randomModelWithRangeParam.split(Array(' ', ',')).filterNot(_ == ""): _*))
     case Clear => updatePealInput("")
-    case UploadFile(id, s) =>
-      val myId = for (sess <- S.session) yield sess.uniqueId
+    case UploadFile(id, fileContent) =>
+      val myId = for (liftSession <- S.session) yield liftSession.uniqueId
       ConsoleLogger.log("id received: " + id)
-      if (myId.toList(0) == id && s != "") {
-        inputPolicies = s
-        partialUpdate(JqId("policies") ~> JqVal(inputPolicies))
+      if (myId.toList(0) == id && fileContent != "") {
+        updatePealInput(fileContent)
       }
   }
 
