@@ -23,7 +23,7 @@ class PealCometActor extends MainBody with CometListener {
 
   def render: RenderOut = {
     this ! Init
-    generateContents
+    generateHTMLContents
   }
 
   override def lowPriority: PartialFunction[Any, Unit] = handleBasicActions orElse handleSynthesisActions
@@ -68,11 +68,22 @@ class PealCometActor extends MainBody with CometListener {
         inputPolicies = s
         partialUpdate(JqId("policies") ~> JqVal(inputPolicies))
       }
+  }
+
+  def handleSynthesisActions: PartialFunction[Any, Unit] = {
+    case SynthesisAndCallZ3QuietAnalysis =>
+      performSynthesisAndCertify(PealCometHelper.performExplicitSynthesis, false)
+    case RunAndCertifyExplicitResults =>
+      performSynthesisAndCertify(PealCometHelper.performExplicitSynthesis, true)
     case ExtendedSynthesisAndCallZ3 =>
       PealCometHelper.performExtendedSynthesis(inputPolicies) match {
         case Success(v) => onCallZ3(v)
         case Failure(e) => dealWithIt(e)
       }
+    case SynthesisExtendedAndCallZ3QuietAnalysis =>
+      performSynthesisAndCertify(PealCometHelper.performExtendedSynthesis, false)
+    case RunAndCertifyExtendedResults =>
+      performSynthesisAndCertify(PealCometHelper.performExtendedSynthesis, true)
     case ExplicitSynthesisAndCallZ3 =>
       PealCometHelper.performExplicitSynthesis(inputPolicies) match {
         case Success(v) => onCallZ3(v)
@@ -80,18 +91,7 @@ class PealCometActor extends MainBody with CometListener {
       }
   }
 
-  def handleSynthesisActions: PartialFunction[Any, Unit] = {
-    case SynthesisAndCallZ3QuietAnalysis =>
-      doQuietSynthesisAndCertify(PealCometHelper.performExplicitSynthesis)
-    case RunAndCertifyExplicitResults =>
-      doSynthesisAndCertify(PealCometHelper.performExplicitSynthesis)
-    case SynthesisExtendedAndCallZ3QuietAnalysis =>
-      doQuietSynthesisAndCertify(PealCometHelper.performExtendedSynthesis)
-    case RunAndCertifyExtendedResults =>
-      doSynthesisAndCertify(PealCometHelper.performExtendedSynthesis)
-  }
-
-  private def doQuietSynthesisAndCertify(synthesiser: String => Try[String]) {
+  private def performSynthesisAndCertify(synthesiser: String => Try[String], verbose: Boolean) {
     val result = for {
       parsedInput <- PealCometHelper.parseInput(inputPolicies)
       synthesisResult <- synthesiser(inputPolicies)
@@ -103,24 +103,7 @@ class PealCometActor extends MainBody with CometListener {
       case Failure(e) => dealWithIt(e)
       case Success(v) => v match {
         case (parsedInput: (Map[String, PealAst], Map[String, Condition], Map[String, PolicySet], Map[String, AnalysisGenerator], Array[String]), synthesisResult) =>
-          certifyResults(false, parsedInput._1, parsedInput._4, synthesisResult)
-      }
-    }
-  }
-
-  private def doSynthesisAndCertify(synthesiser: String => Try[String]) {
-    val result = for {
-      parsedInput <- PealCometHelper.parseInput(inputPolicies)
-      synthesisResult <- synthesiser(inputPolicies)
-    } yield {
-      (parsedInput, synthesisResult)
-    }
-
-    result match {
-      case Failure(e) => dealWithIt(e)
-      case Success(v) => v match {
-        case (parsedInput: (Map[String, PealAst], Map[String, Condition], Map[String, PolicySet], Map[String, AnalysisGenerator], Array[String]), synthesisResult) =>
-          certifyResults(true, parsedInput._1, parsedInput._4, synthesisResult)
+          certifyResults(verbose, parsedInput._1, parsedInput._4, synthesisResult)
       }
     }
   }
