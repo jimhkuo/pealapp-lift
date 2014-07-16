@@ -31,80 +31,80 @@ object Z3OutputAnalyser {
 
     val sortedAnalyses = analyses.keys.toSeq.sortWith(_ < _)
     sortedAnalyses.foreach {
-      a =>
+      analysisName =>
         val section = MutableNodeSeq()
         section.append(<h4>Result of analysis [
-          {analyses(a).analysisName}
+          {analyses(analysisName).analysisName}
           ]</h4>)
-        analyses(a) match {
+        analyses(analysisName) match {
           case s: AlwaysTrue =>
-            if (z3OutputModels(a).satResult == Unsat) {
+            if (z3OutputModels(analysisName).satResult == Unsat) {
               section.append(s.cond + " is always true")
             }
             else {
               section.append(s.cond + " is NOT always true, for example, when:")
-              section.append(getReasons(z3OutputModels(a), Set(), Set("always_true_", "cond"), constsMap))
+              section.append(getReasons(z3OutputModels(analysisName), Set(), Set("always_true_", "cond"), constsMap))
             }
           case s: AlwaysFalse =>
-            if (z3OutputModels(a).satResult == Unsat) {
+            if (z3OutputModels(analysisName).satResult == Unsat) {
               section.append(s.cond + " is always false")
             }
             else {
               section.append(s.cond + " is NOT always false, for example, when:")
-              section.append(getReasons(z3OutputModels(a), Set(), Set("always_false_", "cond"), constsMap))
+              section.append(getReasons(z3OutputModels(analysisName), Set(), Set("always_false_", "cond"), constsMap))
             }
           case s: Satisfiable =>
-            if (z3OutputModels(a).satResult == Unsat) {
+            if (z3OutputModels(analysisName).satResult == Unsat) {
               section.append(s.cond + " is NOT satisfiable")
             }
             else {
               section.append(s.cond + " is satisfiable, for example, when:")
-              section.append(getReasons(z3OutputModels(a), Set(), Set("satisfiable_", "cond"), constsMap))
+              section.append(getReasons(z3OutputModels(analysisName), Set(), Set("satisfiable_", "cond"), constsMap))
             }
           case s: Different =>
-            if (z3OutputModels(a).satResult == Unsat) {
+            if (z3OutputModels(analysisName).satResult == Unsat) {
               section.append(s.lhs + " and " + s.rhs + " are NOT different")
             }
             else {
               section.append(s.lhs + " and " + s.rhs + " are different, for example, when:")
-              section.append(getReasons(z3OutputModels(a), Set(s.lhs, s.rhs), Set("different_", "cond"), constsMap))
+              section.append(getReasons(z3OutputModels(analysisName), Set(s.lhs, s.rhs), Set("different_", "cond"), constsMap))
             }
           case s: Equivalent =>
-            if (z3OutputModels(a).satResult == Unsat) {
+            if (z3OutputModels(analysisName).satResult == Unsat) {
               section.append(s.lhs + " and " + s.rhs + " are equivalent")
             }
             else {
               section.append(s.lhs + " and " + s.rhs + " are NOT equivalent, for example, when:")
-              section.append(getReasons(z3OutputModels(a), Set(s.lhs, s.rhs), Set("equivalent_", "cond"), constsMap))
+              section.append(getReasons(z3OutputModels(analysisName), Set(s.lhs, s.rhs), Set("equivalent_", "cond"), constsMap))
             }
           case s: Implies =>
-            if (z3OutputModels(a).satResult == Unsat) {
+            if (z3OutputModels(analysisName).satResult == Unsat) {
               section.append(s.lhs + " implies " + s.rhs)
             }
             else {
               section.append(s.lhs + " does not imply " + s.rhs + ", for example, when:")
-              section.append(getReasons(z3OutputModels(a), Set(s.lhs, s.rhs), Set("implies_", "cond"), constsMap))
+              section.append(getReasons(z3OutputModels(analysisName), Set(s.lhs, s.rhs), Set("implies_", "cond"), constsMap))
             }
         }
 
-        val cert = if (z3OutputModels(a).satResult == Sat) {
+        val cert = if (z3OutputModels(analysisName).satResult == Sat) {
           section.append(<br/>)
-          val verifiedModel = ov.verifyModel(z3RawOutput, a)
+          val verifiedModel = ov.verifyModel(z3RawOutput, analysisName)
           val result = verifiedModel._1 match {
             case PealTrue => "succeeded"
             case PealFalse => "failed"
             case PealBottom => "was inconclusive"
           }
 
-          section.append("Certification of analysis [" + a + "] " + result + ". Additional predicates set to false in this certification process are " + verifiedModel._2)
+          section.append("Certification of analysis [" + analysisName + "] " + result + ". Additional predicates set to false in this certification process are " + verifiedModel._2)
           section.append("Policies checked:")
           verifiedModel._3.foreach(m => section.append(m._1 + " is " + m._2.fold(r => r.value, b => b)))
-          section.append("\nPolicies in analysis [" + a + "] specialised with respect to the model extended with false predicates from Set():")
+          section.append("\nPolicies in analysis [" + analysisName + "] specialised with respect to the model extended with false predicates from Set():")
           section.append(<br/>)
-          section.append(new InputAnalyser(inputPolicies).analyse(z3RawOutput, a, verifiedModel._2))
+          section.append(new InputAnalyser(inputPolicies).analyse(z3RawOutput, analysisName, verifiedModel._2))
         }
         else {
-          section.append("\nOutput of analysis [" + a + "] is UNSAT: so no certification performed and no specialized policies reported.")
+          section.append("\nOutput of analysis [" + analysisName + "] is UNSAT: so no certification performed and no specialized policies reported.")
         }
         val style = "font-family: Monaco, Menlo, Consolas, \"Courier New\", monospace;display: block;padding: 9.5px;margin: 0 0 10px;font-size: 13px;line-height: 1.428571429;color: #333;word-break: break-all;word-wrap: break-word;background-color: #f5f5f5;border: 1px solid #ccc;border-radius: 4px;"
         entireAnalysis = entireAnalysis ++ <p style={style}>
