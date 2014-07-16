@@ -1,12 +1,11 @@
 package bootstrap.liftweb
 
-import code.rest.RestUpload
-import net.liftweb.http.{Req, StreamingResponse, LiftRules}
-import net.liftweb.sitemap.Menu.{WithSlash, Menuable}
-import net.liftweb.sitemap.{SiteMap, Menu}
-import net.liftweb.common.Full
-import scala.Nil
 import code.lib.Z3SMTData
+import code.rest.RestUpload
+import net.liftweb.common.Full
+import net.liftweb.http.{LiftRules, Req, StreamingResponse}
+import net.liftweb.sitemap.Menu.{Menuable, WithSlash}
+import net.liftweb.sitemap.{Menu, SiteMap}
 
 class Boot {
   def boot {
