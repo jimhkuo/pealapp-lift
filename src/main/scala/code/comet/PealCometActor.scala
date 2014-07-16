@@ -61,13 +61,11 @@ class PealCometActor extends MainBody with CometListener {
       partialUpdate(JqId("policies") ~> JqVal(inputPolicies))
     case GenerateWithRange =>
       this ! Message("")
-      clearIntermediateResults
       inputPolicies = RandomScoreModelGenerator.generate(randomModelWithRangeParam.split(Array(' ', ',')).filterNot(_ == ""): _*)
       partialUpdate(JqId("policies") ~> JqVal(inputPolicies))
     case Clear =>
       this ! Message("")
       inputPolicies = ""
-      clearIntermediateResults
       partialUpdate(JqId("policies") ~> JqVal(""))
     case SynthesisAndCallZ3QuietAnalysis =>
       val (constsMap, _, _, analyses, _) = parseInput(inputPolicies)
@@ -121,11 +119,6 @@ class PealCometActor extends MainBody with CometListener {
     super.localShutdown()
   }
 
-  private def clearIntermediateResults() {
-    z3RawOutput = ""
-  }
-
-
   private def parseInput(input: String): (Map[String, PealAst], Map[String, Condition], Map[String, PolicySet], Map[String, AnalysisGenerator], Array[String]) = {
     val pealProgramParser = ParserHelper.getPealParser(input)
 
@@ -151,7 +144,7 @@ class PealCometActor extends MainBody with CometListener {
 
   private def onCallZ3(z3SMTInput: String) {
     try {
-      z3RawOutput = Z3Caller.call(z3SMTInput)
+      val z3RawOutput = Z3Caller.call(z3SMTInput)
 
       this ! Result(<pre>Generated Z3 code:<br/><br/>{z3SMTInput}</pre><pre>Z3 Raw Output:<br/>{z3RawOutput}</pre>)
     } catch {
@@ -170,11 +163,7 @@ class PealCometActor extends MainBody with CometListener {
       }
     } catch {
         case e: Exception =>
-         e.printStackTrace()
-         verbose match {
-           case true => this ! Result(<pre>Generated Z3 code:<br/><br/>{z3SMTInput}</pre> <pre>Z3 Raw Output:<br/>{z3RawOutput}</pre>)
-           case false => this ! Result(<pre>Result analysis failed, returned model contains unexpected string:<br/>{z3RawOutput}</pre><pre>{e.getMessage}</pre>)
-        }
+        dealWithIt(e)
     }
   }
 
