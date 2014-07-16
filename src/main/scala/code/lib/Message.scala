@@ -22,18 +22,6 @@ case object GenerateConstantScoreWithDomainSpecifics
 
 case object GenerateInputWithRange
 
-case object Download
-
-case object DownloadLazy
-
-case object DownloadNew
-
-case object Prepare
-
-case object PrepareLazy
-
-case object PrepareNew
-
 case object ResetConstantInput
 
 case object ResetNewDefault
@@ -44,27 +32,15 @@ case object ResetMajorityVotingInput
 
 case object ExplicitSynthesisAndCallZ3
 
-case object DisplayLazy
-
-case object DisplayExtended
-
-case object DisplayNew
-
-case object Analysis1
-
 case object RunAndCertifyExplicitResults
 
 case object SynthesisAndCallZ3QuietAnalysis
 
 case object SynthesisExtendedAndCallZ3QuietAnalysis
 
-case object LazySynthesisAndCallZ3
-
 case object ExtendedSynthesisAndCallZ3
 
 case object RunAndCertifyExtendedResults
 
-case object NewSynthesisAndCallZ3
 
-case object Analysis2
 
