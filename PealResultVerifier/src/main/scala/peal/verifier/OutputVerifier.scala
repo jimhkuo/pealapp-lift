@@ -44,7 +44,7 @@ class OutputVerifier(input: String) {
   def verifyModel(analysisName: String, I: Map[String, Either[Rational, ThreeWayBoolean]], remap: Set[String]): (ThreeWayBoolean, Set[String], Map[String, Either[Rational, ThreeWayBoolean]]) = {
     def checkPols(valueMap: Map[String, Either[Rational, ThreeWayBoolean]]) = {
       val newEntries: mutable.Map[String, Either[Rational, ThreeWayBoolean]] = for {
-        (name, pol) <- pols
+        (name, pol) <- pols if Try(certPol(pol)(valueMap)).isSuccess
       } yield {
         val polValue = certPol(pol)(valueMap)
         valueMap.get(name + "_score") match {
@@ -68,13 +68,18 @@ class OutputVerifier(input: String) {
     } yield (analysed, checkedPol)
 
     val out = analysedResult match {
-      case Success(v) => (v._1, remap, v._2)
+      case Success(v) =>
+        println("success")
+        (v._1, remap, v._2)
       case Failure(e) =>
+        println("*** analysis failed, try again")
         val bottomPredicates = predicateNames.filterNot(I.contains).filterNot(remap.contains)
         if (bottomPredicates.isEmpty) {
           throw e
         } else {
           val newRemap = remap + bottomPredicates.head
+          println("*** remap\n" + newRemap)
+
           verifyModel(analysisName, I ++ newRemap.map((_, Right(PealFalse))), newRemap)
         }
     }
@@ -129,47 +134,41 @@ class OutputVerifier(input: String) {
   }
 
   def cert(cond: Condition, v: ThreeWayBoolean)(implicit I: Map[String, Either[Rational, ThreeWayBoolean]]): ThreeWayBoolean = {
-    try {
-      cond match {
-        case NotCondition(c) => cert(conds(c), !v)(I)
-        case AndCondition(lhs, rhs) =>
-          if (v == PealTrue) {
-            cert(conds(lhs), v)(I) && cert(conds(rhs), v)(I)
-          }
-          else {
-            cert(conds(lhs), v)(I) || cert(conds(rhs), v)(I)
-          }
-        case OrCondition(lhs, rhs) =>
-          if (v == PealTrue) {
-            cert(conds(lhs), v)(I) || cert(conds(rhs), v)(I)
-          }
-          else {
-            cert(conds(lhs), v)(I) && cert(conds(rhs), v)(I)
-          }
-        case c: LessThanThCondition =>
-          val lhsValue: BigDecimal = certValue(Right(c.lhs))(I)
-          val rhsValue: BigDecimal = certValue(c.rhs)(I)
-          ConsoleLogger.log1("LessThanThCondition: lhs " + lhsValue + " <= rhs " + rhsValue + ", v " + v)
-          if (v == PealTrue) {
-            ThreeWayBooleanObj.from(lhsValue <= rhsValue)
-          } else {
-            ThreeWayBooleanObj.from(rhsValue < lhsValue)
-          }
-        case c: GreaterThanThCondition =>
-          val lhsValue: BigDecimal = certValue(Right(c.lhs))(I)
-          val rhsValue: BigDecimal = certValue(c.rhs)(I)
-          ConsoleLogger.log1("GreaterThanThCondition: lhs " + lhsValue + " > rhs " + rhsValue + ", v " + v)
-          if (v == PealTrue) {
-            ThreeWayBooleanObj.from(rhsValue < lhsValue)
-          } else {
-            ThreeWayBooleanObj.from(lhsValue <= rhsValue)
-          }
-        case c: PredicateCondition => I(c.predicateName).right.getOrElse(PealBottom) === v
-      }
-    } catch {
-      case e: RuntimeException =>
-        e.printStackTrace()
-        PealBottom
+    cond match {
+      case NotCondition(c) => cert(conds(c), !v)(I)
+      case AndCondition(lhs, rhs) =>
+        if (v == PealTrue) {
+          cert(conds(lhs), v)(I) && cert(conds(rhs), v)(I)
+        }
+        else {
+          cert(conds(lhs), v)(I) || cert(conds(rhs), v)(I)
+        }
+      case OrCondition(lhs, rhs) =>
+        if (v == PealTrue) {
+          cert(conds(lhs), v)(I) || cert(conds(rhs), v)(I)
+        }
+        else {
+          cert(conds(lhs), v)(I) && cert(conds(rhs), v)(I)
+        }
+      case c: LessThanThCondition =>
+        val lhsValue: BigDecimal = certValue(Right(c.lhs))(I)
+        val rhsValue: BigDecimal = certValue(c.rhs)(I)
+        ConsoleLogger.log1("LessThanThCondition: lhs " + lhsValue + " <= rhs " + rhsValue + ", v " + v)
+        if (v == PealTrue) {
+          ThreeWayBooleanObj.from(lhsValue <= rhsValue)
+        } else {
+          ThreeWayBooleanObj.from(rhsValue < lhsValue)
+        }
+      case c: GreaterThanThCondition =>
+        val lhsValue: BigDecimal = certValue(Right(c.lhs))(I)
+        val rhsValue: BigDecimal = certValue(c.rhs)(I)
+        ConsoleLogger.log1("GreaterThanThCondition: lhs " + lhsValue + " > rhs " + rhsValue + ", v " + v)
+        if (v == PealTrue) {
+          ThreeWayBooleanObj.from(rhsValue < lhsValue)
+        } else {
+          ThreeWayBooleanObj.from(lhsValue <= rhsValue)
+        }
+      case c: PredicateCondition => I(c.predicateName).right.getOrElse(PealBottom) === v
     }
   }
 
