@@ -1,4 +1,4 @@
-name := "PealInputAnalyser"
+name := "PealPolicySpecialisation"
 
 version := "0.1"
 
