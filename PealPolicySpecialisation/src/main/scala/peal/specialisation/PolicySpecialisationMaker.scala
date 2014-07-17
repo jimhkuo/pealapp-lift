@@ -1,4 +1,4 @@
-package peal.analyser
+package peal.specialisation
 
 import peal.antlr.util.ParserHelper
 import peal.domain._
@@ -12,7 +12,7 @@ import peal.verifier.util.ScoreEvaluator
 import scala.collection.JavaConversions._
 import scala.xml.{Node, NodeSeq}
 
-class InputAnalyser(input: String) {
+class PolicySpecialisationMaker(input: String) {
   private val pealProgramParser = ParserHelper.getPealParser(input)
   pealProgramParser.program()
   private val conds = pealProgramParser.conds

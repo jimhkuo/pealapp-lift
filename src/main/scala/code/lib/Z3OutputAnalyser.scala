@@ -1,9 +1,9 @@
 package code.lib
 
-import peal.analyser.InputAnalyser
 import peal.antlr.util.ParserHelper
 import peal.domain.z3._
 import peal.domain.{Rational, PealBottom, PealFalse, PealTrue}
+import peal.specialisation.PolicySpecialisationMaker
 import peal.synthesis.analysis._
 import peal.verifier.{OutputVerifier, Z3ModelValueParser}
 
@@ -101,7 +101,7 @@ object Z3OutputAnalyser {
           verifiedModel._3.foreach(m => section.append(m._1 + " is " + m._2.fold(r => r.value, b => b)))
           section.append("\nPolicies in analysis [" + analysisName + "] specialised with respect to the model extended with false predicates from Set():")
           section.append(<br/>)
-          section.append(new InputAnalyser(inputPolicies).analyse(z3RawOutput, analysisName, verifiedModel._2))
+          section.append(new PolicySpecialisationMaker(inputPolicies).analyse(z3RawOutput, analysisName, verifiedModel._2))
         }
         else {
           section.append("\nOutput of analysis [" + analysisName + "] is UNSAT: so no certification performed and no specialized policies reported.")
