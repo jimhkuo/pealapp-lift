@@ -20,7 +20,7 @@ class PolicySpecialisationMaker(input: String) {
   private val analyses = pealProgramParser.analyses
 
 
-  def analyse(rawModel: String, analysisName: String, overrides: Set[String] = Set()): NodeSeq = {
+  def doIt(rawModel: String, analysisName: String, overrides: Set[String] = Set()): NodeSeq = {
 
     implicit val I = Z3ModelExtractor.extractIUsingRational(rawModel)(analysisName) ++ overrides.map(o => (o, Right(PealFalse)))
     ConsoleLogger.log1(I)
