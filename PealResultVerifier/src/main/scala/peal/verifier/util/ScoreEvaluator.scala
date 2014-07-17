@@ -8,6 +8,7 @@ object ScoreEvaluator {
 
     //TODO need to handle _score differently?
     def eval(e: Multiplier): Rational = {
+      //TODO access I here for possible policy
       if (e.name == "" || I.contains(e.name)) {
         e.name match {
           case "" => Rational(e.multiplier.toString())
