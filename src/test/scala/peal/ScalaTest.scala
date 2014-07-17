@@ -8,12 +8,24 @@ import org.junit.Test
 import org.scalatest.junit.ShouldMatchersForJUnit
 
 import scala.sys.process._
+import scala.util.Try
 import scala.xml.{Elem, Node, NodeSeq}
 
 class ScalaTest extends ShouldMatchersForJUnit {
 
   def computNum: Unit => Int = x => 100
 
+  @Test
+  def testTry() {
+      val map = Map(1 -> 1, 2->2)
+
+    for (m <- map) {
+      println(m)
+    }
+    for (m <- Try(map)) {
+      println(m)
+    }
+  }
   @Test
   def testFunction() {
 //      val x :Int = computNum

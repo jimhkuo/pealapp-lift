@@ -5,9 +5,10 @@ import java.net.URL
 import org.eclipse.jetty.server.Server
 import org.eclipse.jetty.server.nio.SelectChannelConnector
 import org.eclipse.jetty.webapp.WebAppContext
+import peal.util.ConsoleLogger
 
 object Start extends App {
-
+ ConsoleLogger.enable(1)
   val connector = new SelectChannelConnector()
   if (args.length > 0) {
     connector.setPort(args(0).toInt)
