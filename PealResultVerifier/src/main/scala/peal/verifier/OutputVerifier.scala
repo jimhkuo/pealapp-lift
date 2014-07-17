@@ -31,7 +31,6 @@ class OutputVerifier(input: String) {
         val newEntries: mutable.Map[String, Either[Rational, ThreeWayBoolean]] = for {
           (name, pol) <- pols
         } yield {
-          //TODO need to compare new entries to *_score
           val polValue = certPol(pol)(valueMap)
           valueMap.get(name + "_score") match {
             case None =>
@@ -154,7 +153,6 @@ class OutputVerifier(input: String) {
 
   private def certPol(pSet: PolicySet)(implicit I: Map[String, Either[Rational, ThreeWayBoolean]]): Rational = pSet match {
     case Pol(rules, op, score, policyName) =>
-      //TODO can forget about all these
       if (rules.exists(r => I.getOrElse(r.q.name, Right(PealBottom)).fold(score => PealBottom, pealBool => pealBool) == PealBottom)) {
         //should log
         val notDefined = rules.filter(r => I.getOrElse(r.q.name, Right(PealBottom)).fold(score => PealBottom, pealBool => pealBool) == PealBottom)
