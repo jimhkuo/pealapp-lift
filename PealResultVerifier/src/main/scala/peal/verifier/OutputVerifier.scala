@@ -72,12 +72,12 @@ class OutputVerifier(input: String) {
     } yield (analysed, checkedPol)
 
     val out = analysedResult match {
-      case Success(v) =>
-        if (v._1 == PealBottom) {
+      case Success((threeWayBoolean, verifiedPolicies)) =>
+        if (threeWayBoolean == PealBottom) {
           println("*** analysis bottom received")
           val bottomPredicates = predicateNames.filterNot(I.contains).filterNot(remap.contains)
           if (bottomPredicates.isEmpty) {
-            (v._1, remap, v._2)
+            (threeWayBoolean, remap, verifiedPolicies)
           } else {
             val newRemap = remap + bottomPredicates.head
             println("*** remap\n" + newRemap)
@@ -87,19 +87,10 @@ class OutputVerifier(input: String) {
         }
         else {
           println("success")
-          (v._1, remap, v._2)
+          (threeWayBoolean, remap, verifiedPolicies)
         }
       case Failure(e) =>
-        println("*** analysis failed, try again " + e.getMessage)
-        val bottomPredicates = predicateNames.filterNot(I.contains).filterNot(remap.contains)
-        if (bottomPredicates.isEmpty) {
-          throw e
-        } else {
-          val newRemap = remap + bottomPredicates.head
-          println("*** remap\n" + newRemap)
-
-          verifyModel(analysisName, I ++ newRemap.map((_, Right(PealFalse))), newRemap)
-        }
+        throw e
     }
 
     println("$$$ returning " + out)
