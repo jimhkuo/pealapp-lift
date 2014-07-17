@@ -14,7 +14,6 @@ import scala.collection.JavaConversions._
 import scala.collection.mutable
 import scala.util.{Failure, Success, Try}
 
-//TODO new certification strategy, this is work in progress
 //a. certify all policies. In this stage, if any certification of policies b fails due to bottom predicates, we simply set I(b) to bottom.
 //
 //b. perform certification according to our notes (all pseucode stays the same), the only change is with certValue() modified to:
@@ -35,24 +34,21 @@ class OutputVerifier(input: String) {
 
 
   def verifyModel(rawModel: String, analysisName: String): (ThreeWayBoolean, Set[String], Map[String, Either[Rational, ThreeWayBoolean]]) = {
-    println("############ analysis " + analysisName)
-
     val initialI = Z3ModelExtractor.extractIUsingRational(rawModel)(analysisName)
     verifyModel(analysisName, initialI, Set())
   }
 
   def verifyModel(analysisName: String, I: Map[String, Either[Rational, ThreeWayBoolean]], remap: Set[String]): (ThreeWayBoolean, Set[String], Map[String, Either[Rational, ThreeWayBoolean]]) = {
-    def checkPols(valueMap: Map[String, Either[Rational, ThreeWayBoolean]]) = {
+    def checkPols(localI: Map[String, Either[Rational, ThreeWayBoolean]]) = {
       //TODO need a better way to carry on
       val newEntries: mutable.Map[String, Either[Rational, ThreeWayBoolean]] = for {
-        (name, pol) <- pols if Try(certPol(pol)(valueMap)).isSuccess
+        (name, pol) <- pols if Try(certPol(pol)(localI)).isSuccess
       } yield {
-        val polValue = certPol(pol)(valueMap)
-        valueMap.get(name + "_score") match {
+        val polValue = certPol(pol)(localI)
+        localI.get(name + "_score") match {
           case None =>
           case Some(x) =>
             val valueInI = x.fold(r => r, b => throw new RuntimeException("checkPols: shouldn't get here"))
-            ConsoleLogger.log2("Comparing " + name + " and " + name + "_score")
             if (valueInI != polValue) {
               throw new RuntimeException("pol certification failed, " + name + " came out to be " + polValue + "but should be " + x)
             }
@@ -65,41 +61,30 @@ class OutputVerifier(input: String) {
       newEntries.toMap
     }
 
-    //TODO I confused exception and bottom here
     val analysedResult: Try[(ThreeWayBoolean, Map[String, Either[Rational, ThreeWayBoolean]])] = for {
       checkedPol <- Try(checkPols(I))
       analysed <- Try(doAnalysis(analysisName)(I ++ checkedPol))
     } yield (analysed, checkedPol)
 
-    val out = analysedResult match {
+    analysedResult match {
       case Success((threeWayBoolean, verifiedPolicies)) =>
         if (threeWayBoolean == PealBottom) {
-          println("*** analysis bottom received")
           val bottomPredicates = predicateNames.filterNot(I.contains).filterNot(remap.contains)
           if (bottomPredicates.isEmpty) {
             (threeWayBoolean, remap, verifiedPolicies)
           } else {
             val newRemap = remap + bottomPredicates.head
-            println("*** remap\n" + newRemap)
-
             verifyModel(analysisName, I ++ newRemap.map((_, Right(PealFalse))), newRemap)
           }
         }
         else {
-          println("success")
           (threeWayBoolean, remap, verifiedPolicies)
         }
-      case Failure(e) =>
-        throw e
+      case Failure(e) => throw e
     }
-
-    println("$$$ returning " + out)
-
-    out
   }
 
   def doAnalysis(analysisName: String)(implicit truthMapping: Map[String, Either[Rational, ThreeWayBoolean]]): ThreeWayBoolean = {
-    ConsoleLogger.log2("I received: " + truthMapping)
     analyses(analysisName) match {
       case AlwaysTrue(_, condName) =>
         if (truthMapping(condName) == Right(PealFalse)) {
@@ -186,7 +171,6 @@ class OutputVerifier(input: String) {
   }
 
   private def certPol(pSet: PolicySet)(implicit I: Map[String, Either[Rational, ThreeWayBoolean]]): Rational = {
-    ConsoleLogger.log2("certPol: " + pSet.getPolicySetName)
     pSet match {
       case Pol(rules, op, score, policyName) =>
         if (rules.exists(r => I.getOrElse(r.q.name, Right(PealBottom)).fold(score => PealBottom, pealBool => pealBool) == PealBottom)) {
@@ -223,8 +207,7 @@ class OutputVerifier(input: String) {
         case Pol(_, _, _, name) =>
           I.get(name) match {
             case Some(x) if x.isLeft => x.fold(r => r, tw => throw new RuntimeException("should be a rational but is not"))
-              //TODO error here
-            case None => throw new RuntimeException("certValue.extractScore(), Pol " + name + " should have been set up by now") //certPol(pols(name))
+            case None => throw new RuntimeException("certValue.extractScore(), Pol " + name + " is not set up")
           }
         case MaxPolicySet(lhs, rhs, n) => extractScore(lhs).max(extractScore(rhs))
         case MinPolicySet(lhs, rhs, n) => extractScore(lhs).min(extractScore(rhs))
