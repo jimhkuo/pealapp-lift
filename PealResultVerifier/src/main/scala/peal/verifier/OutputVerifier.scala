@@ -12,6 +12,7 @@ import scala.collection.JavaConversions._
 
 import scala.collection.JavaConversions._
 import scala.collection.mutable
+import scala.util.{Failure, Success, Try}
 
 //TODO new certification strategy
 //a. certify all policies. In this stage, if any certification of policies b fails due to bottom predicates, we simply set I(b) to bottom.
@@ -35,41 +36,46 @@ class OutputVerifier(input: String) {
 
   def verifyModel(rawModel: String, analysisName: String): (ThreeWayBoolean, Set[String], Map[String, Either[Rational, ThreeWayBoolean]]) = {
     val initialI = Z3ModelExtractor.extractIUsingRational(rawModel)(analysisName)
+    verifyModel(analysisName, initialI, Set())
+  }
 
-    def checkPols(valueMap: Map[String, Either[Rational, ThreeWayBoolean]], remap: Set[String]): (Map[String, Either[Rational, ThreeWayBoolean]], Set[String]) = {
-      try {
-        val newEntries: mutable.Map[String, Either[Rational, ThreeWayBoolean]] = for {
-          (name, pol) <- pols
-        } yield {
-          val polValue = certPol(pol)(valueMap)
-          valueMap.get(name + "_score") match {
-            case None =>
-            case Some(x) =>
-              val valueInI = x.fold(r => r, b => throw new RuntimeException("checkPols: shouldn't get here"))
-              ConsoleLogger.log1("Comparing " + name + " and " + name +"_score")
-              if (valueInI != polValue) {
-                throw new RuntimeException("pol certification failed, " + name + " came out to be " + polValue + "but should be " + x)
-              }
-          }
-          (name, Left[Rational, ThreeWayBoolean](polValue))
+  def verifyModel(analysisName: String, I: Map[String, Either[Rational, ThreeWayBoolean]], remap: Set[String]): (ThreeWayBoolean, Set[String], Map[String, Either[Rational, ThreeWayBoolean]]) = {
+    def checkPols(valueMap: Map[String, Either[Rational, ThreeWayBoolean]]) = {
+      val newEntries: mutable.Map[String, Either[Rational, ThreeWayBoolean]] = for {
+        (name, pol) <- pols
+      } yield {
+        val polValue = certPol(pol)(valueMap)
+        valueMap.get(name + "_score") match {
+          case None =>
+          case Some(x) =>
+            val valueInI = x.fold(r => r, b => throw new RuntimeException("checkPols: shouldn't get here"))
+            ConsoleLogger.log1("Comparing " + name + " and " + name + "_score")
+            if (valueInI != polValue) {
+              throw new RuntimeException("pol certification failed, " + name + " came out to be " + polValue + "but should be " + x)
+            }
         }
-
-        (newEntries.toMap, remap)
-      } catch {
-        case e: RuntimeException =>
-          val bottomPredicates = predicateNames.filterNot(valueMap.contains).filterNot(remap.contains)
-          if (bottomPredicates.isEmpty) {
-            throw e
-          }
-          val newRemap = remap + bottomPredicates.head
-          checkPols(valueMap ++ newRemap.map((_, Right(PealFalse))), newRemap)
+        (name, Left[Rational, ThreeWayBoolean](polValue))
       }
+
+      newEntries.toMap
     }
 
-    val (newPolicyScoreEntries, remappedPredicates) = checkPols(initialI, Set())
+    val analysedResult: Try[(ThreeWayBoolean, Map[String, Either[Rational, ThreeWayBoolean]])] = for {
+      checkedPol <- Try(checkPols(I))
+      analysed <- Try(doAnalysis(analysisName)(I ++ checkedPol))
+    } yield (analysed, checkedPol)
 
-    implicit val I = initialI ++ newPolicyScoreEntries
-    (doAnalysis(analysisName), remappedPredicates, newPolicyScoreEntries)
+    analysedResult match {
+      case Success(v) => (v._1, remap, v._2)
+      case Failure(e) =>
+        val bottomPredicates = predicateNames.filterNot(I.contains).filterNot(remap.contains)
+        if (bottomPredicates.isEmpty) {
+          throw e
+        } else {
+          val newRemap = remap + bottomPredicates.head
+          verifyModel(analysisName, I ++ newRemap.map((_, Right(PealFalse))), newRemap)
+        }
+    }
   }
 
   def doAnalysis(analysisName: String)(implicit truthMapping: Map[String, Either[Rational, ThreeWayBoolean]]): ThreeWayBoolean = {
