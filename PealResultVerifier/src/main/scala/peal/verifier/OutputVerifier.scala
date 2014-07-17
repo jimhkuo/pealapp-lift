@@ -43,6 +43,7 @@ class OutputVerifier(input: String) {
 
   def verifyModel(analysisName: String, I: Map[String, Either[Rational, ThreeWayBoolean]], remap: Set[String]): (ThreeWayBoolean, Set[String], Map[String, Either[Rational, ThreeWayBoolean]]) = {
     def checkPols(valueMap: Map[String, Either[Rational, ThreeWayBoolean]]) = {
+      //TODO need fixing, if fails then should carry on
       val newEntries: mutable.Map[String, Either[Rational, ThreeWayBoolean]] = for {
         (name, pol) <- pols if Try(certPol(pol)(valueMap)).isSuccess
       } yield {
