@@ -14,7 +14,7 @@ import scala.collection.JavaConversions._
 import scala.collection.mutable
 import scala.util.{Failure, Success, Try}
 
-//TODO new certification strategy
+//TODO new certification strategy, this is work in progress
 //a. certify all policies. In this stage, if any certification of policies b fails due to bottom predicates, we simply set I(b) to bottom.
 //
 //b. perform certification according to our notes (all pseucode stays the same), the only change is with certValue() modified to:
