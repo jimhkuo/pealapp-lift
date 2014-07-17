@@ -40,22 +40,23 @@ class OutputVerifier(input: String) {
 
   def verifyModel(analysisName: String, I: Map[String, Either[Rational, ThreeWayBoolean]], remap: Set[String]): (ThreeWayBoolean, Set[String], Map[String, Either[Rational, ThreeWayBoolean]]) = {
     def checkPols(localI: Map[String, Either[Rational, ThreeWayBoolean]]) = {
-      //TODO need a better way to carry on
+
       val newEntries: mutable.Map[String, Either[Rational, ThreeWayBoolean]] = for {
-        (name, pol) <- pols if Try(certPol(pol)(localI)).isSuccess
+        (name, pol) <- pols
+        polValue = Try(certPol(pol)(localI))
+        if polValue.isSuccess
       } yield {
-        val polValue = certPol(pol)(localI)
         localI.get(name + "_score") match {
           case None =>
           case Some(x) =>
             val valueInI = x.fold(r => r, b => throw new RuntimeException("checkPols: shouldn't get here"))
-            if (valueInI != polValue) {
+            if (valueInI != polValue.get) {
               throw new RuntimeException("pol certification failed, " + name + " came out to be " + polValue + "but should be " + x)
             }
         }
-        ConsoleLogger.log1("checkPols:Insert " + polValue + " for " + name)
+        ConsoleLogger.log1("checkPols:Insert " + polValue.get + " for " + name)
 
-        (name, Left[Rational, ThreeWayBoolean](polValue))
+        (name, Left[Rational, ThreeWayBoolean](polValue.get))
       }
 
       newEntries.toMap
@@ -67,18 +68,18 @@ class OutputVerifier(input: String) {
     } yield (analysed, checkedPol)
 
     analysedResult match {
-      case Success((threeWayBoolean, verifiedPolicies)) =>
+      case Success((threeWayBoolean, setOfVerifiedPolicies)) =>
         if (threeWayBoolean == PealBottom) {
           val bottomPredicates = predicateNames.filterNot(I.contains).filterNot(remap.contains)
           if (bottomPredicates.isEmpty) {
-            (threeWayBoolean, remap, verifiedPolicies)
+            (threeWayBoolean, remap, setOfVerifiedPolicies)
           } else {
             val newRemap = remap + bottomPredicates.head
             verifyModel(analysisName, I ++ newRemap.map((_, Right(PealFalse))), newRemap)
           }
         }
         else {
-          (threeWayBoolean, remap, verifiedPolicies)
+          (threeWayBoolean, remap, setOfVerifiedPolicies)
         }
       case Failure(e) => throw e
     }
