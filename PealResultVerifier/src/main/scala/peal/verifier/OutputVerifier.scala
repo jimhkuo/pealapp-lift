@@ -34,6 +34,7 @@ class OutputVerifier(input: String) {
 
 
   def verifyModel(rawModel: String, analysisName: String): (ThreeWayBoolean, Set[String], Map[String, Either[Rational, ThreeWayBoolean]]) = {
+    //TODO need to pull policy_scores aside and purge them from I?
     val initialI = Z3ModelExtractor.extractIUsingRational(rawModel)(analysisName)
     verifyModel(analysisName, initialI, Set())
   }
