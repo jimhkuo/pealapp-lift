@@ -185,14 +185,14 @@ class OutputVerifier(input: String) {
         else {
           val okScores = rules.filter(r => I(r.q.name).fold(score => PealBottom, bool => bool) == PealTrue).map(r => ScoreEvaluator.trueScore(r.score, policyName + "_" + r.q.name + "_U"))
           ConsoleLogger.log2("okScores are: " + okScores + " op is " + op)
-          val decimal = op match {
+          val rational = op match {
             case Min => okScores.reduceLeft((acc, score) => acc.min(score))
             case Max => okScores.reduceLeft((acc, score) => acc.max(score))
             case Plus => okScores.reduceLeft((acc, score) => acc + score)
             case Mul => okScores.reduceLeft((acc, score) => acc * score)
           }
-          ConsoleLogger.log2("op X " + op + " " + policyName + ": " + (for (o <- okScores) yield o).mkString(" ") + ": " + decimal)
-          decimal
+          ConsoleLogger.log2("op X " + op + " " + policyName + ": " + (for (o <- okScores) yield o).mkString(" ") + ": " + rational)
+          rational
         }
 
     }
