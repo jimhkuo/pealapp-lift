@@ -35,6 +35,8 @@ class OutputVerifier(input: String) {
 
 
   def verifyModel(rawModel: String, analysisName: String): (ThreeWayBoolean, Set[String], Map[String, Either[Rational, ThreeWayBoolean]]) = {
+    println("############ analysis " + analysisName)
+
     val initialI = Z3ModelExtractor.extractIUsingRational(rawModel)(analysisName)
     verifyModel(analysisName, initialI, Set())
   }
@@ -65,7 +67,7 @@ class OutputVerifier(input: String) {
       analysed <- Try(doAnalysis(analysisName)(I ++ checkedPol))
     } yield (analysed, checkedPol)
 
-    analysedResult match {
+    val out = analysedResult match {
       case Success(v) => (v._1, remap, v._2)
       case Failure(e) =>
         val bottomPredicates = predicateNames.filterNot(I.contains).filterNot(remap.contains)
@@ -76,6 +78,10 @@ class OutputVerifier(input: String) {
           verifyModel(analysisName, I ++ newRemap.map((_, Right(PealFalse))), newRemap)
         }
     }
+
+    println("$$$ returning " + out)
+
+    out
   }
 
   def doAnalysis(analysisName: String)(implicit truthMapping: Map[String, Either[Rational, ThreeWayBoolean]]): ThreeWayBoolean = {
