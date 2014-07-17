@@ -68,27 +68,27 @@ class OutputVerifier(input: String) {
     analyses(analysisName) match {
       case AlwaysTrue(_, condName) =>
         if (truthMapping(condName) == Right(PealFalse)) {
-          return (cert(conds(condName), truthMapping(condName).right.get)(truthMapping))
+          return cert(conds(condName), truthMapping(condName).right.get)(truthMapping)
         }
         throw new RuntimeException(condName + " should be false but is not in " + analysisName)
       case AlwaysFalse(_, condName) =>
         if (truthMapping(condName) == Right(PealTrue)) {
-          return (cert(conds(condName), truthMapping(condName).right.get)(truthMapping))
+          return cert(conds(condName), truthMapping(condName).right.get)(truthMapping)
         }
         throw new RuntimeException(condName + " should be true but is not in " + analysisName)
       case Satisfiable(_, condName) =>
         if (truthMapping(condName) == Right(PealTrue)) {
-          return (cert(conds(condName), truthMapping(condName).right.get)(truthMapping))
+          return cert(conds(condName), truthMapping(condName).right.get)(truthMapping)
         }
         throw new RuntimeException(condName + " should be true but is not in " + analysisName)
       case Different(_, lhs, rhs) =>
         if (truthMapping.get(lhs) != truthMapping.get(rhs)) {
-          return (cert(conds(lhs), truthMapping(lhs).right.get)(truthMapping) && cert(conds(rhs), truthMapping(rhs).right.get)(truthMapping))
+          return cert(conds(lhs), truthMapping(lhs).right.get)(truthMapping) && cert(conds(rhs), truthMapping(rhs).right.get)(truthMapping)
         }
         throw new RuntimeException(lhs + " and " + rhs + " should be different but are not in " + analysisName)
       case Equivalent(_, lhs, rhs) =>
         if (truthMapping.get(lhs) != truthMapping.get(rhs)) {
-          return (cert(conds(lhs), truthMapping(lhs).right.get)(truthMapping) && cert(conds(rhs), truthMapping(rhs).right.get)(truthMapping))
+          return cert(conds(lhs), truthMapping(lhs).right.get)(truthMapping) && cert(conds(rhs), truthMapping(rhs).right.get)(truthMapping)
         }
         throw new RuntimeException(lhs + " and " + rhs + " should be different but are not in " + analysisName)
       case Implies(_, lhs, rhs) =>
@@ -97,7 +97,7 @@ class OutputVerifier(input: String) {
           val cert2: ThreeWayBoolean = cert(conds(rhs), truthMapping(rhs).right.get)(truthMapping)
           ConsoleLogger.log2("lhs is expected to be " + truthMapping(lhs).right.get + ", rhs is expected to be " + truthMapping(rhs).right.get)
           ConsoleLogger.log2("cert1 " + cert1 + " cert2 " + cert2)
-          return (cert1 && cert2)
+          return cert1 && cert2
         }
         throw new RuntimeException(lhs + " should be true and " + rhs + " should be false, but are not in " + analysisName)
       case _ =>
