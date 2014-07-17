@@ -13,6 +13,16 @@ import scala.collection.JavaConversions._
 import scala.collection.JavaConversions._
 import scala.collection.mutable
 
+//TODO new certification strategy
+//a. certify all policies. In this stage, if any certification of policies b fails due to bottom predicates, we simply set I(b) to bottom.
+//
+//b. perform certification according to our notes (all pseucode stays the same), the only change is with certValue() modified to:
+//
+// certValue(pSet,I) {
+// if (pSet == score) { return I(score); }
+// elseif (pSet == pol) { return I(pSet)}
+//
+//c. perform cert(cond, I, v), if it returns bottom, set one bottom predicate to false and go to #a. Keep the predicate remapped map.
 class OutputVerifier(input: String) {
   val pealProgramParser = ParserHelper.getPealParser(input)
   pealProgramParser.program()
