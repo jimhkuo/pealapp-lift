@@ -6,23 +6,12 @@ object ScoreEvaluator {
 
   def trueScore(score: Score, rangeVarName: String)(implicit I: Map[String, Either[Rational, ThreeWayBoolean]], multiplierNamePurger: Multiplier => String = x => x.name): Rational = {
 
-    def eval(e: Multiplier): Rational = {
-      //TODO WIP
-      if (e.name.contains("_score")) {
-        val realName = multiplierNamePurger(e)
-        println("realName is " + realName)
-        I(realName).left.get //TODO sort this out
-      }
-      else if (e.name == "" || I.contains(e.name)) {
-        e.name match {
-          case "" => Rational(e.multiplier.toString())
-          case _ if I(e.name).isLeft => Rational(e.multiplier.toString()) * I(e.name).fold(s => s, vf => throw new RuntimeException("illegal variable format"))
-          case _ => throw new RuntimeException("Invalid eval case")
-        }
-      } else {
-        println("0 assumed")
-        Rational("0")
-      }
+    //TODO not quite right yet
+    def eval(e: Multiplier): Rational = e.name match {
+      case s if s.contains("_score") => I(multiplierNamePurger(e)).left.get
+      case s if I.contains(s) && I(s).isLeft => Rational(e.multiplier.toString()) * I(s).left.get
+      case "" => Rational(e.multiplier.toString())
+      case _ => Rational("0")
     }
 
     def evaluateFormula(vf: VariableFormula): Rational = {

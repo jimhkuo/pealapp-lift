@@ -32,9 +32,13 @@ class OutputVerifier(input: String) {
   val pols = pealProgramParser.pols
   val predicateNames: Seq[String] = pealProgramParser.pols.values().flatMap(pol => pol.rules).map(r => r.q.name).toSeq.distinct
 
-  private def purgeUnderscore(x: Multiplier): String = x.name.contains("_score") match {
-    case true => x.name.dropRight("_score".length)
-    case _ => x.name
+  private def purgeUnderscore(x: Multiplier): String = {
+    println("purgeUnderscore called for " + x.toNaturalExpression)
+
+    x.name.contains("_score") match {
+      case true => x.name.dropRight("_score".length)
+      case _ => x.name
+    }
   }
 
   def verifyModel(rawModel: String, analysisName: String): (ThreeWayBoolean, Set[String], Map[String, Either[Rational, ThreeWayBoolean]]) = {
@@ -82,7 +86,6 @@ class OutputVerifier(input: String) {
             verifyModel(analysisName, I ++ setOfCheckedPolicies ++ remap.map((_, Right(PealFalse))), remap)
           } else {
             val newRemap = remap + bottomPredicates.head
-//            println("******** remapping " + bottomPredicates.head + " to False")
             verifyModel(analysisName, I ++ setOfCheckedPolicies ++ newRemap.map((_, Right(PealFalse))), newRemap)
           }
         }
@@ -94,7 +97,7 @@ class OutputVerifier(input: String) {
   }
 
   def doAnalysis(analysisName: String)(implicit I: Map[String, Either[Rational, ThreeWayBoolean]], multiplierNamePurger: Multiplier => String): ThreeWayBoolean = {
-    println("In doAnalysis, I is " + I)
+    ConsoleLogger.log1("In doAnalysis, I is " + I)
     analyses(analysisName) match {
       //These I accesses are specific for conditions
       case AlwaysTrue(_, condName) =>
