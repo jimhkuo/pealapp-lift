@@ -33,7 +33,7 @@ class OutputVerifier(input: String) {
   val predicateNames: Seq[String] = pealProgramParser.pols.values().flatMap(pol => pol.rules).map(r => r.q.name).toSeq.distinct
 
   private def purgeUnderscore(x: Multiplier): String = {
-    println("purgeUnderscore called for " + x.toNaturalExpression)
+    ConsoleLogger.log1("purgeUnderscore called for " + x.toNaturalExpression)
 
     val out = x.name.contains("_score") match {
       case true => x.name.dropRight("_score".length)

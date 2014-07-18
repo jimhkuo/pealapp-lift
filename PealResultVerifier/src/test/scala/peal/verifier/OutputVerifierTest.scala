@@ -9,8 +9,24 @@ import peal.util.ConsoleLogger
 class OutputVerifierTest extends ShouldMatchersForJUnit {
 
   @Test
+  def testSelfConstructedScenarioToCatchInvalidUsagesOf_scoreValuesInIWithMultiplier() {
+    //    ConsoleLogger.enable(1)
+    val input = "POLICIES\nb1 = + ((q0 0.1)) default 0.1\nb2 = + ((q1 1)) default b1_score * 0.5\nPOLICY_SETS\npSet1 = b2\nCONDITIONS\ncond1 = 0.5 < pSet1\nANALYSES\nname1 = always_true? cond1"
+    val model = "Result of analysis [name1 = always_true? cond1]:\nsat\n(model \n  " +
+      "(define-fun cond1 () Bool\n    false)\n  " +
+      "(define-fun b1_score () Real\n    (/ 1.0 10.0))\n  " +
+      "(define-fun b2_score () Real\n    (/ 1.0 20.0))\n  " +
+      "(define-fun q1 () Bool\n    false)\n  " +
+      "(define-fun always_true_name1 () Bool\n    false)\n" +
+      ")"
+
+    println(input)
+    new OutputVerifier(input).verifyModel(model, "name1")._1 should be(PealTrue)
+  }
+
+  @Test
   def testSelfConstructedScenarioToCatchInvalidUsagesOf_scoreValuesInI() {
-    ConsoleLogger.enable(1)
+//    ConsoleLogger.enable(1)
     val input = "POLICIES\nb1 = + ((q0 0.1)) default 0.1\nb2 = + ((q1 1)) default b1_score\nPOLICY_SETS\npSet1 = b2\nCONDITIONS\ncond1 = 0.5 < pSet1\nANALYSES\nname1 = always_true? cond1"
     val model = "Result of analysis [name1 = always_true? cond1]:\nsat\n(model \n  " +
       "(define-fun cond1 () Bool\n    false)\n  " +
@@ -19,8 +35,9 @@ class OutputVerifierTest extends ShouldMatchersForJUnit {
       "(define-fun q1 () Bool\n    false)\n " +
       "(define-fun always_true_name1 () Bool\n    false)\n" +
       ")"
-    new OutputVerifier(input).verifyModel(model, "name1")._1 should be(PealTrue)
 
+    println(input)
+    new OutputVerifier(input).verifyModel(model, "name1")._1 should be(PealTrue)
   }
 
   @Test
