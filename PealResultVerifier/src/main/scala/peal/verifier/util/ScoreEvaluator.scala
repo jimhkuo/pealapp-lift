@@ -4,12 +4,11 @@ import peal.domain._
 
 object ScoreEvaluator {
 
-  def trueScore(score: Score, rangeVarName: String)(implicit I: Map[String, Either[Rational, ThreeWayBoolean]]): Rational = {
+  def trueScore(score: Score, rangeVarName: String)(implicit I: Map[String, Either[Rational, ThreeWayBoolean]], multiplierNamePurger: Multiplier => String = x => x.name): Rational = {
 
     def eval(e: Multiplier): Rational = {
-      //TODO access I here for possible policy
       if (e.name == "" || I.contains(e.name)) {
-        e.name match {
+        multiplierNamePurger(e) match {
           case "" => Rational(e.multiplier.toString())
           case _ if I(e.name).isLeft => Rational(e.multiplier.toString()) * I(e.name).fold(s => s, vf => throw new RuntimeException("illegal variable format"))
           case _ => throw new RuntimeException("Invalid eval case")

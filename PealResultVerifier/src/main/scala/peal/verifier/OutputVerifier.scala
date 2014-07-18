@@ -32,6 +32,10 @@ class OutputVerifier(input: String) {
   val pols = pealProgramParser.pols
   val predicateNames: Seq[String] = pealProgramParser.pols.values().flatMap(pol => pol.rules).map(r => r.q.name).toSeq.distinct
 
+  private def purgeUnderscore(x: Multiplier): String = x.name.contains("_score") match {
+    case true => x.name.dropRight("_score".length)
+    case _ => x.name
+  }
 
   def verifyModel(rawModel: String, analysisName: String): (ThreeWayBoolean, Set[String], Map[String, Either[Rational, ThreeWayBoolean]]) = {
     //TODO need to pull policy_scores aside and purge them from I?
@@ -40,11 +44,12 @@ class OutputVerifier(input: String) {
   }
 
   def verifyModel(analysisName: String, I: Map[String, Either[Rational, ThreeWayBoolean]], remap: Set[String]): (ThreeWayBoolean, Set[String], Map[String, Either[Rational, ThreeWayBoolean]]) = {
+
     def checkPols(localI: Map[String, Either[Rational, ThreeWayBoolean]]) = {
 
       val newEntries: mutable.Map[String, Either[Rational, ThreeWayBoolean]] = for {
         (name, pol) <- pols
-        polValue = Try(certPol(pol)(localI))
+        polValue = Try(certPol(pol)(localI, purgeUnderscore))
         if polValue.isSuccess
       } yield {
         localI.get(name + "_score") match {
@@ -65,59 +70,65 @@ class OutputVerifier(input: String) {
 
     val analysedResult: Try[(ThreeWayBoolean, Map[String, Either[Rational, ThreeWayBoolean]])] = for {
       checkedPol <- Try(checkPols(I))
-      analysed <- Try(doAnalysis(analysisName)(I ++ checkedPol))
+      analysed <- Try(doAnalysis(analysisName)(I ++ checkedPol, purgeUnderscore))
     } yield (analysed, checkedPol)
 
     analysedResult match {
-      case Success((threeWayBoolean, setOfVerifiedPolicies)) =>
+      case Success((threeWayBoolean, setOfCheckedPolicies)) =>
         if (threeWayBoolean == PealBottom) {
           val bottomPredicates = predicateNames.filterNot(I.contains).filterNot(remap.contains)
           if (bottomPredicates.isEmpty) {
-            (threeWayBoolean, remap, setOfVerifiedPolicies)
+            println("bottom predicates is Empty, I is " + I)
+            println("bottom predicates is Empty, setOfCheckedPolicies is " + setOfCheckedPolicies)
+            //TODO wip
+            //            (threeWayBoolean, remap, setOfCheckedPolicies)
+            verifyModel(analysisName, I ++ setOfCheckedPolicies ++ remap.map((_, Right(PealFalse))), remap)
           } else {
             val newRemap = remap + bottomPredicates.head
-            verifyModel(analysisName, I ++ newRemap.map((_, Right(PealFalse))), newRemap)
+            println("remapping " + bottomPredicates.head + " to False")
+            verifyModel(analysisName, I ++ setOfCheckedPolicies ++ newRemap.map((_, Right(PealFalse))), newRemap)
           }
         }
         else {
-          (threeWayBoolean, remap, setOfVerifiedPolicies)
+          (threeWayBoolean, remap, setOfCheckedPolicies)
         }
       case Failure(e) => throw e
     }
   }
 
-  def doAnalysis(analysisName: String)(implicit I: Map[String, Either[Rational, ThreeWayBoolean]]): ThreeWayBoolean = {
+  def doAnalysis(analysisName: String)(implicit I: Map[String, Either[Rational, ThreeWayBoolean]], multiplierNamePurger: Multiplier => String): ThreeWayBoolean = {
+    println("In doAnalysis, I is " + I)
     analyses(analysisName) match {
-        //These I accesses are specific for conditions
+      //These I accesses are specific for conditions
       case AlwaysTrue(_, condName) =>
         if (I(condName) == Right(PealFalse)) {
-          return cert(conds(condName), I(condName).right.get)(I)
+          return cert(conds(condName), I(condName).right.get)
         }
         throw new RuntimeException(condName + " should be false but is not in " + analysisName)
       case AlwaysFalse(_, condName) =>
         if (I(condName) == Right(PealTrue)) {
-          return cert(conds(condName), I(condName).right.get)(I)
+          return cert(conds(condName), I(condName).right.get)
         }
         throw new RuntimeException(condName + " should be true but is not in " + analysisName)
       case Satisfiable(_, condName) =>
         if (I(condName) == Right(PealTrue)) {
-          return cert(conds(condName), I(condName).right.get)(I)
+          return cert(conds(condName), I(condName).right.get)
         }
         throw new RuntimeException(condName + " should be true but is not in " + analysisName)
       case Different(_, lhs, rhs) =>
         if (I.get(lhs) != I.get(rhs)) {
-          return cert(conds(lhs), I(lhs).right.get)(I) && cert(conds(rhs), I(rhs).right.get)(I)
+          return cert(conds(lhs), I(lhs).right.get) && cert(conds(rhs), I(rhs).right.get)
         }
         throw new RuntimeException(lhs + " and " + rhs + " should be different but are not in " + analysisName)
       case Equivalent(_, lhs, rhs) =>
         if (I.get(lhs) != I.get(rhs)) {
-          return cert(conds(lhs), I(lhs).right.get)(I) && cert(conds(rhs), I(rhs).right.get)(I)
+          return cert(conds(lhs), I(lhs).right.get) && cert(conds(rhs), I(rhs).right.get)
         }
         throw new RuntimeException(lhs + " and " + rhs + " should be different but are not in " + analysisName)
       case Implies(_, lhs, rhs) =>
         if (I(lhs) == Right(PealTrue) && I(rhs) == Right(PealFalse)) {
-          val cert1: ThreeWayBoolean = cert(conds(lhs), I(lhs).right.get)(I)
-          val cert2: ThreeWayBoolean = cert(conds(rhs), I(rhs).right.get)(I)
+          val cert1: ThreeWayBoolean = cert(conds(lhs), I(lhs).right.get)
+          val cert2: ThreeWayBoolean = cert(conds(rhs), I(rhs).right.get)
           ConsoleLogger.log2("lhs is expected to be " + I(lhs).right.get + ", rhs is expected to be " + I(rhs).right.get)
           ConsoleLogger.log2("cert1 " + cert1 + " cert2 " + cert2)
           return cert1 && cert2
@@ -130,27 +141,27 @@ class OutputVerifier(input: String) {
     throw new RuntimeException("shouldn't get here, no supported analysis specified")
   }
 
-  def cert(cond: Condition, v: ThreeWayBoolean)(implicit I: Map[String, Either[Rational, ThreeWayBoolean]]): ThreeWayBoolean = {
+  def cert(cond: Condition, v: ThreeWayBoolean)(implicit I: Map[String, Either[Rational, ThreeWayBoolean]], multiplierNamePurger: Multiplier => String): ThreeWayBoolean = {
     try {
       cond match {
-        case NotCondition(c) => cert(conds(c), !v)(I)
+        case NotCondition(c) => cert(conds(c), !v)
         case AndCondition(lhs, rhs) =>
           if (v == PealTrue) {
-            cert(conds(lhs), v)(I) && cert(conds(rhs), v)(I)
+            cert(conds(lhs), v) && cert(conds(rhs), v)
           }
           else {
-            cert(conds(lhs), v)(I) || cert(conds(rhs), v)(I)
+            cert(conds(lhs), v) || cert(conds(rhs), v)
           }
         case OrCondition(lhs, rhs) =>
           if (v == PealTrue) {
-            cert(conds(lhs), v)(I) || cert(conds(rhs), v)(I)
+            cert(conds(lhs), v) || cert(conds(rhs), v)
           }
           else {
-            cert(conds(lhs), v)(I) && cert(conds(rhs), v)(I)
+            cert(conds(lhs), v) && cert(conds(rhs), v)
           }
         case c: LessThanThCondition =>
-          val lhsValue: BigDecimal = certValue(Right(c.lhs))(I)
-          val rhsValue: BigDecimal = certValue(c.rhs)(I)
+          val lhsValue: BigDecimal = certValue(Right(c.lhs))
+          val rhsValue: BigDecimal = certValue(c.rhs)
           ConsoleLogger.log1("LessThanThCondition: lhs " + lhsValue + " <= rhs " + rhsValue + ", v " + v)
           if (v == PealTrue) {
             ThreeWayBooleanObj.from(lhsValue <= rhsValue)
@@ -158,8 +169,8 @@ class OutputVerifier(input: String) {
             ThreeWayBooleanObj.from(rhsValue < lhsValue)
           }
         case c: GreaterThanThCondition =>
-          val lhsValue: BigDecimal = certValue(Right(c.lhs))(I)
-          val rhsValue: BigDecimal = certValue(c.rhs)(I)
+          val lhsValue: BigDecimal = certValue(Right(c.lhs))
+          val rhsValue: BigDecimal = certValue(c.rhs)
           ConsoleLogger.log1("GreaterThanThCondition: lhs " + lhsValue + " > rhs " + rhsValue + ", v " + v)
           if (v == PealTrue) {
             ThreeWayBooleanObj.from(rhsValue < lhsValue)
@@ -169,11 +180,13 @@ class OutputVerifier(input: String) {
         case c: PredicateCondition => I(c.predicateName).right.getOrElse(PealBottom) === v
       }
     } catch {
-      case e: Exception => PealBottom
+      case e: Exception =>
+        //        e.printStackTrace()
+        PealBottom
     }
   }
 
-  private def certPol(pSet: PolicySet)(implicit I: Map[String, Either[Rational, ThreeWayBoolean]]): Rational = {
+  private def certPol(pSet: PolicySet)(implicit I: Map[String, Either[Rational, ThreeWayBoolean]], multiplierNamePurger: Multiplier => String): Rational = {
     pSet match {
       case Pol(rules, op, score, policyName) =>
         //These are getting rule specific I values, so they are ok
@@ -186,6 +199,7 @@ class OutputVerifier(input: String) {
           ScoreEvaluator.trueScore(score, policyName + "_default_U")
         }
         else {
+          //TODO scores here could contain _score
           val okScores = rules.filter(r => I(r.q.name).fold(score => PealBottom, bool => bool) == PealTrue).map(r => ScoreEvaluator.trueScore(r.score, policyName + "_" + r.q.name + "_U"))
           ConsoleLogger.log2("okScores are: " + okScores + " op is " + op)
           val rational = op match {
@@ -202,7 +216,7 @@ class OutputVerifier(input: String) {
   }
 
   //if certValue is not BigDecimal, throw exception to be handled in the upper layer
-  private def certValue(pSet: Either[BigDecimal, PolicySet])(implicit I: Map[String, Either[Rational, ThreeWayBoolean]]): BigDecimal = {
+  private def certValue(pSet: Either[BigDecimal, PolicySet])(implicit I: Map[String, Either[Rational, ThreeWayBoolean]], multiplierNamePurger: Multiplier => String): BigDecimal = {
 
     def extractScore(pSet: PolicySet): Rational = {
 
