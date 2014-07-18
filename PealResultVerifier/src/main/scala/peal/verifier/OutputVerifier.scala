@@ -16,9 +16,9 @@ import scala.util.{Failure, Success, Try}
 
 //a. certify all policies. In this stage, if any certification of policies b fails due to bottom predicates, we simply set I(b) to bottom.
 //
-//b. perform certification according to our notes (all pseucode stays the same), the only change is with certValue() modified to:
+//b. perform certification according to our notes (all pseucode stays the same), the only change is with certPSet() modified to:
 //
-// certValue(pSet,I) {
+// certPSet(pSet,I) {
 // if (pSet == score) { return I(score); }
 // elseif (pSet == pol) { return I(pSet)}
 //
@@ -35,10 +35,13 @@ class OutputVerifier(input: String) {
   private def purgeUnderscore(x: Multiplier): String = {
     println("purgeUnderscore called for " + x.toNaturalExpression)
 
-    x.name.contains("_score") match {
+    val out = x.name.contains("_score") match {
       case true => x.name.dropRight("_score".length)
       case _ => x.name
     }
+
+    ConsoleLogger.log1("changing " + x.name + " to " + out)
+    out
   }
 
   def verifyModel(rawModel: String, analysisName: String): (ThreeWayBoolean, Set[String], Map[String, Either[Rational, ThreeWayBoolean]]) = {
@@ -53,7 +56,7 @@ class OutputVerifier(input: String) {
 
       val newEntries: mutable.Map[String, Either[Rational, ThreeWayBoolean]] = for {
         (name, pol) <- pols
-        polValue = Try(certPol(pol)(localI, purgeUnderscore))
+        polValue = Try(certPolicy(pol)(localI, purgeUnderscore))
         if polValue.isSuccess
       } yield {
         localI.get(name + "_score") match {
@@ -107,33 +110,33 @@ class OutputVerifier(input: String) {
       //These I accesses are specific for conditions
       case AlwaysTrue(_, condName) =>
         if (I(condName) == Right(PealFalse)) {
-          return cert(conds(condName), I(condName).right.get)
+          return certCond(conds(condName), I(condName).right.get)
         }
         throw new RuntimeException(condName + " should be false but is not in " + analysisName)
       case AlwaysFalse(_, condName) =>
         if (I(condName) == Right(PealTrue)) {
-          return cert(conds(condName), I(condName).right.get)
+          return certCond(conds(condName), I(condName).right.get)
         }
         throw new RuntimeException(condName + " should be true but is not in " + analysisName)
       case Satisfiable(_, condName) =>
         if (I(condName) == Right(PealTrue)) {
-          return cert(conds(condName), I(condName).right.get)
+          return certCond(conds(condName), I(condName).right.get)
         }
         throw new RuntimeException(condName + " should be true but is not in " + analysisName)
       case Different(_, lhs, rhs) =>
         if (I.get(lhs) != I.get(rhs)) {
-          return cert(conds(lhs), I(lhs).right.get) && cert(conds(rhs), I(rhs).right.get)
+          return certCond(conds(lhs), I(lhs).right.get) && certCond(conds(rhs), I(rhs).right.get)
         }
         throw new RuntimeException(lhs + " and " + rhs + " should be different but are not in " + analysisName)
       case Equivalent(_, lhs, rhs) =>
         if (I.get(lhs) != I.get(rhs)) {
-          return cert(conds(lhs), I(lhs).right.get) && cert(conds(rhs), I(rhs).right.get)
+          return certCond(conds(lhs), I(lhs).right.get) && certCond(conds(rhs), I(rhs).right.get)
         }
         throw new RuntimeException(lhs + " and " + rhs + " should be different but are not in " + analysisName)
       case Implies(_, lhs, rhs) =>
         if (I(lhs) == Right(PealTrue) && I(rhs) == Right(PealFalse)) {
-          val cert1: ThreeWayBoolean = cert(conds(lhs), I(lhs).right.get)
-          val cert2: ThreeWayBoolean = cert(conds(rhs), I(rhs).right.get)
+          val cert1: ThreeWayBoolean = certCond(conds(lhs), I(lhs).right.get)
+          val cert2: ThreeWayBoolean = certCond(conds(rhs), I(rhs).right.get)
           ConsoleLogger.log2("lhs is expected to be " + I(lhs).right.get + ", rhs is expected to be " + I(rhs).right.get)
           ConsoleLogger.log2("cert1 " + cert1 + " cert2 " + cert2)
           return cert1 && cert2
@@ -146,27 +149,27 @@ class OutputVerifier(input: String) {
     throw new RuntimeException("shouldn't get here, no supported analysis specified")
   }
 
-  def cert(cond: Condition, v: ThreeWayBoolean)(implicit I: Map[String, Either[Rational, ThreeWayBoolean]], multiplierNamePurger: Multiplier => String): ThreeWayBoolean = {
+  def certCond(cond: Condition, v: ThreeWayBoolean)(implicit I: Map[String, Either[Rational, ThreeWayBoolean]], multiplierNamePurger: Multiplier => String): ThreeWayBoolean = {
     try {
       cond match {
-        case NotCondition(c) => cert(conds(c), !v)
+        case NotCondition(c) => certCond(conds(c), !v)
         case AndCondition(lhs, rhs) =>
           if (v == PealTrue) {
-            cert(conds(lhs), v) && cert(conds(rhs), v)
+            certCond(conds(lhs), v) && certCond(conds(rhs), v)
           }
           else {
-            cert(conds(lhs), v) || cert(conds(rhs), v)
+            certCond(conds(lhs), v) || certCond(conds(rhs), v)
           }
         case OrCondition(lhs, rhs) =>
           if (v == PealTrue) {
-            cert(conds(lhs), v) || cert(conds(rhs), v)
+            certCond(conds(lhs), v) || certCond(conds(rhs), v)
           }
           else {
-            cert(conds(lhs), v) && cert(conds(rhs), v)
+            certCond(conds(lhs), v) && certCond(conds(rhs), v)
           }
         case c: LessThanThCondition =>
-          val lhsValue: BigDecimal = certValue(Right(c.lhs))
-          val rhsValue: BigDecimal = certValue(c.rhs)
+          val lhsValue: BigDecimal = certPSet(Right(c.lhs))
+          val rhsValue: BigDecimal = certPSet(c.rhs)
           ConsoleLogger.log1("LessThanThCondition: lhs " + lhsValue + " <= rhs " + rhsValue + ", v " + v)
           if (v == PealTrue) {
             ThreeWayBooleanObj.from(lhsValue <= rhsValue)
@@ -174,8 +177,8 @@ class OutputVerifier(input: String) {
             ThreeWayBooleanObj.from(rhsValue < lhsValue)
           }
         case c: GreaterThanThCondition =>
-          val lhsValue: BigDecimal = certValue(Right(c.lhs))
-          val rhsValue: BigDecimal = certValue(c.rhs)
+          val lhsValue: BigDecimal = certPSet(Right(c.lhs))
+          val rhsValue: BigDecimal = certPSet(c.rhs)
           ConsoleLogger.log1("GreaterThanThCondition: lhs " + lhsValue + " > rhs " + rhsValue + ", v " + v)
           if (v == PealTrue) {
             ThreeWayBooleanObj.from(rhsValue < lhsValue)
@@ -191,14 +194,15 @@ class OutputVerifier(input: String) {
     }
   }
 
-  private def certPol(pSet: PolicySet)(implicit I: Map[String, Either[Rational, ThreeWayBoolean]], multiplierNamePurger: Multiplier => String): Rational = {
-    pSet match {
+  private def certPolicy(pSet: PolicySet)(implicit I: Map[String, Either[Rational, ThreeWayBoolean]], multiplierNamePurger: Multiplier => String): Rational = {
+    ConsoleLogger.log1("### certPolicy " + pSet.getPolicySetName)
+    val out = pSet match {
       case Pol(rules, op, score, policyName) =>
         //These are getting rule specific I values, so they are ok
         if (rules.exists(r => I.getOrElse(r.q.name, Right(PealBottom)).fold(score => PealBottom, pealBool => pealBool) == PealBottom)) {
           //should log
           val notDefined = rules.filter(r => I.getOrElse(r.q.name, Right(PealBottom)).fold(score => PealBottom, pealBool => pealBool) == PealBottom)
-          throw new RuntimeException("PealBottom reached in certValue because some predicates are not defined in I: " + notDefined + " in " + policyName + " " + rules)
+          throw new RuntimeException("PealBottom reached in certPSet because some predicates are not defined in I: " + notDefined + " in " + policyName + " " + rules)
         }
         else if (!rules.exists(r => I(r.q.name).fold(score => PealBottom, bool => bool) == PealTrue)) {
           ScoreEvaluator.trueScore(score, policyName + "_default_U")
@@ -215,12 +219,14 @@ class OutputVerifier(input: String) {
           ConsoleLogger.log2("op X " + op + " " + policyName + ": " + (for (o <- okScores) yield o).mkString(" ") + ": " + rational)
           rational
         }
-
     }
+
+    ConsoleLogger.log1(pSet.getPolicySetName + " is " + out)
+    out
   }
 
-  //if certValue is not BigDecimal, throw exception to be handled in the upper layer
-  private def certValue(pSet: Either[BigDecimal, PolicySet])(implicit I: Map[String, Either[Rational, ThreeWayBoolean]], multiplierNamePurger: Multiplier => String): BigDecimal = {
+  //if certPSet is not BigDecimal, throw exception to be handled in the upper layer
+  private def certPSet(pSet: Either[BigDecimal, PolicySet])(implicit I: Map[String, Either[Rational, ThreeWayBoolean]], multiplierNamePurger: Multiplier => String): BigDecimal = {
 
     def extractScore(pSet: PolicySet): Rational = {
 
@@ -230,7 +236,7 @@ class OutputVerifier(input: String) {
           //access I here for possible policy, but this is fine as name will not be name_score unless named specifically
           I.get(name) match {
             case Some(x) if x.isLeft => x.fold(r => r, tw => throw new RuntimeException("should be a rational but is not"))
-            case None => throw new RuntimeException("certValue.extractScore(), Pol " + name + " is not set up")
+            case None => throw new RuntimeException("certPSet.extractScore(), Pol " + name + " is not set up")
           }
         case MaxPolicySet(lhs, rhs, n) => extractScore(lhs).max(extractScore(rhs))
         case MinPolicySet(lhs, rhs, n) => extractScore(lhs).min(extractScore(rhs))
