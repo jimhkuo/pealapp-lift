@@ -13,8 +13,8 @@ class Boot {
     val entries: List[Menuable with WithSlash] = List(
       Menu.i("Editor and runner") / "index",
       Menu.i("About PEALT") / "aboutpealt",
-//      Menu.i("User guide") / "userguide",
-      Menu.i("Case studies") / "casestudies",
+      Menu.i("User guide") / "userguide",
+//      Menu.i("Case studies") / "casestudies",
       Menu.i("Acknowledgements") / "acknowledgements"
     )
     LiftRules.setSiteMap(SiteMap(entries: _*))
