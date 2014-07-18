@@ -203,7 +203,6 @@ class OutputVerifier(input: String) {
           ScoreEvaluator.trueScore(score, policyName + "_default_U")
         }
         else {
-          //TODO scores here could contain _score
           val okScores = rules.filter(r => I(r.q.name).fold(score => PealBottom, bool => bool) == PealTrue).map(r => ScoreEvaluator.trueScore(r.score, policyName + "_" + r.q.name + "_U"))
           ConsoleLogger.log2("okScores are: " + okScores + " op is " + op)
           val rational = op match {

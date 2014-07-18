@@ -6,7 +6,6 @@ object ScoreEvaluator {
 
   def trueScore(score: Score, rangeVarName: String)(implicit I: Map[String, Either[Rational, ThreeWayBoolean]], multiplierNamePurger: Multiplier => String = x => x.name): Rational = {
 
-    //TODO not quite right yet
     def eval(e: Multiplier): Rational = e.name match {
       case s if s.contains("_score") => I(multiplierNamePurger(e)).left.get
       case s if I.contains(s) && I(s).isLeft => Rational(e.multiplier.toString()) * I(s).left.get
