@@ -42,6 +42,7 @@ class OutputVerifier(input: String) {
   }
 
   def verifyModel(rawModel: String, analysisName: String): (ThreeWayBoolean, Set[String], Map[String, Either[Rational, ThreeWayBoolean]]) = {
+    ConsoleLogger.log1("########## analysis " + analysisName)
     val initialI = Z3ModelExtractor.extractIUsingRational(rawModel)(analysisName)
     verifyModel(analysisName, initialI, Set(), Map())
   }
@@ -63,7 +64,7 @@ class OutputVerifier(input: String) {
               throw new RuntimeException("pol certification failed, " + name + " came out to be " + polValue + "but should be " + x)
             }
         }
-        ConsoleLogger.log1("validateAndInsertPolScores:Insert " + polValue.get + " for " + name)
+        ConsoleLogger.log1("certifyAllPolicyScores:adding " + name + " -> " + polValue.get)
 
         (name, Left[Rational, ThreeWayBoolean](polValue.get))
       }
