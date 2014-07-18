@@ -46,12 +46,8 @@ class OutputVerifier(input: String) {
     verifyModel(analysisName, initialI, Set(), Map())
   }
 
-  var i = 0
-
   def verifyModel(analysisName: String, I: Map[String, Either[Rational, ThreeWayBoolean]], remap: Set[String], previouslyCheckedPolicies: Map[String, Either[Rational, ThreeWayBoolean]]): (ThreeWayBoolean, Set[String], Map[String, Either[Rational, ThreeWayBoolean]]) = {
 
-    ConsoleLogger.log1(i + " In verifyModel, received " + I)
-    i += 1
     def validateAndInsertPolScores(localI: Map[String, Either[Rational, ThreeWayBoolean]]) = {
 
       val newEntries: mutable.Map[String, Either[Rational, ThreeWayBoolean]] = for {
