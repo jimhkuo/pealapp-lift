@@ -43,12 +43,16 @@ class OutputVerifier(input: String) {
 
   def verifyModel(rawModel: String, analysisName: String): (ThreeWayBoolean, Set[String], Map[String, Either[Rational, ThreeWayBoolean]]) = {
     val initialI = Z3ModelExtractor.extractIUsingRational(rawModel)(analysisName)
-    verifyModel(analysisName, initialI, Set())
+    verifyModel(analysisName, initialI, Set(), Map())
   }
 
-  def verifyModel(analysisName: String, I: Map[String, Either[Rational, ThreeWayBoolean]], remap: Set[String]): (ThreeWayBoolean, Set[String], Map[String, Either[Rational, ThreeWayBoolean]]) = {
+  var i = 0
 
-    def checkPols(localI: Map[String, Either[Rational, ThreeWayBoolean]]) = {
+  def verifyModel(analysisName: String, I: Map[String, Either[Rational, ThreeWayBoolean]], remap: Set[String], previouslyCheckedPolicies: Map[String, Either[Rational, ThreeWayBoolean]]): (ThreeWayBoolean, Set[String], Map[String, Either[Rational, ThreeWayBoolean]]) = {
+
+    ConsoleLogger.log1(i + " In verifyModel, received " + I)
+    i += 1
+    def validateAndInsertPolScores(localI: Map[String, Either[Rational, ThreeWayBoolean]]) = {
 
       val newEntries: mutable.Map[String, Either[Rational, ThreeWayBoolean]] = for {
         (name, pol) <- pols
@@ -58,12 +62,12 @@ class OutputVerifier(input: String) {
         localI.get(name + "_score") match {
           case None =>
           case Some(x) =>
-            val valueInI = x.fold(r => r, b => throw new RuntimeException("checkPols: shouldn't get here"))
+            val valueInI = x.fold(r => r, b => throw new RuntimeException("validateAndInsertPolScores: shouldn't get here"))
             if (valueInI != polValue.get) {
               throw new RuntimeException("pol certification failed, " + name + " came out to be " + polValue + "but should be " + x)
             }
         }
-        ConsoleLogger.log1("checkPols:Insert " + polValue.get + " for " + name)
+        ConsoleLogger.log1("validateAndInsertPolScores:Insert " + polValue.get + " for " + name)
 
         (name, Left[Rational, ThreeWayBoolean](polValue.get))
       }
@@ -72,21 +76,25 @@ class OutputVerifier(input: String) {
     }
 
     val analysedResult: Try[(ThreeWayBoolean, Map[String, Either[Rational, ThreeWayBoolean]])] = for {
-      checkedPol <- Try(checkPols(I))
-      analysed <- Try(doAnalysis(analysisName)(I ++ checkedPol, purgeUnderscore))
-    } yield (analysed, checkedPol)
+      mapOfCheckedPolScores <- Try(validateAndInsertPolScores(I))
+      analysed <- Try(doAnalysis(analysisName)(I ++ mapOfCheckedPolScores, purgeUnderscore))
+    } yield (analysed, mapOfCheckedPolScores)
 
     analysedResult match {
       case Success((threeWayBoolean, setOfCheckedPolicies)) =>
+        ConsoleLogger.log1("*** setOfCheckedPolicies: " + setOfCheckedPolicies)
+
         if (threeWayBoolean == PealBottom) {
           val bottomPredicates = predicateNames.filterNot(I.contains).filterNot(remap.contains)
-          if (bottomPredicates.isEmpty) {
-            //TODO wip
-            //            (threeWayBoolean, remap, setOfCheckedPolicies)
-            verifyModel(analysisName, I ++ setOfCheckedPolicies ++ remap.map((_, Right(PealFalse))), remap)
+          if (setOfCheckedPolicies != previouslyCheckedPolicies) {
+            verifyModel(analysisName, I ++ setOfCheckedPolicies ++ remap.map((_, Right(PealFalse))), remap, setOfCheckedPolicies)
+          }
+          else if (bottomPredicates.isEmpty) {
+            (threeWayBoolean, remap, setOfCheckedPolicies)
           } else {
             val newRemap = remap + bottomPredicates.head
-            verifyModel(analysisName, I ++ setOfCheckedPolicies ++ newRemap.map((_, Right(PealFalse))), newRemap)
+            ConsoleLogger.log1("*** Setting these to false: " + newRemap)
+            verifyModel(analysisName, I ++ setOfCheckedPolicies ++ newRemap.map((_, Right(PealFalse))), newRemap, setOfCheckedPolicies)
           }
         }
         else {
