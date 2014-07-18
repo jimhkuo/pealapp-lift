@@ -6,7 +6,6 @@ object ScoreEvaluator {
 
   def trueScore(score: Score, rangeVarName: String)(implicit I: Map[String, Either[Rational, ThreeWayBoolean]]): Rational = {
 
-    //TODO need to handle _score differently?
     def eval(e: Multiplier): Rational = {
       //TODO access I here for possible policy
       if (e.name == "" || I.contains(e.name)) {

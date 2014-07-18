@@ -209,7 +209,7 @@ class OutputVerifier(input: String) {
       val out = pSet match {
         case BasicPolicySet(pol, name) => extractScore(pol)
         case Pol(_, _, _, name) =>
-          //TODO access I here for possible policy
+          //access I here for possible policy, but this is fine as name will not be name_score unless named specifically
           I.get(name) match {
             case Some(x) if x.isLeft => x.fold(r => r, tw => throw new RuntimeException("should be a rational but is not"))
             case None => throw new RuntimeException("certValue.extractScore(), Pol " + name + " is not set up")
