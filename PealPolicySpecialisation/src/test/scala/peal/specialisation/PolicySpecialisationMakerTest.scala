@@ -41,7 +41,7 @@ class PolicySpecialisationMakerTest extends ShouldMatchersForJUnit {
     ConsoleLogger.log(input)
     val out = new PolicySpecialisationMaker(input).doIt(model, "analysis")
     ConsoleLogger.log(out.text)
-    out.text should be("b2 = + () default 0.0b3 = + (([q5] 0.00)) default 0.9")
+    out.text should be("b2 = + () default 0.0b3 = + (([q5] 0.0)) default 0.9")
   }
 
   @Test

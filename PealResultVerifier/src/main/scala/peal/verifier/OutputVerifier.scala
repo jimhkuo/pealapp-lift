@@ -38,7 +38,6 @@ class OutputVerifier(input: String) {
   }
 
   def verifyModel(rawModel: String, analysisName: String): (ThreeWayBoolean, Set[String], Map[String, Either[Rational, ThreeWayBoolean]]) = {
-    //TODO need to pull policy_scores aside and purge them from I?
     val initialI = Z3ModelExtractor.extractIUsingRational(rawModel)(analysisName)
     verifyModel(analysisName, initialI, Set())
   }
@@ -78,14 +77,12 @@ class OutputVerifier(input: String) {
         if (threeWayBoolean == PealBottom) {
           val bottomPredicates = predicateNames.filterNot(I.contains).filterNot(remap.contains)
           if (bottomPredicates.isEmpty) {
-            println("bottom predicates is Empty, I is " + I)
-            println("bottom predicates is Empty, setOfCheckedPolicies is " + setOfCheckedPolicies)
             //TODO wip
             //            (threeWayBoolean, remap, setOfCheckedPolicies)
             verifyModel(analysisName, I ++ setOfCheckedPolicies ++ remap.map((_, Right(PealFalse))), remap)
           } else {
             val newRemap = remap + bottomPredicates.head
-            println("remapping " + bottomPredicates.head + " to False")
+//            println("******** remapping " + bottomPredicates.head + " to False")
             verifyModel(analysisName, I ++ setOfCheckedPolicies ++ newRemap.map((_, Right(PealFalse))), newRemap)
           }
         }
