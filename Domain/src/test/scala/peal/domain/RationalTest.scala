@@ -7,8 +7,14 @@ import org.scalatest.junit.ShouldMatchersForJUnit
 class RationalTest extends ShouldMatchersForJUnit {
 
   @Test
-  def testPrecisionIsSetTo1IfIsZeroValue() {
-      Rational("0.000").toString should be ("Rational(0.0,1)")
+  def testPrecisionOfWholeNumberIs1() {
+    (Rational("1.0") * Rational("1.0")).toString should be("Rational(1,1)")
+    Rational("0.000").toString should be("Rational(0,1)")
+  }
+
+  @Test
+  def testPrecisionOfDecimalNumberIsUnchanged() {
+    Rational("0.21").value.toString should be("0.21")
   }
 
   @Test
@@ -43,7 +49,7 @@ class RationalTest extends ShouldMatchersForJUnit {
     Rational("1.5") * Rational("1") should be(Rational("1.5"))
     Rational("15", "10") * Rational("10", "9") should be(Rational("15", "9"))
     Rational("-15", "10") * Rational("10", "9") should be(Rational("-15", "9"))
-    Rational(12477,10000) * Rational("6365127","1.343E+7") should be(Rational(79417689579l,1.343E+11))
+    Rational(12477, 10000) * Rational("6365127", "1.343E+7") should be(Rational(79417689579l, 1.343E+11))
   }
 
   @Test

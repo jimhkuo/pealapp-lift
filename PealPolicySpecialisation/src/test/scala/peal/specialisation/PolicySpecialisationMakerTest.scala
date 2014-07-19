@@ -26,10 +26,10 @@ class PolicySpecialisationMakerTest extends ShouldMatchersForJUnit {
     ConsoleLogger.log(input)
     val out = new PolicySpecialisationMaker(input).doIt(model, "name1")
     ConsoleLogger.log(out.text)
-    out.text should be("fire = * (([Fuel Ignition Oxygen] 0.0735)) default 1.0" +
-      "fuel = + (([gasoline coal wood] 0.21)) default 0.0" +
-      "ignition = + (([matches gas_stove electrical_sparc] 0.35)) default 0.0" +
-      "oxygen = + () default 1.0" +
+    out.text should be("fire = * (([Fuel Ignition Oxygen] 0.0735)) default 1" +
+      "fuel = + (([gasoline coal wood] 0.21)) default 0" +
+      "ignition = + (([matches gas_stove electrical_sparc] 0.35)) default 0" +
+      "oxygen = + () default 1" +
       "pr_wood = min () default 0.09")
   }
 
@@ -41,7 +41,7 @@ class PolicySpecialisationMakerTest extends ShouldMatchersForJUnit {
     ConsoleLogger.log(input)
     val out = new PolicySpecialisationMaker(input).doIt(model, "analysis")
     ConsoleLogger.log(out.text)
-    out.text should be("b2 = + () default 0.0b3 = + (([q5] 0.0)) default 0.9")
+    out.text should be("b2 = + () default 0b3 = + (([q5] 0)) default 0.9")
   }
 
   @Test
@@ -52,7 +52,7 @@ class PolicySpecialisationMakerTest extends ShouldMatchersForJUnit {
     ConsoleLogger.log(input)
     val out = new PolicySpecialisationMaker(input).doIt(model, "analysis")
     ConsoleLogger.log(out.text)
-    out.text should be("b3 = + () default 0.0")
+    out.text should be("b3 = + () default 0")
   }
 
   @Test
@@ -63,7 +63,7 @@ class PolicySpecialisationMakerTest extends ShouldMatchersForJUnit {
     ConsoleLogger.log(input)
     val out = new PolicySpecialisationMaker(input).doIt(model, "analysis")
     ConsoleLogger.log(out.text)
-    out.text should be("b1 = + () default 0.0b2 = + (([q4] 0.5)) default 0.0b3 = + () default 0.5")
+    out.text should be("b1 = + () default 0b2 = + (([q4] 0.5)) default 0b3 = + () default 0.5")
   }
 
   @Test
@@ -73,7 +73,7 @@ class PolicySpecialisationMakerTest extends ShouldMatchersForJUnit {
     val model = "Result of analysis [analysis = always_true? cond]:\nsat\n(model \n  (define-fun cond () Bool\n    false)\n  (define-fun q0 () Bool\n    false)\n  (define-fun b2_score () Real\n    (/ 1.0 2.0))\n  (define-fun b1_score () Real\n    (/ 1.0 2.0))\n  (define-fun q1 () Bool\n    true)\n  (define-fun always_true_analysis () Bool\n    false)\n)"
 
     val out = new PolicySpecialisationMaker(input).doIt(model, "analysis")
-    out.text should be("b1 = + (([q1] 0.5)) default 0.0b2 = + () default 0.5")
+    out.text should be("b1 = + (([q1] 0.5)) default 0b2 = + () default 0.5")
   }
 
   @Test
@@ -93,7 +93,7 @@ class PolicySpecialisationMakerTest extends ShouldMatchersForJUnit {
     val model = "Result of analysis [name3 = satisfiable? cond4]:\nsat\n(model \n  (define-fun ignition_score () Real\n    (/ 1.0 4.0))\n  (define-fun cond3 () Bool\n    true)\n  (define-fun wood () Bool\n    false)\n  (define-fun fire_score () Real\n    (/ 1.0 200.0))\n  (define-fun True () Bool\n    true)\n  (define-fun oxygen_score () Real\n    1.0)\n  (define-fun satisfiable_name3 () Bool\n    true)\n  (define-fun cond4 () Bool\n    true)\n  (define-fun gas_stove () Bool\n    false)\n  (define-fun coal () Bool\n    true)\n  (define-fun cond45 () Bool\n    true)\n  (define-fun electrical_sparc () Bool\n    true)\n  (define-fun fuel_score () Real\n    (/ 1.0 50.0))\n  (define-fun matches () Bool\n    true)\n  (define-fun gasoline () Bool\n    false)\n)"
     val out = new PolicySpecialisationMaker(input).doIt(model, "name3")
     ConsoleLogger.log1(out.text)
-    out.text should be("fuel = + (([coal] 0.02)) default 0.0")
+    out.text should be("fuel = + (([coal] 0.02)) default 0")
   }
 
   @Test
@@ -103,7 +103,7 @@ class PolicySpecialisationMakerTest extends ShouldMatchersForJUnit {
     val model = "Result of analysis [name3 = satisfiable? cond4]:\nsat\n(model \n  (define-fun ignition_score () Real\n    0.0)\n  (define-fun cond3 () Bool\n    false)\n  (define-fun wood () Bool\n    true)\n  (define-fun fire_score () Real\n    0.0)\n  (define-fun True () Bool\n    true)\n  (define-fun oxygen_score () Real\n    1.0)\n  (define-fun satisfiable_name3 () Bool\n    true)\n  (define-fun cond4 () Bool\n    true)\n  (define-fun gas_stove () Bool\n    false)\n  (define-fun coal () Bool\n    true)\n  (define-fun cond45 () Bool\n    true)\n  (define-fun electrical_sparc () Bool\n    false)\n  (define-fun fuel_score () Real\n    (/ 21.0 100.0))\n  (define-fun matches () Bool\n    false)\n  (define-fun gasoline () Bool\n    true)\n)"
     val out = new PolicySpecialisationMaker(input).doIt(model, "name3")
     ConsoleLogger.log1(out.text)
-    out.text should be("fuel = + (([gasoline coal wood] 0.21)) default 0.0")
+    out.text should be("fuel = + (([gasoline coal wood] 0.21)) default 0")
   }
 
   @Test
@@ -125,10 +125,10 @@ class PolicySpecialisationMakerTest extends ShouldMatchersForJUnit {
     ConsoleLogger.log2(input)
     val out = new PolicySpecialisationMaker(input).doIt(model, "name1", Set("hasUSLicense", "hasUKLicense", "hasEULicense"))
     ConsoleLogger.log1(out.text)
-    out.text should be("b1 = max () default 50000.0" +
-      "b2 = min (([hasOtherLicense] 0.4)) default 0.0" +
-      "b4 = + (([accidentFreeForYears speaksEnglish travelsAlone femaleDriver] 0.45)) default 0.0" +
-      "b_minOne = + () default -1.0")
+    out.text should be("b1 = max () default 50000" +
+      "b2 = min (([hasOtherLicense] 0.4)) default 0" +
+      "b4 = + (([accidentFreeForYears speaksEnglish travelsAlone femaleDriver] 0.45)) default 0" +
+      "b_minOne = + () default -1")
   }
 
   @Test
@@ -140,7 +140,7 @@ class PolicySpecialisationMakerTest extends ShouldMatchersForJUnit {
     ConsoleLogger.log2(input)
     val out = new PolicySpecialisationMaker(input).doIt(model, "name1")
     ConsoleLogger.log1(out.text)
-    out.text should be("b1 = min () default 1.0")
+    out.text should be("b1 = min () default 1")
   }
 
   @Test
@@ -162,7 +162,7 @@ class PolicySpecialisationMakerTest extends ShouldMatchersForJUnit {
     ConsoleLogger.log2(input)
     val out = new PolicySpecialisationMaker(input).doIt(model, "name1")
     ConsoleLogger.log1(out.text)
-    out.text should be("b1 = max (([q1] 0.8) (q2? 0.8)) default 0.0")
+    out.text should be("b1 = max (([q1] 0.8) (q2? 0.8)) default 0")
   }
 
   @Test
@@ -184,7 +184,7 @@ class PolicySpecialisationMakerTest extends ShouldMatchersForJUnit {
     ConsoleLogger.log2(input)
     val out = new PolicySpecialisationMaker(input).doIt(model, "name1")
     ConsoleLogger.log1(out.text)
-    out.text should be("b1 = * (([q1 q2] 0.64)) default 0.0")
+    out.text should be("b1 = * (([q1 q2] 0.64)) default 0")
   }
 
   @Test
@@ -195,7 +195,7 @@ class PolicySpecialisationMakerTest extends ShouldMatchersForJUnit {
     ConsoleLogger.log2(input)
     val out = new PolicySpecialisationMaker(input).doIt(model, "name1")
     ConsoleLogger.log1(out.text)
-    out.text should be("b1 = * (([q1] 1.0) (q2? 1.0)) default 0.5")
+    out.text should be("b1 = * (([q1] 1) (q2? 1)) default 0.5")
   }
 
   @Test
@@ -228,7 +228,7 @@ class PolicySpecialisationMakerTest extends ShouldMatchersForJUnit {
     ConsoleLogger.log2(input)
     val out = new PolicySpecialisationMaker(input).doIt(model, "name1")
     ConsoleLogger.log1(out.text)
-    out.text should be("b1 = * () default 0.5b2 = * (([q3] 1.0) (q4? 1.0)) default 0.5")
+    out.text should be("b1 = * () default 0.5b2 = * (([q3] 1) (q4? 1)) default 0.5")
   }
 
   @Test
@@ -239,7 +239,7 @@ class PolicySpecialisationMakerTest extends ShouldMatchersForJUnit {
     ConsoleLogger.log2(input)
     val out = new PolicySpecialisationMaker(input).doIt(model, "name1")
     ConsoleLogger.log1(out.text)
-    out.text should be("b1 = * () default 0.5b2 = * (([q3] 1.0) (q4? 1.0)) default 0.5")
+    out.text should be("b1 = * () default 0.5b2 = * (([q3] 1) (q4? 1)) default 0.5")
   }
 
   @Test
@@ -251,7 +251,13 @@ class PolicySpecialisationMakerTest extends ShouldMatchersForJUnit {
     ConsoleLogger.log2(input)
     val out = new PolicySpecialisationMaker(input).doIt(model, "analysis1")
     ConsoleLogger.log1(out.text)
-    out.text should be("b0 = * (([q5] 0.988)) default 0.6085b1 = min (([q3 q4 q5 q0] 0.234)) default 0.1661b2 = max (([q5 q3 q4] 0.1726)) default 0.2029b3 = + (([q2] 0.8261)) default 0.0b4 = min (([q0 q5 q2 q4] 0.0736)) default 0.9265b5 = max (([q2 q0 q4] 0.3937)) default 0.0b6 = + (([q2 q3] 0.0736)) default 0.2814b7 = * (([q2] 0.547)) default 0.6631")
+    out.text should be("b0 = * (([q5] 0.988)) default 0.6085b1 = min (([q3 q4 q5 q0] 0.234)) default 0.1661" +
+      "b2 = max (([q5 q3 q4] 0.1726)) default 0.2029" +
+      "b3 = + (([q2] 0.8261)) default 0" +
+      "b4 = min (([q0 q5 q2 q4] 0.0736)) default 0.9265" +
+      "b5 = max (([q2 q0 q4] 0.3937)) default 0" +
+      "b6 = + (([q2 q3] 0.0736)) default 0.2814" +
+      "b7 = * (([q2] 0.547)) default 0.6631")
   }
 
   @Test
@@ -263,7 +269,14 @@ class PolicySpecialisationMakerTest extends ShouldMatchersForJUnit {
     ConsoleLogger.log2(input)
     val out = new PolicySpecialisationMaker(input).doIt(model, "analysis1")
     ConsoleLogger.log1(out.text)
-    out.text should be("b0 = max (([q5 q3 q2] 0.6971)) default 0.0b1 = * () default 0.0b2 = + (([q5 q2] 1.2454)) default 0.6451b3 = max (([q5 q3] 0.1135) (q1? 0.0)) default 0.9094b4 = + (([q2] 0.2009)) default 0.1326b5 = * () default 0.2009b6 = min (([q5 q3 q2] 0.0) (q1? 0.2133)) default 0.2424b7 = min (([q2] 0.7567) (q1? 0.9557)) default 0.7636")
+    out.text should be("b0 = max (([q5 q3 q2] 0.6971)) default 0" +
+      "b1 = * () default 0" +
+      "b2 = + (([q5 q2] 1.2454)) default 0.6451" +
+      "b3 = max (([q5 q3] 0.1135) (q1? 0.0)) default 0.9094" +
+      "b4 = + (([q2] 0.2009)) default 0.1326" +
+      "b5 = * () default 0.2009" +
+      "b6 = min (([q5 q3 q2] 0) (q1? 0.2133)) default 0.2424" +
+      "b7 = min (([q2] 0.7567) (q1? 0.9557)) default 0.7636")
   }
 
   @Test
@@ -275,7 +288,14 @@ class PolicySpecialisationMakerTest extends ShouldMatchersForJUnit {
     ConsoleLogger.log2(input)
     val out = new PolicySpecialisationMaker(input).doIt(model, "analysis1")
     ConsoleLogger.log1(out.text)
-    out.text should be("b0 = max (([q5 q3 q2] 0.6971)) default 0.0b1 = * () default 0.0b2 = + (([q5 q2] 1.2454)) default 0.6451b3 = max (([q5 q3] 0.1135) (q1? 0.0)) default 0.9094b4 = + (([q2] 0.2009)) default 0.1326b5 = * () default 0.2009b6 = min (([q5 q3 q2] 0.0) (q1? 0.2133)) default 0.2424b7 = min (([q2] 0.7567) (q1? 0.9557)) default 0.7636")
+    out.text should be("b0 = max (([q5 q3 q2] 0.6971)) default 0" +
+      "b1 = * () default 0" +
+      "b2 = + (([q5 q2] 1.2454)) default 0.6451" +
+      "b3 = max (([q5 q3] 0.1135) (q1? 0)) default 0.9094" +
+      "b4 = + (([q2] 0.2009)) default 0.1326" +
+      "b5 = * () default 0.2009" +
+      "b6 = min (([q5 q3 q2] 0) (q1? 0.2133)) default 0.2424" +
+      "b7 = min (([q2] 0.7567) (q1? 0.9557)) default 0.7636")
   }
 
   @Test
