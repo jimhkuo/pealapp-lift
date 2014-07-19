@@ -6,6 +6,7 @@ import java.util.Arrays
 
 import org.junit.Test
 import org.scalatest.junit.ShouldMatchersForJUnit
+import peal.domain.Rational
 
 import scala.sys.process._
 import scala.util.Try
@@ -16,8 +17,21 @@ class ScalaTest extends ShouldMatchersForJUnit {
   def computNum: Unit => Int = x => 100
 
   @Test
+  def testMultiplyRationals() {
+    println(Rational("0.0", "1") * Rational("0.0", "1") * Rational(0.0, 1))
+  }
+
+  @Test
+  def testDoubleToString() {
+    val a = BigDecimal("0.0")
+    val b = BigDecimal("0.0")
+    val c = a * b * b
+    println(c)
+  }
+
+  @Test
   def testTry() {
-      val map = Map(1 -> 1, 2->2)
+    val map = Map(1 -> 1, 2 -> 2)
 
     for (m <- map) {
       println(m)
@@ -26,14 +40,16 @@ class ScalaTest extends ShouldMatchersForJUnit {
       println(m)
     }
   }
+
   @Test
   def testFunction() {
-//      val x :Int = computNum
-//      val y :(=> Int) = computNum
+    //      val x :Int = computNum
+    //      val y :(=> Int) = computNum
 
-      var map = Map[Int, () => Int](1 -> (() => 1))
-//      var map1 = Map[Int, () => Int](1 -> { 1 })
+    var map = Map[Int, () => Int](1 -> (() => 1))
+    //      var map1 = Map[Int, () => Int](1 -> { 1 })
   }
+
   @Test
   def testImplicit() {
     trait Functor[F[_]] {
@@ -50,6 +66,7 @@ class ScalaTest extends ShouldMatchersForJUnit {
 
     implicit def fops[G[_] : Functor, A](fa: G[A]): Object {val witness: Functor[G]; def mapX[B](f: (A) => B): G[B]} = new {
       val witness = implicitly[Functor[G]]
+
       final def mapX[B](f: A => B): G[B] = witness.mapY(f)(fa)
     }
 
@@ -58,11 +75,11 @@ class ScalaTest extends ShouldMatchersForJUnit {
   }
 
   trait NodeAppender {
-    def appendNode(node: Node) : NodeSeq => NodeSeq
+    def appendNode(node: Node): NodeSeq => NodeSeq
   }
 
   implicit object NodeAppenderObj extends NodeAppender {
-    override def appendNode(node: Node) = (nodes : NodeSeq) => {
+    override def appendNode(node: Node) = (nodes: NodeSeq) => {
       nodes :+ node
     }
   }
@@ -76,13 +93,14 @@ class ScalaTest extends ShouldMatchersForJUnit {
   }
 
   object MutableNodeSeq {
-    def apply(nodes : NodeSeq) = new MutableNodeSeq(nodes)
+    def apply(nodes: NodeSeq) = new MutableNodeSeq(nodes)
   }
 
   class MutableNodeSeq(var nodes: NodeSeq) {
     def append(node: Node) {
       nodes = nodes.append(node)
     }
+
     override def toString = nodes.toString()
   }
 
@@ -94,11 +112,21 @@ class ScalaTest extends ShouldMatchersForJUnit {
     println(nodes)
 
   }
+
   @Test
   def testS() {
-    println(s"aa${if (Set(1).nonEmpty) {" "}}")
-    println(s"bb${if (Set().nonEmpty) {" "}}")
+    println(s"aa${
+      if (Set(1).nonEmpty) {
+        " "
+      }
+    }")
+    println(s"bb${
+      if (Set().nonEmpty) {
+        " "
+      }
+    }")
   }
+
   @Test
   def testOption() {
     println(Some(2).fold("none")(_.toString + " string"))
@@ -107,16 +135,16 @@ class ScalaTest extends ShouldMatchersForJUnit {
 
   @Test
   def testLeft() {
-//    val m = collection.mutable.Map(1 -> 1, 2 -> 2)
-//    m += (3 -> 3)
-////    m = m + (3 -> 3) //not allowed
-//    println(m)
-//
-//    var i = 10
-//    i += 1
-//
-//    println(i)
-//
+    //    val m = collection.mutable.Map(1 -> 1, 2 -> 2)
+    //    m += (3 -> 3)
+    ////    m = m + (3 -> 3) //not allowed
+    //    println(m)
+    //
+    //    var i = 10
+    //    i += 1
+    //
+    //    println(i)
+    //
     println(List[Int]().foldLeft(1)(_ + _))
   }
 
