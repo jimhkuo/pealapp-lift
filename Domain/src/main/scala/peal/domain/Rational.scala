@@ -1,11 +1,11 @@
 package peal.domain
 
 object Rational {
-  private def gcd(a: BigDecimal, b: BigDecimal): BigDecimal = if (b == BigDecimal(0)) a else gcd(b, a % b)
 
   def apply(num: String): Rational = Rational(num, "1")
 
   def apply(x: String, y: String): Rational = {
+    def gcd(a: BigDecimal, b: BigDecimal): BigDecimal = if (b == BigDecimal(0)) a else gcd(b, a % b)
     def isWholeNumber(bigDecimal: BigDecimal): Boolean = bigDecimal == BigDecimal(bigDecimal.longValue())
 
     val numer = BigDecimal(x).abs

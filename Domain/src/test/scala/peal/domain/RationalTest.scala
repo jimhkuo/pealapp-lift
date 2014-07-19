@@ -7,7 +7,7 @@ import org.scalatest.junit.ShouldMatchersForJUnit
 class RationalTest extends ShouldMatchersForJUnit {
 
   @Test
-  def testPrecisionOfWholeNumberIs1() {
+  def testPrecisionOfWholeNumberIs0() {
     (Rational("1.0") * Rational("1.0")).toString should be("Rational(1,1)")
     Rational("0.000").toString should be("Rational(0,1)")
   }
