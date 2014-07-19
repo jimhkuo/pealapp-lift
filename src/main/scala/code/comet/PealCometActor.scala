@@ -50,18 +50,12 @@ class PealCometActor extends MainBody with CometListener {
   }
 
   def handleSynthesisActions: PartialFunction[Any, Unit] = {
-    case SynthesisAndCallZ3QuietAnalysis =>
-      performSynthesisAndCertify(PealCometHelper.tryExplicitSynthesis, isVerbose = false)
-    case RunAndCertifyExplicitResults =>
-      performSynthesisAndCertify(PealCometHelper.tryExplicitSynthesis, isVerbose = true)
-    case ExplicitSynthesisAndCallZ3 =>
-      performSynthesisOnly(PealCometHelper.tryExplicitSynthesis)
-    case SynthesisExtendedAndCallZ3QuietAnalysis =>
-      performSynthesisAndCertify(PealCometHelper.tryExtendedSynthesis, isVerbose = false)
-    case RunAndCertifyExtendedResults =>
-      performSynthesisAndCertify(PealCometHelper.tryExtendedSynthesis, isVerbose = true)
-    case ExtendedSynthesisAndCallZ3 =>
-      performSynthesisOnly(PealCometHelper.tryExtendedSynthesis)
+    case SynthesisAndCallZ3QuietAnalysis => performSynthesisAndCertify(PealCometHelper.tryExplicitSynthesis, isVerbose = false)
+    case RunAndCertifyExplicitResults => performSynthesisAndCertify(PealCometHelper.tryExplicitSynthesis, isVerbose = true)
+    case ExplicitSynthesisAndCallZ3 => performSynthesisOnly(PealCometHelper.tryExplicitSynthesis)
+    case SynthesisExtendedAndCallZ3QuietAnalysis => performSynthesisAndCertify(PealCometHelper.tryExtendedSynthesis, isVerbose = false)
+    case RunAndCertifyExtendedResults => performSynthesisAndCertify(PealCometHelper.tryExtendedSynthesis, isVerbose = true)
+    case ExtendedSynthesisAndCallZ3 => performSynthesisOnly(PealCometHelper.tryExtendedSynthesis)
   }
 
   private def updatePealInput(input: String) {
