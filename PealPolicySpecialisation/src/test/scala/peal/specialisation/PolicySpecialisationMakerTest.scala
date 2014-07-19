@@ -272,7 +272,7 @@ class PolicySpecialisationMakerTest extends ShouldMatchersForJUnit {
     out.text should be("b0 = max (([q5 q3 q2] 0.6971)) default 0" +
       "b1 = * () default 0" +
       "b2 = + (([q5 q2] 1.2454)) default 0.6451" +
-      "b3 = max (([q5 q3] 0.1135) (q1? 0.0)) default 0.9094" +
+      "b3 = max (([q5 q3] 0.1135) (q1? 0)) default 0.9094" +
       "b4 = + (([q2] 0.2009)) default 0.1326" +
       "b5 = * () default 0.2009" +
       "b6 = min (([q5 q3 q2] 0) (q1? 0.2133)) default 0.2424" +
@@ -307,7 +307,8 @@ class PolicySpecialisationMakerTest extends ShouldMatchersForJUnit {
     ConsoleLogger.log2(input)
     val out = new PolicySpecialisationMaker(input).doIt(model, "name1")
     ConsoleLogger.log1(out.text)
-    out.text should be("b1 = min () default 1.0b2 = min () default 1.0")
+    out.text should be("b1 = min () default 1" +
+      "b2 = min () default 1")
   }
 
   @Test
@@ -319,7 +320,8 @@ class PolicySpecialisationMakerTest extends ShouldMatchersForJUnit {
     ConsoleLogger.log2(input)
     val out = new PolicySpecialisationMaker(input).doIt(model, "name1")
     ConsoleLogger.log1(out.text)
-    out.text should be("b1 = min () default 1.0b2 = min () default 1.0")
+    out.text should be("b1 = min () default 1" +
+      "b2 = min () default 1")
   }
 
   @Test
@@ -331,6 +333,9 @@ class PolicySpecialisationMakerTest extends ShouldMatchersForJUnit {
     ConsoleLogger.log2(input)
     val out = new PolicySpecialisationMaker(input).doIt(model, "name1")
     ConsoleLogger.log1(out.text)
-    out.text should be("b1 = max () default 50000.0b2 = min (([hasOtherLicense] 0.4) (hasUSLicense? 0.9) (hasUKLicense? 0.6) (hasEULicense? 0.7)) default 0.0b4 = + (([accidentFreeForYears speaksEnglish travelsAlone femaleDriver] 0.45)) default 0.0b_minOne = + () default -1.0")
+    out.text should be("b1 = max () default 50000" +
+      "b2 = min (([hasOtherLicense] 0.4) (hasUSLicense? 0.9) (hasUKLicense? 0.6) (hasEULicense? 0.7)) default 0" +
+      "b4 = + (([accidentFreeForYears speaksEnglish travelsAlone femaleDriver] 0.45)) default 0" +
+      "b_minOne = + () default -1")
   }
 }
