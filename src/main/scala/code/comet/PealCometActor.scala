@@ -23,7 +23,7 @@ class PealCometActor extends MainBody with CometListener {
 
   def render: RenderOut = {
     this ! Init
-    generateHTMLContents
+    generateHtmlContents
   }
 
   override def lowPriority: PartialFunction[Any, Unit] = handleBasicActions orElse handleSynthesisActions

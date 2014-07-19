@@ -14,7 +14,7 @@ trait MainBody extends CometActor{
   var randomModelWithRangeParam = "2, 4, 3, 2, 1, 6, 0.5, 0.1"
   var randomModelParamWithDomain = "2, 3, 1, 1, 1, 9, 0.5, 0.1"
 
-  def generateHTMLContents: RenderOut = {
+  def generateHtmlContents: RenderOut = {
       <div>
         <form class="lift:form.ajax">
           <div class="row">
