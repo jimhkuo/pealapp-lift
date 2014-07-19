@@ -12,15 +12,15 @@ import scala.util.Try
 
 object PealCometHelper {
 
-  def performExplicitSynthesis(policies: String): Try[String] = Try {
+  def tryExplicitSynthesis(policies: String): Try[String] = Try {
     new EagerSynthesiser(policies).generate()
   }
 
-  def performExtendedSynthesis(policies: String): Try[String] = Try {
+  def tryExtendedSynthesis(policies: String): Try[String] = Try {
     new ExtendedSynthesiser(policies).generate()
   }
 
-  def parseInput(input: String): Try[(Map[String, PealAst], Map[String, Condition], Map[String, PolicySet], Map[String, AnalysisGenerator], Array[String])] = Try {
+  def tryToParsePealInput(input: String): Try[(Map[String, PealAst], Map[String, Condition], Map[String, PolicySet], Map[String, AnalysisGenerator], Array[String])] = Try {
     val pealProgramParser = ParserHelper.getPealParser(input)
 
     pealProgramParser.program()

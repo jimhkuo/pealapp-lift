@@ -51,17 +51,17 @@ class PealCometActor extends MainBody with CometListener {
 
   def handleSynthesisActions: PartialFunction[Any, Unit] = {
     case SynthesisAndCallZ3QuietAnalysis =>
-      performSynthesisAndCertify(PealCometHelper.performExplicitSynthesis, isVerbose = false)
+      performSynthesisAndCertify(PealCometHelper.tryExplicitSynthesis, isVerbose = false)
     case RunAndCertifyExplicitResults =>
-      performSynthesisAndCertify(PealCometHelper.performExplicitSynthesis, isVerbose = true)
+      performSynthesisAndCertify(PealCometHelper.tryExplicitSynthesis, isVerbose = true)
     case ExplicitSynthesisAndCallZ3 =>
-      performSynthesisOnly(PealCometHelper.performExplicitSynthesis)
+      performSynthesisOnly(PealCometHelper.tryExplicitSynthesis)
     case SynthesisExtendedAndCallZ3QuietAnalysis =>
-      performSynthesisAndCertify(PealCometHelper.performExtendedSynthesis, isVerbose = false)
+      performSynthesisAndCertify(PealCometHelper.tryExtendedSynthesis, isVerbose = false)
     case RunAndCertifyExtendedResults =>
-      performSynthesisAndCertify(PealCometHelper.performExtendedSynthesis, isVerbose = true)
+      performSynthesisAndCertify(PealCometHelper.tryExtendedSynthesis, isVerbose = true)
     case ExtendedSynthesisAndCallZ3 =>
-      performSynthesisOnly(PealCometHelper.performExtendedSynthesis)
+      performSynthesisOnly(PealCometHelper.tryExtendedSynthesis)
   }
 
   private def updatePealInput(input: String) {
@@ -77,7 +77,7 @@ class PealCometActor extends MainBody with CometListener {
 
   private def performSynthesisAndCertify(synthesiser: String => Try[String], isVerbose: Boolean) {
     val result: Try[((Map[String, PealAst], Map[String, Condition], Map[String, PolicySet], Map[String, AnalysisGenerator], Array[String]), String)] = for {
-      parsedInput <- PealCometHelper.parseInput(inputPolicies)
+      parsedInput <- PealCometHelper.tryToParsePealInput(inputPolicies)
       synthesisResult <- synthesiser(inputPolicies)
     } yield {
       (parsedInput, synthesisResult)
