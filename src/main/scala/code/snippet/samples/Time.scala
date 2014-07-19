@@ -1,11 +1,10 @@
-package code.snippet
+package code.snippet.samples
 
-
-import net.liftweb._
 import java.util.Date
-import util.Helpers._
+
 import code.lib.DependencyFactory
-import net.liftweb.util.Props
+import net.liftweb._
+import net.liftweb.util.Helpers._
 
 class Time {
   lazy val dateString = DependencyFactory.inject[Date].openOrThrowException("wantcontent").toString

@@ -1,7 +1,7 @@
-package code.snippet
+package code.snippet.samples
 
 import net.liftweb._
-import util.Helpers._
+import net.liftweb.util.Helpers._
 
 class LdInfo {
   lazy val ldPath = System.getenv("LD_LIBRARY_PATH")
