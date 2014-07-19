@@ -7,6 +7,11 @@ import org.scalatest.junit.ShouldMatchersForJUnit
 class RationalTest extends ShouldMatchersForJUnit {
 
   @Test
+  def testPrecisionIsSetTo1IfIsZeroValue() {
+      Rational("0.000").toString should be ("Rational(0.0,1)")
+  }
+
+  @Test
   def testEquivalency() {
     Rational("-1.5") should be(Rational(-3, 2))
     Rational("1.5", "-1") should be(Rational(-3, 2))

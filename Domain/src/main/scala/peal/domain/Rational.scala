@@ -9,8 +9,9 @@ object Rational {
     val numer = BigDecimal(x).abs
     val denom = BigDecimal(y).abs
     val commonDivisior = gcd(numer, denom)
-    val a = if (x.toDouble * y.toDouble < 0) -(numer / commonDivisior).abs else (numer / commonDivisior).abs
-    val b = (denom / commonDivisior).abs
+    val tempA: BigDecimal = if (x.toDouble * y.toDouble < 0) -(numer / commonDivisior).abs else (numer / commonDivisior).abs
+    val a: BigDecimal = if (tempA == BigDecimal("0")) tempA.setScale(1) else tempA
+    val b: BigDecimal = (denom / commonDivisior).abs
     Rational(a, b)
   }
 }

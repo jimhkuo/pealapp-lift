@@ -41,7 +41,7 @@ class PolicySpecialisationMakerTest extends ShouldMatchersForJUnit {
     ConsoleLogger.log(input)
     val out = new PolicySpecialisationMaker(input).doIt(model, "analysis")
     ConsoleLogger.log(out.text)
-    out.text should be("b2 = + () default 0.0b3 = + (([q5] 0.00)) default 0.9")
+    out.text should be("b2 = + () default 0.0b3 = + (([q5] 0.0)) default 0.9")
   }
 
   @Test
@@ -251,7 +251,7 @@ class PolicySpecialisationMakerTest extends ShouldMatchersForJUnit {
     ConsoleLogger.log2(input)
     val out = new PolicySpecialisationMaker(input).doIt(model, "analysis1")
     ConsoleLogger.log1(out.text)
-    out.text should be("b0 = * (([q5] 0.988)) default 0.6085b1 = min (([q3 q4 q5 q0] 0.234)) default 0.1661b2 = max (([q5 q3 q4] 0.1726)) default 0.2029b3 = + (([q2] 0.8261)) default 0b4 = min (([q0 q5 q2 q4] 0.0736)) default 0.9265b5 = max (([q2 q0 q4] 0.3937)) default 0b6 = + (([q2 q3] 0.0736)) default 0.2814b7 = * (([q2] 0.547)) default 0.6631")
+    out.text should be("b0 = * (([q5] 0.988)) default 0.6085b1 = min (([q3 q4 q5 q0] 0.234)) default 0.1661b2 = max (([q5 q3 q4] 0.1726)) default 0.2029b3 = + (([q2] 0.8261)) default 0.0b4 = min (([q0 q5 q2 q4] 0.0736)) default 0.9265b5 = max (([q2 q0 q4] 0.3937)) default 0.0b6 = + (([q2 q3] 0.0736)) default 0.2814b7 = * (([q2] 0.547)) default 0.6631")
   }
 
   @Test
@@ -263,7 +263,7 @@ class PolicySpecialisationMakerTest extends ShouldMatchersForJUnit {
     ConsoleLogger.log2(input)
     val out = new PolicySpecialisationMaker(input).doIt(model, "analysis1")
     ConsoleLogger.log1(out.text)
-    out.text should be("b0 = max (([q5 q3 q2] 0.6971)) default 0b1 = * () default 0b2 = + (([q5 q2] 1.2454)) default 0.6451b3 = max (([q5 q3] 0.1135) (q1? 0)) default 0.9094b4 = + (([q2] 0.2009)) default 0.1326b5 = * () default 0.2009b6 = min (([q5 q3 q2] 0) (q1? 0.2133)) default 0.2424b7 = min (([q2] 0.7567) (q1? 0.9557)) default 0.7636")
+    out.text should be("b0 = max (([q5 q3 q2] 0.6971)) default 0.0b1 = * () default 0.0b2 = + (([q5 q2] 1.2454)) default 0.6451b3 = max (([q5 q3] 0.1135) (q1? 0.0)) default 0.9094b4 = + (([q2] 0.2009)) default 0.1326b5 = * () default 0.2009b6 = min (([q5 q3 q2] 0.0) (q1? 0.2133)) default 0.2424b7 = min (([q2] 0.7567) (q1? 0.9557)) default 0.7636")
   }
 
   @Test
@@ -275,7 +275,7 @@ class PolicySpecialisationMakerTest extends ShouldMatchersForJUnit {
     ConsoleLogger.log2(input)
     val out = new PolicySpecialisationMaker(input).doIt(model, "analysis1")
     ConsoleLogger.log1(out.text)
-    out.text should be("b0 = max (([q5 q3 q2] 0.6971)) default 0b1 = * () default 0b2 = + (([q5 q2] 1.2454)) default 0.6451b3 = max (([q5 q3] 0.1135) (q1? 0)) default 0.9094b4 = + (([q2] 0.2009)) default 0.1326b5 = * () default 0.2009b6 = min (([q5 q3 q2] 0) (q1? 0.2133)) default 0.2424b7 = min (([q2] 0.7567) (q1? 0.9557)) default 0.7636")
+    out.text should be("b0 = max (([q5 q3 q2] 0.6971)) default 0.0b1 = * () default 0.0b2 = + (([q5 q2] 1.2454)) default 0.6451b3 = max (([q5 q3] 0.1135) (q1? 0.0)) default 0.9094b4 = + (([q2] 0.2009)) default 0.1326b5 = * () default 0.2009b6 = min (([q5 q3 q2] 0.0) (q1? 0.2133)) default 0.2424b7 = min (([q2] 0.7567) (q1? 0.9557)) default 0.7636")
   }
 
   @Test
