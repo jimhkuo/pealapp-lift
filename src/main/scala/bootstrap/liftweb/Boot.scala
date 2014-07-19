@@ -14,7 +14,6 @@ class Boot {
       Menu.i("Editor and runner") / "index",
       Menu.i("About PEALT") / "aboutpealt",
       Menu.i("User guide") / "userguide",
-//      Menu.i("Case studies") / "casestudies",
       Menu.i("Acknowledgements") / "acknowledgements"
     )
     LiftRules.setSiteMap(SiteMap(entries: _*))
