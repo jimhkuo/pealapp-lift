@@ -14,7 +14,7 @@ import scala.xml.NodeSeq
 object Z3OutputAnalyser {
 
   def execute(analyses: Map[String, AnalysisGenerator], constsMap: Map[String, PealAst], inputPolicies: String, z3RawOutput: String)(implicit ov: OutputVerifier): NodeSeq = {
-    //TODO do vacity (always_true?, always_false?) UNSAT check on all conds
+    //TODO do vacuity (always_true?, always_false?) UNSAT check on all conds
     //show above analysis results
     //title: Result of vacuity analyses of all declared conditions
     //Conditions that are always true: UNSAT
@@ -23,7 +23,7 @@ object Z3OutputAnalyser {
     //Conditions that may be false: UNKNOWN
 
     //Add new button light blue
-    //Failure probabillity example, fire_fault_tree.pealt
+    //Failure probability example, fire_fault_tree.pealt
 
     val z3OutputParser = ParserHelper.getZ3OutputParser(z3RawOutput)
     val z3OutputModels = z3OutputParser.results().toMap
