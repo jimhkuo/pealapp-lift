@@ -1,8 +1,8 @@
-package peal.synthesis
+package peal.synthesis.util
 
-import org.scalatest.junit.ShouldMatchersForJUnit
 import org.junit.Test
-import peal.domain.{ScoreRange, Multiplier, VariableFormula, Score}
+import org.scalatest.junit.ShouldMatchersForJUnit
+import peal.domain.{Multiplier, Score, ScoreRange, VariableFormula}
 
 class Z3ScoreGeneratorTest extends ShouldMatchersForJUnit {
 

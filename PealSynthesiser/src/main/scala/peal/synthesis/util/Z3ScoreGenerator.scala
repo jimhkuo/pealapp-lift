@@ -1,4 +1,4 @@
-package peal.synthesis
+package peal.synthesis.util
 
 import peal.domain.Score
 

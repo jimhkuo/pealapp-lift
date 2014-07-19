@@ -1,13 +1,13 @@
-package peal.synthesis
+package peal.synthesis.util
 
-import org.scalatest.junit.ShouldMatchersForJUnit
 import org.junit.Test
-import scala.collection.JavaConversions._
-import peal.domain._
-import peal.domain.operator.Min
+import org.scalatest.junit.ShouldMatchersForJUnit
 import peal.antlr.util.ParserHelper
-import peal.domain.BasicPolicySet
-import peal.domain.Pol
+import peal.domain.{BasicPolicySet, Pol, _}
+import peal.domain.operator.Min
+import peal.synthesis._
+
+import scala.collection.JavaConversions._
 
 class ConditionTranslatorTest extends ShouldMatchersForJUnit {
 

@@ -1,6 +1,7 @@
-package peal.synthesis
+package peal.synthesis.util
 
 import peal.domain._
+import peal.synthesis._
 
 object ConditionTranslator {
 
