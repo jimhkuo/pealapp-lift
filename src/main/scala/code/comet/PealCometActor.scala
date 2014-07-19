@@ -50,12 +50,12 @@ class PealCometActor extends MainBody with CometListener {
   }
 
   def handleSynthesisActions: PartialFunction[Any, Unit] = {
-    case SynthesisAndCallZ3QuietAnalysis => performSynthesisAndCertify(PealCometHelper.tryExplicitSynthesis, isVerbose = false)
-    case RunAndCertifyExplicitResults => performSynthesisAndCertify(PealCometHelper.tryExplicitSynthesis, isVerbose = true)
-    case ExplicitSynthesisAndCallZ3 => performSynthesisOnly(PealCometHelper.tryExplicitSynthesis)
-    case SynthesisExtendedAndCallZ3QuietAnalysis => performSynthesisAndCertify(PealCometHelper.tryExtendedSynthesis, isVerbose = false)
-    case RunAndCertifyExtendedResults => performSynthesisAndCertify(PealCometHelper.tryExtendedSynthesis, isVerbose = true)
-    case ExtendedSynthesisAndCallZ3 => performSynthesisOnly(PealCometHelper.tryExtendedSynthesis)
+    case SynthesisAndCallZ3QuietAnalysis => doSynthesisAndCertify(PealCometHelper.tryExplicitSynthesis, isVerbose = false)
+    case RunAndCertifyExplicitResults => doSynthesisAndCertify(PealCometHelper.tryExplicitSynthesis, isVerbose = true)
+    case ExplicitSynthesisAndCallZ3 => doSynthesisOnly(PealCometHelper.tryExplicitSynthesis)
+    case SynthesisExtendedAndCallZ3QuietAnalysis => doSynthesisAndCertify(PealCometHelper.tryExtendedSynthesis, isVerbose = false)
+    case RunAndCertifyExtendedResults => doSynthesisAndCertify(PealCometHelper.tryExtendedSynthesis, isVerbose = true)
+    case ExtendedSynthesisAndCallZ3 => doSynthesisOnly(PealCometHelper.tryExtendedSynthesis)
   }
 
   private def updatePealInput(input: String) {
@@ -64,12 +64,12 @@ class PealCometActor extends MainBody with CometListener {
     partialUpdate(JqId("policies") ~> JqVal(inputPolicies))
   }
 
-  private def performSynthesisOnly(synthesiser: String => Try[String]): Unit = synthesiser(inputPolicies) match {
+  private def doSynthesisOnly(synthesiser: String => Try[String]): Unit = synthesiser(inputPolicies) match {
     case Success(v) => callZ3Only(v)
     case Failure(e) => dealWithIt(e)
   }
 
-  private def performSynthesisAndCertify(synthesiser: String => Try[String], isVerbose: Boolean) {
+  private def doSynthesisAndCertify(synthesiser: String => Try[String], isVerbose: Boolean) {
     val result: Try[((Map[String, PealAst], Map[String, Condition], Map[String, PolicySet], Map[String, AnalysisGenerator], Array[String]), String)] = for {
       parsedInput <- PealCometHelper.tryToParsePealInput(inputPolicies)
       synthesisResult <- synthesiser(inputPolicies)
