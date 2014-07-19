@@ -7,7 +7,6 @@ class ScoreTest extends ShouldMatchersForJUnit {
 
   @Test
   def testCanSetUpScoreWithNoRange() {
-      new Score(Left[BigDecimal, VariableFormula](0.1), None)
+      new Score(Left[BigDecimal, VariableFormula](0.1), None) //this ensure the construction does not throw exception
   }
-
 }
