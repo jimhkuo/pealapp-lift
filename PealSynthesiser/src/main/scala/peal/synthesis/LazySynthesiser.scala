@@ -12,8 +12,6 @@ import scala.Some
 
 class LazySynthesiser(input: String) extends Synthesiser{
 
-  //TODO need to support synthesis of predicate replacement for robustness analysis
-//  println("lazy input: " + input)
   val pealProgramParser = ParserHelper.getPealParser(input)
   pealProgramParser.program()
 
