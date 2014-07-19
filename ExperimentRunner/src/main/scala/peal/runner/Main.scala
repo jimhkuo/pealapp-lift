@@ -85,7 +85,6 @@ object Main extends App {
 
       for (i <- 1 to iterations) {
 //        val output = new ExperimentRunner(doDomainSpecifics, system, timeout, z3MemoryBound, runModes: _*).runRandomModel(n, m0, m1, m2, m3, k, th, delta)
-        //TODO it doesn't use runMode
         val output = new VerificationExperimentRunner(doDomainSpecifics, system, timeout, z3MemoryBound).runRandomModel(n, m0, m1, m2, m3, k, th, delta)
         mt += output.modelGeneration
         et += output.eagerSynthesis

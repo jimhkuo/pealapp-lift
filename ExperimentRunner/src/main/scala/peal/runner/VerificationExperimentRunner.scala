@@ -82,7 +82,6 @@ class VerificationExperimentRunner(doDomainSpecifics: Boolean, system: ActorSyst
         val pealProgramParser = ParserHelper.getPealParser(model)
         pealProgramParser.program()
 
-        //TODO call verifier here
         val verifier = new OutputVerifier(model)
 
         pealProgramParser.analyses.keys.toSeq.sortWith(_ < _).foreach {
