@@ -109,7 +109,7 @@ class PealCometActor extends MainBody with CometListener {
   }
 
   private def dealWithIt(e: Throwable) = {
-    e.printStackTrace()
+    e.printStackTrace() //this is ok since nobody will ever look at server log
     this ! Failed(e.getMessage)
     throw e
   }
