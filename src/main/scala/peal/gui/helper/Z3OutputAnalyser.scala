@@ -50,7 +50,7 @@ object Z3OutputAnalyser {
             if (z3OutputModels(analysisName).satResult == Unsat) {
               section.append(s.cond + " is always true")
             } else if (z3OutputModels(analysisName).satResult == Unknown) {
-              section.append("Z3 could not determine whether " + s.cond + " is always true or not. The model returned from Z3 is:")
+              section.append("Z3 could not determine whether " + s.cond + " is always true or not.")
             }
             else {
               section.append(s.cond + " is NOT always true, for example, when:")
@@ -61,7 +61,7 @@ object Z3OutputAnalyser {
               section.append(s.cond + " is always false")
             }
             else if (z3OutputModels(analysisName).satResult == Unknown) {
-              section.append("Z3 could not determine whether " + s.cond + " is always false or not. The model returned from Z3 is:")
+              section.append("Z3 could not determine whether " + s.cond + " is always false or not.")
             }
             else {
               section.append(s.cond + " is NOT always false, for example, when:")
@@ -72,7 +72,7 @@ object Z3OutputAnalyser {
               section.append(s.cond + " is NOT satisfiable")
             }
             else if (z3OutputModels(analysisName).satResult == Unknown) {
-              section.append("Z3 could not determine whether " + s.cond + " is satisfiable or not. The model returned from Z3 is:")
+              section.append("Z3 could not determine whether " + s.cond + " is satisfiable or not.")
             }
             else {
               section.append(s.cond + " is satisfiable, for example, when:")
@@ -83,7 +83,7 @@ object Z3OutputAnalyser {
               section.append(s.lhs + " and " + s.rhs + " are NOT different")
             }
             else if (z3OutputModels(analysisName).satResult == Unknown) {
-              section.append("Z3 could not determine whether " + s.lhs + " and " + s.rhs + " are different or not. The model returned from Z3 is:")
+              section.append("Z3 could not determine whether " + s.lhs + " and " + s.rhs + " are different or not.")
             }
             else {
               section.append(s.lhs + " and " + s.rhs + " are different, for example, when:")
@@ -93,7 +93,7 @@ object Z3OutputAnalyser {
             if (z3OutputModels(analysisName).satResult == Unsat) {
               section.append(s.lhs + " and " + s.rhs + " are equivalent")
             } else if (z3OutputModels(analysisName).satResult == Unknown) {
-              section.append("Z3 could not determine whether " + s.lhs + " and " + s.rhs + " are equivalent or not. The model returned from Z3 is:")
+              section.append("Z3 could not determine whether " + s.lhs + " and " + s.rhs + " are equivalent or not.")
             }
             else {
               section.append(s.lhs + " and " + s.rhs + " are NOT equivalent, for example, when:")
@@ -104,7 +104,7 @@ object Z3OutputAnalyser {
               section.append(s.lhs + " implies " + s.rhs)
             }
             else if (z3OutputModels(analysisName).satResult == Unknown) {
-              section.append("Z3 could not determine whether " + s.lhs + " implies " + s.rhs + " or not. The model returned from Z3 is:")
+              section.append("Z3 could not determine whether " + s.lhs + " implies " + s.rhs + " or not.")
             }
             else {
               section.append(s.lhs + " does not imply " + s.rhs + ", for example, when:")
