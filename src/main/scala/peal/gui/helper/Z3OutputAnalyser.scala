@@ -48,6 +48,7 @@ object Z3OutputAnalyser {
             if (z3OutputModels(analysisName).satResult == Unsat) {
               section.append(s.cond + " is always true")
             }
+
             else {
               section.append(s.cond + " is NOT always true, for example, when:")
               section.append(getReasons(z3OutputModels(analysisName), Set(), Set("always_true_", "cond"), constsMap))
