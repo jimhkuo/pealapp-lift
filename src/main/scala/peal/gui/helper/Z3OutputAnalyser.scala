@@ -26,6 +26,11 @@ object Z3OutputAnalyser {
     //Add new button light blue
     //Failure probability example, fire_fault_tree.pealt
 
+    //TODO this may be better to happen in the synthesiser
+    //TODO need to add a new section so the GUI can handle display differently
+    //TODO for every condition
+    //TODO create new AlwaysTrue("name1", "cond1") and new AlwaysFalse("name1", "cond1")
+    //TODO need to trigger analyser
     val z3OutputParser = ParserHelper.getZ3OutputParser(z3RawOutput)
     val z3OutputModels = z3OutputParser.results().toMap
     var entireAnalysis = NodeSeq.Empty
