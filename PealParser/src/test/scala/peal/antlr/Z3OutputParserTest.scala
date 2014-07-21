@@ -1,12 +1,12 @@
 package peal.antlr
 
-import org.junit.{Ignore, After, Test}
-import org.antlr.runtime.{CommonTokenStream, ANTLRStringStream}
+import org.junit.Test
 import org.scalatest.junit.ShouldMatchersForJUnit
-import scala.collection.JavaConversions._
-import peal.domain.z3.{PealAst, Term, Sat, Unsat}
-import peal.util.{ConsoleLogger, Z3ModelMatcher}
 import peal.antlr.util.ParserHelper
+import peal.domain.z3._
+import peal.util.{ConsoleLogger, Z3ModelMatcher}
+
+import scala.collection.JavaConversions._
 
 
 class Z3OutputParserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
@@ -26,6 +26,43 @@ class Z3OutputParserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
     val parser = ParserHelper.getZ3OutputParser(input)
 
     println(parser.results())
+  }
+
+  @Test
+  def testCanHandleOtherTitles() {
+    val input =
+      "Result of analysis [analysis1 = always_true? cond1]:\n" +
+        "sat\n(model \n  " +
+        "(define-fun cond1 () Bool\n    false)\n  " +
+        "(define-fun q0 () Bool\n    false)\n  " +
+        "(define-fun always_true_analysis1 () Bool\n    false)\n " +
+        "(define-fun q1 () Bool\n    false)\n " +
+        "(define-fun q4 () Bool\n    true)\n" +
+        "(define-fun cond2 () Bool\n    false)\n)\n" +
+        "Result of analysis [analysis2 = always_false? cond2]:\n" +
+        "sat\n(model \n  (define-fun cond1 () Bool\n    true)\n " +
+        "(define-fun always_false_analysis2 () Bool\n    true)\n" +
+        "(define-fun q1 () Bool\n    true)\n " +
+        "(define-fun q2 () Bool\n    true)\n  " +
+        "(define-fun cond2 () Bool\n    true)\n)\n" +
+        "Result of vacuity check [vacuityCheck = always_false? cond2]:\n" +
+        "sat\n(model \n  (define-fun cond1 () Bool\n    true)\n " +
+        "(define-fun always_false_analysis2 () Bool\n    true)\n" +
+        "(define-fun q1 () Bool\n    true)\n " +
+        "(define-fun q2 () Bool\n    true)\n  " +
+        "(define-fun cond2 () Bool\n    true)\n)\n" +
+        "Result of analysis [analysis3 = different? cond1 cond2]:\n" +
+        "unsat\n" +
+        "(error \"line 35 column 10: model is not available\")"
+    val parser = ParserHelper.getZ3OutputParser(input)
+
+    val analyses: Map[String, Model] = parser.results().toMap
+    println(analyses)
+    analyses.size should be(4)
+    analyses("vacuityCheck").satResult should be(Sat)
+    analyses("analysis1").satResult should be(Sat)
+    analyses("analysis2").satResult should be(Sat)
+    analyses("analysis3").satResult should be(Unsat)
   }
 
   @Test

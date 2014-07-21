@@ -39,10 +39,11 @@ private boolean ignore = false;
 
 results returns	[Map<String, Model> r]
 @init {r = new HashMap<String, Model>();}
-	:((Z3ERROR)+)? (
-	'Result of analysis [' id0=IDENT '=' id1=IDENT '?' id2=IDENT (IDENT)? ']:'
-	(m=model) { r.put($id0.text, $m.m);}
-	// | need one more case here for vacuity checks, not sure about insert them into r as well?
+	:((Z3ERROR)+)? 
+	(
+		'Result of analysis [' id0=IDENT '=' id1=IDENT '?' id2=IDENT (IDENT)? ']:' (m=model) { r.put($id0.text, $m.m);}
+	| 
+		'Result of vacuity check [' id0=IDENT '=' id1=IDENT '?' id2=IDENT (IDENT)? ']:' (m=model) { r.put($id0.text, $m.m);}
 	)+
 	;
 	
