@@ -24,7 +24,7 @@ object Z3OutputAnalyser {
     val alwaysFalseConditions = z3OutputModels.filter(m => m._1.endsWith("_vcf") && m._2.isUnSat).map(_._1.dropRight("_vcf".length)).toSeq.sorted
 
     //TODO pick up vacuity setting from the SessionOption, then decide whether to display the following section.
-
+    //or look for _vct or _vcf analyses from z3OutputModels to decide whether to display this section
     var entireAnalysis: NodeSeq = <p style={style}>
       <h4>Vacuity check on all conditions declared in CONDITIONS section above</h4>
       Conditions that are always true:
