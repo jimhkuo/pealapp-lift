@@ -23,6 +23,7 @@ class Z3OutputParserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
 
     model("cond1_vct").isSat should be (false)
     model("cond1_vct").isUnSat should be (false)
+    model("cond1_vct").isUnknown should be (true)
   }
 
   @Test
