@@ -17,18 +17,13 @@ object Z3OutputAnalyser {
   def execute(analyses: Map[String, AnalysisGenerator], constsMap: Map[String, PealAst], inputPolicies: String, z3RawOutput: String)(implicit ov: OutputVerifier): NodeSeq = {
     val style = "font-family: Monaco, Menlo, Consolas, \"Courier New\", monospace;display: block;padding: 9.5px;margin: 0 0 10px;font-size: 13px;line-height: 1.428571429;color: #333;word-break: break-all;word-wrap: break-word;background-color: #f5f5f5;border: 1px solid #ccc;border-radius: 4px;"
 
-    //do vacuity (always_true?, always_false?) UNSAT check on all conds
-    //show above analysis results
-    //title: Result of vacuity analyses of all declared conditions
-    //Conditions that are always true: UNSAT
-    //Conditions that are always false: UNSAT
-    //Conditions that may be true: UNKNOWN
-    //Conditions that may be false: UNKNOWN
     val z3OutputParser = ParserHelper.getZ3OutputParser(z3RawOutput)
     val z3OutputModels: Map[String, Model] = z3OutputParser.results().toMap
 
     val alwaysTrueConditions = z3OutputModels.filter(m => m._1.endsWith("_vct") && m._2.isUnSat).map(_._1.dropRight("_vct".length)).toSeq.sorted
     val alwaysFalseConditions = z3OutputModels.filter(m => m._1.endsWith("_vcf") && m._2.isUnSat).map(_._1.dropRight("_vcf".length)).toSeq.sorted
+
+    //TODO pick up vacuity setting from the SessionOption, then decide whether to display the following section.
 
     var entireAnalysis: NodeSeq = <p style={style}>
       <h4>Vacuity check on all conditions declared in CONDITIONS section above</h4>

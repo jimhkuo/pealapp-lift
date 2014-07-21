@@ -35,6 +35,11 @@ class EagerSynthesiser(input: String) extends Synthesiser {
     }
 
     val domainSpecifics = input.split("\n").dropWhile(!_.startsWith("DOMAIN_SPECIFICS")).takeWhile(!_.startsWith("ANALYSES")).drop(1).filterNot(_.trim.startsWith("%"))
-    predicateDeclarations.mkString + condDeclarations.mkString + body.mkString + domainSpecifics.mkString("", "\n", "\n") + vacuityChecks.mkString + generatedAnalyses.mkString
+    predicateDeclarations.mkString +
+      condDeclarations.mkString +
+      body.mkString +
+      domainSpecifics.mkString("", "\n", "\n") +
+//      vacuityChecks.mkString +
+      generatedAnalyses.mkString
   }
 }
