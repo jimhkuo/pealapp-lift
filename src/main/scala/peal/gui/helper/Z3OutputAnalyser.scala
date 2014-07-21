@@ -17,7 +17,7 @@ object Z3OutputAnalyser {
   def execute(analyses: Map[String, AnalysisGenerator], constsMap: Map[String, PealAst], inputPolicies: String, z3RawOutput: String)(implicit ov: OutputVerifier): NodeSeq = {
     val style = "font-family: Monaco, Menlo, Consolas, \"Courier New\", monospace;display: block;padding: 9.5px;margin: 0 0 10px;font-size: 13px;line-height: 1.428571429;color: #333;word-break: break-all;word-wrap: break-word;background-color: #f5f5f5;border: 1px solid #ccc;border-radius: 4px;"
 
-    //TODO do vacuity (always_true?, always_false?) UNSAT check on all conds
+    //do vacuity (always_true?, always_false?) UNSAT check on all conds
     //show above analysis results
     //title: Result of vacuity analyses of all declared conditions
     //Conditions that are always true: UNSAT
@@ -25,15 +25,16 @@ object Z3OutputAnalyser {
     //Conditions that may be true: UNKNOWN
     //Conditions that may be false: UNKNOWN
     val z3OutputParser = ParserHelper.getZ3OutputParser(z3RawOutput)
-    val z3OutputModels = z3OutputParser.results().toMap
+    val z3OutputModels: Map[String, Model] = z3OutputParser.results().toMap
 
-    val alwaysTrueConditions: Iterable[String] = analyses.values.filter(a => a.analysisName.endsWith("_vct") && z3OutputModels(a.analysisName).isUnSat).map{case AlwaysTrue(_, cond) => cond}
-    val alwaysFalseConditions: Iterable[String] = analyses.values.filter(a => a.analysisName.endsWith("_vcf") && z3OutputModels(a.analysisName).isUnSat).map{case AlwaysTrue(_, cond) => cond}
+    val alwaysTrueConditions = z3OutputModels.filter(m => m._1.endsWith("_vct") && m._2.isUnSat).map(_._1.dropRight("_vct".length)).toSeq.sorted
+    val alwaysFalseConditions = z3OutputModels.filter(m => m._1.endsWith("_vcf") && m._2.isUnSat).map(_._1.dropRight("_vcf".length)).toSeq.sorted
 
     var entireAnalysis : NodeSeq = <p style={style}>
       <h4>Vacuity check on all conditions</h4>
-      Conditions that are always true: {alwaysTrueConditions.mkString(",")}<br/>
-      Conditions that are always false: {alwaysFalseConditions.mkString(",")}</p>
+      Conditions that are always true: {alwaysTrueConditions.mkString(", ")}<br/>
+      Conditions that are always false: {alwaysFalseConditions.mkString(", ")}
+    </p>
 
     val sortedAnalyses = analyses.keys.toSeq.sortWith(_ < _)
     sortedAnalyses.foreach {
