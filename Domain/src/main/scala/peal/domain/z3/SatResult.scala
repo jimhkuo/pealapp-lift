@@ -11,3 +11,7 @@ object Unsat extends SatResult {
 object Sat extends SatResult  {
   override def toString = "Sat"
 }
+
+object Unknown extends SatResult  {
+  override def toString = "Unknown"
+}

@@ -12,6 +12,7 @@ import peal.domain.z3.Assignment;
 import peal.domain.z3.Model;
 import peal.domain.z3.Sat$;
 import peal.domain.z3.Unsat$;
+import peal.domain.z3.Unknown$;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -50,11 +51,12 @@ results returns	[Map<String, Model> r]
 model returns [Model m]
 @init{ List<Assignment> l = new ArrayList<Assignment>(); }
 	: 'sat' '(model' (assignment {l.add($assignment.a);})+ ')' { $m = new Model(Sat$.MODULE$, l);}
+	| 'unknown' '(model' (assignment {l.add($assignment.a);})+ ')' { $m = new Model(Unknown$.MODULE$, l);}	
 	| 'unsat' UNSATMESSAGE { $m = new Model(Unsat$.MODULE$, l);}
 	;
 
 assignment 	returns [Assignment a]
-	:'(define-fun' id0=IDENT '(' ('(' (IDENT)+ ')')? ')' id1=IDENT id2=value')' {ignore = false; $a = new Assignment($id0.text, $id1.text, $id2.s);}	
+	:'(define-fun' id0=IDENT '(' ('(' (IDENT)+ ')')* ')' id1=IDENT id2=value')' {ignore = false; $a = new Assignment($id0.text, $id1.text, $id2.s);}	
 	|'(declare-fun' id0=IDENT '('')' id1=IDENT')' {$a = new Assignment($id0.text, $id1.text, "");}	
 	|'(forall' {ignore = true;}
 	(IDENT | NUMBER | '+' | '*' | '=' | '(' | ')' | '<' | '<=' )* {$a = new Assignment("", "", "");}	
@@ -66,9 +68,15 @@ value returns [String s]
 	| '(' '-' unary ')' {$s = "-" + $unary.s;}
 	| '(' '/' lhs=NUMBER rhs=NUMBER ')' {$s = $lhs.text + "/" + $rhs.text;}
 	| '('IDENT ('(' (IDENT)+ ')')?')' {$s = "";}
-	| '(ite' '(''=' IDENT IDENT')' value value ')' {$s = "";}
+	| '(ite' component component component ')' {$s = "";}
 	;	
-
+	
+component 
+	: '(''=' IDENT value')'		
+	| '(and' (component)+ ')'
+	| value
+	; 
+	
 unary returns [String s]
 	: IDENT {$s = $IDENT.text;}
 	| NUMBER {$s = $NUMBER.text;}

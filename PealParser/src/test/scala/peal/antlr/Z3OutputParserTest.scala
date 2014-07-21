@@ -5,6 +5,8 @@ import org.scalatest.junit.ShouldMatchersForJUnit
 import peal.antlr.util.ParserHelper
 import peal.domain.z3._
 import peal.util.{ConsoleLogger, Z3ModelMatcher}
+import scala.collection.JavaConversions._
+
 
 import scala.collection.JavaConversions._
 
@@ -13,10 +15,22 @@ class Z3OutputParserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
   val consts = Map[String, PealAst]("q0" -> Term("q0"), "q1" -> Term("q1"), "q2" -> Term("q2"), "q3" -> Term("q3"), "q4" -> Term("q4"), "q5" -> Term("q5"), "q6" -> Term("q6"))
 
   @Test
+  def testCanDealWithUnknownModel() {
+    val input = "Result of vacuity check [cond1_vct = always_true? cond1]:\nunknown\n(model \n  ;; universe for User:\n  ;;   User!val!0 \n  ;; -----------\n  ;; definitions for universe elements:\n  (declare-fun User!val!0 () User)\n  ;; cardinality constraint:\n  (forall ((x User)) (= x User!val!0))\n  ;; -----------\n  (define-fun q0 () Bool\n    false)\n  (define-fun cond3 () Bool\n    false)\n  (define-fun cond4 () Bool\n    false)\n  (define-fun q3 () Bool\n    false)\n  (define-fun cond5 () Bool\n    false)\n  (define-fun q2 () Bool\n    false)\n  (define-fun cond2 () Bool\n    false)\n  (define-fun cond1 () Bool\n    false)\n  (define-fun q4 () Bool\n    false)\n  (define-fun elem!0 () User\n    User!val!0)\n  (define-fun q1 () Bool\n    false)\n  (define-fun always_true_cond1_vct () Bool\n    false)\n  (define-fun cond6 () Bool\n    false)\n  (define-fun seniorTo ((x!1 User) (x!2 User)) Bool\n    (ite (and (= x!1 User!val!0) (= x!2 User!val!0)) false\n      false))\n  (define-fun salary ((x!1 User)) Real\n    (ite (= x!1 User!val!0) (- (/ 1.0 2.0))\n      (- (/ 1.0 2.0))))\n)"
+    val parser = ParserHelper.getZ3OutputParser(input)
+
+    val model: Map[String, Model] = parser.results().toMap
+
+    model("cond1_vct").isSat should be (false)
+    model("cond1_vct").isUnSat should be (false)
+  }
+
+  @Test
   def testIncludeCommentedInput() {
     val input = "Result of analysis [name8 = different? cond2 cond4]:\nsat\n(model \n  ;; universe for MethodName:\n  ;;   MethodName!val!0 MethodName!val!1 \n  ;; -----------\n  ;; definitions for universe elements:\n  (declare-fun MethodName!val!0 () MethodName)\n  (declare-fun MethodName!val!1 () MethodName)\n  ;; cardinality constraint:\n  (forall ((x MethodName)) (or (= x MethodName!val!0) (= x MethodName!val!1)))\n  ;; -----------\n  (define-fun q0 () Bool\n    false)\n  (define-fun q7 () Bool\n    true)\n  (define-fun always_true_analysis1 () Bool\n    false)\n  (define-fun n0 () MethodName\n    MethodName!val!1)\n  (define-fun q8 () Bool\n    true)\n  (define-fun q4 () Bool\n    true)\n  (define-fun cond2 () Bool\n    false)\n  (define-fun cond1 () Bool\n    false)\n  (define-fun a2 () Int\n    0)\n  (define-fun x2 () Real\n    0.0)\n  (define-fun x1 () Real\n    (- (/ 2657671643161391.0 5000000000000000.0)))\n  (define-fun q5 () Bool\n    true)\n  (define-fun n1 () MethodName\n    MethodName!val!0)\n  (define-fun q3 () Bool\n    true)\n  (define-fun a1 () Int\n    0)\n  (define-fun q2 () Bool\n    false)\n  (define-fun a0 () Int\n    0)\n  (define-fun q6 () Bool\n    true)\n  (define-fun x0 () Real\n    0.0)\n  (define-fun calledBy ((x!1 MethodName)) Bool\n    false)\n)\nunsat\nsat\n(model \n  ;; universe for MethodName:\n  ;;   MethodName!val!0 MethodName!val!1 \n  ;; -----------\n  ;; definitions for universe elements:\n  (declare-fun MethodName!val!0 () MethodName)\n  (declare-fun MethodName!val!1 () MethodName)\n  ;; cardinality constraint:\n  (forall ((x MethodName)) (or (= x MethodName!val!0) (= x MethodName!val!1)))\n  ;; -----------\n  (define-fun q0 () Bool\n    false)\n  (define-fun q7 () Bool\n    true)\n  (define-fun n0 () MethodName\n    MethodName!val!1)\n  (define-fun a2 () Int\n    0)\n  (define-fun q8 () Bool\n    true)\n  (define-fun q4 () Bool\n    false)\n  (define-fun cond2 () Bool\n    false)\n  (define-fun cond1 () Bool\n    true)\n  (define-fun x2 () Real\n    0.0)\n  (define-fun x1 () Real\n    (- (/ 2657671643161391.0 5000000000000000.0)))\n  (define-fun q5 () Bool\n    true)\n  (define-fun different_analysis3 () Bool\n    true)\n  (define-fun n1 () MethodName\n    MethodName!val!0)\n  (define-fun q3 () Bool\n    false)\n  (define-fun a1 () Int\n    (- 1))\n  (define-fun q2 () Bool\n    true)\n  (define-fun a0 () Int\n    (- 1))\n  (define-fun q6 () Bool\n    true)\n  (define-fun x0 () Real\n    0.0)\n  (define-fun calledBy!4 ((x!1 MethodName)) Bool\n    (ite (= x!1 MethodName!val!1) true\n      false))\n  (define-fun k!3 ((x!1 MethodName)) MethodName\n    (ite (= x!1 MethodName!val!0) MethodName!val!0\n      MethodName!val!1))\n  (define-fun calledBy ((x!1 MethodName)) Bool\n    (calledBy!4 (k!3 x!1)))\n)"
     val parser = ParserHelper.getZ3OutputParser(input)
 
+    println(input)
     parser.results()
   }
 
