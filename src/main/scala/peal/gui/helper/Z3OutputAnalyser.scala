@@ -26,6 +26,8 @@ object Z3OutputAnalyser {
     val z3OutputModels = z3OutputParser.results().toMap
     var entireAnalysis = NodeSeq.Empty
 
+    //TODO or pull out vacuity check results from z3OutputModels here?
+
     val sortedAnalyses = analyses.keys.toSeq.sortWith(_ < _)
     sortedAnalyses.foreach {
       analysisName =>

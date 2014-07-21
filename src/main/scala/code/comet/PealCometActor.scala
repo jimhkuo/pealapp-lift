@@ -92,6 +92,7 @@ class PealCometActor extends MainBody with CometListener {
 
     result match {
       //v._1 comes from Peal input
+        //TODO pass in vacuity checks here?
       case Success(v) => callZ3AndCertifyResults(isVerbose, constsMap = v._1._1, analyses = v._1._4, z3SMTInput = v._2)
       case Failure(e) => dealWithIt(e)
     }
