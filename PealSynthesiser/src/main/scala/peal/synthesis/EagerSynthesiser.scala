@@ -23,8 +23,6 @@ class EagerSynthesiser(input:String) extends Synthesiser{
     val sortedAnalyses = pealProgramParser.analyses.keys.toSeq.sortWith(_ < _)
 
     //TODO insert vacuity checks here
-    //insert vc = AlwaysTrue("vacuityCheck1", "cond1") and AlwaysFalse("vacuityCheck1", "cond1")
-    //"(echo \"Result of vacuity check [" + vc.analysisName + "]:\")\n" + vc.z3SMTInput
     val vacuityChecks = for (cond <- sortedConditions) yield {
       val trueVacuityCheck = AlwaysTrue("alwaysTrue_" + cond , cond)
       val falseVacuityCheck = AlwaysFalse("alwaysFalse_" + cond , cond)
