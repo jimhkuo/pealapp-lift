@@ -17,7 +17,6 @@ import peal.z3.Z3Caller
 import scala.util.{Try, Failure, Success}
 import scala.xml.Text
 
-//TODO vacuity check strategy
 // 0. Given a Peal input
 // 1. Our synthesiser (explicit or extended, depending on which GUI button is clicked) will
 //   a. Parse #0 into AST objects
@@ -92,7 +91,6 @@ class PealCometActor extends MainBody with CometListener {
 
     result match {
       //v._1 comes from Peal input
-        //TODO pass in vacuity checks here?
       case Success(v) => callZ3AndCertifyResults(isVerbose, constsMap = v._1._1, analyses = v._1._4, z3SMTInput = v._2)
       case Failure(e) => dealWithIt(e)
     }
