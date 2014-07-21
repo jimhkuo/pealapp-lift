@@ -49,67 +49,65 @@ object Z3OutputAnalyser {
           case s: AlwaysTrue =>
             if (z3OutputModels(analysisName).satResult == Unsat) {
               section.append(s.cond + " is always true")
+            } else if (z3OutputModels(analysisName).satResult == Unknown) {
+              section.append("Z3 could not determine whether " + s.cond + " is always true or not. The model returned from Z3 is:")
             }
             else {
-              z3OutputModels(analysisName).satResult match {
-                case Sat => section.append(s.cond + " is NOT always true, for example, when:")
-                case Unknown => section.append("Z3 could not determine whether " + s.cond + " is always true or not. The model returned from Z3 is:")
-              }
+              section.append(s.cond + " is NOT always true, for example, when:")
               section.append(getReasons(z3OutputModels(analysisName), Set(), Set("always_true_", "cond"), constsMap))
             }
           case s: AlwaysFalse =>
             if (z3OutputModels(analysisName).satResult == Unsat) {
               section.append(s.cond + " is always false")
             }
+            else if (z3OutputModels(analysisName).satResult == Unknown) {
+              section.append("Z3 could not determine whether " + s.cond + " is always false or not. The model returned from Z3 is:")
+            }
             else {
-              z3OutputModels(analysisName).satResult match {
-                case Sat => section.append(s.cond + " is NOT always false, for example, when:")
-                case Unknown => section.append("Z3 could not determine whether " + s.cond + " is always false or not. The model returned from Z3 is:")
-              }
+              section.append(s.cond + " is NOT always false, for example, when:")
               section.append(getReasons(z3OutputModels(analysisName), Set(), Set("always_false_", "cond"), constsMap))
             }
           case s: Satisfiable =>
             if (z3OutputModels(analysisName).satResult == Unsat) {
               section.append(s.cond + " is NOT satisfiable")
             }
+            else if (z3OutputModels(analysisName).satResult == Unknown) {
+              section.append("Z3 could not determine whether " + s.cond + " is satisfiable or not. The model returned from Z3 is:")
+            }
             else {
-              z3OutputModels(analysisName).satResult match {
-                case Sat => section.append(s.cond + " is satisfiable, for example, when:")
-                case Unknown => section.append("Z3 could not determine whether " + s.cond + " is satisfiable or not. The model returned from Z3 is:")
-              }
+              section.append(s.cond + " is satisfiable, for example, when:")
               section.append(getReasons(z3OutputModels(analysisName), Set(), Set("satisfiable_", "cond"), constsMap))
             }
           case s: Different =>
             if (z3OutputModels(analysisName).satResult == Unsat) {
               section.append(s.lhs + " and " + s.rhs + " are NOT different")
             }
+            else if (z3OutputModels(analysisName).satResult == Unknown) {
+              section.append("Z3 could not determine whether " + s.lhs + " and " + s.rhs + " are different or not. The model returned from Z3 is:")
+            }
             else {
-              z3OutputModels(analysisName).satResult match {
-                case Sat => section.append(s.lhs + " and " + s.rhs + " are different, for example, when:")
-                case Unknown => section.append("Z3 could not determine whether " + s.lhs + " and " + s.rhs + " are different or not. The model returned from Z3 is:")
-              }
+              section.append(s.lhs + " and " + s.rhs + " are different, for example, when:")
               section.append(getReasons(z3OutputModels(analysisName), Set(s.lhs, s.rhs), Set("different_", "cond"), constsMap))
             }
           case s: Equivalent =>
             if (z3OutputModels(analysisName).satResult == Unsat) {
               section.append(s.lhs + " and " + s.rhs + " are equivalent")
+            } else if (z3OutputModels(analysisName).satResult == Unknown) {
+              section.append("Z3 could not determine whether " + s.lhs + " and " + s.rhs + " are equivalent or not. The model returned from Z3 is:")
             }
             else {
-              z3OutputModels(analysisName).satResult match {
-                case Sat => section.append(s.lhs + " and " + s.rhs + " are NOT equivalent, for example, when:")
-                case Unknown => section.append("Z3 could not determine whether " + s.lhs + " and " + s.rhs + " are equivalent or not. The model returned from Z3 is:")
-              }
+              section.append(s.lhs + " and " + s.rhs + " are NOT equivalent, for example, when:")
               section.append(getReasons(z3OutputModels(analysisName), Set(s.lhs, s.rhs), Set("equivalent_", "cond"), constsMap))
             }
           case s: Implies =>
             if (z3OutputModels(analysisName).satResult == Unsat) {
               section.append(s.lhs + " implies " + s.rhs)
             }
+            else if (z3OutputModels(analysisName).satResult == Unknown) {
+              section.append("Z3 could not determine whether " + s.lhs + " implies " + s.rhs + " or not. The model returned from Z3 is:")
+            }
             else {
-              z3OutputModels(analysisName).satResult match {
-                case Sat => section.append(s.lhs + " does not imply " + s.rhs + ", for example, when:")
-                case Unknown => section.append("Z3 could not determine whether " + s.lhs + " implies " + s.rhs + " or not. The model returned from Z3 is:")
-              }
+              section.append(s.lhs + " does not imply " + s.rhs + ", for example, when:")
               section.append(getReasons(z3OutputModels(analysisName), Set(s.lhs, s.rhs), Set("implies_", "cond"), constsMap))
             }
         }
@@ -131,7 +129,7 @@ object Z3OutputAnalyser {
           section.append(new PolicySpecialisationMaker(inputPolicies).doIt(z3RawOutput, analysisName, verifiedModel._2))
         }
         else {
-          section.append("\nOutput of analysis [" + analysisName + "] is UNSAT: so no certification performed and no specialized policies reported.")
+          section.append("\nOutput of analysis [" + analysisName + "] is " + z3OutputModels(analysisName).satResult+ ": so no certification performed and no specialized policies reported.")
         }
         entireAnalysis = entireAnalysis ++ <p style={style}>
           {section.nodes}
