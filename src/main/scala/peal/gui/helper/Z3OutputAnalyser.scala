@@ -15,6 +15,8 @@ import scala.xml.NodeSeq
 object Z3OutputAnalyser {
 
   def execute(analyses: Map[String, AnalysisGenerator], constsMap: Map[String, PealAst], inputPolicies: String, z3RawOutput: String)(implicit ov: OutputVerifier): NodeSeq = {
+    val style = "font-family: Monaco, Menlo, Consolas, \"Courier New\", monospace;display: block;padding: 9.5px;margin: 0 0 10px;font-size: 13px;line-height: 1.428571429;color: #333;word-break: break-all;word-wrap: break-word;background-color: #f5f5f5;border: 1px solid #ccc;border-radius: 4px;"
+
     //TODO do vacuity (always_true?, always_false?) UNSAT check on all conds
     //show above analysis results
     //title: Result of vacuity analyses of all declared conditions
@@ -24,11 +26,14 @@ object Z3OutputAnalyser {
     //Conditions that may be false: UNKNOWN
     val z3OutputParser = ParserHelper.getZ3OutputParser(z3RawOutput)
     val z3OutputModels = z3OutputParser.results().toMap
-    var entireAnalysis = NodeSeq.Empty
 
-    //TODO or pull out vacuity check results from z3OutputModels here?
+    val alwaysTrueConditions: Iterable[String] = analyses.values.filter(a => a.analysisName.endsWith("_vct") && z3OutputModels(a.analysisName).isUnSat).map{case AlwaysTrue(_, cond) => cond}
+    val alwaysFalseConditions: Iterable[String] = analyses.values.filter(a => a.analysisName.endsWith("_vcf") && z3OutputModels(a.analysisName).isUnSat).map{case AlwaysTrue(_, cond) => cond}
 
-    val sortedVacuityChecks = analyses.keys.toSeq.filter(s => s.startsWith("vct_") || s.startsWith("vcf_")).sortWith(_ < _)
+    var entireAnalysis : NodeSeq = <p style={style}>
+      <h4>Vacuity check on all conditions</h4>
+      Conditions that are always true: {alwaysTrueConditions.mkString(",")}<br/>
+      Conditions that are always false: {alwaysFalseConditions.mkString(",")}</p>
 
     val sortedAnalyses = analyses.keys.toSeq.sortWith(_ < _)
     sortedAnalyses.foreach {
@@ -107,7 +112,6 @@ object Z3OutputAnalyser {
         else {
           section.append("\nOutput of analysis [" + analysisName + "] is UNSAT: so no certification performed and no specialized policies reported.")
         }
-        val style = "font-family: Monaco, Menlo, Consolas, \"Courier New\", monospace;display: block;padding: 9.5px;margin: 0 0 10px;font-size: 13px;line-height: 1.428571429;color: #333;word-break: break-all;word-wrap: break-word;background-color: #f5f5f5;border: 1px solid #ccc;border-radius: 4px;"
         entireAnalysis = entireAnalysis ++ <p style={style}>
           {section.nodes}
         </p>
