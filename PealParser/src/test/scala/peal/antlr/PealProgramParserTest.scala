@@ -14,6 +14,17 @@ class PealProgramParserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
   val consts = Map[String, PealAst]("q0" -> Term("q0"), "q1" -> Term("q1"), "q2" -> Term("q2"), "q3" -> Term("q3"), "q4" -> Term("q4"), "q5" -> Term("q5"), "q6" -> Term("q6"))
 
   @Test
+  def testCanParseComplicatedInput() {
+    val input = "POLICIES\nb1 = + ((q0 0.1)(q1 0.1)(q2 0.1)(q3 0.1)(q4 0.1)) default 0\nPOLICY_SETS\npSet = b1\nCONDITIONS\ncond1 = 0 < pSet\ncond2 = 0.2 < pSet\ncond3 = 0.4 < pSet\ncond4 = 0.6 < pSet\ncond5 = 0.8 < pSet\ncond6 = 1 < pSet\nDOMAIN_SPECIFICS\n(declare-sort User)\n(declare-fun seniorTo (User User) Bool)\n(declare-fun salary (User) Real) \n(declare-const bob User)\n(assert (forall ((u1 User) (u2 User) (u3 User)) (implies (and (seniorTo u1 u2) (seniorTo u2 u3)) (seniorTo u1 u3))))\n(assert (forall ((u User)) (not (seniorTo u u))))\n" +
+      "(assert (forall ((u1 User) (u2 User)) (implies (and (seniorTo u1 u2) (seniorTo u2 u1)) (= u1 u2))))\n" +
+      "(assert (forall ((u1 User) (u2 User)) (xor (seniorTo u1 u2) (= (salary u1) (/ 2.5 (salary u2))))))\n" +
+      "ANALYSES\nanalysis1 = always_true? cond1"
+    val pealProgramParser = ParserHelper.getPealParser(input)
+    pealProgramParser.program()
+
+  }
+
+  @Test
   def testCanIngoreComments() {
     val input =
       "POLICIES\nb1 = + ((q1 x) (q2 0.9)) default 1\n" +
@@ -393,12 +404,12 @@ class PealProgramParserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
     pealProgrmParser.conds("cond2").synthesis(consts) should beZ3Model("(or (and (or (not q4) false) (and (or q4 q3) (not q3))) (and (and (or q5 q3) false) (or (not q2) (not false))))")
   }
 
-//  @Test
-//  def testRepeatedVariable() {
-//    val input = "POLICIES\nb0 = + ((q3 x)) default x\nb1 = max ((q0 0.9920)) default x\nb2 = * ((q6 0.0489)) default 0.1423\nb3 = min ((q2 0.6755)) default 0.3968\nPOLICY_SETS\np0_1 = min(b0,b1)\np2_3 = min(b2,b3)\np0_3 = max(p0_1,p2_3)\n\nCONDITIONS\ncond1 = 0.50 < p0_3\ncond2 = 0.60 < p0_3\nANALYSES\nanalysis1 = always_true? cond1\nanalysis2 = always_false? cond2\nanalysis3 = different? cond1 cond2\n"
-//    val pealProgrmParser = ParserHelper.getPealParser(input)
-//    pealProgrmParser.program()
-//    println(pealProgrmParser.pols)
-//    println(new ExtendedSynthesiser(input).generate())
-//  }
+  //  @Test
+  //  def testRepeatedVariable() {
+  //    val input = "POLICIES\nb0 = + ((q3 x)) default x\nb1 = max ((q0 0.9920)) default x\nb2 = * ((q6 0.0489)) default 0.1423\nb3 = min ((q2 0.6755)) default 0.3968\nPOLICY_SETS\np0_1 = min(b0,b1)\np2_3 = min(b2,b3)\np0_3 = max(p0_1,p2_3)\n\nCONDITIONS\ncond1 = 0.50 < p0_3\ncond2 = 0.60 < p0_3\nANALYSES\nanalysis1 = always_true? cond1\nanalysis2 = always_false? cond2\nanalysis3 = different? cond1 cond2\n"
+  //    val pealProgrmParser = ParserHelper.getPealParser(input)
+  //    pealProgrmParser.program()
+  //    println(pealProgrmParser.pols)
+  //    println(new ExtendedSynthesiser(input).generate())
+  //  }
 }

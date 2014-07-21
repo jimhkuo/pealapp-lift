@@ -72,7 +72,7 @@ program
 	id0 =IDENT '=' id1=IDENT {Condition cond = new PredicateCondition($id1.text); conds.put($id0.text, cond);}
 	)+
 	('DOMAIN_SPECIFICS' {ignore = true;}
-	(IDENT | NUMBER | '+' | '*' | '=' | '(' | ')' | '<' | '<=' )*)?
+	(IDENT | NUMBER | '+' | '*' | '=' | '(' | ')' | '<' | '<=' | '/' )*)?
 	('ANALYSES' {ignore = false;}
 	(id0=IDENT '=' 'always_true?' id1=IDENT {AnalysisGenerator analysis = new AlwaysTrue($id0.text, $id1.text); analyses.put($id0.text, analysis);}
 	|id0=IDENT '=' 'always_false?' id1=IDENT {AnalysisGenerator analysis = new AlwaysFalse($id0.text, $id1.text); analyses.put($id0.text, analysis);}
