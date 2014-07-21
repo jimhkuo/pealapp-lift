@@ -1,8 +1,9 @@
-package code.lib
+package peal.gui.helper
 
+import code.lib.MutableNodeSeq
 import peal.antlr.util.ParserHelper
 import peal.domain.z3._
-import peal.domain.{Rational, PealBottom, PealFalse, PealTrue}
+import peal.domain.{PealBottom, PealFalse, PealTrue, Rational}
 import peal.specialisation.PolicySpecialisationMaker
 import peal.synthesis.analysis._
 import peal.verifier.{OutputVerifier, Z3ModelValueParser}

@@ -6,7 +6,7 @@ import net.liftweb.http.js.JsCmds._
 import net.liftweb.http.js.jquery.JqJE._
 import peal.domain.PolicySet
 import peal.domain.z3.PealAst
-import peal.helper.PealCometHelper
+import peal.gui.helper.{Z3OutputAnalyser, PealCometHelper}
 import peal.model.{ConstantScoreModelGenerator, MajorityVotingGenerator, RandomScoreModelGenerator}
 import peal.synthesis._
 import peal.synthesis.analysis._

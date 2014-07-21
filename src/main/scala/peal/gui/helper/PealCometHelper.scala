@@ -1,13 +1,12 @@
-package peal.helper
+package peal.gui.helper
 
 import peal.antlr.util.ParserHelper
 import peal.domain.PolicySet
-import peal.domain.z3.{Term, PealAst}
+import peal.domain.z3.{PealAst, Term}
 import peal.synthesis.analysis.AnalysisGenerator
 import peal.synthesis.{Condition, EagerSynthesiser, ExtendedSynthesiser}
+
 import scala.collection.JavaConversions._
-
-
 import scala.util.Try
 
 object PealCometHelper {
