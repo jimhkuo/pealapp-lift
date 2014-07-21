@@ -10,6 +10,7 @@ class Boot {
   def boot {
     LiftRules.addToPackages("code")
 
+    //TODO add a new page to show user options
     val entries: List[Menuable with WithSlash] = List(
       Menu.i("Editor and runner") / "index",
       Menu.i("About PEALT") / "aboutpealt",
