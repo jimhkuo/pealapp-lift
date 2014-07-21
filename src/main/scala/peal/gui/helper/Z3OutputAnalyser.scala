@@ -28,6 +28,8 @@ object Z3OutputAnalyser {
 
     //TODO or pull out vacuity check results from z3OutputModels here?
 
+    val sortedVacuityChecks = analyses.keys.toSeq.filter(s => s.startsWith("vct_") || s.startsWith("vcf_")).sortWith(_ < _)
+
     val sortedAnalyses = analyses.keys.toSeq.sortWith(_ < _)
     sortedAnalyses.foreach {
       analysisName =>

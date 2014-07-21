@@ -24,8 +24,8 @@ class EagerSynthesiser(input:String) extends Synthesiser{
 
     //TODO insert vacuity checks here
     val vacuityChecks = for (cond <- sortedConditions) yield {
-      val trueVacuityCheck = AlwaysTrue("vct_" + cond , cond)
-      val falseVacuityCheck = AlwaysFalse("vcf_" + cond , cond)
+      val trueVacuityCheck = AlwaysTrue(cond + "_vct", cond)
+      val falseVacuityCheck = AlwaysFalse(cond + "_vcf" , cond)
       "(echo \"Result of vacuity check [" + trueVacuityCheck.analysisName + "]:\")\n" + trueVacuityCheck.z3SMTInput +
       "(echo \"Result of vacuity check [" + falseVacuityCheck.analysisName + "]:\")\n" + falseVacuityCheck.z3SMTInput
     }
