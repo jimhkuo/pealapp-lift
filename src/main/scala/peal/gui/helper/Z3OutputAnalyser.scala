@@ -30,10 +30,12 @@ object Z3OutputAnalyser {
     val alwaysTrueConditions = z3OutputModels.filter(m => m._1.endsWith("_vct") && m._2.isUnSat).map(_._1.dropRight("_vct".length)).toSeq.sorted
     val alwaysFalseConditions = z3OutputModels.filter(m => m._1.endsWith("_vcf") && m._2.isUnSat).map(_._1.dropRight("_vcf".length)).toSeq.sorted
 
-    var entireAnalysis : NodeSeq = <p style={style}>
+    var entireAnalysis: NodeSeq = <p style={style}>
       <h4>Vacuity check on all conditions declared in CONDITIONS section above</h4>
-      Conditions that are always true: {alwaysTrueConditions.mkString(", ")}<br/>
-      Conditions that are always false: {alwaysFalseConditions.mkString(", ")}
+      Conditions that are always true:
+      {alwaysTrueConditions.mkString(", ")}<br/>
+      Conditions that are always false:
+      {alwaysFalseConditions.mkString(", ")}
     </p>
 
     val sortedAnalyses = analyses.keys.toSeq.sortWith(_ < _)
@@ -48,9 +50,11 @@ object Z3OutputAnalyser {
             if (z3OutputModels(analysisName).satResult == Unsat) {
               section.append(s.cond + " is always true")
             }
-
             else {
-              section.append(s.cond + " is NOT always true, for example, when:")
+              z3OutputModels(analysisName).satResult match {
+                case Sat => section.append(s.cond + " is NOT always true, for example, when:")
+                case Unknown => section.append("Z3 could not determine whether " + s.cond + " is always true or not. The model returned from Z3 is:")
+              }
               section.append(getReasons(z3OutputModels(analysisName), Set(), Set("always_true_", "cond"), constsMap))
             }
           case s: AlwaysFalse =>
@@ -58,7 +62,10 @@ object Z3OutputAnalyser {
               section.append(s.cond + " is always false")
             }
             else {
-              section.append(s.cond + " is NOT always false, for example, when:")
+              z3OutputModels(analysisName).satResult match {
+                case Sat => section.append(s.cond + " is NOT always false, for example, when:")
+                case Unknown => section.append("Z3 could not determine whether " + s.cond + " is always false or not. The model returned from Z3 is:")
+              }
               section.append(getReasons(z3OutputModels(analysisName), Set(), Set("always_false_", "cond"), constsMap))
             }
           case s: Satisfiable =>
@@ -66,7 +73,10 @@ object Z3OutputAnalyser {
               section.append(s.cond + " is NOT satisfiable")
             }
             else {
-              section.append(s.cond + " is satisfiable, for example, when:")
+              z3OutputModels(analysisName).satResult match {
+                case Sat => section.append(s.cond + " is satisfiable, for example, when:")
+                case Unknown => section.append("Z3 could not determine whether " + s.cond + " is satisfiable or not. The model returned from Z3 is:")
+              }
               section.append(getReasons(z3OutputModels(analysisName), Set(), Set("satisfiable_", "cond"), constsMap))
             }
           case s: Different =>
@@ -74,7 +84,10 @@ object Z3OutputAnalyser {
               section.append(s.lhs + " and " + s.rhs + " are NOT different")
             }
             else {
-              section.append(s.lhs + " and " + s.rhs + " are different, for example, when:")
+              z3OutputModels(analysisName).satResult match {
+                case Sat => section.append(s.lhs + " and " + s.rhs + " are different, for example, when:")
+                case Unknown => section.append("Z3 could not determine whether " + s.lhs + " and " + s.rhs + " are different or not. The model returned from Z3 is:")
+              }
               section.append(getReasons(z3OutputModels(analysisName), Set(s.lhs, s.rhs), Set("different_", "cond"), constsMap))
             }
           case s: Equivalent =>
@@ -82,7 +95,10 @@ object Z3OutputAnalyser {
               section.append(s.lhs + " and " + s.rhs + " are equivalent")
             }
             else {
-              section.append(s.lhs + " and " + s.rhs + " are NOT equivalent, for example, when:")
+              z3OutputModels(analysisName).satResult match {
+                case Sat => section.append(s.lhs + " and " + s.rhs + " are NOT equivalent, for example, when:")
+                case Unknown => section.append("Z3 could not determine whether " + s.lhs + " and " + s.rhs + " are equivalent or not. The model returned from Z3 is:")
+              }
               section.append(getReasons(z3OutputModels(analysisName), Set(s.lhs, s.rhs), Set("equivalent_", "cond"), constsMap))
             }
           case s: Implies =>
@@ -90,7 +106,10 @@ object Z3OutputAnalyser {
               section.append(s.lhs + " implies " + s.rhs)
             }
             else {
-              section.append(s.lhs + " does not imply " + s.rhs + ", for example, when:")
+              z3OutputModels(analysisName).satResult match {
+                case Sat => section.append(s.lhs + " does not imply " + s.rhs + ", for example, when:")
+                case Unknown => section.append("Z3 could not determine whether " + s.lhs + " implies " + s.rhs + " or not. The model returned from Z3 is:")
+              }
               section.append(getReasons(z3OutputModels(analysisName), Set(s.lhs, s.rhs), Set("implies_", "cond"), constsMap))
             }
         }
