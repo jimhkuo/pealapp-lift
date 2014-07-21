@@ -22,7 +22,6 @@ class EagerSynthesiser(input:String) extends Synthesiser{
     }
     val sortedAnalyses = pealProgramParser.analyses.keys.toSeq.sortWith(_ < _)
 
-    //TODO insert vacuity checks here
     val vacuityChecks = for (cond <- sortedConditions) yield {
       val trueVacuityCheck = AlwaysTrue(cond + "_vct", cond)
       val falseVacuityCheck = AlwaysFalse(cond + "_vcf" , cond)

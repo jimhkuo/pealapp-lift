@@ -1,6 +1,7 @@
 package peal.synthesis
 
 import peal.antlr.util.ParserHelper
+import peal.synthesis.analysis.{AlwaysFalse, AlwaysTrue}
 import peal.synthesis.util.{Z3ScoreGenerator, ConditionTranslator}
 import scala.collection.JavaConversions._
 import peal.domain.operator._
@@ -106,19 +107,28 @@ class ExtendedSynthesiser(input: String) extends Synthesiser {
       "(assert (= " + name + " " + ConditionTranslator.translate(name, conds.toMap) + "))"
     }
 
+    val sortedConditions = pealProgramParser.conds.keys.toSeq.sortWith(_ < _)
+    val vacuityChecks = for (cond <- sortedConditions) yield {
+      val trueVacuityCheck = AlwaysTrue(cond + "_vct", cond)
+      val falseVacuityCheck = AlwaysFalse(cond + "_vcf" , cond)
+      "(echo \"Result of vacuity check [" + trueVacuityCheck.analysisName + "]:\")\n" + trueVacuityCheck.z3SMTInput +
+        "(echo \"Result of vacuity check [" + falseVacuityCheck.analysisName + "]:\")\n" + falseVacuityCheck.z3SMTInput
+    }
+
     val sortedAnalyses = analyses.keys.toSeq.sortWith(_ < _)
     val generatedAnalyses = for (analysis <- sortedAnalyses) yield {
       "(echo \"Result of analysis [" + analyses(analysis).analysisName + "]:\")\n" + analyses(analysis).z3SMTInput
     }
 
-    declarations.mkString("") +
+    declarations.mkString +
       policyDefaultDeclaration.mkString("", "\n", "\n") +
-      allVariableDeclarations.mkString("") +
-      condDeclarations.mkString("") +
+      allVariableDeclarations.mkString +
+      condDeclarations.mkString +
       predicateDeclaration.mkString("", "\n", "\n") +
       domainSpecifics.mkString("", "\n", "\n") +
       condDetails.mkString("", "\n", "\n") +
       policyComposition.mkString("", "\n", "\n") +
-      generatedAnalyses.mkString("")
+      vacuityChecks.mkString +
+      generatedAnalyses.mkString
   }
 }
