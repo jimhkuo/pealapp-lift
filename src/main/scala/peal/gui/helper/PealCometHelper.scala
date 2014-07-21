@@ -12,6 +12,7 @@ import scala.util.Try
 object PealCometHelper {
 
   def tryExplicitSynthesis(policies: String): Try[String] = Try {
+    //TODO use data in SessionOptions to determine whether to do vacuity check
     new EagerSynthesiser(policies).generate()
   }
 

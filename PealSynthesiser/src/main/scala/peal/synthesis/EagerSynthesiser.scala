@@ -6,9 +6,10 @@ import scala.collection.JavaConversions._
 import peal.domain.z3.Term
 import peal.antlr.util.ParserHelper
 
-class EagerSynthesiser(input:String) extends Synthesiser{
+class EagerSynthesiser(input: String) extends Synthesiser {
 
   def generate(): String = {
+    //TODO add a parameter here to control vacuity check
     val pealProgramParser = ParserHelper.getPealParser(input)
     pealProgramParser.program()
 
@@ -24,9 +25,9 @@ class EagerSynthesiser(input:String) extends Synthesiser{
 
     val vacuityChecks = for (cond <- sortedConditions) yield {
       val trueVacuityCheck = AlwaysTrue(cond + "_vct", cond)
-      val falseVacuityCheck = AlwaysFalse(cond + "_vcf" , cond)
+      val falseVacuityCheck = AlwaysFalse(cond + "_vcf", cond)
       "(echo \"Result of vacuity check [" + trueVacuityCheck.analysisName + "]:\")\n" + trueVacuityCheck.z3SMTInput +
-      "(echo \"Result of vacuity check [" + falseVacuityCheck.analysisName + "]:\")\n" + falseVacuityCheck.z3SMTInput
+        "(echo \"Result of vacuity check [" + falseVacuityCheck.analysisName + "]:\")\n" + falseVacuityCheck.z3SMTInput
     }
 
     val generatedAnalyses = for (analysis <- sortedAnalyses) yield {
