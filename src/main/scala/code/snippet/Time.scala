@@ -16,7 +16,11 @@ class Time {
 
   def render: CssSel = {
 
-    println("in time: " + CookieOptions.doVacuityChecks)
+//    println("in time: " + CookieOptions.doVacuityChecks)
+
+    val cookie = HTTPCookie(vacuityCheck, "abc").setDomain(S.hostName).setPath("/").setMaxAge(3600)
+    S.addCookie(cookie)
+    println("Set: " + cookie)
 
     "* *" #> ("The time now is " + dateString)
   }
