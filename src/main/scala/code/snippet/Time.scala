@@ -18,9 +18,13 @@ class Time {
 
 //    println("in time: " + CookieOptions.doVacuityChecks)
 
-    val cookie = HTTPCookie(vacuityCheck, "abc").setDomain(S.hostName).setPath("/").setMaxAge(3600)
+    val cookie = HTTPCookie(vacuityCheck, "abc").setMaxAge(3600)//.setDomain(S.hostName).setPath("/debug2")
     S.addCookie(cookie)
     println("Set: " + cookie)
+
+//    S.redirectTo("debug2", () => {    val cookie = HTTPCookie(vacuityCheck, "efg").setMaxAge(3600).setDomain(S.hostName).setPath("/debug2")
+//      S.addCookie(cookie)
+//    })
 
     "* *" #> ("The time now is " + dateString)
   }
