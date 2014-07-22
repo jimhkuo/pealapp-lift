@@ -155,7 +155,7 @@ class LazySynthesiser(input: String) extends Synthesiser{
     buffer.toString()
   }
 
-  def generate(): String = {
+  override def generate(doVacuityCheck: Boolean): String = {
     val buffer = new StringBuilder
     val usedB = for
     (c <- conds;

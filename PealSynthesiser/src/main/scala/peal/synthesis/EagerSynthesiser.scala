@@ -8,7 +8,7 @@ import peal.antlr.util.ParserHelper
 
 class EagerSynthesiser(input: String) extends Synthesiser {
 
-  def generate(): String = {
+  override def generate(doVacuityCheck: Boolean): String = {
     //TODO add a parameter here to control vacuity check
     val pealProgramParser = ParserHelper.getPealParser(input)
     pealProgramParser.program()

@@ -124,7 +124,7 @@ class NewSynthesiser(input: String) extends Synthesiser {
     case (name, cond) => "(assert (= " + name + " " + condString(cond) + "))\n"
   }
 
-  def generate() = {
+  override def generate(doVacuityCheck: Boolean): String = {
     val declarations = for (name <- predicateNames) yield "(declare-const " + name + " Bool)\n"
     val variableDeclarations = for (name <- nonConstantScores) yield "(declare-const " + name + " Real)\n"
     val nonConstantScoreDeclarations = for (name <- nonConstantDefaultScores) yield "(declare-const " + name + " Real)\n"

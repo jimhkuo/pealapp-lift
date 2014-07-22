@@ -96,7 +96,7 @@ class ExtendedSynthesiser(input: String) extends Synthesiser {
     }
   }
 
-  def generate() = {
+  override def generate(doVacuityCheck: Boolean): String = {
     val declarations = for (name <- predicateNames) yield "(declare-const " + name + " Bool)\n"
     val allRealDeclarations = (variableScores ++ variableDefaultScores ++ pols.keySet().map(_ + "_score") ++ pSets.keySet().map(_ + "_score")).toList.sorted
     val allVariableDeclarations = for (name <- allRealDeclarations) yield "(declare-const " + name + " Real)\n"
@@ -110,7 +110,7 @@ class ExtendedSynthesiser(input: String) extends Synthesiser {
     val sortedConditions = pealProgramParser.conds.keys.toSeq.sortWith(_ < _)
     val vacuityChecks = for (cond <- sortedConditions) yield {
       val trueVacuityCheck = AlwaysTrue(cond + "_vct", cond)
-      val falseVacuityCheck = AlwaysFalse(cond + "_vcf" , cond)
+      val falseVacuityCheck = AlwaysFalse(cond + "_vcf", cond)
       "(echo \"Result of vacuity check [" + trueVacuityCheck.analysisName + "]:\")\n" + trueVacuityCheck.z3SMTInput +
         "(echo \"Result of vacuity check [" + falseVacuityCheck.analysisName + "]:\")\n" + falseVacuityCheck.z3SMTInput
     }

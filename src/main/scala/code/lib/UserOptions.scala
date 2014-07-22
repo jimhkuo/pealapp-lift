@@ -1,6 +1,6 @@
 package code.lib
 
-class UserOptions {
-  //TODO possibly hide HttpCookie stuff in here
+object UserOptions {
+  //TODO wrap HttpCookie stuff in here
   var doVacuityChecks = false
 }
