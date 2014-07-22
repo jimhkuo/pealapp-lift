@@ -2,7 +2,7 @@ package code.snippet
 
 import java.util.Date
 
-import code.lib.DependencyFactory
+import code.lib.{CookieOptions, DependencyFactory}
 import net.liftweb.http.S
 import net.liftweb.http.provider.HTTPCookie
 import net.liftweb.util.CssSel
@@ -15,26 +15,12 @@ class Time2 {
 
   def render: CssSel = {
 
-    //    println("in time: " + CookieOptions.doVacuityChecks)
-
-    S.responseCookies.foreach(c => "cookies: " + println(c))
-
-    val output = for (cookie <- S.responseCookies if cookie.name == vacuityCheck) yield {
-      val cookieVal: String = cookie.value.openOr("")
-      val out = cookieVal.toString match {
-        case "true" => true
-        case _ => false
-      }
-
-      out
-    }
-
-    val out = if (output.isEmpty) false else output(0)
-    println("Get: " + out)
-
+    //This is working
     val boxedCookie = S.findCookie(vacuityCheck)
     val cookieVal: String = boxedCookie.map(_.value.openOr("")).openOr("")
     println("findCookies: " + boxedCookie + " " + cookieVal)
+
+    println("time2: " + CookieOptions.doVacuityChecks)
 
     "* *" #> ("The time now is " + dateString)
   }
