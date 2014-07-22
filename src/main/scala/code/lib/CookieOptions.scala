@@ -45,8 +45,8 @@ object CookieOptions {
   }
 
   def doVacuityChecks_= (v: Boolean) = {
-    val cookie = HTTPCookie(vacuityCheck, v.toString).setDomain(S.hostName).setPath("/")
+    val cookie = HTTPCookie(vacuityCheck, v.toString).setDomain(S.hostName).setPath("/").setMaxAge(3600)
     S.addCookie(cookie)
-    println("checking " + doVacuityChecks)
+    println("doVacuityChecks_ setter, checking after set: " + doVacuityChecks)
   }
 }
