@@ -19,6 +19,7 @@ class Time {
     println("***** Set doVacuityChecks")
     val boxedCookie = S.findCookie("city")
     println("immediate after set " + boxedCookie)
+    S.responseCookies.foreach(println)
 
     "* *" #> ("The time now is " + dateString)
   }

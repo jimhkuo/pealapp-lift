@@ -13,15 +13,19 @@ class UserSettingsSnippet {
 
   val vacuityCheck = "pealvacuitychecks"
 
-  def render= {
-//    CookieOptions.doVacuityChecks = !CookieOptions.doVacuityChecks
-//    val cookie = HTTPCookie(vacuityCheck, true.toString).setDomain(S.hostName).setPath("/")
-    S.addCookie(HTTPCookie(vacuityCheck,Full("true"),Full(S.hostName),Full("/"),Empty,Empty,Empty))
-//    S.addCookie(cookie)
-    println("***** Set doVacuityChecks")
-    val boxedCookie = S.findCookie(vacuityCheck)
-    println("immediate after set " + boxedCookie)
+  def render = {
+    ////    CookieOptions.doVacuityChecks = !CookieOptions.doVacuityChecks
+    ////    val cookie = HTTPCookie(vacuityCheck, true.toString).setDomain(S.hostName).setPath("/")
+    //    S.addCookie(HTTPCookie(vacuityCheck,Full("true"),Full(S.hostName),Full("/"),Empty,Empty,Empty))
+    ////    S.addCookie(cookie)
+    //    println("***** Set doVacuityChecks")
+    //    val boxedCookie = S.findCookie(vacuityCheck)
+    //    println("immediate after set " + boxedCookie)
+    //
+    val checks = CookieOptions.doVacuityChecks
 
-    <div>{CookieOptions.doVacuityChecks}</div>
+    <div>
+      {SHtml.ajaxCheckbox(checks, (v) => CookieOptions.doVacuityChecks = v)}
+    </div>
   }
 }
