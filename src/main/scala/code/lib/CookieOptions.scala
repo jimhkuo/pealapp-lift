@@ -53,7 +53,7 @@ object CookieOptions {
 
     val boxedCookie = S.findCookie(vacuityCheck)
     val cookieVal: String = boxedCookie.map(_.value.openOr("")).openOr("")
-    println("foundCookies: " + boxedCookie + " " + cookieVal)
+    println("In CookieOptions, foundCookies: " + boxedCookie + " " + cookieVal)
     val out = cookieVal.toString match {
       case "true" => true
       case _ => false
