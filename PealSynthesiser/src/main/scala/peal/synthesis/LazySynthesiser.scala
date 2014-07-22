@@ -10,6 +10,7 @@ import peal.domain.MaxPolicySet
 import peal.domain.Pol
 import scala.Some
 
+//Not used
 class LazySynthesiser(input: String) extends Synthesiser{
 
   val pealProgramParser = ParserHelper.getPealParser(input)

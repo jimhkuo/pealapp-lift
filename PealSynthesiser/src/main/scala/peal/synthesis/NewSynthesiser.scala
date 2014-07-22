@@ -12,6 +12,7 @@ import peal.domain.Pol
 import peal.synthesis.analysis.Different
 import peal.synthesis.analysis.AlwaysTrue
 
+//Not used
 class NewSynthesiser(input: String) extends Synthesiser {
 
   val pealProgramParser = ParserHelper.getPealParser(input)

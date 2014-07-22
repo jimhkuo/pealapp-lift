@@ -107,14 +107,18 @@ class ExtendedSynthesiser(input: String) extends Synthesiser {
       "(assert (= " + name + " " + ConditionTranslator.translate(name, conds.toMap) + "))"
     }
 
-    //TODO make use of the new parameter
     val sortedConditions = pealProgramParser.conds.keys.toSeq.sortWith(_ < _)
-    val vacuityChecks = for (cond <- sortedConditions) yield {
-      val trueVacuityCheck = AlwaysTrue(cond + "_vct", cond)
-      val falseVacuityCheck = AlwaysFalse(cond + "_vcf", cond)
-      "(echo \"Result of vacuity check [" + trueVacuityCheck.analysisName + "]:\")\n" + trueVacuityCheck.z3SMTInput +
-        "(echo \"Result of vacuity check [" + falseVacuityCheck.analysisName + "]:\")\n" + falseVacuityCheck.z3SMTInput
+    val vacuityChecks: Seq[String] = if (doVacuityCheck) {
+      for (cond <- sortedConditions) yield {
+        val trueVacuityCheck = AlwaysTrue(cond + "_vct", cond)
+        val falseVacuityCheck = AlwaysFalse(cond + "_vcf", cond)
+        "(echo \"Result of vacuity check [" + trueVacuityCheck.analysisName + "]:\")\n" + trueVacuityCheck.z3SMTInput +
+          "(echo \"Result of vacuity check [" + falseVacuityCheck.analysisName + "]:\")\n" + falseVacuityCheck.z3SMTInput
+      }
+    } else {
+      Seq()
     }
+
 
     val sortedAnalyses = analyses.keys.toSeq.sortWith(_ < _)
     val generatedAnalyses = for (analysis <- sortedAnalyses) yield {

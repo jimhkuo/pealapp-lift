@@ -21,7 +21,6 @@ class ExplicitSynthesiser(input: String) extends Synthesiser {
       "(assert (= " + cond + " " + pealProgramParser.conds(cond).synthesis(constsMap) + "))\n"
     }
     val sortedAnalyses = pealProgramParser.analyses.keys.toSeq.sortWith(_ < _)
-
     val vacuityChecks: Seq[String] = if (doVacuityCheck) {
       for (cond <- sortedConditions) yield {
         val trueVacuityCheck = AlwaysTrue(cond + "_vct", cond)

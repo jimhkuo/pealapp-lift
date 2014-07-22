@@ -11,9 +11,7 @@ class ExtendedSynthesiserTest extends ShouldMatchersForJUnit with Z3ModelMatcher
     val input = "POLICIES\nfuel = +((gasoline 0.1) (coal 0.02) (wood 0.09)) default 0\nignition = +((matches 0.2) (gas_stove 0.1) (electrical_sparc 0.05)) default 0\noxygen = +() default 1\nfire = *((True fuel_score) (True ignition_score) (True oxygen_score)) default 1\nPOLICY_SETS\npSet1 = fire\n" +
       "CONDITIONS\ncond1 = 0.0734 < pSet1\ncond2 = 0.0735 < pSet1\ncond3 = pSet1 <= 0.0735\ncond45 = coal\ncond4 = cond45 && cond3\n" +
       "DOMAIN_SPECIFICS\n(assert True)\nANALYSES\nname1 = satisfiable? cond1\nname2 = satisfiable? cond2\nname3 = satisfiable? cond4"
-    val generator = new ExtendedSynthesiser(input)
-    println(generator.generate())
-    generator.generate() should be("(declare-const gas_stove Bool)\n" +
+    new ExtendedSynthesiser(input).generate(doVacuityCheck = true) should be("(declare-const gas_stove Bool)\n" +
       "(declare-const gasoline Bool)\n" +
       "(declare-const electrical_sparc Bool)\n" +
       "(declare-const coal Bool)\n(declare-const wood Bool)\n" +
@@ -48,9 +46,7 @@ class ExtendedSynthesiserTest extends ShouldMatchersForJUnit with Z3ModelMatcher
     val input = "POLICIES\nb1 = min () default 1\nPOLICY_SETS\npSet1 = b1\n" +
       "CONDITIONS\ncond1 = pSet1 <= 0.5\n" +
       "ANALYSES\nname1 = always_true? cond1"
-    val generator = new ExtendedSynthesiser(input)
-    println(generator.generate())
-    generator.generate().trim should be ("(declare-const b1_score Real)\n(declare-const pSet1_score Real)\n(declare-const cond1 Bool)\n\n\n(assert (= cond1 (<= b1_score 0.5)))\n(assert (= b1_score 1.0))\n" +
+    new ExtendedSynthesiser(input).generate(doVacuityCheck = true).trim should be ("(declare-const b1_score Real)\n(declare-const pSet1_score Real)\n(declare-const cond1 Bool)\n\n\n(assert (= cond1 (<= b1_score 0.5)))\n(assert (= b1_score 1.0))\n" +
       "(echo \"Result of vacuity check [cond1_vct = always_true? cond1]:\")\n(push)\n(declare-const always_true_cond1_vct Bool)\n(assert (= always_true_cond1_vct cond1))\n(assert (not always_true_cond1_vct))\n(check-sat)\n(get-model)\n(pop)\n" +
       "(echo \"Result of vacuity check [cond1_vcf = always_false? cond1]:\")\n(push)\n(declare-const always_false_cond1_vcf Bool)\n(assert (= always_false_cond1_vcf cond1))\n(assert always_false_cond1_vcf)\n(check-sat)\n(get-model)\n(pop)\n" +
       "(echo \"Result of analysis [name1 = always_true? cond1]:\")\n(push)\n(declare-const always_true_name1 Bool)\n(assert (= always_true_name1 cond1))\n(assert (not always_true_name1))\n(check-sat)\n(get-model)\n(pop)")
@@ -83,9 +79,7 @@ class ExtendedSynthesiserTest extends ShouldMatchersForJUnit with Z3ModelMatcher
       "%aaa\n" +
       "ANALYSES\nname1 = always_true? cond1\n"
 
-    val generator = new ExtendedSynthesiser(input)
-    println(generator.generate())
-    generator.generate() should be ("(declare-const q1 Bool)\n(declare-const b1_default_U Real)\n(assert (and (<= b1_default_U 0.2) (<= -0.2 b1_default_U)))\n(declare-const b1_score Real)\n(declare-const pSet1_score Real)\n(declare-const cond1 Bool)\n(declare-const b1_q1_U Real)\n(assert (and (<= b1_q1_U 0.1) (<= -0.1 b1_q1_U)))\n\n(assert (= cond1 (<= b1_score 0.5)))\n(assert (= b1_score (ite q1 (+ 0.5 b1_q1_U) (+ 1.0 b1_default_U))))\n" +
+    new ExtendedSynthesiser(input).generate(doVacuityCheck = true) should be ("(declare-const q1 Bool)\n(declare-const b1_default_U Real)\n(assert (and (<= b1_default_U 0.2) (<= -0.2 b1_default_U)))\n(declare-const b1_score Real)\n(declare-const pSet1_score Real)\n(declare-const cond1 Bool)\n(declare-const b1_q1_U Real)\n(assert (and (<= b1_q1_U 0.1) (<= -0.1 b1_q1_U)))\n\n(assert (= cond1 (<= b1_score 0.5)))\n(assert (= b1_score (ite q1 (+ 0.5 b1_q1_U) (+ 1.0 b1_default_U))))\n" +
       "(echo \"Result of vacuity check [cond1_vct = always_true? cond1]:\")\n(push)\n(declare-const always_true_cond1_vct Bool)\n(assert (= always_true_cond1_vct cond1))\n(assert (not always_true_cond1_vct))\n(check-sat)\n(get-model)\n(pop)\n" +
       "(echo \"Result of vacuity check [cond1_vcf = always_false? cond1]:\")\n(push)\n(declare-const always_false_cond1_vcf Bool)\n(assert (= always_false_cond1_vcf cond1))\n(assert always_false_cond1_vcf)\n(check-sat)\n(get-model)\n(pop)\n" +
       "(echo \"Result of analysis [name1 = always_true? cond1]:\")\n(push)\n(declare-const always_true_name1 Bool)\n(assert (= always_true_name1 cond1))\n(assert (not always_true_name1))\n(check-sat)\n(get-model)\n(pop)\n")
@@ -106,9 +100,7 @@ class ExtendedSynthesiserTest extends ShouldMatchersForJUnit with Z3ModelMatcher
       "    %aaa\n" +
       "ANALYSES\nname1 = always_true? cond1\n"
 
-    val generator = new ExtendedSynthesiser(input)
-    println(generator.generate())
-    generator.generate() should be ("(declare-const q1 Bool)\n(declare-const b1_default_U Real)\n(assert (and (<= b1_default_U 0.2) (<= -0.2 b1_default_U)))\n(declare-const b1_score Real)\n(declare-const pSet1_score Real)\n(declare-const cond1 Bool)\n(declare-const b1_q1_U Real)\n(assert (and (<= b1_q1_U 0.1) (<= -0.1 b1_q1_U)))\n\n(assert (= cond1 (<= b1_score 0.5)))\n(assert (= b1_score (ite q1 (+ 0.5 b1_q1_U) (+ 1.0 b1_default_U))))\n" +
+    new ExtendedSynthesiser(input).generate(doVacuityCheck = true) should be ("(declare-const q1 Bool)\n(declare-const b1_default_U Real)\n(assert (and (<= b1_default_U 0.2) (<= -0.2 b1_default_U)))\n(declare-const b1_score Real)\n(declare-const pSet1_score Real)\n(declare-const cond1 Bool)\n(declare-const b1_q1_U Real)\n(assert (and (<= b1_q1_U 0.1) (<= -0.1 b1_q1_U)))\n\n(assert (= cond1 (<= b1_score 0.5)))\n(assert (= b1_score (ite q1 (+ 0.5 b1_q1_U) (+ 1.0 b1_default_U))))\n" +
       "(echo \"Result of vacuity check [cond1_vct = always_true? cond1]:\")\n(push)\n(declare-const always_true_cond1_vct Bool)\n(assert (= always_true_cond1_vct cond1))\n(assert (not always_true_cond1_vct))\n(check-sat)\n(get-model)\n(pop)\n" +
       "(echo \"Result of vacuity check [cond1_vcf = always_false? cond1]:\")\n(push)\n(declare-const always_false_cond1_vcf Bool)\n(assert (= always_false_cond1_vcf cond1))\n(assert always_false_cond1_vcf)\n(check-sat)\n(get-model)\n(pop)\n" +
       "(echo \"Result of analysis [name1 = always_true? cond1]:\")\n(push)\n(declare-const always_true_name1 Bool)\n(assert (= always_true_name1 cond1))\n(assert (not always_true_name1))\n(check-sat)\n(get-model)\n(pop)\n")
