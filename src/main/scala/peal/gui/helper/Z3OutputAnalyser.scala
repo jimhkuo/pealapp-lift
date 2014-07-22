@@ -23,15 +23,18 @@ object Z3OutputAnalyser {
     val alwaysTrueConditions = z3OutputModels.filter(m => m._1.endsWith("_vct") && m._2.isUnSat).map(_._1.dropRight("_vct".length)).toSeq.sorted
     val alwaysFalseConditions = z3OutputModels.filter(m => m._1.endsWith("_vcf") && m._2.isUnSat).map(_._1.dropRight("_vcf".length)).toSeq.sorted
 
-    //TODO look for _vct or _vcf analyses from z3OutputModels to decide whether to display this section
-    //TODO if vacuity checks were executed, there would be _vct or _vcf
-    var entireAnalysis: NodeSeq = <p style={style}>
-      <h4>Vacuity check on all conditions declared in CONDITIONS section above</h4>
-      Conditions that are always true:
-      {alwaysTrueConditions.mkString(", ")}<br/>
-      Conditions that are always false:
-      {alwaysFalseConditions.mkString(", ")}
-    </p>
+    val vacuityCheckBlock = z3OutputModels.keySet.exists(k => k.endsWith("_vct") || k.endsWith("_vcf")) match {
+      case true => <p style={style}>
+        <h4>Vacuity check on all conditions declared in CONDITIONS section above</h4>
+        Conditions that are always true:
+        {alwaysTrueConditions.mkString(", ")}<br/>
+        Conditions that are always false:
+        {alwaysFalseConditions.mkString(", ")}
+      </p>
+      case false => <span/>
+    }
+
+    var entireAnalysis: NodeSeq = vacuityCheckBlock
 
     val sortedAnalyses = analyses.keys.toSeq.sortWith(_ < _)
     sortedAnalyses.foreach {
@@ -124,7 +127,7 @@ object Z3OutputAnalyser {
           section.append(new PolicySpecialisationMaker(inputPolicies).doIt(z3RawOutput, analysisName, verifiedModel._2))
         }
         else {
-          section.append("\nOutput of analysis [" + analysisName + "] is " + z3OutputModels(analysisName).satResult+ ": so no certification performed and no specialized policies reported.")
+          section.append("\nOutput of analysis [" + analysisName + "] is " + z3OutputModels(analysisName).satResult + ": so no certification performed and no specialized policies reported.")
         }
         entireAnalysis = entireAnalysis ++ <p style={style}>
           {section.nodes}
