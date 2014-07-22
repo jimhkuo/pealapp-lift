@@ -29,7 +29,7 @@ import scala.xml.Text
 //   c. Perform certification using #0, #2, report overrides
 //   d. Perform specialisation using #0, #2, and overrides from #3c
 // 4. Display consolidated information from #1b, #2, #3b, #3c, and #3d
-class PealCometActor extends MainBody with CometListener {
+class PealCometActor extends MainCometBody with CometListener {
 
   def registerWith = CometServer
 

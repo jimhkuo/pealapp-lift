@@ -13,6 +13,7 @@ class Boot {
     //TODO add a new page to show user options, need a comet on that page to set SessionOption settings
     val entries: List[Menuable with WithSlash] = List(
       Menu.i("Editor and runner") / "index",
+      Menu.i("Settings") / "settings",
       Menu.i("About PEALT") / "aboutpealt",
       Menu.i("User guide") / "userguide",
       Menu.i("Acknowledgements") / "acknowledgements"
