@@ -19,7 +19,7 @@ class EagerSynthesiserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
       "cond3 = 0.5 < pSet2\n" +
       "cond4 = 0.4 < pSet2\n" +
       "DOMAIN_SPECIFICS\n(declare-const x Real)\n(declare-const y Real)\n(assert (= q1 (< x (+ y 1))))\nANALYSES\nname1 = always_true? cond1\nname2 = always_false? cond1\nname3 = satisfiable? cond2\nname4 = equivalent? cond1 cond2\nname5 = different? cond1 cond2"
-    val output = new EagerSynthesiser(input).generate()
+    val output = new EagerSynthesiser(input).generate(doVacuityCheck = true)
     output should beZ3Model("(declare-const q5 Bool)\n" +
       "(declare-const q4 Bool)\n" +
       "(declare-const q2 Bool)\n" +
@@ -54,7 +54,7 @@ class EagerSynthesiserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
       "%aaa\n" +
       "ANALYSES\nname1 = always_true? cond1\nname2 = always_false? cond1\n" +
       "name3 = satisfiable? cond2\nname4 = equivalent? cond1 cond2\nname5 = different? cond1 cond2"
-    val output = new EagerSynthesiser(input).generate()
+    val output = new EagerSynthesiser(input).generate(doVacuityCheck = true)
     println(output)
     output should beZ3Model("(declare-const q5 Bool)\n(declare-const q4 Bool)\n(declare-const q2 Bool)\n(declare-const q3 Bool)\n(declare-const q1 Bool)\n(declare-const q6 Bool)\n(declare-const cond2 Bool)\n(declare-const cond3 Bool)\n(declare-const cond4 Bool)\n(declare-const cond1 Bool)\n(assert (= cond1 (and (and (or q1 q2 q3) (or q1 q2)) (or (and (not q4) (not q5) (not q6)) (not false)))))\n(assert (= cond2 (and (or (and (not q1) (not q2) (not q3)) (not (or q1 q2))) (and (or q4 q5 q6) false))))\n(assert (= cond3 (and (or (and (not q1) (not q2) (not q3)) (not (or q1 q2))) (and (or q4 q5 q6) false))))\n(assert (= cond4 (and (or (and (not q1) (not q2) (not q3)) (not (or q1 q2))) (and (or q4 q5 q6) (and q6 q5 q4)))))\n(declare-const x Real)\n(declare-const y Real)\n(assert (= q1 (< x (+ y 1))))\n" +
       "(echo \"Result of vacuity check [cond1_vct = always_true? cond1]:\")\n(push)\n(declare-const always_true_cond1_vct Bool)\n(assert (= always_true_cond1_vct cond1))\n(assert (not always_true_cond1_vct))\n(check-sat)\n(get-model)\n(pop)\n" +
@@ -77,7 +77,7 @@ class EagerSynthesiserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
     val input = "POLICIES\n% policy that accumulates trust indicators for a PayPal type payment transaction\nb1 = + ((lowCostTransaction 0.3) (enoughMutualFriends 0.1) (enoughMutualFriendsNormalized 0.2)) default 0\n% policy that extracts the worst possible signal for distrusting such a transaction\nb2 = min ((highCostTransaction 0.1) (aFriendOfAliceUnfriendedBob 0.2) (aFriendOfAliceVouchesForBob 0.6)) default 1\nPOLICY_SETS\n% policy set that conservatively (given threshold type th < cond below) combines both policies above\npSet1 = min(b1,b2)\n" +
       "CONDITIONS\n% asking whether combined trust score is above a certain threshold\ncond1 = 0.5 < pSet1\n% asking whether the combined trust score is above a higher such threshold\ncond2 = 0.6 < pSet1\n" +
       "DOMAIN_SPECIFICS\n% the amount of the pondered online transaction\n(declare-const amountAlicePays Real)\n% the number of friends that payer and payee share\n(declare-const numberOfMutualFriends Real)\n% number of friends of payee\n(declare-const numberOfBobsFriends Real)\n% definition of what a low cost transaction represents\n(assert (= lowCostTransaction (< amountAlicePays 100)))\n% definition of what a high cost transaction represents\n% note that these transaction types are not logical negations of each other\n(assert (= highCostTransaction (< 1000 amountAlicePays)))\n% definition of that it means to have enough mutual friends for this intended transaction\n(assert (= enoughMutualFriends (< 4 numberOfMutualFriends)))\n% a variant of such a definition that may be more resilient to abnormal values, e.g. for celebrities\n(assert (= enoughMutualFriendsNormalized (< numberOfBobsFriends (* 100 numberOfMutualFriends))))\nANALYSES\n% asking whether the combined trust score can exceed threshold 0.5\nname1 = satisfiable? cond1\n% asking whether the above condition is always true, which would suggest a specification error\nname2 = always_true? cond1\n% asking whether the above condition is always false, which would suggest a specification error\nname3 = always_false? cond1\n% asking whether one threshold behavior implies another, should be the case as 0.5 < 0.6 holds\nname4 = implies? cond2 cond1\n% asking whether both threshold behaviors are equivalent, this may be true or false in general\n% but it is false in this instance\nname5 = equivalent? cond1 cond2"
-    val output = new EagerSynthesiser(input).generate()
+    val output = new EagerSynthesiser(input).generate(doVacuityCheck = true)
     println(output)
     output should beZ3Model("(declare-const enoughMutualFriendsNormalized Bool)\n(declare-const enoughMutualFriends Bool)\n(declare-const lowCostTransaction Bool)\n(declare-const aFriendOfAliceVouchesForBob Bool)\n(declare-const highCostTransaction Bool)\n(declare-const aFriendOfAliceUnfriendedBob Bool)\n(declare-const cond2 Bool)\n(declare-const cond1 Bool)\n(assert (= cond1 (and (and (or lowCostTransaction enoughMutualFriends enoughMutualFriendsNormalized) (and lowCostTransaction enoughMutualFriendsNormalized enoughMutualFriends)) (or (and (not highCostTransaction) (not aFriendOfAliceUnfriendedBob) (not aFriendOfAliceVouchesForBob)) (not (or highCostTransaction aFriendOfAliceUnfriendedBob))))))\n(assert (= cond2 (and (and (or lowCostTransaction enoughMutualFriends enoughMutualFriendsNormalized) false) (or (and (not highCostTransaction) (not aFriendOfAliceUnfriendedBob) (not aFriendOfAliceVouchesForBob)) (not (or highCostTransaction aFriendOfAliceUnfriendedBob aFriendOfAliceVouchesForBob))))))\n(declare-const amountAlicePays Real)\n(declare-const numberOfMutualFriends Real)\n(declare-const numberOfBobsFriends Real)\n(assert (= lowCostTransaction (< amountAlicePays 100)))\n(assert (= highCostTransaction (< 1000 amountAlicePays)))\n(assert (= enoughMutualFriends (< 4 numberOfMutualFriends)))\n(assert (= enoughMutualFriendsNormalized (< numberOfBobsFriends (* 100 numberOfMutualFriends))))\n" +
       "(echo \"Result of vacuity check [cond1_vct = always_true? cond1]:\")\n(push)\n(declare-const always_true_cond1_vct Bool)\n(assert (= always_true_cond1_vct cond1))\n(assert (not always_true_cond1_vct))\n(check-sat)\n(get-model)\n(pop)\n" +
@@ -94,7 +94,7 @@ class EagerSynthesiserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
       "DOMAIN_SPECIFICS\n(declare-const x Real)\n(declare-const y Real)\n(assert (= q1 (< x (+ y 1))))\nANALYSES\nname1 = always_true? cond1\nname2 = always_false? cond1\nname3 = satisfiable? cond2\nname4 = equivalent? cond1 cond2\nname5 = different? cond1 cond2"
 
     val outputFuture = future {
-      new EagerSynthesiser(input).generate()
+      new EagerSynthesiser(input).generate(doVacuityCheck = true)
     }
 
     val output = Await.result(outputFuture, 5000 millis)
