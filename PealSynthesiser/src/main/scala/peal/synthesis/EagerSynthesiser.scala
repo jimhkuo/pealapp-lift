@@ -39,7 +39,7 @@ class EagerSynthesiser(input: String) extends Synthesiser {
       condDeclarations.mkString +
       body.mkString +
       domainSpecifics.mkString("", "\n", "\n") +
-//      vacuityChecks.mkString +
+      vacuityChecks.mkString +
       generatedAnalyses.mkString
   }
 }
