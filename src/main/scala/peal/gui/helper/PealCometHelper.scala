@@ -4,7 +4,7 @@ import peal.antlr.util.ParserHelper
 import peal.domain.PolicySet
 import peal.domain.z3.{PealAst, Term}
 import peal.synthesis.analysis.AnalysisGenerator
-import peal.synthesis.{Condition, EagerSynthesiser, ExtendedSynthesiser}
+import peal.synthesis.{Condition, ExplicitSynthesiser, ExtendedSynthesiser}
 
 import scala.collection.JavaConversions._
 import scala.util.Try
@@ -13,7 +13,7 @@ object PealCometHelper {
 
   def tryExplicitSynthesis(policies: String): Try[String] = Try {
     //TODO use data in UserOptions to determine whether to do vacuity check
-    new EagerSynthesiser(policies).generate()
+    new ExplicitSynthesiser(policies).generate()
   }
 
   def tryExtendedSynthesis(policies: String): Try[String] = Try {

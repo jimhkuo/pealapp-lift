@@ -6,7 +6,7 @@ import scala.collection.JavaConversions._
 import peal.domain.z3.Term
 import peal.antlr.util.ParserHelper
 
-class EagerSynthesiser(input: String) extends Synthesiser {
+class ExplicitSynthesiser(input: String) extends Synthesiser {
 
   override def generate(doVacuityCheck: Boolean): String = {
     val pealProgramParser = ParserHelper.getPealParser(input)

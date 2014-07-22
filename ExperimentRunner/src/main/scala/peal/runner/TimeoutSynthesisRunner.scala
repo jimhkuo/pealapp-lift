@@ -3,7 +3,7 @@ package peal.runner
 import scala.concurrent._
 import scala.concurrent.duration._
 import ExecutionContext.Implicits.global
-import peal.synthesis.{ExtendedSynthesiser, NewSynthesiser, LazySynthesiser, EagerSynthesiser}
+import peal.synthesis.{ExtendedSynthesiser, NewSynthesiser, LazySynthesiser, ExplicitSynthesiser}
 
 object TimeoutSynthesisRunner extends App {
 
@@ -14,7 +14,7 @@ object TimeoutSynthesisRunner extends App {
       val input = scala.io.Source.fromFile(args(1)).mkString
 
       val synthesiser = args(0) match {
-        case "explicit" =>  new EagerSynthesiser(input)
+        case "explicit" =>  new ExplicitSynthesiser(input)
         case "symbolic" =>  new LazySynthesiser(input)
         case "new" =>  new NewSynthesiser(input)
         case "extended" =>  new ExtendedSynthesiser(input)
