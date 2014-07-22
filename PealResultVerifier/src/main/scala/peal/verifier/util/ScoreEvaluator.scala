@@ -22,6 +22,7 @@ object ScoreEvaluator {
           Rational(e.multiplier.toString())
         case _ =>
           ConsoleLogger.log1("********* ScoreEvaluator, 0 assumed")
+          //TODO report when this happens
           Rational("0")
       }
 
