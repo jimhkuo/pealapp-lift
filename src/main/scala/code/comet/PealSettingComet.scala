@@ -11,6 +11,7 @@ class PealSettingComet extends CometActor {
 
   override def lowPriority: PartialFunction[Any, Unit] = {
     case Init =>
+
   }
 
 }
