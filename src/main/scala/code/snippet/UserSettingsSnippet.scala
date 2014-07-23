@@ -1,7 +1,6 @@
 package code.snippet
 
 
-import code.lib.VCOption
 import net.liftweb.http.js.JsCmd
 import net.liftweb.http.provider.HTTPCookie
 import net.liftweb.http.{S, SHtml}
@@ -23,8 +22,9 @@ object UserSettingsSnippet {
 
     def process(): JsCmd= {
 
-      S.redirectTo("/", () => {
-        val cookie = HTTPCookie(vacuityCheck, vc.toString).setMaxAge(3600)
+      S.redirectTo("/done", () => {
+        S.deleteCookie(vacuityCheck)
+        val cookie = HTTPCookie(vacuityCheck, vc.toString)
         println("process() " + cookie)
         S.addCookie(cookie)
       })

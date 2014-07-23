@@ -3,6 +3,7 @@ package bootstrap.liftweb
 import code.lib.Z3SMTData
 import net.liftweb.common.Full
 import net.liftweb.http.{LiftRules, Req, StreamingResponse}
+import net.liftweb.sitemap.Loc.{Hidden, LocGroup}
 import net.liftweb.sitemap.Menu.{Menuable, WithSlash}
 import net.liftweb.sitemap.{Menu, SiteMap}
 
@@ -11,13 +12,14 @@ class Boot {
     LiftRules.addToPackages("code")
 
     //TODO add a new page to show user options, need a comet on that page to set SessionOption settings
-    val entries: List[Menuable with WithSlash] = List(
+    val entries: List[Menuable] = List(
       Menu.i("Editor and runner") / "index",
       Menu.i("Debug Set") / "debug",
       Menu.i("Debug Get") / "debug2",
       Menu.i("Settings") / "settings",
       Menu.i("About PEALT") / "aboutpealt",
       Menu.i("User guide") / "userguide",
+      Menu.i("About") / "done" >> Hidden,
       Menu.i("Acknowledgements") / "acknowledgements"
     )
     LiftRules.setSiteMap(SiteMap(entries: _*))
