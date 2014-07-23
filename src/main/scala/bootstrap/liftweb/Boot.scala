@@ -11,7 +11,6 @@ class Boot {
   def boot {
     LiftRules.addToPackages("code")
 
-    //TODO add a new page to show user options, need a comet on that page to set SessionOption settings
     val entries: List[Menuable] = List(
       Menu.i("Editor and runner") / "index",
 //      Menu.i("Debug Set") / "debug",

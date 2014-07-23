@@ -5,6 +5,7 @@ import peal.util.ConsoleLogger
 
 object ScoreEvaluator {
 
+  //TODO should return an option here
   def trueScore(score: Score, rangeVarName: String)(implicit I: Map[String, Either[Rational, ThreeWayBoolean]], multiplierNamePurger: Multiplier => String = x => x.name): Rational = {
 
     def eval(e: Multiplier): Rational = {
