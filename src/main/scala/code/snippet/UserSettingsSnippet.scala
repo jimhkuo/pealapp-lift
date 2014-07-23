@@ -1,14 +1,10 @@
 package code.snippet
 
 
-import code.lib.CookieOptions
-import net.liftweb.common.{Full, Empty}
+import code.lib.VCOption
 import net.liftweb.http.js.JsCmd
-import net.liftweb.http.js.JsCmds.{_Noop, RedirectTo}
-import net.liftweb.http.{S, SHtml}
-import net.liftweb._
 import net.liftweb.http.provider.HTTPCookie
-import net.liftweb.util.CssSel
+import net.liftweb.http.{S, SHtml}
 import net.liftweb.util.Helpers._
 
 object UserSettingsSnippet {

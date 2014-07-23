@@ -1,5 +1,6 @@
 package peal.gui.helper
 
+import code.lib.VCOption
 import peal.antlr.util.ParserHelper
 import peal.domain.PolicySet
 import peal.domain.z3.{PealAst, Term}
@@ -13,11 +14,12 @@ object PealCometHelper {
 
   def tryExplicitSynthesis(policies: String): Try[String] = Try {
     //TODO use data in UserOptions to determine whether to do vacuity check
-    new ExplicitSynthesiser(policies).generate()
+
+    new ExplicitSynthesiser(policies).generate(VCOption.get)
   }
 
   def tryExtendedSynthesis(policies: String): Try[String] = Try {
-    new ExtendedSynthesiser(policies).generate()
+    new ExtendedSynthesiser(policies).generate(VCOption.get)
   }
 
   def tryToParsePealInput(input: String): Try[(Map[String, PealAst], Map[String, Condition], Map[String, PolicySet], Map[String, AnalysisGenerator], Array[String])] = Try {
