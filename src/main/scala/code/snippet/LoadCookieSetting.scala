@@ -5,7 +5,7 @@ import net.liftweb.http.S
 import net.liftweb.util.CssSel
 import net.liftweb.util.Helpers._
 
-class Time2 {
+class LoadCookieSetting {
 
   val vacuityCheck = "peal.vacuity.checks"
 
