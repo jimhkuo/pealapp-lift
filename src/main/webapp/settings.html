@@ -6,23 +6,11 @@
 
 <div id="main" class="lift:surround?with=default;at=content">
     <div class="col-lg-12">
-        <!--<span class="lift:UserSettingsSnippet">z3 info</span>-->
-
-        <!--<form class="lift:UserSettingsSnippet?form=post">-->
-            <!--doVacuityCheck?: <input type="checkbox" name="doVacuityCheck" value="doVacuityCheck" /><br />-->
-            <!--<input type="submit" value="Book Ticket"/>-->
-        <!--</form>-->
-        <!--<form data-lift="UserSettingsSnippet?form=post">-->
-            <!--<input type="file" id="file" title="Search for a Peal file to load"-->
-                   <!--data-filename-placement="inside"></input>-->
-            <!--<input type="submit" value="Upload" class="btn btn-warning btn-sm" style="margin:2px;"></input>-->
-        <!--</form>-->
+        <h4>User Options</h4>
         <form class="lift:form.ajax">
             <div class="lift:UserSettingsSnippet">
-                <!--Name: <input name="name"></input><br/>-->
-                <!--Age: <span class="lift:Msg?id=age&errorClass=error">error</span><input name="age" id="the_age" value="0"></input><br/>-->
-                CheckBox: <input name="vc" id="vc" type="checkbox"/><br/>
-                <input type="submit" value="Submit"/>
+                Perform vacuity check? <input name="vc" id="vc" type="checkbox"/><br/>
+                <input type="submit" value="Save"  class="btn btn-primary btn-sm" style="margin:2px;"/>
             </div>
         </form>
     </div>
