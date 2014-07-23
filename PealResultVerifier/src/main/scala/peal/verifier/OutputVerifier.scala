@@ -32,7 +32,12 @@ class OutputVerifier(input: String) {
   val pols = pealProgramParser.pols
   val predicateNames: Seq[String] = pealProgramParser.pols.values().flatMap(pol => pol.rules).map(r => r.q.name).toSeq.distinct
 
-  private def purgeUnderscore(x: Multiplier): String = {
+  var resetToZero = Set[String]()
+  implicit private def reportZeroSets(s: String) {
+    resetToZero += s
+  }
+
+  implicit private def purgeUnderscore(x: Multiplier): String = {
     ConsoleLogger.log1("purgeUnderscore called for " + x.toNaturalExpression)
 
     val out = x.name.contains("_score") match {
@@ -44,19 +49,20 @@ class OutputVerifier(input: String) {
     out
   }
 
-  def verifyModel(rawModel: String, analysisName: String): (ThreeWayBoolean, Set[String], Map[String, Either[Rational, ThreeWayBoolean]]) = {
+  def verifyModel(rawModel: String, analysisName: String): (ThreeWayBoolean, Set[String], Map[String, Either[Rational, ThreeWayBoolean]], Set[String]) = {
     ConsoleLogger.log1("########## analysis " + analysisName)
     val initialI = Z3ModelExtractor.extractIUsingRational(rawModel)(analysisName)
-    certify(analysisName, initialI, Set(), Map())
+    val out = certify(analysisName, initialI, Set(), Map())
+    (out._1, out._2, out._3, resetToZero)
   }
 
   def certify(analysisName: String, I: Map[String, Either[Rational, ThreeWayBoolean]], remap: Set[String], previouslyCheckedPolicies: Map[String, Either[Rational, ThreeWayBoolean]]): (ThreeWayBoolean, Set[String], Map[String, Either[Rational, ThreeWayBoolean]]) = {
 
-    def certifyAllPolicyScores(localI: Map[String, Either[Rational, ThreeWayBoolean]]) = {
+    def certifyAllPolicyScores(implicit localI: Map[String, Either[Rational, ThreeWayBoolean]]) = {
 
       val newEntries: mutable.Map[String, Either[Rational, ThreeWayBoolean]] = for {
         (name, pol) <- pols
-        polValue = Try(certPolicy(pol)(localI, purgeUnderscore))
+        polValue = Try(certPolicy(pol))
         if polValue.isSuccess
       } yield {
         localI.get(name + "_score") match {
@@ -189,7 +195,7 @@ class OutputVerifier(input: String) {
       }
     } catch {
       case e: Exception =>
-        //        e.printStackTrace()
+//        e.printStackTrace()
         PealBottom
     }
   }
