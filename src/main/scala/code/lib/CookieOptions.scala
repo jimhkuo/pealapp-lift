@@ -4,6 +4,8 @@ import net.liftweb.http.S
 import net.liftweb.http.provider.HTTPCookie
 import peal.util.ConsoleLogger
 
+//This class needs to be called in the request cycle
+//i.e. in snippets, calling it from within a comet won't work
 object CookieOptions {
   val vacuityCheck = "peal.vacuity.checks"
 
