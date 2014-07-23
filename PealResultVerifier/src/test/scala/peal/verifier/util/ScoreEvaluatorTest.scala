@@ -18,7 +18,7 @@ class ScoreEvaluatorTest extends ShouldMatchersForJUnit {
   }
 
   @Test
-  def testNonExistantScoreReturn0() {
+  def testNonExistentScoreReturn0() {
     val model = "Result of analysis [name1 = implies? cond1 cond2]:\nsat\n(model \n  " +
       "(define-fun y () Real\n    (/ 5.0 12.0))\n" +
       ")"
