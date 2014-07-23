@@ -4,6 +4,7 @@ import code.lib.VCOption
 import net.liftweb.http.S
 import net.liftweb.util.CssSel
 import net.liftweb.util.Helpers._
+import peal.util.ConsoleLogger
 
 class LoadCookieSetting {
 
@@ -16,7 +17,7 @@ class LoadCookieSetting {
       case "true" => true
       case _ => false
     }
-    println("time2.findCookies: " + boxedCookie + " " + cookieVal)
+    ConsoleLogger.log("LoadCookieSetting.findCookies: " + boxedCookie + " " + cookieVal)
 
     VCOption.set(cookieVal)
 

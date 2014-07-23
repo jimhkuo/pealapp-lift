@@ -9,6 +9,8 @@ import peal.util.ConsoleLogger
 
 object Start extends App {
 
+  ConsoleLogger.enable()
+
   val connector = new SelectChannelConnector()
   if (args.length > 0) {
     connector.setPort(args(0).toInt)

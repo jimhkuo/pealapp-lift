@@ -5,6 +5,7 @@ import net.liftweb.http.js.JsCmd
 import net.liftweb.http.provider.HTTPCookie
 import net.liftweb.http.{S, SHtml}
 import net.liftweb.util.Helpers._
+import peal.util.ConsoleLogger
 
 object UserSettingsSnippet {
   val vacuityCheck = "peal.vacuity.checks"
@@ -13,7 +14,7 @@ object UserSettingsSnippet {
 
     val boxedCookie = S.findCookie(vacuityCheck)
     val cookieVal: String = boxedCookie.map(_.value.openOr("")).openOr("")
-    println("UserSettingsSnippet.findCookies: " + boxedCookie + " " + cookieVal)
+    ConsoleLogger.log("UserSettingsSnippet.findCookies: " + boxedCookie + " " + cookieVal)
 
     var vc = cookieVal match {
       case "true" => true
@@ -25,7 +26,7 @@ object UserSettingsSnippet {
       S.redirectTo("/done", () => {
         S.deleteCookie(vacuityCheck)
         val cookie = HTTPCookie(vacuityCheck, vc.toString)
-        println("process() " + cookie)
+        ConsoleLogger.log("process() " + cookie)
         S.addCookie(cookie)
       })
     }
