@@ -8,8 +8,12 @@ import peal.util.ConsoleLogger
 //i.e. in snippets, calling it from within a comet won't work
 object CookieOptions {
 
-  //Using a common cookie name (without the port number) will make all PEALT hosted on various urls to share the cookie
-  val vacuityCheck = "peal.vacuity.checks"
+  //Using a different cookie name (with the port number) to separate out the use of cookie for different PEALT URLs
+  val vacuityCheck = "peal.vacuity.checks" + pullHostInfo
+
+  private def pullHostInfo: String = {
+    S.hostAndPath.replaceAll("/", "").split(":").mkString
+  }
 
   def doVacuityChecks = {
 
@@ -27,7 +31,7 @@ object CookieOptions {
   }
 
   def doVacuityChecks_=(v: Boolean) = {
-    val cookie = HTTPCookie(vacuityCheck, v.toString)//setting the hostName breaks it .setDomain(S.hostName)
+    val cookie = HTTPCookie(vacuityCheck, v.toString).setMaxAge(86400)//setting the hostName breaks it .setDomain(S.hostName)
     S.addCookie(cookie)
     ConsoleLogger.log("cookie added: " + cookie)
     ConsoleLogger.log("doVacuityChecks_ setter, checking after set: " + doVacuityChecks)
