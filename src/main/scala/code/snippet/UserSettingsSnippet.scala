@@ -24,7 +24,6 @@ object UserSettingsSnippet {
     def process(): JsCmd= {
 
       S.redirectTo("/done", () => {
-        S.deleteCookie(vacuityCheck)
         val cookie = HTTPCookie(vacuityCheck, vc.toString)
         ConsoleLogger.log("process() " + cookie)
         S.addCookie(cookie)
