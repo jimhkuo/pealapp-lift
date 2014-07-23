@@ -32,9 +32,9 @@ class OutputVerifier(input: String) {
   val pols = pealProgramParser.pols
   val predicateNames: Seq[String] = pealProgramParser.pols.values().flatMap(pol => pol.rules).map(r => r.q.name).toSeq.distinct
 
-  var resetToZero = Set[String]()
+  var resettedToZero = Set[String]()
   implicit private def reportZeroSets(s: String) {
-    resetToZero += s
+    resettedToZero += s
   }
 
   implicit private def purgeUnderscore(x: Multiplier): String = {
@@ -53,7 +53,7 @@ class OutputVerifier(input: String) {
     ConsoleLogger.log1("########## analysis " + analysisName)
     val initialI = Z3ModelExtractor.extractIUsingRational(rawModel)(analysisName)
     val out = certify(analysisName, initialI, Set(), Map())
-    (out._1, out._2, out._3, resetToZero)
+    (out._1, out._2, out._3, resettedToZero)
   }
 
   def certify(analysisName: String, I: Map[String, Either[Rational, ThreeWayBoolean]], remap: Set[String], previouslyCheckedPolicies: Map[String, Either[Rational, ThreeWayBoolean]]): (ThreeWayBoolean, Set[String], Map[String, Either[Rational, ThreeWayBoolean]]) = {

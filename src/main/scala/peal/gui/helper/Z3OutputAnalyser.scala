@@ -119,7 +119,7 @@ object Z3OutputAnalyser {
             case PealBottom => "was inconclusive"
           }
 
-          section.append("Certification of analysis [" + analysisName + "] " + result + ". Additional predicates set to false in this certification process are " + verifiedModel._2)
+          section.append("Certification of analysis [" + analysisName + "] " + result + ".\nAdditional predicates set to false in this certification process are " + verifiedModel._2 + "\nVariables not defined but are set to 0 in this certification process are " + verifiedModel._4 )
           section.append("Policies checked:")
           verifiedModel._3.foreach(m => section.append(m._1 + " is " + m._2.fold(r => r.value, b => b)))
           section.append("\nPolicies in analysis [" + analysisName + "] specialised with respect to the model extended with false predicates from Set():")
