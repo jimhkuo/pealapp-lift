@@ -120,13 +120,17 @@ object Z3OutputAnalyser {
           }
 
           section.append("Certification of analysis [" + analysisName + "] " + result + ".")
-          if (verifiedModel._2.nonEmpty) section.append("Additional predicates set to false in this certification process are " + verifiedModel._2)
-          if (verifiedModel._4.nonEmpty) section.append("Variables not defined in the Z3 model but are assumed to be 0 in this certification process are " + verifiedModel._4 )
+          if (verifiedModel._2.nonEmpty) section.append("Additional predicates set to false in this certification process are: " + verifiedModel._2)
+          if (verifiedModel._4.nonEmpty) section.append("Variables not defined in the Z3 model but are assumed to be 0 in this certification process are: " + verifiedModel._4 )
+          section.append(<br/>)
           section.append("Policy scores statically inferred in this certification process:")
           verifiedModel._3.foreach(m => section.append(m._1 + " has score " + m._2.fold(r => r.value, b => b)))
-          if (verifiedModel._2.nonEmpty) section.append("\nPolicies in analysis [" + analysisName + "] specialised with respect to the above scenario, extended with false predicates from: " + verifiedModel._2)
-          else section.append("\nPolicies in analysis [" + analysisName + "] specialised with respect to the above scenario.")
           section.append(<br/>)
+          if (verifiedModel._2.nonEmpty) {
+            section.append("Policies in analysis [" + analysisName + "] specialised with respect to the above scenario, extended with false predicates from ")
+            section.append("" + verifiedModel._2 + ":")
+          }
+          else section.append("Policies in analysis [" + analysisName + "] specialised with respect to the above scenario:")
           section.append(new PolicySpecialisationMaker(inputPolicies).doIt(z3RawOutput, analysisName, verifiedModel._2))
         }
         else {
