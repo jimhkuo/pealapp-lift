@@ -51,7 +51,7 @@ object Z3OutputAnalyser {
               section.append("Z3 could not determine whether " + s.cond + " is always true or not.")
             }
             else {
-              section.append(s.cond + " is NOT always true, for example, when:")
+              section.append(s.cond + " is NOT always true, for example, in the scenario in which:")
               section.append(getReasons(z3OutputModels(analysisName), Set(), Set("always_true_", "cond"), constsMap))
             }
           case s: AlwaysFalse =>
@@ -62,7 +62,7 @@ object Z3OutputAnalyser {
               section.append("Z3 could not determine whether " + s.cond + " is always false or not.")
             }
             else {
-              section.append(s.cond + " is NOT always false, for example, when:")
+              section.append(s.cond + " is NOT always false, for example, in the scenario in which:")
               section.append(getReasons(z3OutputModels(analysisName), Set(), Set("always_false_", "cond"), constsMap))
             }
           case s: Satisfiable =>
@@ -73,7 +73,7 @@ object Z3OutputAnalyser {
               section.append("Z3 could not determine whether " + s.cond + " is satisfiable or not.")
             }
             else {
-              section.append(s.cond + " is satisfiable, for example, when:")
+              section.append(s.cond + " is satisfiable, for example, in the scenario in which:")
               section.append(getReasons(z3OutputModels(analysisName), Set(), Set("satisfiable_", "cond"), constsMap))
             }
           case s: Different =>
@@ -84,7 +84,7 @@ object Z3OutputAnalyser {
               section.append("Z3 could not determine whether " + s.lhs + " and " + s.rhs + " are different or not.")
             }
             else {
-              section.append(s.lhs + " and " + s.rhs + " are different, for example, when:")
+              section.append(s.lhs + " and " + s.rhs + " are different, for example, in the scenario in which:")
               section.append(getReasons(z3OutputModels(analysisName), Set(s.lhs, s.rhs), Set("different_", "cond"), constsMap))
             }
           case s: Equivalent =>
@@ -94,7 +94,7 @@ object Z3OutputAnalyser {
               section.append("Z3 could not determine whether " + s.lhs + " and " + s.rhs + " are equivalent or not.")
             }
             else {
-              section.append(s.lhs + " and " + s.rhs + " are NOT equivalent, for example, when:")
+              section.append(s.lhs + " and " + s.rhs + " are NOT equivalent, for example, in the scenario in which:")
               section.append(getReasons(z3OutputModels(analysisName), Set(s.lhs, s.rhs), Set("equivalent_", "cond"), constsMap))
             }
           case s: Implies =>
@@ -105,7 +105,7 @@ object Z3OutputAnalyser {
               section.append("Z3 could not determine whether " + s.lhs + " implies " + s.rhs + " or not.")
             }
             else {
-              section.append(s.lhs + " does not imply " + s.rhs + ", for example, when:")
+              section.append(s.lhs + " does not imply " + s.rhs + ", for example, in the scenario in which:")
               section.append(getReasons(z3OutputModels(analysisName), Set(s.lhs, s.rhs), Set("implies_", "cond"), constsMap))
             }
         }
@@ -119,10 +119,13 @@ object Z3OutputAnalyser {
             case PealBottom => "was inconclusive"
           }
 
-          section.append("Certification of analysis [" + analysisName + "] " + result + ".\nAdditional predicates set to false in this certification process are " + verifiedModel._2 + "\nVariables not defined in the Z3 model but are assumed to be 0 in this certification process are " + verifiedModel._4 )
-          section.append("Policies checked:")
-          verifiedModel._3.foreach(m => section.append(m._1 + " is " + m._2.fold(r => r.value, b => b)))
-          section.append("\nPolicies in analysis [" + analysisName + "] specialised with respect to the model extended with false predicates from Set():")
+          section.append("Certification of analysis [" + analysisName + "] " + result + ".")
+          if (verifiedModel._2.nonEmpty) section.append("Additional predicates set to false in this certification process are " + verifiedModel._2)
+          if (verifiedModel._4.nonEmpty) section.append("Variables not defined in the Z3 model but are assumed to be 0 in this certification process are " + verifiedModel._4 )
+          section.append("Policy scores statically inferred in this certification process:")
+          verifiedModel._3.foreach(m => section.append(m._1 + " has score " + m._2.fold(r => r.value, b => b)))
+          if (verifiedModel._2.nonEmpty) section.append("\nPolicies in analysis [" + analysisName + "] specialised with respect to the above scenario, extended with false predicates from: " + verifiedModel._2)
+          else section.append("\nPolicies in analysis [" + analysisName + "] specialised with respect to the above scenario.")
           section.append(<br/>)
           section.append(new PolicySpecialisationMaker(inputPolicies).doIt(z3RawOutput, analysisName, verifiedModel._2))
         }
