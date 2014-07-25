@@ -7,10 +7,8 @@ import peal.util.ConsoleLogger
 //This class needs to be called in the request cycle
 //i.e. in snippets, calling it from within a comet won't work
 object CookieOptions {
-
   val vacuityCheckCookie = "peal.vacuity.checks" + pullHostInfo
   val displayFormatCookie = "peal.display.format" + pullHostInfo
-
 
   private def pullHostInfo: String = {
     S.hostAndPath.replaceAll("/", "").split(":").mkString
