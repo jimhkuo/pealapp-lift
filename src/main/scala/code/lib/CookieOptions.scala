@@ -23,17 +23,19 @@ object CookieOptions {
     cookieVal
   }
 
+  private def addCookie(cookieName: String, x: Any) = {
+    val cookie = HTTPCookie(cookieName, x.toString).setMaxAge(864000) //setting the hostName breaks it .setDomain(S.hostName)
+    S.addCookie(cookie)
+    ConsoleLogger.log("cookie added: " + cookie)
+    ConsoleLogger.log("doVacuityChecks_ setter, checking after set: " + displayFormat)
+  }
+
   def doVacuityChecks = pullCookieValue(vacuityCheckCookie) match {
     case "true" => true
     case _ => false
   }
 
-  def doVacuityChecks_=(v: Boolean) = {
-    val cookie = HTTPCookie(vacuityCheckCookie, v.toString).setMaxAge(864000) //setting the hostName breaks it .setDomain(S.hostName)
-    S.addCookie(cookie)
-    ConsoleLogger.log("cookie added: " + cookie)
-    ConsoleLogger.log("doVacuityChecks_ setter, checking after set: " + doVacuityChecks)
-  }
+  def doVacuityChecks_=(v: Boolean) = addCookie(vacuityCheckCookie, v)
 
   def displayFormat = pullCookieValue(displayFormatCookie) match {
     case "DecimalFormat" => DecimalFormat
@@ -41,11 +43,5 @@ object CookieOptions {
     case _ => Both
   }
 
-  def displayFormat_=(f: DisplayFormat) = {
-    ConsoleLogger.log("saving: " + f)
-    val cookie = HTTPCookie(displayFormatCookie, f.toString).setMaxAge(864000) //setting the hostName breaks it .setDomain(S.hostName)
-    S.addCookie(cookie)
-    ConsoleLogger.log("cookie added: " + cookie)
-    ConsoleLogger.log("doVacuityChecks_ setter, checking after set: " + displayFormat)
-  }
+  def displayFormat_=(f: DisplayFormat) = addCookie(displayFormatCookie, f)
 }
