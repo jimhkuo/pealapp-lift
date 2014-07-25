@@ -25,8 +25,6 @@ object UserSettingsSnippet {
 
     //The order of elements matter here!!
     "name=vc" #> SHtml.checkbox(vc, vc = _, "id" -> "vc") &
-      "name=dn" #> (SHtml.select(CookieOptions.displayFormatsMap.toSeq, Full(dn), (s) => {
-        println("s is " + s); dn = s
-      }) ++ SHtml.hidden(process))
+      "name=dn" #> (SHtml.select(CookieOptions.displayFormatsMap.toSeq, Full(dn), dn = _) ++ SHtml.hidden(process))
   }
 }
