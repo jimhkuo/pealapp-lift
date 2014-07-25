@@ -1,6 +1,6 @@
 package peal.gui.helper
 
-import code.lib.MutableNodeSeq
+import code.lib.{DecimalFormat, RationalFormat, DnOption, MutableNodeSeq}
 import peal.antlr.util.ParserHelper
 import peal.domain.z3._
 import peal.domain.{PealBottom, PealFalse, PealTrue, Rational}
@@ -121,7 +121,7 @@ object Z3OutputAnalyser {
 
           section.append("Certification of analysis [" + analysisName + "] " + result + ".")
           if (verifiedModel._2.nonEmpty) section.append("Additional predicates set to false in this certification process are: " + verifiedModel._2)
-          if (verifiedModel._4.nonEmpty) section.append("Variables not defined in the Z3 model but are assumed to be 0 in this certification process are: " + verifiedModel._4 )
+          if (verifiedModel._4.nonEmpty) section.append("Variables not defined in the Z3 model but are assumed to be 0 in this certification process are: " + verifiedModel._4)
           section.append(<br/>)
           section.append("Policy scores statically inferred in this certification process:")
           verifiedModel._3.map(m => m._1 + " has score " + m._2.fold(r => r.value, b => b)).toSeq.sorted.foreach(section.append)
@@ -143,15 +143,20 @@ object Z3OutputAnalyser {
     entireAnalysis
   }
 
-  private def getNaturalValue(value: String) = {
+  private def getNaturalValue(originalString: String) = {
+
     def printValue(r: Rational): String = {
-      if (r.denominator != BigDecimal("1")) r.value + " (" + value + ")"
-      else r.value.toString()
+      DnOption.get match {
+        case RationalFormat => originalString
+        case DecimalFormat => r.value.toString()
+        case _ => if (r.denominator != BigDecimal("1")) originalString + " = " + r.value + "" else r.value.toString()
+      }
     }
+
     try {
-      Z3ModelValueParser.parseToRational(value).fold(r => printValue(r), b => b.toString)
+      Z3ModelValueParser.parseToRational(originalString).fold(r => printValue(r), b => b.toString)
     } catch {
-      case e: Throwable => value
+      case e: Throwable => originalString
     }
   }
 

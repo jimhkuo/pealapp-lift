@@ -8,7 +8,9 @@ import net.liftweb.http.{S, SHtml}
 import net.liftweb.util.Helpers._
 
 object UserSettingsSnippet {
-  val displayFormatsMap = Map(RationalFormat -> "Rational (As returned by Z3)", DecimalFormat -> "Decimal (Calculated by PEALT)", Both -> "Both")
+  val displayFormatsMap = Map(RationalFormat -> "the original formats as returned by Z3 (can be rational OR decimal)",
+    DecimalFormat -> "the decimal formats converted by PEALT",
+    Both -> "both rational (if available) AND decimal formats")
 
 
   def render = {
