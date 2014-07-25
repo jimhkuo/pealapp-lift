@@ -18,9 +18,10 @@ class ConditionExpressionBuilderTest extends ShouldMatchersForJUnit {
     val pSet2 = new MaxPolicySet(new BasicPolicySet(p1), new BasicPolicySet(p2), "pSet2")
     val cond1 = new GreaterThanThCondition(pSet1, Left(0.6))
     val cond2 = new GreaterThanThCondition(pSet1, Right(pSet2))
+    implicit val conditions = Map[String, Condition]("cond1" -> cond1, "cond2" -> cond2)
 
-    ConditionExpressionBuilder.build(cond1) should be(pSet1.getPolicySetName + " > 0.6")
-    ConditionExpressionBuilder.build(cond2) should be(pSet1.getPolicySetName + " > " + pSet2.getPolicySetName)
+    ConditionExpressionBuilder.build("cond1") should be(pSet1.getPolicySetName + " > 0.6")
+    ConditionExpressionBuilder.build("cond2") should be(pSet1.getPolicySetName + " > " + pSet2.getPolicySetName)
   }
 
   @Test
@@ -31,9 +32,10 @@ class ConditionExpressionBuilderTest extends ShouldMatchersForJUnit {
     val pSet2 = new MaxPolicySet(new BasicPolicySet(p1), new BasicPolicySet(p2), "pSet2")
     val cond1 = new LessThanThCondition(pSet1, Left(0.6))
     val cond2 = new LessThanThCondition(pSet1, Right(pSet2))
+    implicit val conditions = Map[String, Condition]("cond1" -> cond1, "cond2" -> cond2)
 
-    ConditionExpressionBuilder.build(cond1) should be(pSet1.getPolicySetName + " <= 0.6")
-    ConditionExpressionBuilder.build(cond2) should be(pSet1.getPolicySetName + " <= " + pSet2.getPolicySetName)
+    ConditionExpressionBuilder.build("cond1") should be(pSet1.getPolicySetName + " <= 0.6")
+    ConditionExpressionBuilder.build("cond2") should be(pSet1.getPolicySetName + " <= " + pSet2.getPolicySetName)
   }
 
   @Test
@@ -47,7 +49,7 @@ class ConditionExpressionBuilderTest extends ShouldMatchersForJUnit {
     val cond3 = AndCondition("cond1", "cond2")
     val conditions = Map[String, Condition]("cond1" -> cond1, "cond2" -> cond2, "cond3" -> cond3)
 
-    ConditionExpressionBuilder.build(cond3)(conditions) should be(
+    ConditionExpressionBuilder.build("cond3")(conditions) should be(
       "(" + pSet1.getPolicySetName + " <= 0.6)" +
         " && " +
         "(" + pSet1.getPolicySetName + " > " + pSet2.getPolicySetName + ")")
@@ -64,7 +66,7 @@ class ConditionExpressionBuilderTest extends ShouldMatchersForJUnit {
     val cond3 = OrCondition("cond1", "cond2")
     val conditions = Map[String, Condition]("cond1" -> cond1, "cond2" -> cond2, "cond3" -> cond3)
 
-    ConditionExpressionBuilder.build(cond3)(conditions) should be(
+    ConditionExpressionBuilder.build("cond3")(conditions) should be(
       "(" + pSet1.getPolicySetName + " <= 0.6)" +
         " || " +
         "(" + pSet1.getPolicySetName + " > " + pSet2.getPolicySetName + ")")
@@ -80,9 +82,9 @@ class ConditionExpressionBuilderTest extends ShouldMatchersForJUnit {
     val cond2 = new GreaterThanThCondition(pSet1, Right(pSet2))
     val cond3 = AndCondition("cond1", "cond2")
     val cond4 = NotCondition("cond3")
-    val conditions = Map[String, Condition]("cond1" -> cond1, "cond2" -> cond2, "cond3" -> cond3)
+    implicit val conditions = Map[String, Condition]("cond1" -> cond1, "cond2" -> cond2, "cond3" -> cond3, "cond4" -> cond4)
 
-    ConditionExpressionBuilder.build(cond4)(conditions) should be(
+    ConditionExpressionBuilder.build("cond4")(conditions) should be(
       "!((" + pSet1.getPolicySetName + " <= 0.6)" +
         " && " +
         "(" + pSet1.getPolicySetName + " > " + pSet2.getPolicySetName + "))")
@@ -91,6 +93,8 @@ class ConditionExpressionBuilderTest extends ShouldMatchersForJUnit {
   @Test
   def testCanBuildPredicateExpression() {
     val cond4 = PredicateCondition("q1")
-    ConditionExpressionBuilder.build(cond4) should be("q1")
+    implicit val conditions = Map[String, Condition]("cond4" -> cond4)
+
+    ConditionExpressionBuilder.build("cond4") should be("q1")
   }
 }

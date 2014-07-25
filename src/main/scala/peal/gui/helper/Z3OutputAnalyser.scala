@@ -4,7 +4,9 @@ import code.lib.{DecimalFormat, RationalFormat, DnOption, MutableNodeSeq}
 import peal.antlr.util.ParserHelper
 import peal.domain.z3._
 import peal.domain.{PealBottom, PealFalse, PealTrue, Rational}
+import peal.expression.ConditionExpressionBuilder
 import peal.specialisation.PolicySpecialisationMaker
+import peal.synthesis.Condition
 import peal.synthesis.analysis._
 import peal.verifier.{OutputVerifier, Z3ModelValueParser}
 
@@ -14,7 +16,7 @@ import scala.xml.NodeSeq
 
 object Z3OutputAnalyser {
 
-  def execute(analyses: Map[String, AnalysisGenerator], constsMap: Map[String, PealAst], inputPolicies: String, z3RawOutput: String)(implicit ov: OutputVerifier): NodeSeq = {
+  def execute(analyses: Map[String, AnalysisGenerator], conditions: Map[String, Condition],  constsMap: Map[String, PealAst], inputPolicies: String, z3RawOutput: String)(implicit ov: OutputVerifier): NodeSeq = {
     val style = "font-family: Monaco, Menlo, Consolas, \"Courier New\", monospace;display: block;padding: 9.5px;margin: 0 0 10px;font-size: 13px;line-height: 1.428571429;color: #333;word-break: break-all;word-wrap: break-word;background-color: #f5f5f5;border: 1px solid #ccc;border-radius: 4px;"
 
     val z3OutputParser = ParserHelper.getZ3OutputParser(z3RawOutput)
@@ -44,6 +46,7 @@ object Z3OutputAnalyser {
         analyses(analysisName) match {
           //TODO add a condition unfolder in each of the cases here
           case s: AlwaysTrue =>
+//            ConditionExpressionBuilder.build()
             if (z3OutputModels(analysisName).satResult == Unsat) {
               section.append(s.cond + " is always true")
             } else if (z3OutputModels(analysisName).satResult == Unknown) {

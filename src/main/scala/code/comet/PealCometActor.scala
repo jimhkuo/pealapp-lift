@@ -92,7 +92,7 @@ class PealCometActor extends MainCometBody with CometListener {
     result match {
       //v._1 comes from Peal input
       //TODO may need to pass in condMap
-      case Success(v) => callZ3AndCertifyResults(isVerbose, constsMap = v._1._1, analyses = v._1._4, z3SMTInput = v._2)
+      case Success(v) => callZ3AndCertifyResults(isVerbose, constsMap = v._1._1, conditions = v._1._2, analyses = v._1._4, z3SMTInput = v._2)
       case Failure(e) => dealWithIt(e)
     }
   }
@@ -106,11 +106,11 @@ class PealCometActor extends MainCometBody with CometListener {
     }
   }
 
-  private def callZ3AndCertifyResults(isVerbose: Boolean, constsMap: Map[String, PealAst], analyses: Map[String, AnalysisGenerator], z3SMTInput: String) {
+  private def callZ3AndCertifyResults(isVerbose: Boolean, constsMap: Map[String, PealAst], conditions: Map[String, Condition], analyses: Map[String, AnalysisGenerator], z3SMTInput: String) {
     try {
       val z3RawOutput = Z3Caller.call(z3SMTInput)
       implicit val ov = new OutputVerifier(inputPolicies)
-      val analysedResults = Z3OutputAnalyser.execute(analyses, constsMap, inputPolicies, z3RawOutput)
+      val analysedResults = Z3OutputAnalyser.execute(analyses, conditions, constsMap, inputPolicies, z3RawOutput)
       isVerbose match {
         case true => this ! Result(<pre>Generated Z3 code:<br/><br/>{z3SMTInput}</pre><span>{analysedResults}</span><pre>Z3 Raw Output:<br/>{z3RawOutput}</pre>)
         case false =>this ! Result(<span>{analysedResults}</span>)
