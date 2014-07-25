@@ -16,7 +16,6 @@ object Both extends DisplayFormat {
   override def toString = "Both"
 }
 
-
 //object Z3SMTData extends SessionVar[String]("")
 object VcOption extends SessionVar[Boolean](false)
 
