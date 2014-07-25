@@ -83,8 +83,8 @@ object Z3OutputAnalyser {
               section.append(getReasons(z3OutputModels(analysisName), Set(), Set("satisfiable_", "cond"), constsMap))
             }
           case s: Different =>
-            section.append(s.lhs + " is " + ConditionExpressionBuilder.build(s.lhs)(conditions))
-            section.append(s.rhs + " is " + ConditionExpressionBuilder.build(s.rhs)(conditions))
+            section.append(s.lhs + " is " + ConditionExpressionBuilder.build(s.lhs)(conditions) + " and " +
+              s.rhs + " is " + ConditionExpressionBuilder.build(s.rhs)(conditions))
             section.append(<br/>)
             if (z3OutputModels(analysisName).satResult == Unsat) {
               section.append(s.lhs + " and " + s.rhs + " are NOT different")
@@ -97,8 +97,8 @@ object Z3OutputAnalyser {
               section.append(getReasons(z3OutputModels(analysisName), Set(s.lhs, s.rhs), Set("different_", "cond"), constsMap))
             }
           case s: Equivalent =>
-            section.append(s.lhs + " is " + ConditionExpressionBuilder.build(s.lhs)(conditions))
-            section.append(s.rhs + " is " + ConditionExpressionBuilder.build(s.rhs)(conditions))
+            section.append(s.lhs + " is " + ConditionExpressionBuilder.build(s.lhs)(conditions) + " and " +
+              s.rhs + " is " + ConditionExpressionBuilder.build(s.rhs)(conditions))
             section.append(<br/>)
             if (z3OutputModels(analysisName).satResult == Unsat) {
               section.append(s.lhs + " and " + s.rhs + " are equivalent")
@@ -110,8 +110,8 @@ object Z3OutputAnalyser {
               section.append(getReasons(z3OutputModels(analysisName), Set(s.lhs, s.rhs), Set("equivalent_", "cond"), constsMap))
             }
           case s: Implies =>
-            section.append(s.lhs + " is " + ConditionExpressionBuilder.build(s.lhs)(conditions))
-            section.append(s.rhs + " is " + ConditionExpressionBuilder.build(s.rhs)(conditions))
+            section.append(s.lhs + " is " + ConditionExpressionBuilder.build(s.lhs)(conditions) + " and " +
+              s.rhs + " is " + ConditionExpressionBuilder.build(s.rhs)(conditions))
             section.append(<br/>)
             if (z3OutputModels(analysisName).satResult == Unsat) {
               section.append(s.lhs + " implies " + s.rhs)
