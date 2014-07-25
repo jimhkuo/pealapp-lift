@@ -7,9 +7,11 @@ object PealBuild extends Build {
 
   lazy val reporter = Project(id = "ReportMaker", base = file("ReportMaker")) dependsOn (domain % "test->test;compile->compile")
 
+  lazy val expressionBuilder = Project(id = "ExpressionBuilder", base = file("ExpressionBuilder")) dependsOn (domain % "test->test;compile->compile")
+
   lazy val runner = Project(id = "ExperimentRunner", base = file("ExperimentRunner")) dependsOn(verifier, generator, synthesiser, z3)
 
-  lazy val root = Project(id = "PealApp-lift", base = file(".")) aggregate(generator, domain, parser, synthesiser, verifier, specialiser) dependsOn(verifier, generator, synthesiser, domain % "test->test;compile->compile", z3, specialiser)
+  lazy val root = Project(id = "PealApp-lift", base = file(".")) aggregate(generator, domain, parser, synthesiser, verifier, specialiser, expressionBuilder) dependsOn(verifier, generator, synthesiser, domain % "test->test;compile->compile", z3, specialiser, expressionBuilder)
 
   lazy val verifier = Project(id = "PealResultVerifier", base = file("PealResultVerifier")) dependsOn(synthesiser, parser, domain % "test->test;compile->compile", z3)
 

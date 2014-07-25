@@ -91,7 +91,7 @@ class PealCometActor extends MainCometBody with CometListener {
 
     result match {
       //v._1 comes from Peal input
-        //TODO may need to pass in condMap
+      //TODO may need to pass in condMap
       case Success(v) => callZ3AndCertifyResults(isVerbose, constsMap = v._1._1, analyses = v._1._4, z3SMTInput = v._2)
       case Failure(e) => dealWithIt(e)
     }
@@ -100,7 +100,6 @@ class PealCometActor extends MainCometBody with CometListener {
   private def callZ3Only(z3SMTInput: String) {
     try {
       val z3RawOutput = Z3Caller.call(z3SMTInput)
-
       this ! Result(<pre>Generated Z3 code:<br/><br/>{z3SMTInput}</pre><pre>Z3 Raw Output:<br/>{z3RawOutput}</pre>)
     } catch {
       case e: Exception => dealWithIt(e)
