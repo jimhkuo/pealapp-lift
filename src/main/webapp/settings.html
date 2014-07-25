@@ -10,10 +10,9 @@
         <form class="lift:form.ajax">
             <div class="lift:UserSettingsSnippet">
                 Perform vacuity check? <input name="vc" id="vc" type="checkbox"/><br/>
-                Display numbers in format:
-                <input type="radio" name="dn" value="Rational"/>&nbsp;Rational&nbsp;(Returned by Z3)
-                <input type="radio" name="dn" value="Decimal"/>&nbsp;Decimal&nbsp;(Calculated by PEALT from Rational)
-                <input type="radio" name="dn" value="Both"/>&nbsp;Both
+                Display numbers in format: <select name="dn" id="dn"></select>
+                <!--&nbsp;<input type="radio" name="dn" value="Decimal"/>&nbsp;Decimal&nbsp;(Calculated by PEALT from Rational)-->
+                <!--&nbsp;<input type="radio" name="dn" value="Both"/>&nbsp;Both-->
                 <br/>
                 <br/>
                 <input type="submit" value="Save"  class="btn btn-primary btn-sm" style="margin:2px;"/>
