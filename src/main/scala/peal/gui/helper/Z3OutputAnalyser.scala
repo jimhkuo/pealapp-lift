@@ -40,9 +40,8 @@ object Z3OutputAnalyser {
     sortedAnalyses.foreach {
       analysisName =>
         val section = MutableNodeSeq()
-        section.append(<h4>Result of analysis [
-          {analyses(analysisName).analysisName}
-          ]</h4>)
+        //TODO add a condition unfolder here
+        section.append(<h4>Result of analysis [{analyses(analysisName).analysisName}]</h4>)
         analyses(analysisName) match {
           case s: AlwaysTrue =>
             if (z3OutputModels(analysisName).satResult == Unsat) {
