@@ -10,9 +10,7 @@ object CookieOptions {
   val vacuityCheckCookie = "peal.vacuity.checks" + pullHostInfo
   val displayFormatCookie = "peal.display.format" + pullHostInfo
 
-  private def pullHostInfo: String = {
-    S.hostAndPath.replaceAll("/", "").split(":").mkString
-  }
+  private def pullHostInfo: String = S.hostAndPath.replaceAll("[:/]", "")
 
   private def pullCookieValue(cookieName: String) = {
     val boxedCookie = S.findCookie(cookieName)
