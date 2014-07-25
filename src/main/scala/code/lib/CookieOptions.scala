@@ -12,14 +12,13 @@ object CookieOptions {
   val vacuityCheckCookie = "peal.vacuity.checks" + pullHostInfo
   val displayFormatCookie = "peal.display.format" + pullHostInfo
 
-  val displayFormatsMap = Map("Rational" -> "Rational (format returned by Z3)", "Decimal" -> "Decimal (calculated by PEALT)", "Both" -> "Both")
 
   private def pullHostInfo: String = {
     S.hostAndPath.replaceAll("/", "").split(":").mkString
   }
 
   def doVacuityChecks = {
-//TODO clean this up
+    //TODO clean this up
     val boxedCookie = S.findCookie(vacuityCheckCookie)
     val cookieVal: String = boxedCookie.map(_.value.openOr("")).openOr("")
     ConsoleLogger.log("CookieOptions.findCookies: " + boxedCookie + " " + cookieVal)
@@ -33,27 +32,30 @@ object CookieOptions {
   }
 
   def doVacuityChecks_=(v: Boolean) = {
-    val cookie = HTTPCookie(vacuityCheckCookie, v.toString).setMaxAge(86400)//setting the hostName breaks it .setDomain(S.hostName)
+    val cookie = HTTPCookie(vacuityCheckCookie, v.toString).setMaxAge(864000) //setting the hostName breaks it .setDomain(S.hostName)
     S.addCookie(cookie)
     ConsoleLogger.log("cookie added: " + cookie)
     ConsoleLogger.log("doVacuityChecks_ setter, checking after set: " + doVacuityChecks)
   }
-  
+
   def displayFormat = {
     val boxedCookie = S.findCookie(displayFormatCookie)
     ConsoleLogger.log("CookieOptions.findCookies: " + boxedCookie)
     val cookieVal: String = boxedCookie.map(_.value.openOr("Both")).openOr("Both")
     ConsoleLogger.log("CookieOptions.findCookiesVal: " + cookieVal)
 
-//    val out = displayFormatsMap(cookieVal)
-//    ConsoleLogger.log("CookieOptions.findCookies.result: " + out)
-//    out
-    cookieVal
+    val out = cookieVal match {
+      case "DecimalFormat" => DecimalFormat
+      case "RationalFormat" => RationalFormat
+      case _ => Both
+    }
+    ConsoleLogger.log("CookieOptions.findCookies.result: " + out)
+    out
   }
 
-  def displayFormat_= (f : String) = {
+  def displayFormat_=(f: DisplayFormat) = {
     ConsoleLogger.log("saving: " + f)
-    val cookie = HTTPCookie(displayFormatCookie, f.toString).setMaxAge(86400)//setting the hostName breaks it .setDomain(S.hostName)
+    val cookie = HTTPCookie(displayFormatCookie, f.toString).setMaxAge(864000) //setting the hostName breaks it .setDomain(S.hostName)
     S.addCookie(cookie)
     ConsoleLogger.log("cookie added: " + cookie)
     ConsoleLogger.log("doVacuityChecks_ setter, checking after set: " + displayFormat)

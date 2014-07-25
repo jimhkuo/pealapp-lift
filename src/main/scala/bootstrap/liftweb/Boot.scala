@@ -1,6 +1,5 @@
 package bootstrap.liftweb
 
-import code.lib.Z3SMTData
 import net.liftweb.common.Full
 import net.liftweb.http.{LiftRules, Req, StreamingResponse}
 import net.liftweb.sitemap.Loc.{Hidden, LocGroup}
@@ -29,17 +28,17 @@ class Boot {
 
     LiftRules.early.append(_.setCharacterEncoding("UTF-8"))
 
-    LiftRules.dispatch.append {
-      case req@Req(List("download"), _, _) => {
-        val result = Z3SMTData.is
-        val headers = "Content-type" -> "text/plain" :: "Content-length" -> result.length.toString :: "Content-disposition" -> "attachment; filname=result.txt" :: Nil
-        () => Full(StreamingResponse(
-          new java.io.ByteArrayInputStream(result.getBytes("utf-8")),
-          () => {},
-          result.length,
-          headers, Nil, 200)
-        )
-      }
-    }
+//    LiftRules.dispatch.append {
+//      case req@Req(List("download"), _, _) => {
+//        val result = Z3SMTData.is
+//        val headers = "Content-type" -> "text/plain" :: "Content-length" -> result.length.toString :: "Content-disposition" -> "attachment; filname=result.txt" :: Nil
+//        () => Full(StreamingResponse(
+//          new java.io.ByteArrayInputStream(result.getBytes("utf-8")),
+//          () => {},
+//          result.length,
+//          headers, Nil, 200)
+//        )
+//      }
+//    }
   }
 }

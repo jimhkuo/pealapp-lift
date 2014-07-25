@@ -1,14 +1,15 @@
 package code.snippet
 
 
-import code.lib.CookieOptions
+import code.lib._
 import net.liftweb.common.{Empty, Full}
 import net.liftweb.http.js.JsCmd
 import net.liftweb.http.{S, SHtml}
 import net.liftweb.util.Helpers._
 
 object UserSettingsSnippet {
-  val vacuityCheck = "peal.vacuity.checks"
+  val displayFormatsMap = Map(RationalFormat -> "Rational (As returned by Z3)", DecimalFormat -> "Decimal (Calculated by PEALT)", Both -> "Both")
+
 
   def render = {
 
@@ -25,6 +26,6 @@ object UserSettingsSnippet {
 
     //The order of elements matter here!!
     "name=vc" #> SHtml.checkbox(vc, vc = _, "id" -> "vc") &
-      "name=dn" #> (SHtml.select(CookieOptions.displayFormatsMap.toSeq, Full(dn), dn = _) ++ SHtml.hidden(process))
+      "name=dn" #> (SHtml.selectObj(displayFormatsMap.toSeq, Full(dn), (f: DisplayFormat) => dn = f) ++ SHtml.hidden(process))
   }
 }

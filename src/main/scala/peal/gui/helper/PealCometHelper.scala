@@ -1,6 +1,6 @@
 package peal.gui.helper
 
-import code.lib.VCOption
+import code.lib.VcOption
 import peal.antlr.util.ParserHelper
 import peal.domain.PolicySet
 import peal.domain.z3.{PealAst, Term}
@@ -13,11 +13,11 @@ import scala.util.Try
 object PealCometHelper {
 
   def tryExplicitSynthesis(policies: String): Try[String] = Try {
-    new ExplicitSynthesiser(policies).generate(VCOption.get)
+    new ExplicitSynthesiser(policies).generate(VcOption.get)
   }
 
   def tryExtendedSynthesis(policies: String): Try[String] = Try {
-    new ExtendedSynthesiser(policies).generate(VCOption.get)
+    new ExtendedSynthesiser(policies).generate(VcOption.get)
   }
 
   def tryToParsePealInput(input: String): Try[(Map[String, PealAst], Map[String, Condition], Map[String, PolicySet], Map[String, AnalysisGenerator], Array[String])] = Try {

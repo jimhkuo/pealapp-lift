@@ -1,16 +1,15 @@
 package code.snippet
 
-import code.lib.{CookieOptions, VCOption}
+import code.lib.{DnOption, CookieOptions, VcOption}
 import net.liftweb.util.CssSel
 import net.liftweb.util.Helpers._
 
 class LoadCookieSetting {
 
-  val vacuityCheck = "peal.vacuity.checks"
-
   def render: CssSel = {
 
-    VCOption.set(CookieOptions.doVacuityChecks)
+    VcOption.set(CookieOptions.doVacuityChecks)
+    DnOption.set(CookieOptions.displayFormat)
 
     "* *" #> ""
   }
