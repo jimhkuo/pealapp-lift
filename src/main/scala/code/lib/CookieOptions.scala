@@ -8,7 +8,6 @@ import peal.util.ConsoleLogger
 //i.e. in snippets, calling it from within a comet won't work
 object CookieOptions {
 
-  //Using a different cookie name (with the port number) to separate out the use of cookie for different PEALT URLs
   val vacuityCheckCookie = "peal.vacuity.checks" + pullHostInfo
   val displayFormatCookie = "peal.display.format" + pullHostInfo
 
@@ -17,18 +16,18 @@ object CookieOptions {
     S.hostAndPath.replaceAll("/", "").split(":").mkString
   }
 
-  def doVacuityChecks = {
-    //TODO clean this up
-    val boxedCookie = S.findCookie(vacuityCheckCookie)
+  private def pullCookieValue(cookieName: String) = {
+    val boxedCookie = S.findCookie(cookieName)
     val cookieVal: String = boxedCookie.map(_.value.openOr("")).openOr("")
     ConsoleLogger.log("CookieOptions.findCookies: " + boxedCookie + " " + cookieVal)
-    val out = cookieVal.toString match {
+    cookieVal
+  }
+
+  def doVacuityChecks = {
+    pullCookieValue(vacuityCheckCookie) match {
       case "true" => true
       case _ => false
     }
-
-    ConsoleLogger.log("CookieOptions.findCookies.result: " + out)
-    out
   }
 
   def doVacuityChecks_=(v: Boolean) = {
@@ -39,18 +38,11 @@ object CookieOptions {
   }
 
   def displayFormat = {
-    val boxedCookie = S.findCookie(displayFormatCookie)
-    ConsoleLogger.log("CookieOptions.findCookies: " + boxedCookie)
-    val cookieVal: String = boxedCookie.map(_.value.openOr("Both")).openOr("Both")
-    ConsoleLogger.log("CookieOptions.findCookiesVal: " + cookieVal)
-
-    val out = cookieVal match {
+    pullCookieValue(displayFormatCookie) match {
       case "DecimalFormat" => DecimalFormat
       case "RationalFormat" => RationalFormat
       case _ => Both
     }
-    ConsoleLogger.log("CookieOptions.findCookies.result: " + out)
-    out
   }
 
   def displayFormat_=(f: DisplayFormat) = {
