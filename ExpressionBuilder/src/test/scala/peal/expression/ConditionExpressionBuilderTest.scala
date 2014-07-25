@@ -87,4 +87,10 @@ class ConditionExpressionBuilderTest extends ShouldMatchersForJUnit {
         " && " +
         "(" + pSet1.getPolicySetName + " > " + pSet2.getPolicySetName + "))")
   }
+
+  @Test
+  def testCanBuildPredicateExpression() {
+    val cond4 = PredicateCondition("q1")
+    ConditionExpressionBuilder.build(cond4) should be("q1")
+  }
 }
