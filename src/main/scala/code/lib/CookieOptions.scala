@@ -23,11 +23,9 @@ object CookieOptions {
     cookieVal
   }
 
-  def doVacuityChecks = {
-    pullCookieValue(vacuityCheckCookie) match {
-      case "true" => true
-      case _ => false
-    }
+  def doVacuityChecks = pullCookieValue(vacuityCheckCookie) match {
+    case "true" => true
+    case _ => false
   }
 
   def doVacuityChecks_=(v: Boolean) = {
@@ -37,12 +35,10 @@ object CookieOptions {
     ConsoleLogger.log("doVacuityChecks_ setter, checking after set: " + doVacuityChecks)
   }
 
-  def displayFormat = {
-    pullCookieValue(displayFormatCookie) match {
-      case "DecimalFormat" => DecimalFormat
-      case "RationalFormat" => RationalFormat
-      case _ => Both
-    }
+  def displayFormat = pullCookieValue(displayFormatCookie) match {
+    case "DecimalFormat" => DecimalFormat
+    case "RationalFormat" => RationalFormat
+    case _ => Both
   }
 
   def displayFormat_=(f: DisplayFormat) = {
