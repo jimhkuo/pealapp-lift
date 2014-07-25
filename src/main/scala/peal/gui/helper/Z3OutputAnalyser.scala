@@ -40,9 +40,9 @@ object Z3OutputAnalyser {
     sortedAnalyses.foreach {
       analysisName =>
         val section = MutableNodeSeq()
-        //TODO add a condition unfolder here
         section.append(<h4>Result of analysis [{analyses(analysisName).analysisName}]</h4>)
         analyses(analysisName) match {
+          //TODO add a condition unfolder in each of the cases here
           case s: AlwaysTrue =>
             if (z3OutputModels(analysisName).satResult == Unsat) {
               section.append(s.cond + " is always true")
