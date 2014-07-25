@@ -44,9 +44,9 @@ object Z3OutputAnalyser {
         val section = MutableNodeSeq()
         section.append(<h4>Result of analysis [{analyses(analysisName).analysisName}]</h4>)
         analyses(analysisName) match {
-          //TODO add a condition unfolder in each of the cases here
           case s: AlwaysTrue =>
-//            ConditionExpressionBuilder.build()
+            section.append(s.cond + " is " + ConditionExpressionBuilder.build(s.cond)(conditions))
+            section.append(<br/>)
             if (z3OutputModels(analysisName).satResult == Unsat) {
               section.append(s.cond + " is always true")
             } else if (z3OutputModels(analysisName).satResult == Unknown) {
@@ -57,6 +57,8 @@ object Z3OutputAnalyser {
               section.append(getReasons(z3OutputModels(analysisName), Set(), Set("always_true_", "cond"), constsMap))
             }
           case s: AlwaysFalse =>
+            section.append(s.cond + " is " + ConditionExpressionBuilder.build(s.cond)(conditions))
+            section.append(<br/>)
             if (z3OutputModels(analysisName).satResult == Unsat) {
               section.append(s.cond + " is always false")
             }
@@ -68,6 +70,8 @@ object Z3OutputAnalyser {
               section.append(getReasons(z3OutputModels(analysisName), Set(), Set("always_false_", "cond"), constsMap))
             }
           case s: Satisfiable =>
+            section.append(s.cond + " is " + ConditionExpressionBuilder.build(s.cond)(conditions))
+            section.append(<br/>)
             if (z3OutputModels(analysisName).satResult == Unsat) {
               section.append(s.cond + " is NOT satisfiable")
             }
@@ -79,6 +83,9 @@ object Z3OutputAnalyser {
               section.append(getReasons(z3OutputModels(analysisName), Set(), Set("satisfiable_", "cond"), constsMap))
             }
           case s: Different =>
+            section.append(s.lhs + " is " + ConditionExpressionBuilder.build(s.lhs)(conditions))
+            section.append(s.rhs + " is " + ConditionExpressionBuilder.build(s.rhs)(conditions))
+            section.append(<br/>)
             if (z3OutputModels(analysisName).satResult == Unsat) {
               section.append(s.lhs + " and " + s.rhs + " are NOT different")
             }
@@ -90,6 +97,9 @@ object Z3OutputAnalyser {
               section.append(getReasons(z3OutputModels(analysisName), Set(s.lhs, s.rhs), Set("different_", "cond"), constsMap))
             }
           case s: Equivalent =>
+            section.append(s.lhs + " is " + ConditionExpressionBuilder.build(s.lhs)(conditions))
+            section.append(s.rhs + " is " + ConditionExpressionBuilder.build(s.rhs)(conditions))
+            section.append(<br/>)
             if (z3OutputModels(analysisName).satResult == Unsat) {
               section.append(s.lhs + " and " + s.rhs + " are equivalent")
             } else if (z3OutputModels(analysisName).satResult == Unknown) {
@@ -100,6 +110,9 @@ object Z3OutputAnalyser {
               section.append(getReasons(z3OutputModels(analysisName), Set(s.lhs, s.rhs), Set("equivalent_", "cond"), constsMap))
             }
           case s: Implies =>
+            section.append(s.lhs + " is " + ConditionExpressionBuilder.build(s.lhs)(conditions))
+            section.append(s.rhs + " is " + ConditionExpressionBuilder.build(s.rhs)(conditions))
+            section.append(<br/>)
             if (z3OutputModels(analysisName).satResult == Unsat) {
               section.append(s.lhs + " implies " + s.rhs)
             }
