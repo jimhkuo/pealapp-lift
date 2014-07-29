@@ -13,7 +13,7 @@
 <p>
     PEALT input consists of text statements delimited with \n (NEWLINE) characters. The input is divided into
     sections by keywords POLICIES, POLICY_SETS, CONDITIONS, DOMAIN_SPECIFICS (optional), and ANALYSES.
-    We illustrate this with the car rental risks example provided in the tool interface. It specified four policies:
+    We illustrate this with the Car Rental Risks example provided in the tool interface. It specifies four policies:
 </p>
 <pre>POLICIES
 % policy capturing risk of financial loss dependent on type of rented car
@@ -31,18 +31,20 @@ b_minOne = + () default -1
 </pre>
 
 <p>
-    Note the use of "%" to insert comment lines into PEALT input. The predicate names 'isLuxuryCar' etc. do not have
+    Note the use of "%" to insert comment lines into PEALT input. The
+    predicate names 'isLuxuryCar' etc. occurring in policies do not have
     to be explicitly declared as predicates, their type is implicitly inferred through their occurrence in a rule.
 </p>
 
 
 <p>
-    The scores within rules may be constants (e.g. 30000 in policy b1 above), negative numbers (e.g. -0.2 is policy
+    The scores within rules may be constants (e.g. 30000 in policy b1 above), negative numbers (e.g. -0.2 in policy
     b4 above), variables, or constants multiplied with variables (e.g. 0.05*x in policy b4 above). All variables
     within score expressions of rules are implictly assigned the type Real. Additionally, a score expression s may
     be followed by an interval [l,u] where l and u are constant real numbers such that l &lt;= u. For example, in
     policy b2 we have rule (hasOtherLicense 0.4 [-0.1,0.1]). The meaning of this score expression is that it can be
-    any number 0.4 + z where z is in the interval [-0.1,0.1]. This models non-deterministic uncertainty of score
+    any number 0.4 + z where z is in the interval [-0.1,0.1]. This
+    interval therefore models non-deterministic uncertainty of score
     expressions.
 </p>
 
@@ -52,8 +54,9 @@ b_minOne = + () default -1
     If we want to compose a policy with a real number, e.g. to write an expression b4 - 1, PEALT requires us to
     write the real number -1 as a policy expression and to compose these policies with +. This is an artifact of the
     language definition and its parsing. Therefore, we use b_minOne = + () default -1 as a means of defining such a
-    value. In general, we can define a real number r as in b_r = op () default r where op is any allowed operator
-    for policies (max, min, +, and *).
+    value. In general, we may define a real number r as a policy b_r =
+    op () default r where the choice of operator op is irrelevant as
+    long as it is any allowed operator for policies (max, min, +, and *).
 </p>
 
 <p>
@@ -61,7 +64,8 @@ b_minOne = + () default -1
     The intuitive meaning of a policy is that we first collect all score expressions of predicates that are true in
     that policy. If that set is empty, the policy returns its default score. Otherwise, it returns the result of
     applying its operator to that set of score expressions. For example, if isLuxuryCar is true and isSedan and
-    isCompact are false, then policy b1 evaluates to 150000.
+    isCompact are false, then policy b1 evaluates to 150000. Let us see next how we can use policies to declare
+    policy sets:
 </p>
 
 <pre>POLICY_SETS
@@ -78,7 +82,7 @@ pSet_b4 = b4
     Rather, we have to either cast it into a policy set (e.g. as done in declaring pSet_b4 as policy b4) or we have
     to apply policy set composition operators (min, max, +, and *) to policies (e.g. in pSet0) or to a mix of
     policies and policy sets (e.g. in pSet1). The input language does not support the application of these operators
-    to more than two arguments at a time.
+    to more than two arguments at a time. Let us see how we can use policy sets to declare conditions:
 
 </p>
 <pre>CONDITIONS
@@ -98,44 +102,26 @@ cond5 = cond1 &amp;&amp; cond4
     operators are negation (!), conjunction (&amp;&amp;), disjunction (||), and comparison operators (&lt; and &lt;=).
 
     All of these operators have to be applied one at a time in defining conditions. For example, in order to define a condition
-    cond3 as !isLuxuryCar &amp;&amp; (0.4 &lt; pSet4) we have to declare
+    cond as !isLuxuryCar &amp;&amp; (0.4 &lt; pSet4) we have to declare something similar to
 </p>
-<pre>isLuxuryCar_cond = isLuxuryCar
-cond1 = !isLuxuryCar_cond
-cond2 = 0.4 &lt; pSet4
-cond3 = cond &amp;&amp; cond2
+<pre>
+% cast predicate into condition
+isLuxuryCar_c = isLuxuryCar
+% negate condition
+c1 = !isLuxuryCar_c
+% create atomic condition
+c2 = 0.4 &lt; pSet4
+% form desired conjunction
+cond = c1 &amp;&amp; c2
 </pre>
 <p>
-    by inventing suitable intermediate condition variables such as isLuxuryCar_cond, cond1, and cond2.
-    We realize that this may make specifications
-    more verbose than necessary but it did simplify the front end of our input processing.
+    by inventing suitable intermediate condition variables such as isLuxuryCar_c, c1, and c2.
+    We realize that this may make specifications more verbose than necessary. But it did simplify the front end of our input processing
+    and means that vacuity checking (discussed below) applies to all
+    sub-conditions declared in this manner. Let us now show how we may add domain-specific knowledge or assumptions next:
 </p>
 
-<p>
 
-    <strong>Syntactic restrictions for non-negative, constant score method:</strong>
-    If conditions contain policies whose scores are non-negative and constant and if we want to use a code
-    generation method that exploits this, said method comes with further syntactic restrictions (which we can avoid
-    by just choosing the other code generation method):
-</p>
-
-<ul>
-    <li> although max, min, +, and * are still composition operators for policies, only max and min are allowed
-        composition operators used within section POLICY_SETS</li>
-    <li> comparisons are restricted to the forms th &lt; pSet and pSet &lt;= th where pSet is a policy set and th a
-        non-negative, constant real</li>
-</ul>
-<p>
-    Note that we still can express conditions such as pSet &lt;= th but we have to state this as
-</p>
-<pre>cond_aux = th &lt; pSet
-cond = !cond_aux
-</pre>
-<p>
-    if we want to use that method. And using this code generation method may yield more scalable results for
-    policies that have multiplication as composition operator.
-
-</p>
 <pre>DOMAIN_SPECIFICS
 % real x models the number of years driven without accident, has to be non-negative and is 'truncated' at value 10
 (assert (and (&lt;= 0 x) (&lt;= x 10)))
@@ -153,17 +139,37 @@ cond = !cond_aux
 (assert (implies onlyLongDistanceUsage (not someOffRoadDriving)))
 </pre>
 <p>
-    In section DOMAIN_SPECIFICS, we can enter any input that is legal syntax for the Z3 input language (not for the
-    PEALT input language). This allows for an easy manner of formulating domain knowledge and of generating code for
-    it (essentially just cut and paste of that code). But there are some issues that this simplicity brings and
+    In section DOMAIN_SPECIFICS, we can enter any input that is legal
+    syntax for the Z3 input language (and not for the
+    PEALT input language). This section allows for an easy manner of
+    formulating domain knowledge or domain assumptions and of generating code for
+    that (essentially just cut and paste of that code). But there are some issues that this simplicity brings and
     which we now want to highlight:
 </p>
 <ul>
     <li> we can use "%" to write comments in that section, our Z3 code generation will still ignore this text</li>
     <li> one should not explicitly declare variables in this section with Z3 statements if these variables are
-        implicit in earlier PEALT declarations (e.g. we will automatically generate such declarations for
+        implicit in earlier policy declarations (e.g. PEALT will automatically generate such declarations for
         isLuxuryCar of type Boolean and x of type Real)</li>
+    <li> one should however explicitly declare here Boolean variables that are cast into conditions without having been mentioned in any rules of policies; such castings would only occur if we wanted to define the meaning of such predicates here, e.g. as in</li>
 </ul>
+
+<pre>CONDITIONS
+c1 = seniorCitizen
+...
+DOMAIN_SPECIFICS
+% seniorCitizen not yet declared as Boolean, and does not occur in any rules of any policies above
+(declare-const seniorCitizen Bool)
+% define meaning of being a senior citizen
+(assert (= seniorCitizen (&lt; 65 age)))
+...
+</pre>
+
+<p>
+    Once we have declared conditions, be it with or without
+    domain-specific content, we can declare analyses for these conditions. PEALT supports
+    six analysis types that all reduce to satisfiability checks:
+</p>
 
 <pre>ANALYSES
 % is condition cond3 satisfiable?
@@ -177,95 +183,359 @@ name4 = satisfiable? cond5
 % are conditions cond3 and cond5 equivalent?
 name5 = equivalent? cond3 cond5
 </pre>
+
 <p>
-    In section ANALYSES, we can declare any number of analyses using the same naming format as for polices, policy
+    In section ANALYSES, we can declare any number of analyses using the same naming mechanisms as for polices, policy
     sets, and conditions. The supported analyses are
 </p>
 <ul>
-    <li> satisfiable? cond; can we make condition cond true?</li>
-    <li> always_false? cond; can condition cond never be made true?</li>
-    <li> always_true? cond; can condition cond never be made false?</li>
-    <li> implies? cond1 cond2; does the truth of cond1 logically imply the truth of cond2?</li>
-    <li> equivalent? cond1 cond2; are conditions cond1 and cond2 logically equivalent?of cond2?</li>
+    <li> satisfiable? c &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;can we make condition c true?</li>
+    <li> always_false? c &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;can condition c never be made true?</li>
+    <li> always_true? c &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; can condition c never be made false?</li>
+    <li> implies? c1 c2 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;does the truth of c1 logically imply the truth of c2?</li>
+    <li> equivalent? c1 c2 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;are conditions c1 and c2 logically equivalent?</li>
 </ul>
-<p>
 
-    In the tool, all these analyses internally reduce to one of form satisfiable? and the SMT solver Z3 will then
-    determine whether the answer is yes (reporting outcome 'SAT' and a model supporting that claim), no (reporting
-    outcome 'UNSAT') but it may also report outcome 'UNKNOWN' meaning that it could not decide this question.
+<h4>Vacuity checking</h4>
+
+
+<p>
+    The analyses always_true? and always_false? capture what is known as vacuity checking. Knowing that a condition is always true, or always false
+    may suggest that there is a specification error in the condition; for example if the condition were to be a temporal logic property that checks the equivalence of two hardware circuits. In the setting of PEALT, vacuities may well be specification errors. But they may alternatively establish desired invariants, for example, that the expected risk of some monetary losses is always below a constant threshold. It is up to the specifier to decide whether such vacuities are desired or indicate specification issues.
 </p>
 
 <p>
-
-    Let us discuss what PEALT reports on the first analysis above. First, it reports that the condition is
-    satisfiable along with a model that supports this claim -- the model is generated here in pretty printed form
-    and shows some values that are internal to our method of Z3 code generation (e.g. the variable b2_score
-    represents the score to which policy b2 evaluates in this model):
+    We think that checking vacuities is so important in our context,
+    that we make it a settings option that all declared conditions
+    (which include all sub-conditions due to the manner in which
+    conditions are declared) be checked automatically for these two
+    types of vacuities. Below, we see the reporting for this when
+    vacuity checking is set ON, for the Car Rental Risks example:
 </p>
-<pre>Result of analysis [ name1 = satisfiable? cond3 ]
 
-cond3 is satisfiable, for example, when:
+  <pre>
+Vacuity check on all conditions declared in CONDITIONS section above
+
+Conditions that are always true: cond1
+Conditions that are always false:
+</pre>
+
+<p>
+    This output suggests that the monetary loss weighted with its
+    perceived risk is always below 50000, and that no declared condition
+    is always false. Should the tool not be able to decide any of the vacuity analyses, those outcomes will be reported separately as "may always be true" and "may always be false", respectively.
+</p>
+
+<h4> Three analysis buttons for each code generation option</h4>
+
+<p> Each of the code generation options, "General scores" and "Non-negative, constant score" have three ways of displaying analysis output:
+</p>
+
+<ul>
+    <li> Display results of all analyses in pretty printed form and perform independent certification of results</li>
+    <li> Generate, show, and run Z3 code; display results in pretty-printed and raw form</li>
+    <li> Generate, show, and run Z3 code, display results in raw Z3 form</li>
+</ul>
+
+<p>
+    We should stress that use of the first way above is preferred. The latter two expose users to explicit Z3 code and Z3 output, and so are only of use for researchers who may want to modify or understand the inner workings of this tool. We will therefore only describe the output of the first, preferred way of reporting analysis findings.
+</p>
+
+<p>
+    We note that "all analyses" refers to all analyses declared under
+    keyword ANALYSES. If automatic vacuity checking is set ON, more
+    analyses will be performed but only analyses declared under keyword
+    ANALYSES will have explicit output as discussed below. In particular,
+    vacuity checks that are also declared under that keyword would be
+    performed twice, once for the compact vacuity reporting, and once for
+    the detailed analysis output reporting. Also, the independent
+    certification of analyses, discussed below, applies only to analyses declared under the keyword ANALYSES.
+</p>
+
+<h4>Reporting format for analysis output</h4>
+
+<p>
+    Each analysis declared under keyword ANALYSES has its output reported in the same manner. There are two types of output, depending on whether the
+    outcome of the Z3 analysis is SAT, or one of UNSAT or UNKNOWN. In the latter case, the output will be given in the form similar to this example:
+</p>
+
+<pre>
+Result of analysis [name4 = implies? cond2 cond1]
+cond2 is pSet1 > 0.6 and cond1 is pSet1 > 0.5
+
+cond2 implies cond1
+
+Output of analysis [name4] is Unsat: so no certification performed and no specialized policies reported.
+</pre>
+
+<p>
+    The above was generated using the Social Network Access Control example and the outcome was UNSAT. The first line recalls the condition(s) involved in the analysis. The next line summarizes the finding, here that condition cond1 logically implies condition cond2. The last line lists the analysis outcome (here UNSAT) and explains that such an outcome won't trigger additional reporting.
+</p>
+
+<p>
+    Let us now discuss the output format when the analysis outcome is SAT. Below, we see the report for analysis name2 for the Car Rental Risks example, when vacuity checking is set OFF:
+</p>
+
+<pre>
+Result of analysis [name2 = always_true? cond3] cond3 is (pSet1 &lt;= 50000.0)  &amp;&amp; (pSet_b4 &gt; 0.4)
+
+cond3 is NOT always true, for example, in the scenario in which:
 onlyLongDistanceUsage is False
 speaksEnglish is True
 isLuxuryCar is False
-isCompact is True
+isCompact is False
 hasOtherLicense is True
 onlyCityUsage is False
 isSedan is False
 travelsAlone is True
 accidentFreeForYears is True
+mixedUsage is True
 femaleDriver is True
-someOffRoadDriving is True
+someOffRoadDriving is False
 b_minOne_score is -1.0
-b1_isLuxuryCar_U is 0.0
 b2_hasOtherLicense_U is 0.0
-b1_score is 30000.0
-b3_score is 0.8 (4.0/5.0)
-b2_score is 0.4 (2.0/5.0)
-x is 10.0
-b4_score is 0.45 (9.0/20.0)
-</pre>
-<p>
-There are two concerns with such information. First, even if we trust the Z3 solver used to produce it, there may be flaws
-    in our Z3 code generator and so the claim that the condition is satisfiable may be wrong or the model above may not be
-    the right one to support that claim.
-    Second, for larger models it may be difficult for users to relate all this model information to the input expressions
-    that they declared in PEALT.
-</p><p>
-PEALT addresses the first concern by independently certifying that the model information indeed supports the claimed analysis.
-    The mathematical details for this are non-trivial, they use Kleene's three valued logic to compositionally perform such certification
-    of a model that was determined in a non-compositional manner by Z3. So this approach will fail at times but only when the model
-    underspecified truth values of some predicates within rules. We then chose one such predicate, set it to false and repeat our
-    compositional certification process until it succeeds. This is seen in the PEALT output
-</p>
-<pre>Certification of analysis [name1] succeeded. Additional predicates set to false in this certification process are Set(hasUSLicense, hasUKLicense, hasEULicense)
-</pre>
-<p>
-which tells us that this certification worked but that it had to incrementally set three predicates
-    to be false: hasUSLicense, hasUKLicense, and hasEULicense.
-</p><p>
-Once certification has been achieved, PEALT outputs all policies that occurred in conditions of the analysis.
-    But now these policies are partially evaluated with the model information and with any predicates that may
-    be set to false in the certification process. For sake of illustration, let us assume that the above certification
-    would have set only predicates hasUSLicense and hasUKLicense to false, and not hasEULicense.
-    Then PEALT will output for the first analysis above
-</p>
-<pre>Policies in analysis [name1] specialised with respect to the model extended with false predicates from Set():
+b1_score is 50000.0
+b3_score is 1.0/4.0
+b2_score is 2.0/5.0
+x is 9.0
+b4_score is 2.0/5.0
 
-b1 = max () default 50000.0
-b2 = min (([hasOtherLicense] 0.4) (hasEULicense? 0.7)) default 0.0
-b4 = + (([accidentFreeForYears speaksEnglish travelsAlone femaleDriver] 0.45)) default 0.0
-b_minOne = + () default -1.0
+Certification of analysis [name2] succeeded.
+
+Policy scores statically inferred in this certification process:
+b1 has score 50000
+b3 has score 0.25
+b4 has score 0.4
+b_minOne has score -1
+
+Policies in analysis [name2] specialised with respect to the above scenario:
+b1 = max () default 50000
+b2 = min (([hasOtherLicense] 0.4) (hasUSLicense? 0.9) (hasUKLicense? 0.6) (hasEULicense? 0.7)) default 0
+b4 = + (([accidentFreeForYears speaksEnglish travelsAlone femaleDriver] 0.4)) default 0
+b_minOne = + () default -1
 </pre>
 
+
 <p>
-Note that this groups all true predicates within [...] and reports their total score composed with the
-    respective policy composition operator (e.g. + for policy b4). It also lists rules with a "?" after
-    their predicates if these predicates have no determined truth value after successful certification.
-</p><p>
-If the output of an analysis is 'UNSAT', no certification and no policy specialization are performed.
-    One reason for this design decision is that users may not be able to understand a certification
-    for this outcome as it would be the representation of a mathematical proof.
+    As before, this output recalls the condition(s) analyzed here. Then it
+    gives an explanation, here why a condition is not always true, and
+    reports a scenario next that supports this claim. This is followed by
+    a statement of whether independent certification of that scenario on
+    the PEALT condition(s) succeeded or failed. Such certification is
+    agnostic of any Z3 code that was generated for this analysis.</p>
+
+<p>
+    Success
+    of certification may trigger additional reports: which predicates this
+    certification additionally had to set to false, and which real
+    variables it additionally had to set to 0.0. Such refinements reflect
+    the tradeoff between the compositionality of this certification
+    process (which uses Kleene's strong 3-valued propositional logic) and
+    its precision.  The certified scenario is the one that includes any
+    additional 0.0 variable values or false predicates if such refinements
+    did occur. This was not the case above.
+</p>
+
+<p>
+    In the next reporting zone, we see all policies for which this
+    certification statically had to infer and use their scores based on the
+    certified scenario. We emphasize that this process does not make use
+    of the scores for variables of form p_score found in the
+    scenario. Rather, we verify that any such reported values equal
+    the score of p if it can be statically inferred.
+</p>
+
+<p>
+    Finally, we see a report of all policies that are inspected in this
+    certification process, and it is shown how these policies partially
+    evaluate in that certified scenario: scores that are outcomes of such
+    policies are shown in red; and red brackets are used to group all true
+    predicates within a policy (where applicable such as in b2 above) and
+    report their aggregated score according to the certified scenario. If
+    no predicates are true, no rules are shown but the default score is shown in red as policy outcome. Note that predicates within policies that are shown in green end in a question mark, indicating that the truth values of these predicates did not matter in the certification of the scenario.
+</p>
+
+<p>
+    It is instructive to look at the above analysis name2 again after
+    vacuity checking has been set to ON. We then see the reporting of a
+    different scenario that is still certified successfully but where now
+    no green predicates are shown in specialized policies. This phenomenon
+    is an artefact of the incremental analysis that Z3 uses, and that our code generator invokes with the push/pop constructs of Z3. We here list the output when vauity checking is set ON:
+</p>
+
+<pre>
+Result of analysis [name2 = always_true? cond3]
+cond3 is (pSet1 &lt;= 50000.0)  &amp;&amp; (pSet_b4 &gt; 0.4)
+
+cond3 is NOT always true, for example, in the scenario in which:
+isLuxuryCar is False
+isCompact is False
+hasUKLicense is False
+hasEULicense is False
+hasUSLicense is True
+accidentFreeForYears is True
+mixedUsage is True
+onlyLongDistanceUsage is False
+speaksEnglish is True
+hasOtherLicense is False
+onlyCityUsage is False
+isSedan is False
+travelsAlone is False
+femaleDriver is True
+someOffRoadDriving is False
+b1_score is 50000.0
+b3_score is 1.0/4.0
+b2_score is 9.0/10.0
+b4_score is 2.0/5.0
+b2_hasOtherLicense_U is 0.0
+b_minOne_score is -1.0
+x is 5.0
+
+Certification of analysis [name2] succeeded.
+
+Policy scores statically inferred in this certification process:
+b1 has score 50000
+b2 has score 0.9
+b3 has score 0.25
+b4 has score 0.4
+b_minOne has score -1
+
+Policies in analysis [name2] specialised with respect to the above scenario:
+b1 = max () default 50000
+b2 = min (([hasUSLicense] 0.9)) default 0
+b4 = + (([accidentFreeForYears speaksEnglish femaleDriver] 0.4)) default 0
+b_minOne = + () default -1
+</pre>
+
+
+
+
+
+<h4>Analysis options and syntax restrictions</h4>
+
+<p>
+    The input language for PEALT gives users two options:
+</p>
+<ul>
+    <li> to write policies whose scores are all non-negative and constant and where all policies with composition
+        operator * (multiplication) have scores in the unit interval [0,1], where only max and min are allowed
+        composition operators used within section POLICY_SETS, and where comparisons in conditions are restricted
+        to the forms th &lt; pSet and pSet &lt;= th with pSet a policy set and th a
+        non-negative, constant real; users can then analyze conditions by
+        clicking on the dark blue button "Non-negative, constant scores"
+    </li>
+    <li> to write policies whose scores may contain negative numbers, variables, products of constants and
+        variables or uncertainty intervals; users then have to click on the light blue button "General scores"
+        in order to analyze conditions.
+    </li>
+</ul>
+
+<p>
+    The editor and runner interface of the tool offer buttons
+    for generating random or example PEALT input. Amongst
+    those buttons, the ones coulored in light blue should only
+    be analyzed by clicking on the light blue button  "General
+    scores", whereas those coulored in dark blue may be
+    analyzed by clicking either "General scores" or
+    "Non-negative, constant scores". Users should take care to only use that option when the input is known to meet the above score constraints.
+</p>
+
+<p>
+    Using option "Non-negative, constant scores" may yield more scalable results for policies that have multiplication as
+    composition operator. But for PEALT input that has negative scores, non-constant scores or scores
+    outside of the unit interval in * policies it may produce errors. Fortunately, such errors are likely to be identified;
+    for example, during parsing if scores contain variables or
+    during certification if * policies contain scores not in
+    [0,1]. As already stated, our certification process applied to
+    found scenarios is agnostic to the manner in which the Z3 code
+    was generated for finding this scenario. Therefore,
+    a successfully certified scenario will be valid even if the
+    wrong option was clicked! Having said that, PEALT will only reach the
+    certification process for inputs with no variables in scores.
+</p>
+
+<p>
+    Note that we still can express conditions cond of form pSet &lt;= th for the  "Non-negative, constant scores" option. But we then have to state this as
+</p>
+<pre>cond_aux = th &lt; pSet
+cond = !cond_aux
+</pre>
+
+<h4>Referring to policy scores in scores</h4>
+
+<p>
+    The Fire Fault Tree example of PEALT illustrates a powerful feature of its input language. For a declared policy p, we can write p_score for a
+    variable that represents its score, and therefore use that
+    variable in score expressions within rules. Of course, this usage assumes that option "General scores"
+    is clicked. Some care should be exercised when using this feature. A policy q depends on policy p if variable p_score occurs in policy q.
+    The certification process may not terminate when this dependency relation contains a cycle.
+    In the presence of cycles, PEALT will still produce raw Z3
+    code and raw Z3 output in the third way of using that
+    option. Moreover, the certification process may then even
+    terminate, in which case its success can be trusted sinceit
+    will have removed any circularity in dependencies by making
+    false some predicates that occur in rules with scores
+    containing p_score type variables. Let us illustrate this with
+    an example:
+</p>
+
+<pre>
+POLICIES
+b1 = +((q1 b2_score) (q2 0.5)) default 0.0
+b2 = max((q3 b1_score) (q4 0.4)) default 1.0
+POLICY_SETS
+pSet1 = min(b1,b2)
+CONDITIONS
+cond1 = 0.0 &lt; pSet1
+ANALYSES
+name1 = satisfiable? cond1
+</pre>
+
+<p>
+    There is a circularity in policies b1 and b2 above. But when we
+    analyze this with option "General scores", we arrive at the following output:
+</p>
+
+<pre>
+cond1 is pSet1 > 0.0
+
+cond1 is satisfiable, for example, in the scenario in which:
+q1 is True
+q2 is False
+q4 is True
+b1_score is 2.0/5.0 = 0.4
+b2_score is 2.0/5.0 = 0.4
+
+Certification of analysis [name1] succeeded.
+Additional predicates set to false in this certification process are: Set(q3)
+
+Policy scores statically inferred in this certification process:
+b1 has score 0.4
+b2 has score 0.4
+
+Policies in analysis [name1] specialised with respect to the above scenario, extended with false predicates from
+Set(q3):
+b1 = + (([q1] 0.4)) default 0
+b2 = max (([q4] 0.4)) default 1
+</pre>
+
+<p>
+    Our certification process could make sense of this by refining the
+    predicate q3, for which the found scenario did not report a truth
+    value, to false. However, it we were to add to the above PEALT input
+    the domain specific assumption that both q1 and q3 need to be true:
+</p>
+
+<pre>
+DOMAIN_SPECIFICS
+(assert (and q1 q3))
+</pre>
+
+<p> then our certification process will simply not terminate! It now
+    has to statically infer scores for both policies that refer indirectly
+    to the very scores that need to be statically inferred, an infinite
+    regress. This is
+    why we said above that scores p_score should be used with care.
 </p>
 </div>
 </div>
