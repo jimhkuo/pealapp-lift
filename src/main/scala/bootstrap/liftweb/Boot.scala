@@ -1,5 +1,6 @@
 package bootstrap.liftweb
 
+import code.lib.PealInputData
 import net.liftweb.common.Full
 import net.liftweb.http.{LiftRules, Req, StreamingResponse}
 import net.liftweb.sitemap.Loc.{Hidden, LocGroup}
@@ -28,17 +29,27 @@ class Boot {
 
     LiftRules.early.append(_.setCharacterEncoding("UTF-8"))
 
-//    LiftRules.dispatch.append {
-//      case req@Req(List("download"), _, _) => {
-//        val result = Z3SMTData.is
-//        val headers = "Content-type" -> "text/plain" :: "Content-length" -> result.length.toString :: "Content-disposition" -> "attachment; filname=result.txt" :: Nil
-//        () => Full(StreamingResponse(
-//          new java.io.ByteArrayInputStream(result.getBytes("utf-8")),
-//          () => {},
-//          result.length,
-//          headers, Nil, 200)
-//        )
-//      }
-//    }
+    LiftRules.dispatch.append {
+      case req@Req(List("download"), _, _) => {
+        val result = PealInputData.is
+        val headers = "Content-type" -> "text/plain" :: "Content-length" -> result.length.toString :: "Content-disposition" -> "attachment; filname=pealInput.txt" :: Nil
+        () => Full(StreamingResponse(
+          new java.io.ByteArrayInputStream(result.getBytes("utf-8")),
+          () => {},
+          result.length,
+          headers, Nil, 200)
+        )
+      }
+    }
+
+//    case SaveFile(result, lapseTime) =>
+//    Z3SMTData.set(result)
+//    this ! Result(<p>Output prepared, lapse time:
+//      <span style="color:red;font-weight: bold;">
+//        {"%.2f".format(lapseTime.toDouble / 1000000)}
+//      </span>
+//      ms, please click
+//      <a href="download">here</a>
+//      to download the file</p>)
   }
 }

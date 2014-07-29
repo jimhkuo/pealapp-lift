@@ -16,6 +16,8 @@ case object Init
 
 case object Clear
 
+case object DownloadClicked
+
 case object GenerateConstantScore
 
 case object GenerateConstantScoreWithDomainSpecifics

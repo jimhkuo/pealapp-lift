@@ -2,11 +2,12 @@ package code.comet
 
 import code.lib._
 import net.liftweb.http._
+import net.liftweb.http.js.JsCmds
 import net.liftweb.http.js.JsCmds._
 import net.liftweb.http.js.jquery.JqJE._
 import peal.domain.PolicySet
 import peal.domain.z3.PealAst
-import peal.gui.helper.{Z3OutputAnalyser, PealCometHelper}
+import peal.gui.helper.{FileHelper, Z3OutputAnalyser, PealCometHelper}
 import peal.model.{ConstantScoreModelGenerator, MajorityVotingGenerator, RandomScoreModelGenerator}
 import peal.synthesis._
 import peal.synthesis.analysis._
@@ -53,6 +54,7 @@ class PealCometActor extends MainCometBody with CometListener {
     case GenerateConstantScoreWithDomainSpecifics => updatePealInput(ConstantScoreModelGenerator.generate(true, randomModelParamWithDomain.split(Array(' ', ',')).filterNot(_ == ""): _*))
     case GenerateScoresWithRange => updatePealInput(RandomScoreModelGenerator.generate(randomModelWithRangeParam.split(Array(' ', ',')).filterNot(_ == ""): _*))
     case Clear => updatePealInput("")
+    case DownloadClicked => PealInputData.set(inputPolicies)
     case UploadFile(id, fileContent) =>
       val myId = for (liftSession <- S.session) yield liftSession.uniqueId
       ConsoleLogger.log("id received: " + id)
