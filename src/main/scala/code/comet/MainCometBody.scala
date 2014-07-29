@@ -43,8 +43,7 @@ trait MainCometBody extends CometActor {
             </div>
             <div>
               {SHtml.ajaxButton("Clear text area", () => {this ! Clear; _Noop}, "class" -> "btn btn-warning btn-sm", "style" -> "margin:2px;")}
-              {SHtml.link("download", () => {this ! DownloadClicked; _Noop}, <p>Download</p>)}
-              {SHtml.ajaxButton("Download", () => {this ! DownloadClicked; JsCmds.RedirectTo("download")}, "class" -> "btn btn-warning btn-sm", "style" -> "margin:2px;")}
+              {SHtml.ajaxButton("Download text", () => {this ! DownloadClicked; JsCmds.RedirectTo("download")}, "class" -> "btn btn-warning btn-sm", "style" -> "margin:2px;")}
             </div>
             </div>
           </div>
