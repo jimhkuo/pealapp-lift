@@ -104,8 +104,7 @@ cond5 = cond1 &amp;&amp; cond4
     All of these operators have to be applied one at a time in defining conditions. For example, in order to define a condition
     cond as !isLuxuryCar &amp;&amp; (0.4 &lt; pSet4) we have to declare something similar to
 </p>
-<pre>
-% cast predicate into condition
+<pre>% cast predicate into condition
 isLuxuryCar_c = isLuxuryCar
 % negate condition
 c1 = !isLuxuryCar_c
@@ -213,8 +212,7 @@ name5 = equivalent? cond3 cond5
     vacuity checking is set ON, for the Car Rental Risks example:
 </p>
 
-  <pre>
-Vacuity check on all conditions declared in CONDITIONS section above
+  <pre>Vacuity check on all conditions declared in CONDITIONS section above
 
 Conditions that are always true: cond1
 Conditions that are always false:
@@ -259,8 +257,7 @@ Conditions that are always false:
     outcome of the Z3 analysis is SAT, or one of UNSAT or UNKNOWN. In the latter case, the output will be given in the form similar to this example:
 </p>
 
-<pre>
-Result of analysis [name4 = implies? cond2 cond1]
+<pre>Result of analysis [name4 = implies? cond2 cond1]
 cond2 is pSet1 > 0.6 and cond1 is pSet1 > 0.5
 
 cond2 implies cond1
@@ -276,8 +273,7 @@ Output of analysis [name4] is Unsat: so no certification performed and no specia
     Let us now discuss the output format when the analysis outcome is SAT. Below, we see the report for analysis name2 for the Car Rental Risks example, when vacuity checking is set OFF:
 </p>
 
-<pre>
-Result of analysis [name2 = always_true? cond3] cond3 is (pSet1 &lt;= 50000.0)  &amp;&amp; (pSet_b4 &gt; 0.4)
+<pre>Result of analysis [name2 = always_true? cond3] cond3 is (pSet1 &lt;= 50000.0)  &amp;&amp; (pSet_b4 &gt; 0.4)
 
 cond3 is NOT always true, for example, in the scenario in which:
 onlyLongDistanceUsage is False
@@ -363,8 +359,7 @@ b_minOne = + () default -1
     is an artefact of the incremental analysis that Z3 uses, and that our code generator invokes with the push/pop constructs of Z3. We here list the output when vauity checking is set ON:
 </p>
 
-<pre>
-Result of analysis [name2 = always_true? cond3]
+<pre>Result of analysis [name2 = always_true? cond3]
 cond3 is (pSet1 &lt;= 50000.0)  &amp;&amp; (pSet_b4 &gt; 0.4)
 
 cond3 is NOT always true, for example, in the scenario in which:
@@ -479,8 +474,7 @@ cond = !cond_aux
     an example:
 </p>
 
-<pre>
-POLICIES
+<pre>POLICIES
 b1 = +((q1 b2_score) (q2 0.5)) default 0.0
 b2 = max((q3 b1_score) (q4 0.4)) default 1.0
 POLICY_SETS
@@ -496,8 +490,7 @@ name1 = satisfiable? cond1
     analyze this with option "General scores", we arrive at the following output:
 </p>
 
-<pre>
-cond1 is pSet1 > 0.0
+<pre>cond1 is pSet1 > 0.0
 
 cond1 is satisfiable, for example, in the scenario in which:
 q1 is True
@@ -526,8 +519,7 @@ b2 = max (([q4] 0.4)) default 1
     the domain specific assumption that both q1 and q3 need to be true:
 </p>
 
-<pre>
-DOMAIN_SPECIFICS
+<pre>DOMAIN_SPECIFICS
 (assert (and q1 q3))
 </pre>
 
