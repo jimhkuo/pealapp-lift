@@ -257,13 +257,25 @@ Conditions that are always false:
     outcome of the Z3 analysis is SAT, or one of UNSAT or UNKNOWN. In the latter case, the output will be given in the form similar to this example:
 </p>
 
-<pre>Result of analysis [name4 = implies? cond2 cond1]
-cond2 is pSet1 > 0.6 and cond1 is pSet1 > 0.5
+<!--<pre>Result of analysis [name4 = implies? cond2 cond1]-->
+<!--cond2 is pSet1 > 0.6 and cond1 is pSet1 > 0.5-->
 
-cond2 implies cond1
+<!--cond2 implies cond1-->
 
-Output of analysis [name4] is Unsat: so no certification performed and no specialized policies reported.
-</pre>
+<!--Output of analysis [name4] is Unsat: so no certification performed and no specialized policies reported.-->
+<!--</pre>-->
+
+<p xmlns="http://www.w3.org/1999/xhtml" style="font-family: Monaco, Menlo, Consolas, &quot;Courier New&quot;, monospace;display: block;padding: 9.5px;margin: 0 0 10px;font-size: 13px;line-height: 1.428571429;color: #333;word-break: break-all;word-wrap: break-word;background-color: #f5f5f5;border: 1px solid #ccc;border-radius: 4px;">
+<h4>Result of analysis [name4 = implies? cond2 cond1]</h4><span>
+      cond2 is pSet1 &gt; 0.6 and cond1 is pSet1 &gt; 0.5<br />
+    </span><br /><span>
+      cond2 implies cond1<br />
+    </span><span>
+      <br />
+    </span><span>
+      Output of analysis [name4] is Unsat: so no certification performed and no specialized policies reported.<br />
+    </span>
+</p>
 
 <p>
     The above was generated using the Social Network Access Control example and the outcome was UNSAT. The first line recalls the condition(s) involved in the analysis. The next line summarizes the finding, here that condition cond1 logically implies condition cond2. The last line lists the analysis outcome (here UNSAT) and explains that such an outcome won't trigger additional reporting.
