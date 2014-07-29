@@ -273,44 +273,103 @@ Output of analysis [name4] is Unsat: so no certification performed and no specia
     Let us now discuss the output format when the analysis outcome is SAT. Below, we see the report for analysis name2 for the Car Rental Risks example, when vacuity checking is set OFF:
 </p>
 
-<pre>Result of analysis [name2 = always_true? cond3] cond3 is (pSet1 &lt;= 50000.0)  &amp;&amp; (pSet_b4 &gt; 0.4)
+<!--<pre>Result of analysis [name2 = always_true? cond3] cond3 is (pSet1 &lt;= 50000.0)  &amp;&amp; (pSet_b4 &gt; 0.4)-->
 
-cond3 is NOT always true, for example, in the scenario in which:
-onlyLongDistanceUsage is False
-speaksEnglish is True
-isLuxuryCar is False
-isCompact is False
-hasOtherLicense is True
-onlyCityUsage is False
-isSedan is False
-travelsAlone is True
-accidentFreeForYears is True
-mixedUsage is True
-femaleDriver is True
-someOffRoadDriving is False
-b_minOne_score is -1.0
-b2_hasOtherLicense_U is 0.0
-b1_score is 50000.0
-b3_score is 1.0/4.0
-b2_score is 2.0/5.0
-x is 9.0
-b4_score is 2.0/5.0
+<!--cond3 is NOT always true, for example, in the scenario in which:-->
+<!--onlyLongDistanceUsage is False-->
+<!--speaksEnglish is True-->
+<!--isLuxuryCar is False-->
+<!--isCompact is False-->
+<!--hasOtherLicense is True-->
+<!--onlyCityUsage is False-->
+<!--isSedan is False-->
+<!--travelsAlone is True-->
+<!--accidentFreeForYears is True-->
+<!--mixedUsage is True-->
+<!--femaleDriver is True-->
+<!--someOffRoadDriving is False-->
+<!--b_minOne_score is -1.0-->
+<!--b2_hasOtherLicense_U is 0.0-->
+<!--b1_score is 50000.0-->
+<!--b3_score is 1.0/4.0-->
+<!--b2_score is 2.0/5.0-->
+<!--x is 9.0-->
+<!--b4_score is 2.0/5.0-->
 
-Certification of analysis [name2] succeeded.
+<!--Certification of analysis [name2] succeeded.-->
 
-Policy scores statically inferred in this certification process:
-b1 has score 50000
-b3 has score 0.25
-b4 has score 0.4
-b_minOne has score -1
+<!--Policy scores statically inferred in this certification process:-->
+<!--b1 has score 50000-->
+<!--b3 has score 0.25-->
+<!--b4 has score 0.4-->
+<!--b_minOne has score -1-->
 
-Policies in analysis [name2] specialised with respect to the above scenario:
-b1 = max () default 50000
-b2 = min (([hasOtherLicense] 0.4) (hasUSLicense? 0.9) (hasUKLicense? 0.6) (hasEULicense? 0.7)) default 0
-b4 = + (([accidentFreeForYears speaksEnglish travelsAlone femaleDriver] 0.4)) default 0
-b_minOne = + () default -1
-</pre>
+<!--Policies in analysis [name2] specialised with respect to the above scenario:-->
+<!--b1 = max () default 50000-->
+<!--b2 = min (([hasOtherLicense] 0.4) (hasUSLicense? 0.9) (hasUKLicense? 0.6) (hasEULicense? 0.7)) default 0-->
+<!--b4 = + (([accidentFreeForYears speaksEnglish travelsAlone femaleDriver] 0.4)) default 0-->
+<!--b_minOne = + () default -1-->
+<!--</pre>-->
 
+<p xmlns="http://www.w3.org/1999/xhtml" style="font-family: Monaco, Menlo, Consolas, &quot;Courier New&quot;, monospace;display: block;padding: 9.5px;margin: 0 0 10px;font-size: 13px;line-height: 1.428571429;color: #333;word-break: break-all;word-wrap: break-word;background-color: #f5f5f5;border: 1px solid #ccc;border-radius: 4px;">
+<h4>Result of analysis [name2 = always_true? cond3]</h4><span>
+      cond3 is (pSet1 &lt;= 50000.0) &amp;&amp; (pSet_b4 &gt; 0.4)<br />
+    </span><br /><span>
+      cond3 is NOT always true, for example, in the scenario in which:<br />
+    </span><span>
+      onlyLongDistanceUsage is False<br />
+    </span><span>
+      speaksEnglish is True<br />
+    </span><span>
+      isLuxuryCar is False<br />
+    </span><span>
+      isCompact is False<br />
+    </span><span>
+      hasOtherLicense is True<br />
+    </span><span>
+      onlyCityUsage is False<br />
+    </span><span>
+      isSedan is False<br />
+    </span><span>
+      travelsAlone is True<br />
+    </span><span>
+      accidentFreeForYears is True<br />
+    </span><span>
+      mixedUsage is True<br />
+    </span><span>
+      femaleDriver is True<br />
+    </span><span>
+      someOffRoadDriving is False<br />
+    </span><span>
+      b_minOne_score is -1.0<br />
+    </span><span>
+      b2_hasOtherLicense_U is 0.0<br />
+    </span><span>
+      b1_score is 50000.0<br />
+    </span><span>
+      b3_score is 1.0/4.0<br />
+    </span><span>
+      b2_score is 2.0/5.0<br />
+    </span><span>
+      x is 9.0<br />
+    </span><span>
+      b4_score is 2.0/5.0<br />
+    </span><br /><span>
+      Certification of analysis [name2] succeeded.<br />
+    </span><br /><span>
+      Policy scores statically inferred in this certification process:<br />
+    </span><span>
+      b1 has score 50000<br />
+    </span><span>
+      b3 has score 0.25<br />
+    </span><span>
+      b4 has score 0.4<br />
+    </span><span>
+      b_minOne has score -1<br />
+    </span><br /><span>
+      Policies in analysis [name2] specialised with respect to the above scenario:<br />
+    </span><span>b1 = max (<span style="font-weight: bold;color:green"></span>) default <span style="font-weight: bold;color:red">50000</span><br /></span><span>b2 = min ((<span style="font-weight: bold;color:red">[</span>hasOtherLicense<span style="font-weight: bold;color:red">]</span> <span style="font-weight: bold;color:red">0.4</span>)<span style="font-weight: bold;color:green"> (hasUSLicense? 0.9) (hasUKLicense? 0.6) (hasEULicense? 0.7)</span>) default 0<br /></span><span>b4 = + ((<span style="font-weight: bold;color:red">[</span>accidentFreeForYears speaksEnglish travelsAlone femaleDriver<span style="font-weight: bold;color:red">]</span> <span style="font-weight: bold;color:red">0.4</span>)<span style="font-weight: bold;color:green"></span>) default 0<br /></span><span>b_minOne = + (<span style="font-weight: bold;color:green"></span>) default <span style="font-weight: bold;color:red">-1</span><br /></span>
+</p>
 
 <p>
     As before, this output recalls the condition(s) analyzed here. Then it
