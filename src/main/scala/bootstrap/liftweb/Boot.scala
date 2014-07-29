@@ -13,8 +13,6 @@ class Boot {
 
     val entries: List[Menuable] = List(
       Menu.i("Editor and runner") / "index",
-//      Menu.i("Debug Set") / "debug",
-//      Menu.i("Debug Get") / "debug2",
       Menu.i("Settings") / "settings",
       Menu.i("About PEALT") / "aboutpealt",
       Menu.i("User guide") / "userguide",
@@ -31,8 +29,11 @@ class Boot {
 
     LiftRules.dispatch.append {
       case req@Req(List("download"), _, _) => {
-        val result = PealInputData.is
-        val headers = "Content-type" -> "text/plain" :: "Content-length" -> result.length.toString :: "Content-disposition" -> "attachment; filname=pealInput.txt" :: Nil
+        val result: String = PealInputData.is
+        val headers: List[(String, String)] = "Content-type" -> "text/plain" ::
+          "Content-length" -> result.length.toString ::
+          "Content-disposition" -> "attachment; filename=pealInput.txt" ::
+          Nil
         () => Full(StreamingResponse(
           new java.io.ByteArrayInputStream(result.getBytes("utf-8")),
           () => {},
@@ -41,15 +42,5 @@ class Boot {
         )
       }
     }
-
-//    case SaveFile(result, lapseTime) =>
-//    Z3SMTData.set(result)
-//    this ! Result(<p>Output prepared, lapse time:
-//      <span style="color:red;font-weight: bold;">
-//        {"%.2f".format(lapseTime.toDouble / 1000000)}
-//      </span>
-//      ms, please click
-//      <a href="download">here</a>
-//      to download the file</p>)
   }
 }
