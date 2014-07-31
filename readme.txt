@@ -22,6 +22,6 @@ Once you get familiar sbt, you might want to look at project/PealBuild.scala to 
 dependencies of various modules in PEALT, and how it's put together.
 
 I tried to be as strict as I could in following TDD practices. Most of the classes (if not all) have 
-testing counterparts. The intentions and behaviours of the main classes should be revealed by the 
+testing counterparts (except GUI related classes in the top level). The intentions and behaviours of the main classes should be revealed by the 
 test cases, so I made a point to avoid comments in my code when possible. I guess my successor will 
 tell me if my belief is sound or not.
