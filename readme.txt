@@ -24,4 +24,4 @@ dependencies of various modules in PEALT, and how it's put together.
 I tried to be as strict as I could in following TDD practice. Most of the classes (if not all) have 
 testing counterparts. The intentions and behaviours of the main classes should be revealed by the 
 test cases, so I made a point to avoid comments in my code when possible. I guess my successor will 
-tell me if I have succeeded or not.
+tell me if my belief is sound or not.
