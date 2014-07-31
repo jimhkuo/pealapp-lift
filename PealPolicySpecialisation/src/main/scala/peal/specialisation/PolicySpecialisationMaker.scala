@@ -120,6 +120,4 @@ class PolicySpecialisationMaker(input: String) {
 
     policies.map(p => specialisePolicy(p)).toList.sortWith(_.text < _.text)
   }
-
-
 }

@@ -119,7 +119,6 @@ class ExtendedSynthesiser(input: String) extends Synthesiser {
       Seq()
     }
 
-
     val sortedAnalyses = analyses.keys.toSeq.sortWith(_ < _)
     val generatedAnalyses = for (analysis <- sortedAnalyses) yield {
       "(echo \"Result of analysis [" + analyses(analysis).analysisName + "]:\")\n" + analyses(analysis).z3SMTInput
