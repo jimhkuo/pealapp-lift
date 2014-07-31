@@ -18,7 +18,7 @@ ANTLR 3. The ANTLR grammar files are in antlr directory. The ANTLR grammar edito
 in the root directory of this project - antlrworks-1.5.2-complete.jar, simply double click on it to
 launch its GUI. Configure it to make sure the generated files go to PealParser/src/main/java. 
 
-Once you get familiar sbt, you might want to look at project/PealBuild.scala to understand the 
+Once you get familiar with sbt, you might want to look at project/PealBuild.scala to understand the 
 dependencies of various modules in PEALT, and how it's put together.
 
 I tried to be as strict as I could in following TDD practices. Most of the classes (if not all) have
