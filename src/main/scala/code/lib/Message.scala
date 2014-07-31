@@ -2,6 +2,8 @@ package code.lib
 
 import scala.xml.NodeSeq
 
+case class WrappedAction(action: Any)
+
 case class Message(output: String)
 
 case class Failed(output: String)

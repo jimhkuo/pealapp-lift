@@ -56,6 +56,7 @@ class PealCometActor extends MainCometBody with CometListener {
     case GenerateScoresWithRange => updatePealInput(RandomScoreModelGenerator.generate(randomModelWithRangeParam.split(Array(' ', ',')).filterNot(_ == ""): _*))
     case Clear => updatePealInput("")
     case DownloadClicked => PealInputData.set(inputPolicies)
+    case WrappedAction(action) => partialUpdate(JqId("result") ~> JqHtml(<h4>Processing... Please wait....</h4>)); this ! action
     case UploadFile(id, fileContent) =>
       val myId = for (liftSession <- S.session) yield liftSession.uniqueId
       ConsoleLogger.log("id received: " + id)
