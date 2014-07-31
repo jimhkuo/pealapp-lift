@@ -32,6 +32,10 @@ case object CarRentalRisks
 
 case object FireFaultTree
 
+case object BGP
+
+case object BGPUncertainties
+
 case object MajorityVoting
 
 case object ExplicitSynthesisAndCallZ3

@@ -48,6 +48,8 @@ class PealCometActor extends MainCometBody with CometListener {
     case SocialNetworkAccessControl => updatePealInput(socialNetworkExample)
     case CarRentalRisks => updatePealInput(carRentalExample)
     case FireFaultTree => updatePealInput(fireFaultTreeExample)
+    case BGP => updatePealInput(bgp)
+    case BGPUncertainties => updatePealInput(bgpUncertainties)
     case MajorityVoting => updatePealInput(MajorityVotingGenerator.generateForCount(majorityVotingCount))
     case GenerateConstantScore => updatePealInput(ConstantScoreModelGenerator.generate(randomModelParam.split(Array(' ', ',')).filterNot(_ == ""): _*))
     case GenerateConstantScoreWithDomainSpecifics => updatePealInput(ConstantScoreModelGenerator.generate(true, randomModelParamWithDomain.split(Array(' ', ',')).filterNot(_ == ""): _*))
