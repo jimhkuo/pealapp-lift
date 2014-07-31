@@ -1,5 +1,5 @@
 This is a Scala project, using sbt with sbt-idea plugin. I used the Intellij IDEA 13 IDE for
- development and it is highly recommended.
+development and it is highly recommended.
 
 Assuming sbt is installed on your path, and you have obtained PealApp-lift source, to set up the 
 development environment, do the following from PealApp-lift directory in the command line,
