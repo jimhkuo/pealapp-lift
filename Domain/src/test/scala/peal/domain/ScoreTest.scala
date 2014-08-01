@@ -9,4 +9,11 @@ class ScoreTest extends ShouldMatchersForJUnit {
   def testCanSetUpScoreWithNoRange() {
       new Score(Left[BigDecimal, VariableFormula](0.1), None) //this ensure the construction does not throw exception
   }
+
+  @Test
+  def testRangeMinMustBeLessThanOrEqualToMax() {
+    intercept[RuntimeException] {
+      new Score(Left[BigDecimal, VariableFormula](0.1), Some(new ScoreRange(10, 1)))
+    }
+  }
 }
