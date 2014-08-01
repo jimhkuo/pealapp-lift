@@ -16,18 +16,18 @@ object UserSettingsSnippet {
   def render = {
 
     var vc = CookieOptions.doVacuityChecks
-    var dn = CookieOptions.displayFormat
+    var df = CookieOptions.displayFormat
 
     def process(): JsCmd = {
 
       S.redirectTo("/done", () => {
         CookieOptions.doVacuityChecks = vc
-        CookieOptions.displayFormat = dn
+        CookieOptions.displayFormat = df
       })
     }
 
     //The order of elements matter here!! It has to match the ordering of tags in settings.html
     "name=vc" #> SHtml.checkbox(vc, vc = _, "id" -> "vc") &
-      "name=dn" #> (SHtml.selectObj(displayFormatsMap.toSeq, Full(dn), (f: DisplayFormat) => dn = f) ++ SHtml.hidden(process))
+      "name=df" #> (SHtml.selectObj(displayFormatsMap.toSeq, Full(df), (f: DisplayFormat) => df = f) ++ SHtml.hidden(process))
   }
 }
