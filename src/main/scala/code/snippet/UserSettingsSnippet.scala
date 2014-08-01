@@ -26,7 +26,7 @@ object UserSettingsSnippet {
       })
     }
 
-    //The order of elements matter here!!
+    //The order of elements matter here!! It has to match the ordering of tags in settings.html
     "name=vc" #> SHtml.checkbox(vc, vc = _, "id" -> "vc") &
       "name=dn" #> (SHtml.selectObj(displayFormatsMap.toSeq, Full(dn), (f: DisplayFormat) => dn = f) ++ SHtml.hidden(process))
   }
