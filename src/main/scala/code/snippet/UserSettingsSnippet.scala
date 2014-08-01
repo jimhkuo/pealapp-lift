@@ -21,6 +21,8 @@ object UserSettingsSnippet {
     def process(): JsCmd = {
 
       S.redirectTo("/done", () => {
+        //Cookie can only be changed at the beginning of a HTTP request
+        //The below actions will take place at start of the redirection
         CookieOptions.doVacuityChecks = vc
         CookieOptions.displayFormat = df
       })
