@@ -11,12 +11,15 @@ class ScoreTest extends ShouldMatchersForJUnit {
   }
 
   @Test
-  def testRangeMinMustBeLessThanOrEqualToMax() {
+  def testRangeMaxMustBeGreaterThan0() {
     intercept[RuntimeException] {
-      new Score(Left[BigDecimal, VariableFormula](0.1), Some(new ScoreRange(10, 1)))
+      new Score(Left[BigDecimal, VariableFormula](0.1), Some(new ScoreRange(-10, -1)))
     }
 
-    new Score(Left[BigDecimal, VariableFormula](0.1), Some(new ScoreRange(1, 1)))
-    new Score(Left[BigDecimal, VariableFormula](0.1), Some(new ScoreRange(0, 1)))
+    intercept[RuntimeException] {
+      new Score(Left[BigDecimal, VariableFormula](0.1), Some(new ScoreRange(-1, -1)))
+    }
+
+    new Score(Left[BigDecimal, VariableFormula](0.1), Some(new ScoreRange(-1, 0)))
   }
 }

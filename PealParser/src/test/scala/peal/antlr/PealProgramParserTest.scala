@@ -93,7 +93,7 @@ class PealProgramParserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
   @Test
   def testCanDealWithNewScoreType() {
     val input =
-      "POLICIES\nb1 = + ((q1 x [0.1,0.2]) (q2 0.9 [-0.1,0.2])) default 1\n" +
+      "POLICIES\nb1 = + ((q1 x [-0.1,0.2]) (q2 0.9 [-0.1,0.2])) default 1\n" +
         "POLICY_SETS\npSet = b1\n" +
         "CONDITIONS\ncond = pSet <= 0.5"
 
@@ -102,7 +102,7 @@ class PealProgramParserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
 
     val allRules = pealProgramParser.pols.values().flatMap(pol => pol.rules).toSeq
     allRules(0).score.underlyingScore.right.get.toZ3Expression should be("x")
-    allRules(0).score.scoreRange.get.minValue should be(BigDecimal(0.1))
+    allRules(0).score.scoreRange.get.minValue should be(BigDecimal(-0.1))
     allRules(0).score.scoreRange.get.maxValue should be(BigDecimal(0.2))
     allRules(1).score.underlyingScore.left.get should be(BigDecimal(0.9))
     allRules(1).score.scoreRange.get.minValue should be(BigDecimal(-0.1))

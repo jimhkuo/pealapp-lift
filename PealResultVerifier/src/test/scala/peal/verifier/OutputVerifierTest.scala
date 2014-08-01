@@ -135,7 +135,7 @@ class OutputVerifierTest extends ShouldMatchersForJUnit {
 
   @Test
   def testPolMinWithRangedScore() {
-    val input = "POLICIES\nb1 = min ((q1 x [0.2, 0.8]) (q2 0.4) (q3 0.9)) default x\nPOLICY_SETS\npSet1 = b1\nCONDITIONS\ncond1 = pSet1 <= 0.5\nANALYSES\nname1 = always_true? cond1"
+    val input = "POLICIES\nb1 = min ((q1 x [-0.2, 0.8]) (q2 0.4) (q3 0.9)) default x\nPOLICY_SETS\npSet1 = b1\nCONDITIONS\ncond1 = pSet1 <= 0.5\nANALYSES\nname1 = always_true? cond1"
     val model = "Result of analysis [name1 = always_true? cond1]:\nsat\n(model \n  (define-fun cond1 () Bool\n    false)\n  (define-fun b1_q1_U () Real\n    (/ 1.0 5.0))\n  (define-fun b1_score () Real\n    (/ 7.0 10.0))\n  (define-fun q1 () Bool\n    true)\n  (define-fun x () Real\n    (/ 1.0 2.0))\n  (define-fun q2 () Bool\n    false)\n  (define-fun always_true_name1 () Bool\n    false)\n)"
     println(input)
     println(model)
@@ -144,7 +144,7 @@ class OutputVerifierTest extends ShouldMatchersForJUnit {
 
   @Test
   def testDefaultScoreWithRange() {
-    val input = "POLICIES\nb1 = min ((q1 0.2) (q2 0.4) (q3 0.9)) default x [0.5, 0.9]\nPOLICY_SETS\npSet1 = b1\nCONDITIONS\ncond1 = pSet1 <= 0.5\nANALYSES\nname1 = always_true? cond1"
+    val input = "POLICIES\nb1 = min ((q1 0.2) (q2 0.4) (q3 0.9)) default x [-0.5, 0.9]\nPOLICY_SETS\npSet1 = b1\nCONDITIONS\ncond1 = pSet1 <= 0.5\nANALYSES\nname1 = always_true? cond1"
     val model = "Result of analysis [name1 = always_true? cond1]:\nsat\n(model \n  (define-fun b1_score () Real\n    (/ 3.0 5.0))\n  (define-fun q3 () Bool\n    false)\n  (define-fun q2 () Bool\n    false)\n  (define-fun cond1 () Bool\n    false)\n  (define-fun b1_default_U () Real\n    (/ 1.0 2.0))\n  (define-fun q1 () Bool\n    false)\n  (define-fun x () Real\n    (/ 1.0 10.0))\n  (define-fun always_true_name1 () Bool\n    false)\n)"
     println(input)
     println(model)
@@ -162,7 +162,7 @@ class OutputVerifierTest extends ShouldMatchersForJUnit {
 
   @Test
   def testPolMaxWithRange() {
-    val input = "POLICIES\nb1 = max ((q1 0.8) (q2 x * 2 [-0.81, 4]) (q3 y [-99,-0.51])) default x\nPOLICY_SETS\npSet1 = b1\nCONDITIONS\ncond1 = 0 < pSet1 \nANALYSES\nname1 = always_true? cond1"
+    val input = "POLICIES\nb1 = max ((q1 0.8) (q2 x * 2 [-0.81, 4]) (q3 y [-99,0.51])) default x\nPOLICY_SETS\npSet1 = b1\nCONDITIONS\ncond1 = 0 < pSet1 \nANALYSES\nname1 = always_true? cond1"
     val model = "Result of analysis [name1 = always_true? cond1]:\nsat\n(model \n  (define-fun b1_q3_U () Real\n    (- (/ 51.0 100.0)))\n  (define-fun b1_score () Real\n    0.0)\n  (define-fun y () Real\n    (/ 51.0 100.0))\n  (define-fun q3 () Bool\n    true)\n  (define-fun b1_q2_U () Real\n    (- (/ 81.0 100.0)))\n  (define-fun cond1 () Bool\n    false)\n  (define-fun q1 () Bool\n    false)\n  (define-fun x () Real\n    (/ 81.0 200.0))\n  (define-fun always_true_name1 () Bool\n    false)\n)"
     println(input)
     println(model)
@@ -180,7 +180,7 @@ class OutputVerifierTest extends ShouldMatchersForJUnit {
 
   @Test
   def testPolPlusWithRange() {
-    val input = "POLICIES\nb1 = + ((q1 0.2) (q2 x [0.3, 0.9]) (q3 0.1)) default 1\nPOLICY_SETS\npSet1 = b1\nCONDITIONS\ncond1 = pSet1 <= 0.5\nANALYSES\nname1 = always_true? cond1"
+    val input = "POLICIES\nb1 = + ((q1 0.2) (q2 x [-0.3, 0.9]) (q3 0.1)) default 1\nPOLICY_SETS\npSet1 = b1\nCONDITIONS\ncond1 = pSet1 <= 0.5\nANALYSES\nname1 = always_true? cond1"
     val model = "Result of analysis [name1 = always_true? cond1]:\nsat\n(model \n  (define-fun b1_score () Real\n    (/ 3.0 4.0))\n  (define-fun q3 () Bool\n    false)\n  (define-fun q2 () Bool\n    true)\n  (define-fun b1_q2_U () Real\n    (/ 3.0 10.0))\n  (define-fun cond1 () Bool\n    false)\n  (define-fun q1 () Bool\n    true)\n  (define-fun x () Real\n    (/ 1.0 4.0))\n  (define-fun always_true_name1 () Bool\n    false)\n)"
     println(input)
     println(model)
@@ -198,7 +198,7 @@ class OutputVerifierTest extends ShouldMatchersForJUnit {
 
   @Test
   def testPolMulWithRange() {
-    val input = "POLICIES\nb1 = * ((q1 0.5) (q2 0.5) (q3 x [1,2])) default 0.4\nPOLICY_SETS\npSet1 = b1\nCONDITIONS\ncond1 = pSet1 <= 0.5\nANALYSES\nname1 = always_true? cond1"
+    val input = "POLICIES\nb1 = * ((q1 0.5) (q2 0.5) (q3 x [-1,2])) default 0.4\nPOLICY_SETS\npSet1 = b1\nCONDITIONS\ncond1 = pSet1 <= 0.5\nANALYSES\nname1 = always_true? cond1"
     val model = "Result of analysis [name1 = always_true? cond1]:\nsat\n(model \n  (define-fun b1_q3_U () Real\n    1.0)\n  (define-fun b1_score () Real\n    (/ 3.0 4.0))\n  (define-fun q3 () Bool\n    true)\n  (define-fun q2 () Bool\n    false)\n  (define-fun cond1 () Bool\n    false)\n  (define-fun q1 () Bool\n    false)\n  (define-fun x () Real\n    (- (/ 1.0 4.0)))\n  (define-fun always_true_name1 () Bool\n    false)\n)"
     println(input)
     println(model)
