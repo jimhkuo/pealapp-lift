@@ -57,7 +57,7 @@ class PealCometActor extends MainCometBody with CometListener {
     case Clear => updatePealInput("")
     case DownloadClicked => PealInputData.set(inputPolicies)
     case WrappedAction(action) => partialUpdate(JqId("result") ~> JqHtml(<h4>Processing... Please wait....</h4>)); this ! action
-    case UploadFile(id, fileContent) =>
+    case UploadFile(id, fileContent) => //This message comes from FileUploadSnippet
       val myId = for (liftSession <- S.session) yield liftSession.uniqueId
       ConsoleLogger.log("id received: " + id)
       if (myId.toList(0) == id && fileContent != "") {
