@@ -11,7 +11,7 @@ object Z3Caller {
     (e: String) => buffer.append(e + "\n")
   )
 
-  def call (z3SMTInput:String ) ={
+  def call (z3SMTInput:String) ={
     val buffer = ListBuffer[String]()
     val tmp = File.createTempFile("z3file", "")
     FileUtil.writeToFile(tmp.getAbsolutePath, z3SMTInput)
