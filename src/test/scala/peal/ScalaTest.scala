@@ -12,6 +12,7 @@ import scala.sys.process._
 import scala.util.Try
 import scala.xml.{Elem, Node, NodeSeq}
 
+//Test cases for me to try out Scala features, these do not test the functionalities of PEALT
 class ScalaTest extends ShouldMatchersForJUnit {
 
   def computNum: Unit => Int = x => 100
