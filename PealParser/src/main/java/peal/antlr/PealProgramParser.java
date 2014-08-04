@@ -1,4 +1,4 @@
-// $ANTLR 3.5.1 /Users/jkuo/PealApp-lift/antlr/PealProgram.g 2014-08-04 13:10:59
+// $ANTLR 3.5.1 /Users/jkuo/PealApp-lift/antlr/PealProgram.g 2014-08-04 13:14:07
 
 package peal.antlr;
 import java.util.*;
@@ -705,7 +705,7 @@ public class PealProgramParser extends Parser {
 					match(input,13,FOLLOW_13_in_pSet571); 
 					id2=(Token)match(input,IDENT,FOLLOW_IDENT_in_pSet575); 
 					match(input,10,FOLLOW_10_in_pSet577); 
-					PolicySet p = new PlusPolicySet(PolicyResolver.getFromOr(pols, pSets, (id1!=null?id1.getText():null)), PolicyResolver.getFromOr(pols, pSets, (id2!=null?id2.getText():null)), (id0!=null?id0.getText():null)); pSets.put((id0!=null?id0.getText():null), p);
+					catchError(combined, "$ is not declared but is used on line \"" + (id0!=null?id0.getText():null) + " = +(" + (id1!=null?id1.getText():null) + ", " +(id2!=null?id2.getText():null) + ")\"", (id1!=null?id1.getText():null), (id2!=null?id2.getText():null));PolicySet p = new PlusPolicySet(PolicyResolver.getFromOr(pols, pSets, (id1!=null?id1.getText():null)), PolicyResolver.getFromOr(pols, pSets, (id2!=null?id2.getText():null)), (id0!=null?id0.getText():null)); pSets.put((id0!=null?id0.getText():null), p);
 					}
 					break;
 				case 5 :
@@ -719,7 +719,7 @@ public class PealProgramParser extends Parser {
 					match(input,13,FOLLOW_13_in_pSet597); 
 					id2=(Token)match(input,IDENT,FOLLOW_IDENT_in_pSet601); 
 					match(input,10,FOLLOW_10_in_pSet603); 
-					PolicySet p = new MulPolicySet(PolicyResolver.getFromOr(pols, pSets, (id1!=null?id1.getText():null)), PolicyResolver.getFromOr(pols, pSets, (id2!=null?id2.getText():null)), (id0!=null?id0.getText():null)); pSets.put((id0!=null?id0.getText():null), p);
+					catchError(combined, "$ is not declared but is used on line \"" + (id0!=null?id0.getText():null) + " = *(" + (id1!=null?id1.getText():null) + ", " +(id2!=null?id2.getText():null) + ")\"", (id1!=null?id1.getText():null), (id2!=null?id2.getText():null));PolicySet p = new MulPolicySet(PolicyResolver.getFromOr(pols, pSets, (id1!=null?id1.getText():null)), PolicyResolver.getFromOr(pols, pSets, (id2!=null?id2.getText():null)), (id0!=null?id0.getText():null)); pSets.put((id0!=null?id0.getText():null), p);
 					}
 					break;
 
