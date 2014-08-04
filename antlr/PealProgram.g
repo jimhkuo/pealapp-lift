@@ -69,7 +69,7 @@ program
     	|
 	id0=IDENT '=' '!' id1=IDENT {catchError(conds, $id0.text + " = !" + $id1.text, $id1.text); Condition cond = new NotCondition($id1.text); conds.put($id0.text, cond);}
 	|
-	id0=IDENT '=' id1=IDENT '&&' id2=IDENT {Condition cond = new AndCondition($id1.text, $id2.text); conds.put($id0.text, cond);}
+	id0=IDENT '=' id1=IDENT '&&' id2=IDENT {catchError(conds, $id0.text + " = " + $id1.text + " && " + $id2.text, $id1.text, $id2.text); Condition cond = new AndCondition($id1.text, $id2.text); conds.put($id0.text, cond);}
 	|
 	id0=IDENT '=' id1=IDENT '||' id2=IDENT {Condition cond = new OrCondition($id1.text, $id2.text); conds.put($id0.text, cond);}
 	|
