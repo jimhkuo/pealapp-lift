@@ -1,4 +1,4 @@
-// $ANTLR 3.5.1 /Users/jkuo/PealApp-lift/antlr/PealProgram.g 2014-08-04 11:22:33
+// $ANTLR 3.5.1 /Users/jkuo/PealApp-lift/antlr/PealProgram.g 2014-08-04 11:25:20
 
 package peal.antlr;
 import java.util.*;
@@ -290,7 +290,7 @@ public class PealProgramParser extends Parser {
 					id2=(Token)match(input,IDENT,FOLLOW_IDENT_in_program122); 
 					match(input,16,FOLLOW_16_in_program124); 
 					id3=(Token)match(input,IDENT,FOLLOW_IDENT_in_program128); 
-					Condition cond = new LessThanThCondition(pSets.get((id2!=null?id2.getText():null)), new Right<BigDecimal,PolicySet>(pSets.get((id3!=null?id3.getText():null)))); conds.put((id0!=null?id0.getText():null), cond);
+					catchError(pSets, (id0!=null?id0.getText():null) + " = " + (id2!=null?id2.getText():null) + " <= " + (id3!=null?id3.getText():null), (id2!=null?id2.getText():null), (id3!=null?id3.getText():null)); Condition cond = new LessThanThCondition(pSets.get((id2!=null?id2.getText():null)), new Right<BigDecimal,PolicySet>(pSets.get((id3!=null?id3.getText():null)))); conds.put((id0!=null?id0.getText():null), cond);
 					}
 					break;
 				case 3 :

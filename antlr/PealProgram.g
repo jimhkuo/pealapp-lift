@@ -61,7 +61,7 @@ program
 	(
 	id0=IDENT '=' id2=IDENT '<=' num=NUMBER {catchError(pSets, $id0.text + " = " + $id2.text + " <= " + $num.text , $id2.text); Condition cond = new LessThanThCondition(pSets.get($id2.text), new Left<BigDecimal,PolicySet>(BigDecimal.valueOf(Double.valueOf($num.text)))); conds.put($id0.text, cond);}
     	|
-	id0=IDENT '=' id2=IDENT '<=' id3=IDENT {Condition cond = new LessThanThCondition(pSets.get($id2.text), new Right<BigDecimal,PolicySet>(pSets.get($id3.text))); conds.put($id0.text, cond);}
+	id0=IDENT '=' id2=IDENT '<=' id3=IDENT {catchError(pSets, $id0.text + " = " + $id2.text + " <= " + $id3.text, $id2.text, $id3.text); Condition cond = new LessThanThCondition(pSets.get($id2.text), new Right<BigDecimal,PolicySet>(pSets.get($id3.text))); conds.put($id0.text, cond);}
     	|
 	id0=IDENT '=' num=NUMBER '<' id2=IDENT {catchError(pSets, $id0.text + " = " + $num.text + " < " + $id2.text, $id2.text); Condition cond = new GreaterThanThCondition(pSets.get($id2.text), new Left<BigDecimal,PolicySet>(BigDecimal.valueOf(Double.valueOf($num.text)))); conds.put($id0.text, cond);}
 	|
