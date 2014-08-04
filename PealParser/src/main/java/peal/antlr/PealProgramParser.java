@@ -1,4 +1,4 @@
-// $ANTLR 3.5.1 /Users/jkuo/PealApp-lift/antlr/PealProgram.g 2014-08-04 11:25:20
+// $ANTLR 3.5.1 /Users/jkuo/PealApp-lift/antlr/PealProgram.g 2014-08-04 11:32:57
 
 package peal.antlr;
 import java.util.*;
@@ -96,10 +96,10 @@ public class PealProgramParser extends Parser {
 		throw new RuntimeException(getErrorMessage(e, PealProgramParser.tokenNames)); 
 	}
 
-	private void catchError(Map<String, PolicySet> pSets, String messageBody, String... policies) {
-		for (String policy : policies) {
-			if (!pSets.containsKey(policy)) {
-				throw new RuntimeException(policy + " is not declared in " + messageBody);
+	private void catchError(Map someSet, String messageBody, String... objs) {
+		for (String obj : objs) {
+			if (!someSet.containsKey(obj)) {
+				throw new RuntimeException(obj + " is not declared in " + messageBody);
 			}
 		}
 	}
@@ -322,7 +322,7 @@ public class PealProgramParser extends Parser {
 					match(input,17,FOLLOW_17_in_program192); 
 					match(input,7,FOLLOW_7_in_program194); 
 					id1=(Token)match(input,IDENT,FOLLOW_IDENT_in_program198); 
-					Condition cond = new NotCondition((id1!=null?id1.getText():null)); conds.put((id0!=null?id0.getText():null), cond);
+					catchError(conds, (id0!=null?id0.getText():null) + " = !" + (id1!=null?id1.getText():null), (id1!=null?id1.getText():null)); Condition cond = new NotCondition((id1!=null?id1.getText():null)); conds.put((id0!=null?id0.getText():null), cond);
 					}
 					break;
 				case 6 :

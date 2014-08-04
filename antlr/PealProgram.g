@@ -33,10 +33,10 @@ public void reportError(RecognitionException e) {
 	throw new RuntimeException(getErrorMessage(e, PealProgramParser.tokenNames)); 
 }
 
-private void catchError(Map<String, PolicySet> pSets, String messageBody, String... policies) {
-	for (String policy : policies) {
-		if (!pSets.containsKey(policy)) {
-			throw new RuntimeException(policy + " is not declared in " + messageBody);
+private void catchError(Map someSet, String messageBody, String... objs) {
+	for (String obj : objs) {
+		if (!someSet.containsKey(obj)) {
+			throw new RuntimeException(obj + " is not declared in " + messageBody);
 		}
 	}
 }
@@ -67,7 +67,7 @@ program
 	|
 	id0=IDENT '=' id3=IDENT '<' id2=IDENT {catchError(pSets, $id0.text + " = " + $id3.text + " < " + $id2.text, $id3.text, $id2.text); Condition cond = new GreaterThanThCondition(pSets.get($id2.text), new Right<BigDecimal,PolicySet>(pSets.get($id3.text))); conds.put($id0.text, cond);}
     	|
-	id0=IDENT '=' '!' id1=IDENT {Condition cond = new NotCondition($id1.text); conds.put($id0.text, cond);}
+	id0=IDENT '=' '!' id1=IDENT {catchError(conds, $id0.text + " = !" + $id1.text, $id1.text); Condition cond = new NotCondition($id1.text); conds.put($id0.text, cond);}
 	|
 	id0=IDENT '=' id1=IDENT '&&' id2=IDENT {Condition cond = new AndCondition($id1.text, $id2.text); conds.put($id0.text, cond);}
 	|
