@@ -1,4 +1,4 @@
-// $ANTLR 3.5.1 /Users/jkuo/PealApp-lift/antlr/PealProgram.g 2014-08-04 12:36:07
+// $ANTLR 3.5.1 /Users/jkuo/PealApp-lift/antlr/PealProgram.g 2014-08-04 12:40:11
 
 package peal.antlr;
 import java.util.*;
@@ -525,7 +525,7 @@ public class PealProgramParser extends Parser {
 							match(input,29,FOLLOW_29_in_program411); 
 							id1=(Token)match(input,IDENT,FOLLOW_IDENT_in_program415); 
 							id2=(Token)match(input,IDENT,FOLLOW_IDENT_in_program419); 
-							AnalysisGenerator analysis = new Equivalent((id0!=null?id0.getText():null), (id1!=null?id1.getText():null), (id2!=null?id2.getText():null)); analyses.put((id0!=null?id0.getText():null), analysis);
+							catchError(conds, "Condition $ is not declared but is used on line \"" + (id0!=null?id0.getText():null) + " = equivalent? " + (id1!=null?id1.getText():null)+ " " + (id2!=null?id2.getText():null) + "\"", (id1!=null?id1.getText():null), (id2!=null?id2.getText():null));  AnalysisGenerator analysis = new Equivalent((id0!=null?id0.getText():null), (id1!=null?id1.getText():null), (id2!=null?id2.getText():null)); analyses.put((id0!=null?id0.getText():null), analysis);
 							}
 							break;
 						case 5 :
