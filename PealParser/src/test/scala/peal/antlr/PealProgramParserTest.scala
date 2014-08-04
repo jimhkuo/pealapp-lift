@@ -364,7 +364,7 @@ class PealProgramParserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
       val pealProgramParser = ParserHelper.getPealParser(input)
       pealProgramParser.program()
     }
-    ex.getMessage should be ("b0 is not declared but is used on line \"pSet = b0\"")
+    ex.getMessage should be ("Policy b0 is not declared but is used on line \"pSet = b0\"")
   }
 
   @Test
@@ -380,7 +380,7 @@ class PealProgramParserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
       val pealProgramParser = ParserHelper.getPealParser(input)
       pealProgramParser.program()
     }
-    ex.getMessage should be ("pSet1 is not declared but is used on line \"pSet = max(b1, pSet1)\"")
+    ex.getMessage should be ("pSet1 has not been declared as a policy or a policy set, but is used on line \"pSet = max(b1, pSet1)\"")
   }
 
   @Test
@@ -396,7 +396,7 @@ class PealProgramParserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
       val pealProgramParser = ParserHelper.getPealParser(input)
       pealProgramParser.program()
     }
-    ex.getMessage should be ("pSet1 is not declared but is used on line \"pSet = max(pSet1, b1)\"")
+    ex.getMessage should be ("pSet1 has not been declared as a policy or a policy set, but is used on line \"pSet = max(pSet1, b1)\"")
   }
 
   @Test
@@ -412,7 +412,7 @@ class PealProgramParserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
       val pealProgramParser = ParserHelper.getPealParser(input)
       pealProgramParser.program()
     }
-    ex.getMessage should be ("pSet1 is not declared but is used on line \"pSet = min(b1, pSet1)\"")
+    ex.getMessage should be ("pSet1 has not been declared as a policy or a policy set, but is used on line \"pSet = min(b1, pSet1)\"")
   }
 
   @Test
@@ -428,7 +428,7 @@ class PealProgramParserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
       val pealProgramParser = ParserHelper.getPealParser(input)
       pealProgramParser.program()
     }
-    ex.getMessage should be ("pSet1 is not declared but is used on line \"pSet = min(pSet1, b1)\"")
+    ex.getMessage should be ("pSet1 has not been declared as a policy or a policy set, but is used on line \"pSet = min(pSet1, b1)\"")
   }
 
   @Test
@@ -444,7 +444,7 @@ class PealProgramParserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
       val pealProgramParser = ParserHelper.getPealParser(input)
       pealProgramParser.program()
     }
-    ex.getMessage should be ("pSet1 is not declared but is used on line \"pSet = +(b1, pSet1)\"")
+    ex.getMessage should be ("pSet1 has not been declared as a policy or a policy set, but is used on line \"pSet = +(b1, pSet1)\"")
   }
 
   @Test
@@ -460,7 +460,7 @@ class PealProgramParserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
       val pealProgramParser = ParserHelper.getPealParser(input)
       pealProgramParser.program()
     }
-    ex.getMessage should be ("pSet1 is not declared but is used on line \"pSet = +(pSet1, b1)\"")
+    ex.getMessage should be ("pSet1 has not been declared as a policy or a policy set, but is used on line \"pSet = +(pSet1, b1)\"")
   }
 
   @Test
@@ -476,7 +476,7 @@ class PealProgramParserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
       val pealProgramParser = ParserHelper.getPealParser(input)
       pealProgramParser.program()
     }
-    ex.getMessage should be ("pSet1 is not declared but is used on line \"pSet = *(b1, pSet1)\"")
+    ex.getMessage should be ("pSet1 has not been declared as a policy or a policy set, but is used on line \"pSet = *(b1, pSet1)\"")
   }
 
   @Test
@@ -492,7 +492,7 @@ class PealProgramParserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
       val pealProgramParser = ParserHelper.getPealParser(input)
       pealProgramParser.program()
     }
-    ex.getMessage should be ("pSet1 is not declared but is used on line \"pSet = *(pSet1, b1)\"")
+    ex.getMessage should be ("pSet1 has not been declared as a policy or a policy set, but is used on line \"pSet = *(pSet1, b1)\"")
   }
 
   @Test
