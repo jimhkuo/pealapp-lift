@@ -1,4 +1,4 @@
-// $ANTLR 3.5.1 /Users/jkuo/PealApp-lift/antlr/PealProgram.g 2014-08-04 11:35:40
+// $ANTLR 3.5.1 /Users/jkuo/PealApp-lift/antlr/PealProgram.g 2014-08-04 11:38:40
 
 package peal.antlr;
 import java.util.*;
@@ -344,7 +344,7 @@ public class PealProgramParser extends Parser {
 					id1=(Token)match(input,IDENT,FOLLOW_IDENT_in_program236); 
 					match(input,36,FOLLOW_36_in_program238); 
 					id2=(Token)match(input,IDENT,FOLLOW_IDENT_in_program242); 
-					Condition cond = new OrCondition((id1!=null?id1.getText():null), (id2!=null?id2.getText():null)); conds.put((id0!=null?id0.getText():null), cond);
+					catchError(conds, (id0!=null?id0.getText():null) + " = " + (id1!=null?id1.getText():null) + " || " + (id2!=null?id2.getText():null), (id1!=null?id1.getText():null), (id2!=null?id2.getText():null)); Condition cond = new OrCondition((id1!=null?id1.getText():null), (id2!=null?id2.getText():null)); conds.put((id0!=null?id0.getText():null), cond);
 					}
 					break;
 				case 8 :
