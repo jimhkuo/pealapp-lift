@@ -353,7 +353,7 @@ class PealProgramParserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
   }
 
   @Test
-  def testUnclaredThrowExceptionPset() {
+  def testUnclaredThrowExceptionPSetAndPol() {
     val ex = intercept[RuntimeException] {
       val input = "POLICIES\nb1 = + ((q0 0.1)(q1 0.1)(q2 0.1)(q3 0.1)(q4 0.1)) default 0\n" +
         "POLICY_SETS\n" +
@@ -366,6 +366,38 @@ class PealProgramParserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
       pealProgramParser.program()
     }
     ex.getMessage should be ("b0 is not declared but is used on line \"pSet = b0\"")
+  }
+
+  @Test
+  def testUnclaredThrowExceptionPSetMax() {
+    val ex = intercept[RuntimeException] {
+      val input = "POLICIES\nb1 = + ((q0 0.1)(q1 0.1)(q2 0.1)(q3 0.1)(q4 0.1)) default 0\n" +
+        "POLICY_SETS\n" +
+        "pSet = max(b1, pSet1)\n" +
+        "CONDITIONS\n" +
+        "cond1 = pSet\n" +
+        "ANALYSES\n" +
+        "analysis1 = always_true? cond1"
+      val pealProgramParser = ParserHelper.getPealParser(input)
+      pealProgramParser.program()
+    }
+    ex.getMessage should be ("pSet1 is not declared but is used on line \"pSet = max(b1, pSet1)\"")
+  }
+
+  @Test
+  def testUnclaredThrowExceptionPSetMax1() {
+    val ex = intercept[RuntimeException] {
+      val input = "POLICIES\nb1 = + ((q0 0.1)(q1 0.1)(q2 0.1)(q3 0.1)(q4 0.1)) default 0\n" +
+        "POLICY_SETS\n" +
+        "pSet = max(pSet1, b1)\n" +
+        "CONDITIONS\n" +
+        "cond1 = pSet\n" +
+        "ANALYSES\n" +
+        "analysis1 = always_true? cond1"
+      val pealProgramParser = ParserHelper.getPealParser(input)
+      pealProgramParser.program()
+    }
+    ex.getMessage should be ("pSet1 is not declared but is used on line \"pSet = max(pSet1, b1)\"")
   }
 
   @Test
