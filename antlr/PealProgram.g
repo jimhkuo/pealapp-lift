@@ -42,6 +42,20 @@ private void catchError(Map someSet, String messageBody, String... objs) {
 	}
 }
 
+private void findInPredicates(Map pols, String messageBody, String... objs) {
+	for (String obj : objs) {
+		for (Object pol : pols.values()) {
+			for (Object rule : ((Pol) pol).rules()) {
+				if (((Rule) rule).q().name().equals(obj)) {
+					return;
+				}
+			}
+		}
+	
+		throw new RuntimeException(messageBody.replaceFirst("[$]", obj));
+	}
+}
+
 }
 
 @lexer::header {
@@ -78,7 +92,7 @@ program
 	|
 	id0 =IDENT '=' 'false' {Condition cond = new FalseCondition(); conds.put($id0.text, cond);}
 	|
-	id0 =IDENT '=' id1=IDENT {Condition cond = new PredicateCondition($id1.text); conds.put($id0.text, cond);}
+	id0 =IDENT '=' id1=IDENT {findInPredicates(pols, "Predicate $ has not appeared in policies prior to this point but is on line \"" + $id0.text + " = " + $id1.text + "\"", $id1.text); Condition cond = new PredicateCondition($id1.text); conds.put($id0.text, cond);}
 	)+
 	('DOMAIN_SPECIFICS' {ignore = true;}
 	(IDENT | NUMBER | '+' | '*' | '=' | '(' | ')' | '<' | '<=' | '/' )*)?

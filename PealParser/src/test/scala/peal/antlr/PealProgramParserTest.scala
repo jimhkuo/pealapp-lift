@@ -202,19 +202,18 @@ class PealProgramParserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
     ex.getMessage should be ("Condition cond2 is not declared but is used on line \"cond3 = cond1 || cond2\"")
   }
 
-  //TODO not done
   @Test
   def testUnclaredThrowExceptionPredCondition() {
     val ex = intercept[RuntimeException] {
       val input = "POLICIES\nb1 = + ((q0 0.1)(q1 0.1)(q2 0.1)(q3 0.1)(q4 0.1)) default 0\n" +
         "POLICY_SETS\npSet = b1\n" +
         "CONDITIONS\n" +
-        "cond1 = q5" +
+        "cond1 = q5\n" +
         "ANALYSES\nanalysis1 = always_true? cond1"
       val pealProgramParser = ParserHelper.getPealParser(input)
       pealProgramParser.program()
     }
-    ex.getMessage should be ("Predicate q5 has not appeared in policies prior to this point but is in cond1 = q5")
+    ex.getMessage should be ("Predicate q5 has not appeared in policies prior to this point but is on line \"cond1 = q5\"")
   }
 
   @Test
