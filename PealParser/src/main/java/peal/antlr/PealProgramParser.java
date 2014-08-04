@@ -1,4 +1,4 @@
-// $ANTLR 3.5.1 /Users/jkuo/PealApp-lift/antlr/PealProgram.g 2014-08-04 12:32:36
+// $ANTLR 3.5.1 /Users/jkuo/PealApp-lift/antlr/PealProgram.g 2014-08-04 12:36:07
 
 package peal.antlr;
 import java.util.*;
@@ -504,7 +504,7 @@ public class PealProgramParser extends Parser {
 							match(input,17,FOLLOW_17_in_program376); 
 							match(input,25,FOLLOW_25_in_program378); 
 							id1=(Token)match(input,IDENT,FOLLOW_IDENT_in_program382); 
-							catchError(conds, "Condition $ is not declared but is used on line \"" + (id0!=null?id0.getText():null) + " = always_false? " + (id1!=null?id1.getText():null)+ "\"", (id1!=null?id1.getText():null));  AnalysisGenerator analysis = new AlwaysFalse((id0!=null?id0.getText():null), (id1!=null?id1.getText():null)); analyses.put((id0!=null?id0.getText():null), analysis);
+							catchError(conds, "Condition $ is not declared but is used on line \"" + (id0!=null?id0.getText():null) + " = always_false? " + (id1!=null?id1.getText():null)+ "\"", (id1!=null?id1.getText():null)); AnalysisGenerator analysis = new AlwaysFalse((id0!=null?id0.getText():null), (id1!=null?id1.getText():null)); analyses.put((id0!=null?id0.getText():null), analysis);
 							}
 							break;
 						case 3 :
@@ -514,7 +514,7 @@ public class PealProgramParser extends Parser {
 							match(input,17,FOLLOW_17_in_program392); 
 							match(input,34,FOLLOW_34_in_program394); 
 							id1=(Token)match(input,IDENT,FOLLOW_IDENT_in_program398); 
-							AnalysisGenerator analysis = new Satisfiable((id0!=null?id0.getText():null), (id1!=null?id1.getText():null)); analyses.put((id0!=null?id0.getText():null), analysis);
+							catchError(conds, "Condition $ is not declared but is used on line \"" + (id0!=null?id0.getText():null) + " = satisfiable? " + (id1!=null?id1.getText():null)+ "\"", (id1!=null?id1.getText():null)); AnalysisGenerator analysis = new Satisfiable((id0!=null?id0.getText():null), (id1!=null?id1.getText():null)); analyses.put((id0!=null?id0.getText():null), analysis);
 							}
 							break;
 						case 4 :
