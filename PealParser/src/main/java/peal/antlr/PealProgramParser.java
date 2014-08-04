@@ -1,4 +1,4 @@
-// $ANTLR 3.5.1 /Users/jkuo/PealApp-lift/antlr/PealProgram.g 2014-08-04 12:40:11
+// $ANTLR 3.5.1 /Users/jkuo/PealApp-lift/antlr/PealProgram.g 2014-08-04 12:42:25
 
 package peal.antlr;
 import java.util.*;
@@ -536,7 +536,7 @@ public class PealProgramParser extends Parser {
 							match(input,28,FOLLOW_28_in_program432); 
 							id1=(Token)match(input,IDENT,FOLLOW_IDENT_in_program436); 
 							id2=(Token)match(input,IDENT,FOLLOW_IDENT_in_program440); 
-							AnalysisGenerator analysis = new Different((id0!=null?id0.getText():null), (id1!=null?id1.getText():null), (id2!=null?id2.getText():null)); analyses.put((id0!=null?id0.getText():null), analysis);
+							catchError(conds, "Condition $ is not declared but is used on line \"" + (id0!=null?id0.getText():null) + " = different? " + (id1!=null?id1.getText():null)+ " " + (id2!=null?id2.getText():null) + "\"", (id1!=null?id1.getText():null), (id2!=null?id2.getText():null)); AnalysisGenerator analysis = new Different((id0!=null?id0.getText():null), (id1!=null?id1.getText():null), (id2!=null?id2.getText():null)); analyses.put((id0!=null?id0.getText():null), analysis);
 							}
 							break;
 						case 6 :
@@ -547,7 +547,7 @@ public class PealProgramParser extends Parser {
 							match(input,31,FOLLOW_31_in_program454); 
 							id1=(Token)match(input,IDENT,FOLLOW_IDENT_in_program458); 
 							id2=(Token)match(input,IDENT,FOLLOW_IDENT_in_program462); 
-							AnalysisGenerator analysis = new Implies((id0!=null?id0.getText():null), (id1!=null?id1.getText():null), (id2!=null?id2.getText():null)); analyses.put((id0!=null?id0.getText():null), analysis);
+							catchError(conds, "Condition $ is not declared but is used on line \"" + (id0!=null?id0.getText():null) + " = implies? " + (id1!=null?id1.getText():null)+ " " + (id2!=null?id2.getText():null) + "\"", (id1!=null?id1.getText():null), (id2!=null?id2.getText():null)); AnalysisGenerator analysis = new Implies((id0!=null?id0.getText():null), (id1!=null?id1.getText():null), (id2!=null?id2.getText():null)); analyses.put((id0!=null?id0.getText():null), analysis);
 							}
 							break;
 

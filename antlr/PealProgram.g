@@ -86,8 +86,8 @@ program
 	|id0=IDENT '=' 'always_false?' id1=IDENT {catchError(conds, "Condition $ is not declared but is used on line \"" + $id0.text + " = always_false? " + $id1.text+ "\"", $id1.text); AnalysisGenerator analysis = new AlwaysFalse($id0.text, $id1.text); analyses.put($id0.text, analysis);}
 	|id0=IDENT '=' 'satisfiable?' id1=IDENT {catchError(conds, "Condition $ is not declared but is used on line \"" + $id0.text + " = satisfiable? " + $id1.text+ "\"", $id1.text); AnalysisGenerator analysis = new Satisfiable($id0.text, $id1.text); analyses.put($id0.text, analysis);}	
 	|id0=IDENT '=' 'equivalent?' id1=IDENT id2=IDENT {catchError(conds, "Condition $ is not declared but is used on line \"" + $id0.text + " = equivalent? " + $id1.text+ " " + $id2.text + "\"", $id1.text, $id2.text);  AnalysisGenerator analysis = new Equivalent($id0.text, $id1.text, $id2.text); analyses.put($id0.text, analysis);}	
-	|id0=IDENT '=' 'different?' id1=IDENT id2=IDENT {AnalysisGenerator analysis = new Different($id0.text, $id1.text, $id2.text); analyses.put($id0.text, analysis);}		
-	|id0=IDENT '=' 'implies?' id1=IDENT id2=IDENT {AnalysisGenerator analysis = new Implies($id0.text, $id1.text, $id2.text); analyses.put($id0.text, analysis);}		
+	|id0=IDENT '=' 'different?' id1=IDENT id2=IDENT {catchError(conds, "Condition $ is not declared but is used on line \"" + $id0.text + " = different? " + $id1.text+ " " + $id2.text + "\"", $id1.text, $id2.text); AnalysisGenerator analysis = new Different($id0.text, $id1.text, $id2.text); analyses.put($id0.text, analysis);}		
+	|id0=IDENT '=' 'implies?' id1=IDENT id2=IDENT {catchError(conds, "Condition $ is not declared but is used on line \"" + $id0.text + " = implies? " + $id1.text+ " " + $id2.text + "\"", $id1.text, $id2.text); AnalysisGenerator analysis = new Implies($id0.text, $id1.text, $id2.text); analyses.put($id0.text, analysis);}		
 	)+
 	)?
 	;

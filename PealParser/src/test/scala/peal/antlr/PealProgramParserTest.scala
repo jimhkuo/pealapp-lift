@@ -293,6 +293,36 @@ class PealProgramParserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
   }
 
   @Test
+  def testUnclaredThrowExceptionDifferentAnalysis() {
+    val ex = intercept[RuntimeException] {
+      val input = "POLICIES\nb1 = + ((q0 0.1)(q1 0.1)(q2 0.1)(q3 0.1)(q4 0.1)) default 0\n" +
+        "POLICY_SETS\npSet = b1\n" +
+        "CONDITIONS\n" +
+        "cond1 = q0\n" +
+        "ANALYSES\n" +
+        "analysis1 = different? cond cond1"
+      val pealProgramParser = ParserHelper.getPealParser(input)
+      pealProgramParser.program()
+    }
+    ex.getMessage should be ("Condition cond is not declared but is used on line \"analysis1 = different? cond cond1\"")
+  }
+
+  @Test
+  def testUnclaredThrowExceptionDifferentAnalysis1() {
+    val ex = intercept[RuntimeException] {
+      val input = "POLICIES\nb1 = + ((q0 0.1)(q1 0.1)(q2 0.1)(q3 0.1)(q4 0.1)) default 0\n" +
+        "POLICY_SETS\npSet = b1\n" +
+        "CONDITIONS\n" +
+        "cond1 = q0\n" +
+        "ANALYSES\n" +
+        "analysis1 = different? cond1 cond"
+      val pealProgramParser = ParserHelper.getPealParser(input)
+      pealProgramParser.program()
+    }
+    ex.getMessage should be ("Condition cond is not declared but is used on line \"analysis1 = different? cond1 cond\"")
+  }
+
+  @Test
   def testCanParseComplicatedInput() {
     val input = "POLICIES\nb1 = + ((q0 0.1)(q1 0.1)(q2 0.1)(q3 0.1)(q4 0.1)) default 0\nPOLICY_SETS\npSet = b1\nCONDITIONS\ncond1 = 0 < pSet\ncond2 = 0.2 < pSet\ncond3 = 0.4 < pSet\ncond4 = 0.6 < pSet\ncond5 = 0.8 < pSet\ncond6 = 1 < pSet\nDOMAIN_SPECIFICS\n(declare-sort User)\n(declare-fun seniorTo (User User) Bool)\n(declare-fun salary (User) Real) \n(declare-const bob User)\n(assert (forall ((u1 User) (u2 User) (u3 User)) (implies (and (seniorTo u1 u2) (seniorTo u2 u3)) (seniorTo u1 u3))))\n(assert (forall ((u User)) (not (seniorTo u u))))\n" +
       "(assert (forall ((u1 User) (u2 User)) (implies (and (seniorTo u1 u2) (seniorTo u2 u1)) (= u1 u2))))\n" +
