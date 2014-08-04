@@ -213,7 +213,7 @@ class PealProgramParserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
       val pealProgramParser = ParserHelper.getPealParser(input)
       pealProgramParser.program()
     }
-    ex.getMessage should be ("q5 is not declared in cond1 = q5")
+    ex.getMessage should be ("Predicate q5 has not appeared in policies prior to this point but is in cond1 = q5")
   }
 
   @Test

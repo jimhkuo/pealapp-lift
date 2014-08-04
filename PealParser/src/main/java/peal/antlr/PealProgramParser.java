@@ -1,4 +1,4 @@
-// $ANTLR 3.5.1 /Users/jkuo/PealApp-lift/antlr/PealProgram.g 2014-08-04 11:46:58
+// $ANTLR 3.5.1 /Users/jkuo/PealApp-lift/antlr/PealProgram.g 2014-08-04 11:56:32
 
 package peal.antlr;
 import java.util.*;
@@ -96,10 +96,10 @@ public class PealProgramParser extends Parser {
 		throw new RuntimeException(getErrorMessage(e, PealProgramParser.tokenNames)); 
 	}
 
-	private void catchError(Map someSet, String header, String messageBody, String... objs) {
+	private void catchError(Map someSet, String messageBody, String... objs) {
 		for (String obj : objs) {
 			if (!someSet.containsKey(obj)) {
-				throw new RuntimeException(header + " " + obj + " is not declared in " + messageBody);
+				throw new RuntimeException(messageBody.replaceFirst("[$]", obj));
 			}
 		}
 	}
@@ -279,7 +279,7 @@ public class PealProgramParser extends Parser {
 					id2=(Token)match(input,IDENT,FOLLOW_IDENT_in_program96); 
 					match(input,16,FOLLOW_16_in_program98); 
 					num=(Token)match(input,NUMBER,FOLLOW_NUMBER_in_program102); 
-					catchError(pSets, "PolicySet", (id0!=null?id0.getText():null) + " = " + (id2!=null?id2.getText():null) + " <= " + (num!=null?num.getText():null) , (id2!=null?id2.getText():null)); Condition cond = new LessThanThCondition(pSets.get((id2!=null?id2.getText():null)), new Left<BigDecimal,PolicySet>(BigDecimal.valueOf(Double.valueOf((num!=null?num.getText():null))))); conds.put((id0!=null?id0.getText():null), cond);
+					catchError(pSets, "PolicySet $ is not declared in "+ (id0!=null?id0.getText():null) + " = " + (id2!=null?id2.getText():null) + " <= " + (num!=null?num.getText():null) , (id2!=null?id2.getText():null)); Condition cond = new LessThanThCondition(pSets.get((id2!=null?id2.getText():null)), new Left<BigDecimal,PolicySet>(BigDecimal.valueOf(Double.valueOf((num!=null?num.getText():null))))); conds.put((id0!=null?id0.getText():null), cond);
 					}
 					break;
 				case 2 :
@@ -290,7 +290,7 @@ public class PealProgramParser extends Parser {
 					id2=(Token)match(input,IDENT,FOLLOW_IDENT_in_program122); 
 					match(input,16,FOLLOW_16_in_program124); 
 					id3=(Token)match(input,IDENT,FOLLOW_IDENT_in_program128); 
-					catchError(pSets, "PolicySet",(id0!=null?id0.getText():null) + " = " + (id2!=null?id2.getText():null) + " <= " + (id3!=null?id3.getText():null), (id2!=null?id2.getText():null), (id3!=null?id3.getText():null)); Condition cond = new LessThanThCondition(pSets.get((id2!=null?id2.getText():null)), new Right<BigDecimal,PolicySet>(pSets.get((id3!=null?id3.getText():null)))); conds.put((id0!=null?id0.getText():null), cond);
+					catchError(pSets, "PolicySet $ is not declared in "+(id0!=null?id0.getText():null) + " = " + (id2!=null?id2.getText():null) + " <= " + (id3!=null?id3.getText():null), (id2!=null?id2.getText():null), (id3!=null?id3.getText():null)); Condition cond = new LessThanThCondition(pSets.get((id2!=null?id2.getText():null)), new Right<BigDecimal,PolicySet>(pSets.get((id3!=null?id3.getText():null)))); conds.put((id0!=null?id0.getText():null), cond);
 					}
 					break;
 				case 3 :
@@ -301,7 +301,7 @@ public class PealProgramParser extends Parser {
 					num=(Token)match(input,NUMBER,FOLLOW_NUMBER_in_program148); 
 					match(input,15,FOLLOW_15_in_program150); 
 					id2=(Token)match(input,IDENT,FOLLOW_IDENT_in_program154); 
-					catchError(pSets, "PolicySet",(id0!=null?id0.getText():null) + " = " + (num!=null?num.getText():null) + " < " + (id2!=null?id2.getText():null), (id2!=null?id2.getText():null)); Condition cond = new GreaterThanThCondition(pSets.get((id2!=null?id2.getText():null)), new Left<BigDecimal,PolicySet>(BigDecimal.valueOf(Double.valueOf((num!=null?num.getText():null))))); conds.put((id0!=null?id0.getText():null), cond);
+					catchError(pSets, "PolicySet $ is not declared in "+(id0!=null?id0.getText():null) + " = " + (num!=null?num.getText():null) + " < " + (id2!=null?id2.getText():null), (id2!=null?id2.getText():null)); Condition cond = new GreaterThanThCondition(pSets.get((id2!=null?id2.getText():null)), new Left<BigDecimal,PolicySet>(BigDecimal.valueOf(Double.valueOf((num!=null?num.getText():null))))); conds.put((id0!=null?id0.getText():null), cond);
 					}
 					break;
 				case 4 :
@@ -312,7 +312,7 @@ public class PealProgramParser extends Parser {
 					id3=(Token)match(input,IDENT,FOLLOW_IDENT_in_program170); 
 					match(input,15,FOLLOW_15_in_program172); 
 					id2=(Token)match(input,IDENT,FOLLOW_IDENT_in_program176); 
-					catchError(pSets,"PolicySet", (id0!=null?id0.getText():null) + " = " + (id3!=null?id3.getText():null) + " < " + (id2!=null?id2.getText():null), (id3!=null?id3.getText():null), (id2!=null?id2.getText():null)); Condition cond = new GreaterThanThCondition(pSets.get((id2!=null?id2.getText():null)), new Right<BigDecimal,PolicySet>(pSets.get((id3!=null?id3.getText():null)))); conds.put((id0!=null?id0.getText():null), cond);
+					catchError(pSets,"PolicySet $ is not declared in "+(id0!=null?id0.getText():null) + " = " + (id3!=null?id3.getText():null) + " < " + (id2!=null?id2.getText():null), (id3!=null?id3.getText():null), (id2!=null?id2.getText():null)); Condition cond = new GreaterThanThCondition(pSets.get((id2!=null?id2.getText():null)), new Right<BigDecimal,PolicySet>(pSets.get((id3!=null?id3.getText():null)))); conds.put((id0!=null?id0.getText():null), cond);
 					}
 					break;
 				case 5 :
@@ -322,7 +322,7 @@ public class PealProgramParser extends Parser {
 					match(input,17,FOLLOW_17_in_program192); 
 					match(input,7,FOLLOW_7_in_program194); 
 					id1=(Token)match(input,IDENT,FOLLOW_IDENT_in_program198); 
-					catchError(conds, "Condition",(id0!=null?id0.getText():null) + " = !" + (id1!=null?id1.getText():null), (id1!=null?id1.getText():null)); Condition cond = new NotCondition((id1!=null?id1.getText():null)); conds.put((id0!=null?id0.getText():null), cond);
+					catchError(conds, "Condition $ is not declared in "+(id0!=null?id0.getText():null) + " = !" + (id1!=null?id1.getText():null), (id1!=null?id1.getText():null)); Condition cond = new NotCondition((id1!=null?id1.getText():null)); conds.put((id0!=null?id0.getText():null), cond);
 					}
 					break;
 				case 6 :
@@ -333,7 +333,7 @@ public class PealProgramParser extends Parser {
 					id1=(Token)match(input,IDENT,FOLLOW_IDENT_in_program214); 
 					match(input,8,FOLLOW_8_in_program216); 
 					id2=(Token)match(input,IDENT,FOLLOW_IDENT_in_program220); 
-					catchError(conds, "Condition",(id0!=null?id0.getText():null) + " = " + (id1!=null?id1.getText():null) + " && " + (id2!=null?id2.getText():null), (id1!=null?id1.getText():null), (id2!=null?id2.getText():null)); Condition cond = new AndCondition((id1!=null?id1.getText():null), (id2!=null?id2.getText():null)); conds.put((id0!=null?id0.getText():null), cond);
+					catchError(conds, "Condition $ is not declared in "+(id0!=null?id0.getText():null) + " = " + (id1!=null?id1.getText():null) + " && " + (id2!=null?id2.getText():null), (id1!=null?id1.getText():null), (id2!=null?id2.getText():null)); Condition cond = new AndCondition((id1!=null?id1.getText():null), (id2!=null?id2.getText():null)); conds.put((id0!=null?id0.getText():null), cond);
 					}
 					break;
 				case 7 :
@@ -344,7 +344,7 @@ public class PealProgramParser extends Parser {
 					id1=(Token)match(input,IDENT,FOLLOW_IDENT_in_program236); 
 					match(input,36,FOLLOW_36_in_program238); 
 					id2=(Token)match(input,IDENT,FOLLOW_IDENT_in_program242); 
-					catchError(conds, "Condition",(id0!=null?id0.getText():null) + " = " + (id1!=null?id1.getText():null) + " || " + (id2!=null?id2.getText():null), (id1!=null?id1.getText():null), (id2!=null?id2.getText():null)); Condition cond = new OrCondition((id1!=null?id1.getText():null), (id2!=null?id2.getText():null)); conds.put((id0!=null?id0.getText():null), cond);
+					catchError(conds, "Condition $ is not declared in "+(id0!=null?id0.getText():null) + " = " + (id1!=null?id1.getText():null) + " || " + (id2!=null?id2.getText():null), (id1!=null?id1.getText():null), (id2!=null?id2.getText():null)); Condition cond = new OrCondition((id1!=null?id1.getText():null), (id2!=null?id2.getText():null)); conds.put((id0!=null?id0.getText():null), cond);
 					}
 					break;
 				case 8 :

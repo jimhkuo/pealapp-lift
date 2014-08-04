@@ -33,10 +33,10 @@ public void reportError(RecognitionException e) {
 	throw new RuntimeException(getErrorMessage(e, PealProgramParser.tokenNames)); 
 }
 
-private void catchError(Map someSet, String header, String messageBody, String... objs) {
+private void catchError(Map someSet, String messageBody, String... objs) {
 	for (String obj : objs) {
 		if (!someSet.containsKey(obj)) {
-			throw new RuntimeException(header + " " + obj + " is not declared in " + messageBody);
+			throw new RuntimeException(messageBody.replaceFirst("[$]", obj));
 		}
 	}
 }
@@ -59,19 +59,19 @@ program
 	(pSet)+
 	('CONDITIONS')
 	(
-	id0=IDENT '=' id2=IDENT '<=' num=NUMBER {catchError(pSets, "PolicySet", $id0.text + " = " + $id2.text + " <= " + $num.text , $id2.text); Condition cond = new LessThanThCondition(pSets.get($id2.text), new Left<BigDecimal,PolicySet>(BigDecimal.valueOf(Double.valueOf($num.text)))); conds.put($id0.text, cond);}
+	id0=IDENT '=' id2=IDENT '<=' num=NUMBER {catchError(pSets, "PolicySet $ is not declared in "+ $id0.text + " = " + $id2.text + " <= " + $num.text , $id2.text); Condition cond = new LessThanThCondition(pSets.get($id2.text), new Left<BigDecimal,PolicySet>(BigDecimal.valueOf(Double.valueOf($num.text)))); conds.put($id0.text, cond);}
     	|
-	id0=IDENT '=' id2=IDENT '<=' id3=IDENT {catchError(pSets, "PolicySet",$id0.text + " = " + $id2.text + " <= " + $id3.text, $id2.text, $id3.text); Condition cond = new LessThanThCondition(pSets.get($id2.text), new Right<BigDecimal,PolicySet>(pSets.get($id3.text))); conds.put($id0.text, cond);}
+	id0=IDENT '=' id2=IDENT '<=' id3=IDENT {catchError(pSets, "PolicySet $ is not declared in "+$id0.text + " = " + $id2.text + " <= " + $id3.text, $id2.text, $id3.text); Condition cond = new LessThanThCondition(pSets.get($id2.text), new Right<BigDecimal,PolicySet>(pSets.get($id3.text))); conds.put($id0.text, cond);}
     	|
-	id0=IDENT '=' num=NUMBER '<' id2=IDENT {catchError(pSets, "PolicySet",$id0.text + " = " + $num.text + " < " + $id2.text, $id2.text); Condition cond = new GreaterThanThCondition(pSets.get($id2.text), new Left<BigDecimal,PolicySet>(BigDecimal.valueOf(Double.valueOf($num.text)))); conds.put($id0.text, cond);}
+	id0=IDENT '=' num=NUMBER '<' id2=IDENT {catchError(pSets, "PolicySet $ is not declared in "+$id0.text + " = " + $num.text + " < " + $id2.text, $id2.text); Condition cond = new GreaterThanThCondition(pSets.get($id2.text), new Left<BigDecimal,PolicySet>(BigDecimal.valueOf(Double.valueOf($num.text)))); conds.put($id0.text, cond);}
 	|
-	id0=IDENT '=' id3=IDENT '<' id2=IDENT {catchError(pSets,"PolicySet", $id0.text + " = " + $id3.text + " < " + $id2.text, $id3.text, $id2.text); Condition cond = new GreaterThanThCondition(pSets.get($id2.text), new Right<BigDecimal,PolicySet>(pSets.get($id3.text))); conds.put($id0.text, cond);}
+	id0=IDENT '=' id3=IDENT '<' id2=IDENT {catchError(pSets,"PolicySet $ is not declared in "+$id0.text + " = " + $id3.text + " < " + $id2.text, $id3.text, $id2.text); Condition cond = new GreaterThanThCondition(pSets.get($id2.text), new Right<BigDecimal,PolicySet>(pSets.get($id3.text))); conds.put($id0.text, cond);}
     	|
-	id0=IDENT '=' '!' id1=IDENT {catchError(conds, "Condition",$id0.text + " = !" + $id1.text, $id1.text); Condition cond = new NotCondition($id1.text); conds.put($id0.text, cond);}
+	id0=IDENT '=' '!' id1=IDENT {catchError(conds, "Condition $ is not declared in "+$id0.text + " = !" + $id1.text, $id1.text); Condition cond = new NotCondition($id1.text); conds.put($id0.text, cond);}
 	|
-	id0=IDENT '=' id1=IDENT '&&' id2=IDENT {catchError(conds, "Condition",$id0.text + " = " + $id1.text + " && " + $id2.text, $id1.text, $id2.text); Condition cond = new AndCondition($id1.text, $id2.text); conds.put($id0.text, cond);}
+	id0=IDENT '=' id1=IDENT '&&' id2=IDENT {catchError(conds, "Condition $ is not declared in "+$id0.text + " = " + $id1.text + " && " + $id2.text, $id1.text, $id2.text); Condition cond = new AndCondition($id1.text, $id2.text); conds.put($id0.text, cond);}
 	|
-	id0=IDENT '=' id1=IDENT '||' id2=IDENT {catchError(conds, "Condition",$id0.text + " = " + $id1.text + " || " + $id2.text, $id1.text, $id2.text); Condition cond = new OrCondition($id1.text, $id2.text); conds.put($id0.text, cond);}
+	id0=IDENT '=' id1=IDENT '||' id2=IDENT {catchError(conds, "Condition $ is not declared in "+$id0.text + " = " + $id1.text + " || " + $id2.text, $id1.text, $id2.text); Condition cond = new OrCondition($id1.text, $id2.text); conds.put($id0.text, cond);}
 	|
 	id0 =IDENT '=' 'true' {Condition cond = new TrueCondition(); conds.put($id0.text, cond);}
 	|
