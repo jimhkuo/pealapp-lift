@@ -1,7 +1,9 @@
 package peal.antlr
 
-import org.junit.Test
+import org.junit.rules.ExpectedException
+import org.junit.{Rule, Test}
 import org.scalatest.junit.ShouldMatchersForJUnit
+import peal.synthesis.GreaterThanThCondition
 import scala.collection.JavaConversions._
 import peal.synthesis.analysis.AlwaysTrue
 import peal.util.Z3ModelMatcher
@@ -12,6 +14,48 @@ import peal.domain.Pol
 
 class PealProgramParserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
   val consts = Map[String, PealAst]("q0" -> Term("q0"), "q1" -> Term("q1"), "q2" -> Term("q2"), "q3" -> Term("q3"), "q4" -> Term("q4"), "q5" -> Term("q5"), "q6" -> Term("q6"))
+
+  @Test
+  def testUnclaredThrowExceptionGreaterThanNum() {
+    val ex = intercept[RuntimeException] {
+      val input = "POLICIES\nb1 = + ((q0 0.1)(q1 0.1)(q2 0.1)(q3 0.1)(q4 0.1)) default 0\n" +
+        "POLICY_SETS\npSet = b1\n" +
+        "CONDITIONS\n" +
+        "cond1 = 0 < pSet1\n" +
+        "ANALYSES\nanalysis1 = always_true? cond1"
+      val pealProgramParser = ParserHelper.getPealParser(input)
+      pealProgramParser.program()
+    }
+    ex.getMessage should be ("pSet1 is not declared in cond1 = 0 < pSet1")
+  }
+
+  @Test
+  def testUnclaredThrowExceptionGreaterThanpSet() {
+    val ex = intercept[RuntimeException] {
+      val input = "POLICIES\nb1 = + ((q0 0.1)(q1 0.1)(q2 0.1)(q3 0.1)(q4 0.1)) default 0\n" +
+        "POLICY_SETS\npSet = b1\n" +
+        "CONDITIONS\n" +
+        "cond1 = pSet < pSet1\n" +
+        "ANALYSES\nanalysis1 = always_true? cond1"
+      val pealProgramParser = ParserHelper.getPealParser(input)
+      pealProgramParser.program()
+    }
+    ex.getMessage should be ("pSet1 is not declared in cond1 = pSet < pSet1")
+  }
+
+  @Test
+  def testUnclaredThrowExceptionGreaterThanpSet2() {
+    val ex = intercept[RuntimeException] {
+      val input = "POLICIES\nb1 = + ((q0 0.1)(q1 0.1)(q2 0.1)(q3 0.1)(q4 0.1)) default 0\n" +
+        "POLICY_SETS\npSet = b1\n" +
+        "CONDITIONS\n" +
+        "cond1 = pSet1 < pSet\n" +
+        "ANALYSES\nanalysis1 = always_true? cond1"
+      val pealProgramParser = ParserHelper.getPealParser(input)
+      pealProgramParser.program()
+    }
+    ex.getMessage should be ("pSet1 is not declared in cond1 = pSet1 < pSet")
+  }
 
   @Test
   def testCanParseComplicatedInput() {

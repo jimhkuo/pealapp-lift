@@ -1,4 +1,4 @@
-// $ANTLR 3.5.1 /Users/jkuo/PealApp-lift/antlr/PealProgram.g 2014-07-21 16:33:36
+// $ANTLR 3.5.1 /Users/jkuo/PealApp-lift/antlr/PealProgram.g 2014-08-04 11:18:37
 
 package peal.antlr;
 import java.util.*;
@@ -96,11 +96,19 @@ public class PealProgramParser extends Parser {
 		throw new RuntimeException(getErrorMessage(e, PealProgramParser.tokenNames)); 
 	}
 
+	private void catchError(Map<String, PolicySet> pSets, String messageBody, String... policies) {
+		for (String policy : policies) {
+			if (!pSets.containsKey(policy)) {
+				throw new RuntimeException(policy + " is not declared in " + messageBody);
+			}
+		}
+	}
+
 
 
 
 	// $ANTLR start "program"
-	// /Users/jkuo/PealApp-lift/antlr/PealProgram.g:46:1: program : ( 'POLICIES' ) ( pol )* ( 'POLICY_SETS' ) ( pSet )+ ( 'CONDITIONS' ) (id0= IDENT '=' id2= IDENT '<=' num= NUMBER |id0= IDENT '=' id2= IDENT '<=' id3= IDENT |id0= IDENT '=' num= NUMBER '<' id2= IDENT |id0= IDENT '=' id3= IDENT '<' id2= IDENT |id0= IDENT '=' '!' id1= IDENT |id0= IDENT '=' id1= IDENT '&&' id2= IDENT |id0= IDENT '=' id1= IDENT '||' id2= IDENT |id0= IDENT '=' 'true' |id0= IDENT '=' 'false' |id0= IDENT '=' id1= IDENT )+ ( 'DOMAIN_SPECIFICS' ( IDENT | NUMBER | '+' | '*' | '=' | '(' | ')' | '<' | '<=' | '/' )* )? ( 'ANALYSES' (id0= IDENT '=' 'always_true?' id1= IDENT |id0= IDENT '=' 'always_false?' id1= IDENT |id0= IDENT '=' 'satisfiable?' id1= IDENT |id0= IDENT '=' 'equivalent?' id1= IDENT id2= IDENT |id0= IDENT '=' 'different?' id1= IDENT id2= IDENT |id0= IDENT '=' 'implies?' id1= IDENT id2= IDENT )+ )? ;
+	// /Users/jkuo/PealApp-lift/antlr/PealProgram.g:54:1: program : ( 'POLICIES' ) ( pol )* ( 'POLICY_SETS' ) ( pSet )+ ( 'CONDITIONS' ) (id0= IDENT '=' id2= IDENT '<=' num= NUMBER |id0= IDENT '=' id2= IDENT '<=' id3= IDENT |id0= IDENT '=' num= NUMBER '<' id2= IDENT |id0= IDENT '=' id3= IDENT '<' id2= IDENT |id0= IDENT '=' '!' id1= IDENT |id0= IDENT '=' id1= IDENT '&&' id2= IDENT |id0= IDENT '=' id1= IDENT '||' id2= IDENT |id0= IDENT '=' 'true' |id0= IDENT '=' 'false' |id0= IDENT '=' id1= IDENT )+ ( 'DOMAIN_SPECIFICS' ( IDENT | NUMBER | '+' | '*' | '=' | '(' | ')' | '<' | '<=' | '/' )* )? ( 'ANALYSES' (id0= IDENT '=' 'always_true?' id1= IDENT |id0= IDENT '=' 'always_false?' id1= IDENT |id0= IDENT '=' 'satisfiable?' id1= IDENT |id0= IDENT '=' 'equivalent?' id1= IDENT id2= IDENT |id0= IDENT '=' 'different?' id1= IDENT id2= IDENT |id0= IDENT '=' 'implies?' id1= IDENT id2= IDENT )+ )? ;
 	public final void program() throws RecognitionException {
 		Token id0=null;
 		Token id2=null;
@@ -110,16 +118,16 @@ public class PealProgramParser extends Parser {
 		Pol pol1 =null;
 
 		try {
-			// /Users/jkuo/PealApp-lift/antlr/PealProgram.g:47:2: ( ( 'POLICIES' ) ( pol )* ( 'POLICY_SETS' ) ( pSet )+ ( 'CONDITIONS' ) (id0= IDENT '=' id2= IDENT '<=' num= NUMBER |id0= IDENT '=' id2= IDENT '<=' id3= IDENT |id0= IDENT '=' num= NUMBER '<' id2= IDENT |id0= IDENT '=' id3= IDENT '<' id2= IDENT |id0= IDENT '=' '!' id1= IDENT |id0= IDENT '=' id1= IDENT '&&' id2= IDENT |id0= IDENT '=' id1= IDENT '||' id2= IDENT |id0= IDENT '=' 'true' |id0= IDENT '=' 'false' |id0= IDENT '=' id1= IDENT )+ ( 'DOMAIN_SPECIFICS' ( IDENT | NUMBER | '+' | '*' | '=' | '(' | ')' | '<' | '<=' | '/' )* )? ( 'ANALYSES' (id0= IDENT '=' 'always_true?' id1= IDENT |id0= IDENT '=' 'always_false?' id1= IDENT |id0= IDENT '=' 'satisfiable?' id1= IDENT |id0= IDENT '=' 'equivalent?' id1= IDENT id2= IDENT |id0= IDENT '=' 'different?' id1= IDENT id2= IDENT |id0= IDENT '=' 'implies?' id1= IDENT id2= IDENT )+ )? )
-			// /Users/jkuo/PealApp-lift/antlr/PealProgram.g:48:2: ( 'POLICIES' ) ( pol )* ( 'POLICY_SETS' ) ( pSet )+ ( 'CONDITIONS' ) (id0= IDENT '=' id2= IDENT '<=' num= NUMBER |id0= IDENT '=' id2= IDENT '<=' id3= IDENT |id0= IDENT '=' num= NUMBER '<' id2= IDENT |id0= IDENT '=' id3= IDENT '<' id2= IDENT |id0= IDENT '=' '!' id1= IDENT |id0= IDENT '=' id1= IDENT '&&' id2= IDENT |id0= IDENT '=' id1= IDENT '||' id2= IDENT |id0= IDENT '=' 'true' |id0= IDENT '=' 'false' |id0= IDENT '=' id1= IDENT )+ ( 'DOMAIN_SPECIFICS' ( IDENT | NUMBER | '+' | '*' | '=' | '(' | ')' | '<' | '<=' | '/' )* )? ( 'ANALYSES' (id0= IDENT '=' 'always_true?' id1= IDENT |id0= IDENT '=' 'always_false?' id1= IDENT |id0= IDENT '=' 'satisfiable?' id1= IDENT |id0= IDENT '=' 'equivalent?' id1= IDENT id2= IDENT |id0= IDENT '=' 'different?' id1= IDENT id2= IDENT |id0= IDENT '=' 'implies?' id1= IDENT id2= IDENT )+ )?
+			// /Users/jkuo/PealApp-lift/antlr/PealProgram.g:55:2: ( ( 'POLICIES' ) ( pol )* ( 'POLICY_SETS' ) ( pSet )+ ( 'CONDITIONS' ) (id0= IDENT '=' id2= IDENT '<=' num= NUMBER |id0= IDENT '=' id2= IDENT '<=' id3= IDENT |id0= IDENT '=' num= NUMBER '<' id2= IDENT |id0= IDENT '=' id3= IDENT '<' id2= IDENT |id0= IDENT '=' '!' id1= IDENT |id0= IDENT '=' id1= IDENT '&&' id2= IDENT |id0= IDENT '=' id1= IDENT '||' id2= IDENT |id0= IDENT '=' 'true' |id0= IDENT '=' 'false' |id0= IDENT '=' id1= IDENT )+ ( 'DOMAIN_SPECIFICS' ( IDENT | NUMBER | '+' | '*' | '=' | '(' | ')' | '<' | '<=' | '/' )* )? ( 'ANALYSES' (id0= IDENT '=' 'always_true?' id1= IDENT |id0= IDENT '=' 'always_false?' id1= IDENT |id0= IDENT '=' 'satisfiable?' id1= IDENT |id0= IDENT '=' 'equivalent?' id1= IDENT id2= IDENT |id0= IDENT '=' 'different?' id1= IDENT id2= IDENT |id0= IDENT '=' 'implies?' id1= IDENT id2= IDENT )+ )? )
+			// /Users/jkuo/PealApp-lift/antlr/PealProgram.g:56:2: ( 'POLICIES' ) ( pol )* ( 'POLICY_SETS' ) ( pSet )+ ( 'CONDITIONS' ) (id0= IDENT '=' id2= IDENT '<=' num= NUMBER |id0= IDENT '=' id2= IDENT '<=' id3= IDENT |id0= IDENT '=' num= NUMBER '<' id2= IDENT |id0= IDENT '=' id3= IDENT '<' id2= IDENT |id0= IDENT '=' '!' id1= IDENT |id0= IDENT '=' id1= IDENT '&&' id2= IDENT |id0= IDENT '=' id1= IDENT '||' id2= IDENT |id0= IDENT '=' 'true' |id0= IDENT '=' 'false' |id0= IDENT '=' id1= IDENT )+ ( 'DOMAIN_SPECIFICS' ( IDENT | NUMBER | '+' | '*' | '=' | '(' | ')' | '<' | '<=' | '/' )* )? ( 'ANALYSES' (id0= IDENT '=' 'always_true?' id1= IDENT |id0= IDENT '=' 'always_false?' id1= IDENT |id0= IDENT '=' 'satisfiable?' id1= IDENT |id0= IDENT '=' 'equivalent?' id1= IDENT id2= IDENT |id0= IDENT '=' 'different?' id1= IDENT id2= IDENT |id0= IDENT '=' 'implies?' id1= IDENT id2= IDENT )+ )?
 			{
-			// /Users/jkuo/PealApp-lift/antlr/PealProgram.g:48:2: ( 'POLICIES' )
-			// /Users/jkuo/PealApp-lift/antlr/PealProgram.g:48:3: 'POLICIES'
+			// /Users/jkuo/PealApp-lift/antlr/PealProgram.g:56:2: ( 'POLICIES' )
+			// /Users/jkuo/PealApp-lift/antlr/PealProgram.g:56:3: 'POLICIES'
 			{
 			match(input,21,FOLLOW_21_in_program57); 
 			}
 
-			// /Users/jkuo/PealApp-lift/antlr/PealProgram.g:49:2: ( pol )*
+			// /Users/jkuo/PealApp-lift/antlr/PealProgram.g:57:2: ( pol )*
 			loop1:
 			while (true) {
 				int alt1=2;
@@ -130,7 +138,7 @@ public class PealProgramParser extends Parser {
 
 				switch (alt1) {
 				case 1 :
-					// /Users/jkuo/PealApp-lift/antlr/PealProgram.g:49:3: pol
+					// /Users/jkuo/PealApp-lift/antlr/PealProgram.g:57:3: pol
 					{
 					pushFollow(FOLLOW_pol_in_program62);
 					pol1=pol();
@@ -145,13 +153,13 @@ public class PealProgramParser extends Parser {
 				}
 			}
 
-			// /Users/jkuo/PealApp-lift/antlr/PealProgram.g:50:2: ( 'POLICY_SETS' )
-			// /Users/jkuo/PealApp-lift/antlr/PealProgram.g:50:3: 'POLICY_SETS'
+			// /Users/jkuo/PealApp-lift/antlr/PealProgram.g:58:2: ( 'POLICY_SETS' )
+			// /Users/jkuo/PealApp-lift/antlr/PealProgram.g:58:3: 'POLICY_SETS'
 			{
 			match(input,22,FOLLOW_22_in_program70); 
 			}
 
-			// /Users/jkuo/PealApp-lift/antlr/PealProgram.g:51:2: ( pSet )+
+			// /Users/jkuo/PealApp-lift/antlr/PealProgram.g:59:2: ( pSet )+
 			int cnt2=0;
 			loop2:
 			while (true) {
@@ -163,7 +171,7 @@ public class PealProgramParser extends Parser {
 
 				switch (alt2) {
 				case 1 :
-					// /Users/jkuo/PealApp-lift/antlr/PealProgram.g:51:3: pSet
+					// /Users/jkuo/PealApp-lift/antlr/PealProgram.g:59:3: pSet
 					{
 					pushFollow(FOLLOW_pSet_in_program75);
 					pSet();
@@ -180,13 +188,13 @@ public class PealProgramParser extends Parser {
 				cnt2++;
 			}
 
-			// /Users/jkuo/PealApp-lift/antlr/PealProgram.g:52:2: ( 'CONDITIONS' )
-			// /Users/jkuo/PealApp-lift/antlr/PealProgram.g:52:3: 'CONDITIONS'
+			// /Users/jkuo/PealApp-lift/antlr/PealProgram.g:60:2: ( 'CONDITIONS' )
+			// /Users/jkuo/PealApp-lift/antlr/PealProgram.g:60:3: 'CONDITIONS'
 			{
 			match(input,19,FOLLOW_19_in_program81); 
 			}
 
-			// /Users/jkuo/PealApp-lift/antlr/PealProgram.g:53:2: (id0= IDENT '=' id2= IDENT '<=' num= NUMBER |id0= IDENT '=' id2= IDENT '<=' id3= IDENT |id0= IDENT '=' num= NUMBER '<' id2= IDENT |id0= IDENT '=' id3= IDENT '<' id2= IDENT |id0= IDENT '=' '!' id1= IDENT |id0= IDENT '=' id1= IDENT '&&' id2= IDENT |id0= IDENT '=' id1= IDENT '||' id2= IDENT |id0= IDENT '=' 'true' |id0= IDENT '=' 'false' |id0= IDENT '=' id1= IDENT )+
+			// /Users/jkuo/PealApp-lift/antlr/PealProgram.g:61:2: (id0= IDENT '=' id2= IDENT '<=' num= NUMBER |id0= IDENT '=' id2= IDENT '<=' id3= IDENT |id0= IDENT '=' num= NUMBER '<' id2= IDENT |id0= IDENT '=' id3= IDENT '<' id2= IDENT |id0= IDENT '=' '!' id1= IDENT |id0= IDENT '=' id1= IDENT '&&' id2= IDENT |id0= IDENT '=' id1= IDENT '||' id2= IDENT |id0= IDENT '=' 'true' |id0= IDENT '=' 'false' |id0= IDENT '=' id1= IDENT )+
 			int cnt3=0;
 			loop3:
 			while (true) {
@@ -264,7 +272,7 @@ public class PealProgramParser extends Parser {
 
 				switch (alt3) {
 				case 1 :
-					// /Users/jkuo/PealApp-lift/antlr/PealProgram.g:54:2: id0= IDENT '=' id2= IDENT '<=' num= NUMBER
+					// /Users/jkuo/PealApp-lift/antlr/PealProgram.g:62:2: id0= IDENT '=' id2= IDENT '<=' num= NUMBER
 					{
 					id0=(Token)match(input,IDENT,FOLLOW_IDENT_in_program90); 
 					match(input,17,FOLLOW_17_in_program92); 
@@ -275,7 +283,7 @@ public class PealProgramParser extends Parser {
 					}
 					break;
 				case 2 :
-					// /Users/jkuo/PealApp-lift/antlr/PealProgram.g:56:2: id0= IDENT '=' id2= IDENT '<=' id3= IDENT
+					// /Users/jkuo/PealApp-lift/antlr/PealProgram.g:64:2: id0= IDENT '=' id2= IDENT '<=' id3= IDENT
 					{
 					id0=(Token)match(input,IDENT,FOLLOW_IDENT_in_program116); 
 					match(input,17,FOLLOW_17_in_program118); 
@@ -286,29 +294,29 @@ public class PealProgramParser extends Parser {
 					}
 					break;
 				case 3 :
-					// /Users/jkuo/PealApp-lift/antlr/PealProgram.g:58:2: id0= IDENT '=' num= NUMBER '<' id2= IDENT
+					// /Users/jkuo/PealApp-lift/antlr/PealProgram.g:66:2: id0= IDENT '=' num= NUMBER '<' id2= IDENT
 					{
 					id0=(Token)match(input,IDENT,FOLLOW_IDENT_in_program142); 
 					match(input,17,FOLLOW_17_in_program144); 
 					num=(Token)match(input,NUMBER,FOLLOW_NUMBER_in_program148); 
 					match(input,15,FOLLOW_15_in_program150); 
 					id2=(Token)match(input,IDENT,FOLLOW_IDENT_in_program154); 
-					Condition cond = new GreaterThanThCondition(pSets.get((id2!=null?id2.getText():null)), new Left<BigDecimal,PolicySet>(BigDecimal.valueOf(Double.valueOf((num!=null?num.getText():null))))); conds.put((id0!=null?id0.getText():null), cond);
+					catchError(pSets, (id0!=null?id0.getText():null) + " = " + (num!=null?num.getText():null) + " < " + (id2!=null?id2.getText():null), (id2!=null?id2.getText():null)); Condition cond = new GreaterThanThCondition(pSets.get((id2!=null?id2.getText():null)), new Left<BigDecimal,PolicySet>(BigDecimal.valueOf(Double.valueOf((num!=null?num.getText():null))))); conds.put((id0!=null?id0.getText():null), cond);
 					}
 					break;
 				case 4 :
-					// /Users/jkuo/PealApp-lift/antlr/PealProgram.g:60:2: id0= IDENT '=' id3= IDENT '<' id2= IDENT
+					// /Users/jkuo/PealApp-lift/antlr/PealProgram.g:68:2: id0= IDENT '=' id3= IDENT '<' id2= IDENT
 					{
 					id0=(Token)match(input,IDENT,FOLLOW_IDENT_in_program164); 
 					match(input,17,FOLLOW_17_in_program166); 
 					id3=(Token)match(input,IDENT,FOLLOW_IDENT_in_program170); 
 					match(input,15,FOLLOW_15_in_program172); 
 					id2=(Token)match(input,IDENT,FOLLOW_IDENT_in_program176); 
-					Condition cond = new GreaterThanThCondition(pSets.get((id2!=null?id2.getText():null)), new Right<BigDecimal,PolicySet>(pSets.get((id3!=null?id3.getText():null)))); conds.put((id0!=null?id0.getText():null), cond);
+					catchError(pSets, (id0!=null?id0.getText():null) + " = " + (id3!=null?id3.getText():null) + " < " + (id2!=null?id2.getText():null), (id2!=null?id2.getText():null), (id3!=null?id3.getText():null)); Condition cond = new GreaterThanThCondition(pSets.get((id2!=null?id2.getText():null)), new Right<BigDecimal,PolicySet>(pSets.get((id3!=null?id3.getText():null)))); conds.put((id0!=null?id0.getText():null), cond);
 					}
 					break;
 				case 5 :
-					// /Users/jkuo/PealApp-lift/antlr/PealProgram.g:62:2: id0= IDENT '=' '!' id1= IDENT
+					// /Users/jkuo/PealApp-lift/antlr/PealProgram.g:70:2: id0= IDENT '=' '!' id1= IDENT
 					{
 					id0=(Token)match(input,IDENT,FOLLOW_IDENT_in_program190); 
 					match(input,17,FOLLOW_17_in_program192); 
@@ -318,7 +326,7 @@ public class PealProgramParser extends Parser {
 					}
 					break;
 				case 6 :
-					// /Users/jkuo/PealApp-lift/antlr/PealProgram.g:64:2: id0= IDENT '=' id1= IDENT '&&' id2= IDENT
+					// /Users/jkuo/PealApp-lift/antlr/PealProgram.g:72:2: id0= IDENT '=' id1= IDENT '&&' id2= IDENT
 					{
 					id0=(Token)match(input,IDENT,FOLLOW_IDENT_in_program208); 
 					match(input,17,FOLLOW_17_in_program210); 
@@ -329,7 +337,7 @@ public class PealProgramParser extends Parser {
 					}
 					break;
 				case 7 :
-					// /Users/jkuo/PealApp-lift/antlr/PealProgram.g:66:2: id0= IDENT '=' id1= IDENT '||' id2= IDENT
+					// /Users/jkuo/PealApp-lift/antlr/PealProgram.g:74:2: id0= IDENT '=' id1= IDENT '||' id2= IDENT
 					{
 					id0=(Token)match(input,IDENT,FOLLOW_IDENT_in_program230); 
 					match(input,17,FOLLOW_17_in_program232); 
@@ -340,7 +348,7 @@ public class PealProgramParser extends Parser {
 					}
 					break;
 				case 8 :
-					// /Users/jkuo/PealApp-lift/antlr/PealProgram.g:68:2: id0= IDENT '=' 'true'
+					// /Users/jkuo/PealApp-lift/antlr/PealProgram.g:76:2: id0= IDENT '=' 'true'
 					{
 					id0=(Token)match(input,IDENT,FOLLOW_IDENT_in_program253); 
 					match(input,17,FOLLOW_17_in_program255); 
@@ -349,7 +357,7 @@ public class PealProgramParser extends Parser {
 					}
 					break;
 				case 9 :
-					// /Users/jkuo/PealApp-lift/antlr/PealProgram.g:70:2: id0= IDENT '=' 'false'
+					// /Users/jkuo/PealApp-lift/antlr/PealProgram.g:78:2: id0= IDENT '=' 'false'
 					{
 					id0=(Token)match(input,IDENT,FOLLOW_IDENT_in_program268); 
 					match(input,17,FOLLOW_17_in_program270); 
@@ -358,7 +366,7 @@ public class PealProgramParser extends Parser {
 					}
 					break;
 				case 10 :
-					// /Users/jkuo/PealApp-lift/antlr/PealProgram.g:72:2: id0= IDENT '=' id1= IDENT
+					// /Users/jkuo/PealApp-lift/antlr/PealProgram.g:80:2: id0= IDENT '=' id1= IDENT
 					{
 					id0=(Token)match(input,IDENT,FOLLOW_IDENT_in_program283); 
 					match(input,17,FOLLOW_17_in_program285); 
@@ -375,7 +383,7 @@ public class PealProgramParser extends Parser {
 				cnt3++;
 			}
 
-			// /Users/jkuo/PealApp-lift/antlr/PealProgram.g:74:2: ( 'DOMAIN_SPECIFICS' ( IDENT | NUMBER | '+' | '*' | '=' | '(' | ')' | '<' | '<=' | '/' )* )?
+			// /Users/jkuo/PealApp-lift/antlr/PealProgram.g:82:2: ( 'DOMAIN_SPECIFICS' ( IDENT | NUMBER | '+' | '*' | '=' | '(' | ')' | '<' | '<=' | '/' )* )?
 			int alt5=2;
 			int LA5_0 = input.LA(1);
 			if ( (LA5_0==20) ) {
@@ -383,11 +391,11 @@ public class PealProgramParser extends Parser {
 			}
 			switch (alt5) {
 				case 1 :
-					// /Users/jkuo/PealApp-lift/antlr/PealProgram.g:74:3: 'DOMAIN_SPECIFICS' ( IDENT | NUMBER | '+' | '*' | '=' | '(' | ')' | '<' | '<=' | '/' )*
+					// /Users/jkuo/PealApp-lift/antlr/PealProgram.g:82:3: 'DOMAIN_SPECIFICS' ( IDENT | NUMBER | '+' | '*' | '=' | '(' | ')' | '<' | '<=' | '/' )*
 					{
 					match(input,20,FOLLOW_20_in_program299); 
 					ignore = true;
-					// /Users/jkuo/PealApp-lift/antlr/PealProgram.g:75:2: ( IDENT | NUMBER | '+' | '*' | '=' | '(' | ')' | '<' | '<=' | '/' )*
+					// /Users/jkuo/PealApp-lift/antlr/PealProgram.g:83:2: ( IDENT | NUMBER | '+' | '*' | '=' | '(' | ')' | '<' | '<=' | '/' )*
 					loop4:
 					while (true) {
 						int alt4=2;
@@ -421,7 +429,7 @@ public class PealProgramParser extends Parser {
 
 			}
 
-			// /Users/jkuo/PealApp-lift/antlr/PealProgram.g:76:2: ( 'ANALYSES' (id0= IDENT '=' 'always_true?' id1= IDENT |id0= IDENT '=' 'always_false?' id1= IDENT |id0= IDENT '=' 'satisfiable?' id1= IDENT |id0= IDENT '=' 'equivalent?' id1= IDENT id2= IDENT |id0= IDENT '=' 'different?' id1= IDENT id2= IDENT |id0= IDENT '=' 'implies?' id1= IDENT id2= IDENT )+ )?
+			// /Users/jkuo/PealApp-lift/antlr/PealProgram.g:84:2: ( 'ANALYSES' (id0= IDENT '=' 'always_true?' id1= IDENT |id0= IDENT '=' 'always_false?' id1= IDENT |id0= IDENT '=' 'satisfiable?' id1= IDENT |id0= IDENT '=' 'equivalent?' id1= IDENT id2= IDENT |id0= IDENT '=' 'different?' id1= IDENT id2= IDENT |id0= IDENT '=' 'implies?' id1= IDENT id2= IDENT )+ )?
 			int alt7=2;
 			int LA7_0 = input.LA(1);
 			if ( (LA7_0==18) ) {
@@ -429,11 +437,11 @@ public class PealProgramParser extends Parser {
 			}
 			switch (alt7) {
 				case 1 :
-					// /Users/jkuo/PealApp-lift/antlr/PealProgram.g:76:3: 'ANALYSES' (id0= IDENT '=' 'always_true?' id1= IDENT |id0= IDENT '=' 'always_false?' id1= IDENT |id0= IDENT '=' 'satisfiable?' id1= IDENT |id0= IDENT '=' 'equivalent?' id1= IDENT id2= IDENT |id0= IDENT '=' 'different?' id1= IDENT id2= IDENT |id0= IDENT '=' 'implies?' id1= IDENT id2= IDENT )+
+					// /Users/jkuo/PealApp-lift/antlr/PealProgram.g:84:3: 'ANALYSES' (id0= IDENT '=' 'always_true?' id1= IDENT |id0= IDENT '=' 'always_false?' id1= IDENT |id0= IDENT '=' 'satisfiable?' id1= IDENT |id0= IDENT '=' 'equivalent?' id1= IDENT id2= IDENT |id0= IDENT '=' 'different?' id1= IDENT id2= IDENT |id0= IDENT '=' 'implies?' id1= IDENT id2= IDENT )+
 					{
 					match(input,18,FOLLOW_18_in_program350); 
 					ignore = false;
-					// /Users/jkuo/PealApp-lift/antlr/PealProgram.g:77:2: (id0= IDENT '=' 'always_true?' id1= IDENT |id0= IDENT '=' 'always_false?' id1= IDENT |id0= IDENT '=' 'satisfiable?' id1= IDENT |id0= IDENT '=' 'equivalent?' id1= IDENT id2= IDENT |id0= IDENT '=' 'different?' id1= IDENT id2= IDENT |id0= IDENT '=' 'implies?' id1= IDENT id2= IDENT )+
+					// /Users/jkuo/PealApp-lift/antlr/PealProgram.g:85:2: (id0= IDENT '=' 'always_true?' id1= IDENT |id0= IDENT '=' 'always_false?' id1= IDENT |id0= IDENT '=' 'satisfiable?' id1= IDENT |id0= IDENT '=' 'equivalent?' id1= IDENT id2= IDENT |id0= IDENT '=' 'different?' id1= IDENT id2= IDENT |id0= IDENT '=' 'implies?' id1= IDENT id2= IDENT )+
 					int cnt6=0;
 					loop6:
 					while (true) {
@@ -480,7 +488,7 @@ public class PealProgramParser extends Parser {
 
 						switch (alt6) {
 						case 1 :
-							// /Users/jkuo/PealApp-lift/antlr/PealProgram.g:77:3: id0= IDENT '=' 'always_true?' id1= IDENT
+							// /Users/jkuo/PealApp-lift/antlr/PealProgram.g:85:3: id0= IDENT '=' 'always_true?' id1= IDENT
 							{
 							id0=(Token)match(input,IDENT,FOLLOW_IDENT_in_program358); 
 							match(input,17,FOLLOW_17_in_program360); 
@@ -490,7 +498,7 @@ public class PealProgramParser extends Parser {
 							}
 							break;
 						case 2 :
-							// /Users/jkuo/PealApp-lift/antlr/PealProgram.g:78:3: id0= IDENT '=' 'always_false?' id1= IDENT
+							// /Users/jkuo/PealApp-lift/antlr/PealProgram.g:86:3: id0= IDENT '=' 'always_false?' id1= IDENT
 							{
 							id0=(Token)match(input,IDENT,FOLLOW_IDENT_in_program374); 
 							match(input,17,FOLLOW_17_in_program376); 
@@ -500,7 +508,7 @@ public class PealProgramParser extends Parser {
 							}
 							break;
 						case 3 :
-							// /Users/jkuo/PealApp-lift/antlr/PealProgram.g:79:3: id0= IDENT '=' 'satisfiable?' id1= IDENT
+							// /Users/jkuo/PealApp-lift/antlr/PealProgram.g:87:3: id0= IDENT '=' 'satisfiable?' id1= IDENT
 							{
 							id0=(Token)match(input,IDENT,FOLLOW_IDENT_in_program390); 
 							match(input,17,FOLLOW_17_in_program392); 
@@ -510,7 +518,7 @@ public class PealProgramParser extends Parser {
 							}
 							break;
 						case 4 :
-							// /Users/jkuo/PealApp-lift/antlr/PealProgram.g:80:3: id0= IDENT '=' 'equivalent?' id1= IDENT id2= IDENT
+							// /Users/jkuo/PealApp-lift/antlr/PealProgram.g:88:3: id0= IDENT '=' 'equivalent?' id1= IDENT id2= IDENT
 							{
 							id0=(Token)match(input,IDENT,FOLLOW_IDENT_in_program407); 
 							match(input,17,FOLLOW_17_in_program409); 
@@ -521,7 +529,7 @@ public class PealProgramParser extends Parser {
 							}
 							break;
 						case 5 :
-							// /Users/jkuo/PealApp-lift/antlr/PealProgram.g:81:3: id0= IDENT '=' 'different?' id1= IDENT id2= IDENT
+							// /Users/jkuo/PealApp-lift/antlr/PealProgram.g:89:3: id0= IDENT '=' 'different?' id1= IDENT id2= IDENT
 							{
 							id0=(Token)match(input,IDENT,FOLLOW_IDENT_in_program428); 
 							match(input,17,FOLLOW_17_in_program430); 
@@ -532,7 +540,7 @@ public class PealProgramParser extends Parser {
 							}
 							break;
 						case 6 :
-							// /Users/jkuo/PealApp-lift/antlr/PealProgram.g:82:3: id0= IDENT '=' 'implies?' id1= IDENT id2= IDENT
+							// /Users/jkuo/PealApp-lift/antlr/PealProgram.g:90:3: id0= IDENT '=' 'implies?' id1= IDENT id2= IDENT
 							{
 							id0=(Token)match(input,IDENT,FOLLOW_IDENT_in_program450); 
 							match(input,17,FOLLOW_17_in_program452); 
@@ -572,14 +580,14 @@ public class PealProgramParser extends Parser {
 
 
 	// $ANTLR start "pSet"
-	// /Users/jkuo/PealApp-lift/antlr/PealProgram.g:87:1: pSet : (id0= IDENT '=' id1= IDENT |id0= IDENT '=' 'max' '(' id1= IDENT ',' id2= IDENT ')' |id0= IDENT '=' 'min' '(' id1= IDENT ',' id2= IDENT ')' |id0= IDENT '=' '+' '(' id1= IDENT ',' id2= IDENT ')' |id0= IDENT '=' '*' '(' id1= IDENT ',' id2= IDENT ')' );
+	// /Users/jkuo/PealApp-lift/antlr/PealProgram.g:95:1: pSet : (id0= IDENT '=' id1= IDENT |id0= IDENT '=' 'max' '(' id1= IDENT ',' id2= IDENT ')' |id0= IDENT '=' 'min' '(' id1= IDENT ',' id2= IDENT ')' |id0= IDENT '=' '+' '(' id1= IDENT ',' id2= IDENT ')' |id0= IDENT '=' '*' '(' id1= IDENT ',' id2= IDENT ')' );
 	public final void pSet() throws RecognitionException {
 		Token id0=null;
 		Token id1=null;
 		Token id2=null;
 
 		try {
-			// /Users/jkuo/PealApp-lift/antlr/PealProgram.g:88:2: (id0= IDENT '=' id1= IDENT |id0= IDENT '=' 'max' '(' id1= IDENT ',' id2= IDENT ')' |id0= IDENT '=' 'min' '(' id1= IDENT ',' id2= IDENT ')' |id0= IDENT '=' '+' '(' id1= IDENT ',' id2= IDENT ')' |id0= IDENT '=' '*' '(' id1= IDENT ',' id2= IDENT ')' )
+			// /Users/jkuo/PealApp-lift/antlr/PealProgram.g:96:2: (id0= IDENT '=' id1= IDENT |id0= IDENT '=' 'max' '(' id1= IDENT ',' id2= IDENT ')' |id0= IDENT '=' 'min' '(' id1= IDENT ',' id2= IDENT ')' |id0= IDENT '=' '+' '(' id1= IDENT ',' id2= IDENT ')' |id0= IDENT '=' '*' '(' id1= IDENT ',' id2= IDENT ')' )
 			int alt8=5;
 			int LA8_0 = input.LA(1);
 			if ( (LA8_0==IDENT) ) {
@@ -648,7 +656,7 @@ public class PealProgramParser extends Parser {
 
 			switch (alt8) {
 				case 1 :
-					// /Users/jkuo/PealApp-lift/antlr/PealProgram.g:88:3: id0= IDENT '=' id1= IDENT
+					// /Users/jkuo/PealApp-lift/antlr/PealProgram.g:96:3: id0= IDENT '=' id1= IDENT
 					{
 					id0=(Token)match(input,IDENT,FOLLOW_IDENT_in_pSet488); 
 					match(input,17,FOLLOW_17_in_pSet490); 
@@ -657,7 +665,7 @@ public class PealProgramParser extends Parser {
 					}
 					break;
 				case 2 :
-					// /Users/jkuo/PealApp-lift/antlr/PealProgram.g:89:3: id0= IDENT '=' 'max' '(' id1= IDENT ',' id2= IDENT ')'
+					// /Users/jkuo/PealApp-lift/antlr/PealProgram.g:97:3: id0= IDENT '=' 'max' '(' id1= IDENT ',' id2= IDENT ')'
 					{
 					id0=(Token)match(input,IDENT,FOLLOW_IDENT_in_pSet502); 
 					match(input,17,FOLLOW_17_in_pSet504); 
@@ -671,7 +679,7 @@ public class PealProgramParser extends Parser {
 					}
 					break;
 				case 3 :
-					// /Users/jkuo/PealApp-lift/antlr/PealProgram.g:90:3: id0= IDENT '=' 'min' '(' id1= IDENT ',' id2= IDENT ')'
+					// /Users/jkuo/PealApp-lift/antlr/PealProgram.g:98:3: id0= IDENT '=' 'min' '(' id1= IDENT ',' id2= IDENT ')'
 					{
 					id0=(Token)match(input,IDENT,FOLLOW_IDENT_in_pSet528); 
 					match(input,17,FOLLOW_17_in_pSet530); 
@@ -685,7 +693,7 @@ public class PealProgramParser extends Parser {
 					}
 					break;
 				case 4 :
-					// /Users/jkuo/PealApp-lift/antlr/PealProgram.g:91:3: id0= IDENT '=' '+' '(' id1= IDENT ',' id2= IDENT ')'
+					// /Users/jkuo/PealApp-lift/antlr/PealProgram.g:99:3: id0= IDENT '=' '+' '(' id1= IDENT ',' id2= IDENT ')'
 					{
 					id0=(Token)match(input,IDENT,FOLLOW_IDENT_in_pSet554); 
 					match(input,17,FOLLOW_17_in_pSet556); 
@@ -699,7 +707,7 @@ public class PealProgramParser extends Parser {
 					}
 					break;
 				case 5 :
-					// /Users/jkuo/PealApp-lift/antlr/PealProgram.g:92:3: id0= IDENT '=' '*' '(' id1= IDENT ',' id2= IDENT ')'
+					// /Users/jkuo/PealApp-lift/antlr/PealProgram.g:100:3: id0= IDENT '=' '*' '(' id1= IDENT ',' id2= IDENT ')'
 					{
 					id0=(Token)match(input,IDENT,FOLLOW_IDENT_in_pSet580); 
 					match(input,17,FOLLOW_17_in_pSet582); 
@@ -728,7 +736,7 @@ public class PealProgramParser extends Parser {
 
 
 	// $ANTLR start "pol"
-	// /Users/jkuo/PealApp-lift/antlr/PealProgram.g:95:1: pol returns [Pol p] : id1= IDENT '=' o= operator '(' ( rule )* ')' 'default' s= score ;
+	// /Users/jkuo/PealApp-lift/antlr/PealProgram.g:103:1: pol returns [Pol p] : id1= IDENT '=' o= operator '(' ( rule )* ')' 'default' s= score ;
 	public final Pol pol() throws RecognitionException {
 		Pol p = null;
 
@@ -740,8 +748,8 @@ public class PealProgramParser extends Parser {
 
 		l = new ArrayList<Rule>(); 
 		try {
-			// /Users/jkuo/PealApp-lift/antlr/PealProgram.g:97:2: (id1= IDENT '=' o= operator '(' ( rule )* ')' 'default' s= score )
-			// /Users/jkuo/PealApp-lift/antlr/PealProgram.g:97:4: id1= IDENT '=' o= operator '(' ( rule )* ')' 'default' s= score
+			// /Users/jkuo/PealApp-lift/antlr/PealProgram.g:105:2: (id1= IDENT '=' o= operator '(' ( rule )* ')' 'default' s= score )
+			// /Users/jkuo/PealApp-lift/antlr/PealProgram.g:105:4: id1= IDENT '=' o= operator '(' ( rule )* ')' 'default' s= score
 			{
 			id1=(Token)match(input,IDENT,FOLLOW_IDENT_in_pol623); 
 			match(input,17,FOLLOW_17_in_pol625); 
@@ -750,7 +758,7 @@ public class PealProgramParser extends Parser {
 			state._fsp--;
 
 			match(input,9,FOLLOW_9_in_pol631); 
-			// /Users/jkuo/PealApp-lift/antlr/PealProgram.g:97:33: ( rule )*
+			// /Users/jkuo/PealApp-lift/antlr/PealProgram.g:105:33: ( rule )*
 			loop9:
 			while (true) {
 				int alt9=2;
@@ -761,7 +769,7 @@ public class PealProgramParser extends Parser {
 
 				switch (alt9) {
 				case 1 :
-					// /Users/jkuo/PealApp-lift/antlr/PealProgram.g:97:34: rule
+					// /Users/jkuo/PealApp-lift/antlr/PealProgram.g:105:34: rule
 					{
 					pushFollow(FOLLOW_rule_in_pol634);
 					rule2=rule();
@@ -800,7 +808,7 @@ public class PealProgramParser extends Parser {
 
 
 	// $ANTLR start "rule"
-	// /Users/jkuo/PealApp-lift/antlr/PealProgram.g:101:1: rule returns [Rule r] : '(' id0= IDENT s= score ')' ;
+	// /Users/jkuo/PealApp-lift/antlr/PealProgram.g:109:1: rule returns [Rule r] : '(' id0= IDENT s= score ')' ;
 	public final Rule rule() throws RecognitionException {
 		Rule r = null;
 
@@ -809,8 +817,8 @@ public class PealProgramParser extends Parser {
 		Score s =null;
 
 		try {
-			// /Users/jkuo/PealApp-lift/antlr/PealProgram.g:102:2: ( '(' id0= IDENT s= score ')' )
-			// /Users/jkuo/PealApp-lift/antlr/PealProgram.g:102:4: '(' id0= IDENT s= score ')'
+			// /Users/jkuo/PealApp-lift/antlr/PealProgram.g:110:2: ( '(' id0= IDENT s= score ')' )
+			// /Users/jkuo/PealApp-lift/antlr/PealProgram.g:110:4: '(' id0= IDENT s= score ')'
 			{
 			match(input,9,FOLLOW_9_in_rule665); 
 			id0=(Token)match(input,IDENT,FOLLOW_IDENT_in_rule669); 
@@ -837,7 +845,7 @@ public class PealProgramParser extends Parser {
 
 
 	// $ANTLR start "score"
-	// /Users/jkuo/PealApp-lift/antlr/PealProgram.g:105:1: score returns [Score s] : (r= raw_score |r= raw_score '[' n1= NUMBER ',' n2= NUMBER ']' |n= NUMBER |n= NUMBER '[' n1= NUMBER ',' n2= NUMBER ']' );
+	// /Users/jkuo/PealApp-lift/antlr/PealProgram.g:113:1: score returns [Score s] : (r= raw_score |r= raw_score '[' n1= NUMBER ',' n2= NUMBER ']' |n= NUMBER |n= NUMBER '[' n1= NUMBER ',' n2= NUMBER ']' );
 	public final Score score() throws RecognitionException {
 		Score s = null;
 
@@ -848,12 +856,12 @@ public class PealProgramParser extends Parser {
 		VariableFormula r =null;
 
 		try {
-			// /Users/jkuo/PealApp-lift/antlr/PealProgram.g:106:2: (r= raw_score |r= raw_score '[' n1= NUMBER ',' n2= NUMBER ']' |n= NUMBER |n= NUMBER '[' n1= NUMBER ',' n2= NUMBER ']' )
+			// /Users/jkuo/PealApp-lift/antlr/PealProgram.g:114:2: (r= raw_score |r= raw_score '[' n1= NUMBER ',' n2= NUMBER ']' |n= NUMBER |n= NUMBER '[' n1= NUMBER ',' n2= NUMBER ']' )
 			int alt10=4;
 			alt10 = dfa10.predict(input);
 			switch (alt10) {
 				case 1 :
-					// /Users/jkuo/PealApp-lift/antlr/PealProgram.g:106:4: r= raw_score
+					// /Users/jkuo/PealApp-lift/antlr/PealProgram.g:114:4: r= raw_score
 					{
 					pushFollow(FOLLOW_raw_score_in_score695);
 					r=raw_score();
@@ -863,7 +871,7 @@ public class PealProgramParser extends Parser {
 					}
 					break;
 				case 2 :
-					// /Users/jkuo/PealApp-lift/antlr/PealProgram.g:107:4: r= raw_score '[' n1= NUMBER ',' n2= NUMBER ']'
+					// /Users/jkuo/PealApp-lift/antlr/PealProgram.g:115:4: r= raw_score '[' n1= NUMBER ',' n2= NUMBER ']'
 					{
 					pushFollow(FOLLOW_raw_score_in_score704);
 					r=raw_score();
@@ -878,14 +886,14 @@ public class PealProgramParser extends Parser {
 					}
 					break;
 				case 3 :
-					// /Users/jkuo/PealApp-lift/antlr/PealProgram.g:108:4: n= NUMBER
+					// /Users/jkuo/PealApp-lift/antlr/PealProgram.g:116:4: n= NUMBER
 					{
 					n=(Token)match(input,NUMBER,FOLLOW_NUMBER_in_score726); 
 					s = new Score(new Left<BigDecimal,VariableFormula>(BigDecimal.valueOf(Double.valueOf((n!=null?n.getText():null)))), scala.Option.apply((ScoreRange) null));
 					}
 					break;
 				case 4 :
-					// /Users/jkuo/PealApp-lift/antlr/PealProgram.g:109:4: n= NUMBER '[' n1= NUMBER ',' n2= NUMBER ']'
+					// /Users/jkuo/PealApp-lift/antlr/PealProgram.g:117:4: n= NUMBER '[' n1= NUMBER ',' n2= NUMBER ']'
 					{
 					n=(Token)match(input,NUMBER,FOLLOW_NUMBER_in_score735); 
 					match(input,23,FOLLOW_23_in_score737); 
@@ -913,7 +921,7 @@ public class PealProgramParser extends Parser {
 
 
 	// $ANTLR start "raw_score"
-	// /Users/jkuo/PealApp-lift/antlr/PealProgram.g:112:1: raw_score returns [VariableFormula s] : m0= vmult ( '+' m= mult )* ;
+	// /Users/jkuo/PealApp-lift/antlr/PealProgram.g:120:1: raw_score returns [VariableFormula s] : m0= vmult ( '+' m= mult )* ;
 	public final VariableFormula raw_score() throws RecognitionException {
 		VariableFormula s = null;
 
@@ -922,15 +930,15 @@ public class PealProgramParser extends Parser {
 		Multiplier m =null;
 
 		try {
-			// /Users/jkuo/PealApp-lift/antlr/PealProgram.g:113:2: (m0= vmult ( '+' m= mult )* )
-			// /Users/jkuo/PealApp-lift/antlr/PealProgram.g:113:4: m0= vmult ( '+' m= mult )*
+			// /Users/jkuo/PealApp-lift/antlr/PealProgram.g:121:2: (m0= vmult ( '+' m= mult )* )
+			// /Users/jkuo/PealApp-lift/antlr/PealProgram.g:121:4: m0= vmult ( '+' m= mult )*
 			{
 			pushFollow(FOLLOW_vmult_in_raw_score768);
 			m0=vmult();
 			state._fsp--;
 
 			s = new VariableFormula().add(m0);
-			// /Users/jkuo/PealApp-lift/antlr/PealProgram.g:113:54: ( '+' m= mult )*
+			// /Users/jkuo/PealApp-lift/antlr/PealProgram.g:121:54: ( '+' m= mult )*
 			loop11:
 			while (true) {
 				int alt11=2;
@@ -941,7 +949,7 @@ public class PealProgramParser extends Parser {
 
 				switch (alt11) {
 				case 1 :
-					// /Users/jkuo/PealApp-lift/antlr/PealProgram.g:113:55: '+' m= mult
+					// /Users/jkuo/PealApp-lift/antlr/PealProgram.g:121:55: '+' m= mult
 					{
 					match(input,12,FOLLOW_12_in_raw_score773); 
 					pushFollow(FOLLOW_mult_in_raw_score777);
@@ -974,7 +982,7 @@ public class PealProgramParser extends Parser {
 
 
 	// $ANTLR start "vmult"
-	// /Users/jkuo/PealApp-lift/antlr/PealProgram.g:116:1: vmult returns [Multiplier m] : (id1= IDENT '*' n= NUMBER |n= NUMBER '*' id1= IDENT |id1= IDENT );
+	// /Users/jkuo/PealApp-lift/antlr/PealProgram.g:124:1: vmult returns [Multiplier m] : (id1= IDENT '*' n= NUMBER |n= NUMBER '*' id1= IDENT |id1= IDENT );
 	public final Multiplier vmult() throws RecognitionException {
 		Multiplier m = null;
 
@@ -983,7 +991,7 @@ public class PealProgramParser extends Parser {
 		Token n=null;
 
 		try {
-			// /Users/jkuo/PealApp-lift/antlr/PealProgram.g:117:2: (id1= IDENT '*' n= NUMBER |n= NUMBER '*' id1= IDENT |id1= IDENT )
+			// /Users/jkuo/PealApp-lift/antlr/PealProgram.g:125:2: (id1= IDENT '*' n= NUMBER |n= NUMBER '*' id1= IDENT |id1= IDENT )
 			int alt12=3;
 			int LA12_0 = input.LA(1);
 			if ( (LA12_0==IDENT) ) {
@@ -1020,7 +1028,7 @@ public class PealProgramParser extends Parser {
 
 			switch (alt12) {
 				case 1 :
-					// /Users/jkuo/PealApp-lift/antlr/PealProgram.g:117:4: id1= IDENT '*' n= NUMBER
+					// /Users/jkuo/PealApp-lift/antlr/PealProgram.g:125:4: id1= IDENT '*' n= NUMBER
 					{
 					id1=(Token)match(input,IDENT,FOLLOW_IDENT_in_vmult801); 
 					match(input,11,FOLLOW_11_in_vmult803); 
@@ -1029,7 +1037,7 @@ public class PealProgramParser extends Parser {
 					}
 					break;
 				case 2 :
-					// /Users/jkuo/PealApp-lift/antlr/PealProgram.g:118:4: n= NUMBER '*' id1= IDENT
+					// /Users/jkuo/PealApp-lift/antlr/PealProgram.g:126:4: n= NUMBER '*' id1= IDENT
 					{
 					n=(Token)match(input,NUMBER,FOLLOW_NUMBER_in_vmult816); 
 					match(input,11,FOLLOW_11_in_vmult818); 
@@ -1038,7 +1046,7 @@ public class PealProgramParser extends Parser {
 					}
 					break;
 				case 3 :
-					// /Users/jkuo/PealApp-lift/antlr/PealProgram.g:119:4: id1= IDENT
+					// /Users/jkuo/PealApp-lift/antlr/PealProgram.g:127:4: id1= IDENT
 					{
 					id1=(Token)match(input,IDENT,FOLLOW_IDENT_in_vmult831); 
 					m = new Multiplier(BigDecimal.valueOf(1), (id1!=null?id1.getText():null));
@@ -1061,7 +1069,7 @@ public class PealProgramParser extends Parser {
 
 
 	// $ANTLR start "mult"
-	// /Users/jkuo/PealApp-lift/antlr/PealProgram.g:122:1: mult returns [Multiplier m] : (id1= IDENT '*' n= NUMBER |n= NUMBER '*' id1= IDENT |n= NUMBER |id1= IDENT );
+	// /Users/jkuo/PealApp-lift/antlr/PealProgram.g:130:1: mult returns [Multiplier m] : (id1= IDENT '*' n= NUMBER |n= NUMBER '*' id1= IDENT |n= NUMBER |id1= IDENT );
 	public final Multiplier mult() throws RecognitionException {
 		Multiplier m = null;
 
@@ -1070,7 +1078,7 @@ public class PealProgramParser extends Parser {
 		Token n=null;
 
 		try {
-			// /Users/jkuo/PealApp-lift/antlr/PealProgram.g:123:2: (id1= IDENT '*' n= NUMBER |n= NUMBER '*' id1= IDENT |n= NUMBER |id1= IDENT )
+			// /Users/jkuo/PealApp-lift/antlr/PealProgram.g:131:2: (id1= IDENT '*' n= NUMBER |n= NUMBER '*' id1= IDENT |n= NUMBER |id1= IDENT )
 			int alt13=4;
 			int LA13_0 = input.LA(1);
 			if ( (LA13_0==IDENT) ) {
@@ -1126,7 +1134,7 @@ public class PealProgramParser extends Parser {
 
 			switch (alt13) {
 				case 1 :
-					// /Users/jkuo/PealApp-lift/antlr/PealProgram.g:123:4: id1= IDENT '*' n= NUMBER
+					// /Users/jkuo/PealApp-lift/antlr/PealProgram.g:131:4: id1= IDENT '*' n= NUMBER
 					{
 					id1=(Token)match(input,IDENT,FOLLOW_IDENT_in_mult850); 
 					match(input,11,FOLLOW_11_in_mult852); 
@@ -1135,7 +1143,7 @@ public class PealProgramParser extends Parser {
 					}
 					break;
 				case 2 :
-					// /Users/jkuo/PealApp-lift/antlr/PealProgram.g:124:4: n= NUMBER '*' id1= IDENT
+					// /Users/jkuo/PealApp-lift/antlr/PealProgram.g:132:4: n= NUMBER '*' id1= IDENT
 					{
 					n=(Token)match(input,NUMBER,FOLLOW_NUMBER_in_mult865); 
 					match(input,11,FOLLOW_11_in_mult867); 
@@ -1144,14 +1152,14 @@ public class PealProgramParser extends Parser {
 					}
 					break;
 				case 3 :
-					// /Users/jkuo/PealApp-lift/antlr/PealProgram.g:125:4: n= NUMBER
+					// /Users/jkuo/PealApp-lift/antlr/PealProgram.g:133:4: n= NUMBER
 					{
 					n=(Token)match(input,NUMBER,FOLLOW_NUMBER_in_mult880); 
 					m = new Multiplier(BigDecimal.valueOf(Double.valueOf((n!=null?n.getText():null))), "");
 					}
 					break;
 				case 4 :
-					// /Users/jkuo/PealApp-lift/antlr/PealProgram.g:126:4: id1= IDENT
+					// /Users/jkuo/PealApp-lift/antlr/PealProgram.g:134:4: id1= IDENT
 					{
 					id1=(Token)match(input,IDENT,FOLLOW_IDENT_in_mult889); 
 					m = new Multiplier(BigDecimal.valueOf(1), (id1!=null?id1.getText():null));
@@ -1177,13 +1185,13 @@ public class PealProgramParser extends Parser {
 
 
 	// $ANTLR start "operator"
-	// /Users/jkuo/PealApp-lift/antlr/PealProgram.g:129:1: operator : ( 'max' | 'min' | '+' | '*' );
+	// /Users/jkuo/PealApp-lift/antlr/PealProgram.g:137:1: operator : ( 'max' | 'min' | '+' | '*' );
 	public final PealProgramParser.operator_return operator() throws RecognitionException {
 		PealProgramParser.operator_return retval = new PealProgramParser.operator_return();
 		retval.start = input.LT(1);
 
 		try {
-			// /Users/jkuo/PealApp-lift/antlr/PealProgram.g:129:10: ( 'max' | 'min' | '+' | '*' )
+			// /Users/jkuo/PealApp-lift/antlr/PealProgram.g:137:10: ( 'max' | 'min' | '+' | '*' )
 			// /Users/jkuo/PealApp-lift/antlr/PealProgram.g:
 			{
 			if ( (input.LA(1) >= 11 && input.LA(1) <= 12)||(input.LA(1) >= 32 && input.LA(1) <= 33) ) {
@@ -1278,7 +1286,7 @@ public class PealProgramParser extends Parser {
 		}
 		@Override
 		public String getDescription() {
-			return "105:1: score returns [Score s] : (r= raw_score |r= raw_score '[' n1= NUMBER ',' n2= NUMBER ']' |n= NUMBER |n= NUMBER '[' n1= NUMBER ',' n2= NUMBER ']' );";
+			return "113:1: score returns [Score s] : (r= raw_score |r= raw_score '[' n1= NUMBER ',' n2= NUMBER ']' |n= NUMBER |n= NUMBER '[' n1= NUMBER ',' n2= NUMBER ']' );";
 		}
 	}
 

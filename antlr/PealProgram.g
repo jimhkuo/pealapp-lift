@@ -33,6 +33,14 @@ public void reportError(RecognitionException e) {
 	throw new RuntimeException(getErrorMessage(e, PealProgramParser.tokenNames)); 
 }
 
+private void catchError(Map<String, PolicySet> pSets, String messageBody, String... policies) {
+	for (String policy : policies) {
+		if (!pSets.containsKey(policy)) {
+			throw new RuntimeException(policy + " is not declared in " + messageBody);
+		}
+	}
+}
+
 }
 
 @lexer::header {
@@ -55,9 +63,9 @@ program
     	|
 	id0=IDENT '=' id2=IDENT '<=' id3=IDENT {Condition cond = new LessThanThCondition(pSets.get($id2.text), new Right<BigDecimal,PolicySet>(pSets.get($id3.text))); conds.put($id0.text, cond);}
     	|
-	id0=IDENT '=' num=NUMBER '<' id2=IDENT {Condition cond = new GreaterThanThCondition(pSets.get($id2.text), new Left<BigDecimal,PolicySet>(BigDecimal.valueOf(Double.valueOf($num.text)))); conds.put($id0.text, cond);}
+	id0=IDENT '=' num=NUMBER '<' id2=IDENT {catchError(pSets, $id0.text + " = " + $num.text + " < " + $id2.text, $id2.text); Condition cond = new GreaterThanThCondition(pSets.get($id2.text), new Left<BigDecimal,PolicySet>(BigDecimal.valueOf(Double.valueOf($num.text)))); conds.put($id0.text, cond);}
 	|
-	id0=IDENT '=' id3=IDENT '<' id2=IDENT {Condition cond = new GreaterThanThCondition(pSets.get($id2.text), new Right<BigDecimal,PolicySet>(pSets.get($id3.text))); conds.put($id0.text, cond);}
+	id0=IDENT '=' id3=IDENT '<' id2=IDENT {catchError(pSets, $id0.text + " = " + $id3.text + " < " + $id2.text, $id2.text, $id3.text); Condition cond = new GreaterThanThCondition(pSets.get($id2.text), new Right<BigDecimal,PolicySet>(pSets.get($id3.text))); conds.put($id0.text, cond);}
     	|
 	id0=IDENT '=' '!' id1=IDENT {Condition cond = new NotCondition($id1.text); conds.put($id0.text, cond);}
 	|
