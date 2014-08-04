@@ -223,12 +223,13 @@ class PealProgramParserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
       val input = "POLICIES\nb1 = + ((q0 0.1)(q1 0.1)(q2 0.1)(q3 0.1)(q4 0.1)) default 0\n" +
         "POLICY_SETS\npSet = b1\n" +
         "CONDITIONS\n" +
-        "cond1 = q0" +
-        "ANALYSES\nanalysis1 = always_true? cond"
+        "cond1 = q0\n" +
+        "ANALYSES\n" +
+        "analysis1 = always_true? cond"
       val pealProgramParser = ParserHelper.getPealParser(input)
       pealProgramParser.program()
     }
-    ex.getMessage should be ("Predicate q5 has not appeared in policies prior to this point but is in cond1 = q5")
+    ex.getMessage should be ("Condition cond is not declared but is used on line \"analysis1 = always_true? cond\"")
   }
 
   @Test

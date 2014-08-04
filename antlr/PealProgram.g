@@ -82,8 +82,8 @@ program
 	('DOMAIN_SPECIFICS' {ignore = true;}
 	(IDENT | NUMBER | '+' | '*' | '=' | '(' | ')' | '<' | '<=' | '/' )*)?
 	('ANALYSES' {ignore = false;}
-	(id0=IDENT '=' 'always_true?' id1=IDENT {AnalysisGenerator analysis = new AlwaysTrue($id0.text, $id1.text); analyses.put($id0.text, analysis);}
-	|id0=IDENT '=' 'always_false?' id1=IDENT {AnalysisGenerator analysis = new AlwaysFalse($id0.text, $id1.text); analyses.put($id0.text, analysis);}
+	(id0=IDENT '=' 'always_true?' id1=IDENT {catchError(conds, "Condition $ is not declared but is used on line \"" + $id0.text + " = always_true? " + $id1.text+ "\"", $id1.text); AnalysisGenerator analysis = new AlwaysTrue($id0.text, $id1.text); analyses.put($id0.text, analysis);}
+	|id0=IDENT '=' 'always_false?' id1=IDENT {catchError(conds, "Condition $ is not declared but is used on line \"" + $id0.text + " = always_false? " + $id1.text+ "\"", $id1.text);  AnalysisGenerator analysis = new AlwaysFalse($id0.text, $id1.text); analyses.put($id0.text, analysis);}
 	|id0=IDENT '=' 'satisfiable?' id1=IDENT {AnalysisGenerator analysis = new Satisfiable($id0.text, $id1.text); analyses.put($id0.text, analysis);}	
 	|id0=IDENT '=' 'equivalent?' id1=IDENT id2=IDENT {AnalysisGenerator analysis = new Equivalent($id0.text, $id1.text, $id2.text); analyses.put($id0.text, analysis);}	
 	|id0=IDENT '=' 'different?' id1=IDENT id2=IDENT {AnalysisGenerator analysis = new Different($id0.text, $id1.text, $id2.text); analyses.put($id0.text, analysis);}		
