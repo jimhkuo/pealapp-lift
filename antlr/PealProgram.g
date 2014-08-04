@@ -25,6 +25,7 @@ public Map<String, AnalysisGenerator> analyses = new HashMap<String, AnalysisGen
 public Map<String, PolicySet> pSets = new HashMap<String, PolicySet>();
 private Map<String, String> pSetScores = new HashMap<String, String>();
 private List<Rule> l = null;
+private Map<String, Object> combined = null;
 private boolean ignore = false;
 
 
@@ -93,7 +94,8 @@ program
 	;
 
 pSet  
-	:id0=IDENT '=' id1=IDENT {PolicySet p = new BasicPolicySet(pols.get($id1.text), $id0.text); pSets.put($id0.text, p);}
+@init {combined = new HashMap<String, Object>(); combined.putAll(pols); combined.putAll(pSets); }
+	:id0=IDENT '=' id1=IDENT {catchError(combined, "$ is not declared but is used on line \"" + $id0.text + " = " + $id1.text + "\"", $id1.text); PolicySet p = new BasicPolicySet(pols.get($id1.text), $id0.text); pSets.put($id0.text, p);}
 	|id0=IDENT '=' 'max' '(' id1=IDENT ',' id2=IDENT ')' {PolicySet p = new MaxPolicySet(PolicyResolver.getFromOr(pols, pSets, $id1.text), PolicyResolver.getFromOr(pols, pSets, $id2.text), $id0.text); pSets.put($id0.text, p);}
 	|id0=IDENT '=' 'min' '(' id1=IDENT ',' id2=IDENT ')' {PolicySet p = new MinPolicySet(PolicyResolver.getFromOr(pols, pSets, $id1.text), PolicyResolver.getFromOr(pols, pSets, $id2.text), $id0.text); pSets.put($id0.text, p);}
 	|id0=IDENT '=' '+' '(' id1=IDENT ',' id2=IDENT ')' {PolicySet p = new PlusPolicySet(PolicyResolver.getFromOr(pols, pSets, $id1.text), PolicyResolver.getFromOr(pols, pSets, $id2.text), $id0.text); pSets.put($id0.text, p);}
