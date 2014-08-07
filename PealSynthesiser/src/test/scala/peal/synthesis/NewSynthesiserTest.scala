@@ -2,7 +2,7 @@ package peal.synthesis
 
 import org.scalatest.junit.ShouldMatchersForJUnit
 import peal.util.Z3ModelMatcher
-import org.junit.Test
+import org.junit.{Ignore, Test}
 
 class NewSynthesiserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
 
@@ -593,6 +593,7 @@ class NewSynthesiserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
     new NewSynthesiser(input).generate() should startWith(expected)
   }
 
+  @Ignore("not used")
   @Test
   def testCanDoAnalysesAlwaysTrueForOtherConditions() {
     val input = "POLICIES\n" +
@@ -604,8 +605,8 @@ class NewSynthesiserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
       "CONDITIONS\n" +
       "cond1 = pSet1 < pSet2\n" +
       "cond2 = pSet2 <= pSet1\n" +
-      "cond3 = !q1\n" +
-      "cond4 = cond1 && q2\n" +
+      "cond3 = q1\n" +
+      "cond4 = cond1 && cond3\n" +
       "cond5 = true\n" +
       "cond6 = false\n" +
       "cond7 = cond2 || cond3\n" +
