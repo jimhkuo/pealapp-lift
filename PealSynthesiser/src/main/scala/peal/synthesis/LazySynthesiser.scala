@@ -194,7 +194,7 @@ class LazySynthesiser(input: String) extends Synthesiser{
 
     val sortedAnalyses = analyses.keys.toSeq.sortWith(_ < _)
     val generatedAnalyses = for (analysis <- sortedAnalyses) yield {
-      "(echo \"Result of analysis [" + analyses(analysis).analysisName + "]:\")\n" + analyses(analysis).z3SMTInput
+      "(echo \"Result of analysis [" + analyses(analysis).analysisName + "]:\")\n(push)\n" + analyses(analysis).z3SMTInput + "(pop)\n"
     }
 
     declarations.mkString("") + variableDeclarations.mkString("") + nonConstantScoreDeclarations.mkString("") + condDeclarations.mkString("") + buffer.toString() + domainSpecifics.mkString("", "\n", "\n") + generatedAnalyses.mkString("")
