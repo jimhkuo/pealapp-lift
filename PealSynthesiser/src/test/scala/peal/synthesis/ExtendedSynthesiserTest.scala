@@ -8,7 +8,11 @@ class ExtendedSynthesiserTest extends ShouldMatchersForJUnit with Z3ModelMatcher
 
   @Test
   def testNoDuplicateDeclarations() {
-    val input = "POLICIES\nfuel = +((gasoline 0.1) (coal 0.02) (wood 0.09)) default 0\nignition = +((matches 0.2) (gas_stove 0.1) (electrical_sparc 0.05)) default 0\noxygen = +() default 1\nfire = *((True fuel_score) (True ignition_score) (True oxygen_score)) default 1\nPOLICY_SETS\npSet1 = fire\n" +
+    val input = "POLICIES\nfuel' = +((gasoline 0.1) (coal 0.02) (wood 0.09)) default 0\n" +
+      "ignition = +((matches 0.2) (gas_stove 0.1) (electrical_sparc 0.05)) default 0\n" +
+      "oxygen = +() default 1\n" +
+      "fire = *((True fuel'_score) (True ignition_score) (True oxygen_score)) default 1\n" +
+      "POLICY_SETS\npSet1 = fire\n" +
       "CONDITIONS\ncond1 = 0.0734 < pSet1\ncond2 = 0.0735 < pSet1\ncond3 = pSet1 <= 0.0735\ncond45 = coal\ncond4 = cond45 && cond3\n" +
       "DOMAIN_SPECIFICS\n(assert True)\nANALYSES\nname1 = satisfiable? cond1\nname2 = satisfiable? cond2\nname3 = satisfiable? cond4"
     new ExtendedSynthesiser(input).generate(doVacuityCheck = true) should be("(declare-const gas_stove Bool)\n" +
@@ -18,7 +22,7 @@ class ExtendedSynthesiserTest extends ShouldMatchersForJUnit with Z3ModelMatcher
       "(declare-const matches Bool)\n" +
       "(declare-const True Bool)\n\n" +
       "(declare-const fire_score Real)\n" +
-      "(declare-const fuel_score Real)\n" +
+      "(declare-const fuel'_score Real)\n" +
       "(declare-const ignition_score Real)\n" +
       "(declare-const oxygen_score Real)\n" +
       "(declare-const pSet1_score Real)\n" +
@@ -27,7 +31,16 @@ class ExtendedSynthesiserTest extends ShouldMatchersForJUnit with Z3ModelMatcher
       "(declare-const cond2 Bool)\n" +
       "(declare-const cond4 Bool)\n" +
       "(declare-const cond1 Bool)\n\n" +
-      "(assert True)\n(assert (= cond45 coal))\n(assert (= cond1 (< 0.0734 fire_score)))\n(assert (= cond2 (< 0.0735 fire_score)))\n(assert (= cond3 (<= fire_score 0.0735)))\n(assert (= cond4 (and coal (<= fire_score 0.0735))))\n(assert (= oxygen_score 1.0))\n(assert (= ignition_score (ite (or matches gas_stove electrical_sparc) (+ (ite matches 0.2 0.0) (ite gas_stove 0.1 0.0) (ite electrical_sparc 0.05 0.0)) 0.0)))\n(assert (= fuel_score (ite (or gasoline coal wood) (+ (ite gasoline 0.1 0.0) (ite coal 0.02 0.0) (ite wood 0.09 0.0)) 0.0)))\n(assert (= fire_score (ite (or True True True) (* (ite True fuel_score 1.0) (ite True ignition_score 1.0) (ite True oxygen_score 1.0)) 1.0)))\n" +
+      "(assert True)\n" +
+      "(assert (= cond45 coal))\n" +
+      "(assert (= cond1 (< 0.0734 fire_score)))\n" +
+      "(assert (= cond2 (< 0.0735 fire_score)))\n" +
+      "(assert (= cond3 (<= fire_score 0.0735)))\n" +
+      "(assert (= cond4 (and coal (<= fire_score 0.0735))))\n" +
+      "(assert (= oxygen_score 1.0))\n" +
+      "(assert (= ignition_score (ite (or matches gas_stove electrical_sparc) (+ (ite matches 0.2 0.0) (ite gas_stove 0.1 0.0) (ite electrical_sparc 0.05 0.0)) 0.0)))\n" +
+      "(assert (= fire_score (ite (or True True True) (* (ite True fuel'_score 1.0) (ite True ignition_score 1.0) (ite True oxygen_score 1.0)) 1.0)))\n" +
+      "(assert (= fuel'_score (ite (or gasoline coal wood) (+ (ite gasoline 0.1 0.0) (ite coal 0.02 0.0) (ite wood 0.09 0.0)) 0.0)))\n" +
       "(echo \"Result of analysis [cond1_vcf = always_false? cond1]:\")\n(push)\n(declare-const always_false_cond1_vcf Bool)\n(assert (= always_false_cond1_vcf cond1))\n(assert always_false_cond1_vcf)\n(check-sat)\n(get-model)\n(pop)\n" +
       "(echo \"Result of analysis [cond1_vct = always_true? cond1]:\")\n(push)\n(declare-const always_true_cond1_vct Bool)\n(assert (= always_true_cond1_vct cond1))\n(assert (not always_true_cond1_vct))\n(check-sat)\n(get-model)\n(pop)\n" +
       "(echo \"Result of analysis [cond2_vcf = always_false? cond2]:\")\n(push)\n(declare-const always_false_cond2_vcf Bool)\n(assert (= always_false_cond2_vcf cond2))\n(assert always_false_cond2_vcf)\n(check-sat)\n(get-model)\n(pop)\n" +

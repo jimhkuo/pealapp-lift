@@ -87,7 +87,7 @@ error :	 Z3ERROR;
 
 
 NUMBER : ('.'|'0'..'9'|'-'|'E')+ {if(ignore) skip();};
-IDENT : ('a'..'z' | 'A'..'Z')( '!' | '_' | 'a'..'z' | 'A'..'Z' | '0'..'9')* {if(ignore) skip();};
+IDENT : ('a'..'z' | 'A'..'Z' | '\'')( '!' | '_' | 'a'..'z' | 'A'..'Z' | '0'..'9'| '\'')* {if(ignore) skip();};
 WS : (' ' | '\t' | '\n' | '\r' | '\f')+ { $channel = HIDDEN;};
 UNSATMESSAGE : '(error "line ' NUMBER ' column ' NUMBER': model is not available")';
 Z3ERROR :	 '(error "line ' NUMBER ' column ' NUMBER ': invalid declaration, constant \'' IDENT '\' (whith the given signature) already declared")';

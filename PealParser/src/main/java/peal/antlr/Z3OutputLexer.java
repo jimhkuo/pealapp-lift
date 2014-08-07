@@ -1,4 +1,4 @@
-// $ANTLR 3.5.1 /Users/jkuo/PealApp-lift/antlr/Z3Output.g 2014-07-22 07:35:00
+// $ANTLR 3.5.1 /Users/jkuo/PealApp-lift/antlr/Z3Output.g 2014-08-07 11:02:03
 
 package peal.antlr;
 
@@ -568,10 +568,10 @@ public class Z3OutputLexer extends Lexer {
 		try {
 			int _type = IDENT;
 			int _channel = DEFAULT_TOKEN_CHANNEL;
-			// /Users/jkuo/PealApp-lift/antlr/Z3Output.g:90:7: ( ( 'a' .. 'z' | 'A' .. 'Z' ) ( '!' | '_' | 'a' .. 'z' | 'A' .. 'Z' | '0' .. '9' )* )
-			// /Users/jkuo/PealApp-lift/antlr/Z3Output.g:90:9: ( 'a' .. 'z' | 'A' .. 'Z' ) ( '!' | '_' | 'a' .. 'z' | 'A' .. 'Z' | '0' .. '9' )*
+			// /Users/jkuo/PealApp-lift/antlr/Z3Output.g:90:7: ( ( 'a' .. 'z' | 'A' .. 'Z' | '\\'' ) ( '!' | '_' | 'a' .. 'z' | 'A' .. 'Z' | '0' .. '9' | '\\'' )* )
+			// /Users/jkuo/PealApp-lift/antlr/Z3Output.g:90:9: ( 'a' .. 'z' | 'A' .. 'Z' | '\\'' ) ( '!' | '_' | 'a' .. 'z' | 'A' .. 'Z' | '0' .. '9' | '\\'' )*
 			{
-			if ( (input.LA(1) >= 'A' && input.LA(1) <= 'Z')||(input.LA(1) >= 'a' && input.LA(1) <= 'z') ) {
+			if ( input.LA(1)=='\''||(input.LA(1) >= 'A' && input.LA(1) <= 'Z')||(input.LA(1) >= 'a' && input.LA(1) <= 'z') ) {
 				input.consume();
 			}
 			else {
@@ -579,12 +579,12 @@ public class Z3OutputLexer extends Lexer {
 				recover(mse);
 				throw mse;
 			}
-			// /Users/jkuo/PealApp-lift/antlr/Z3Output.g:90:30: ( '!' | '_' | 'a' .. 'z' | 'A' .. 'Z' | '0' .. '9' )*
+			// /Users/jkuo/PealApp-lift/antlr/Z3Output.g:90:37: ( '!' | '_' | 'a' .. 'z' | 'A' .. 'Z' | '0' .. '9' | '\\'' )*
 			loop2:
 			while (true) {
 				int alt2=2;
 				int LA2_0 = input.LA(1);
-				if ( (LA2_0=='!'||(LA2_0 >= '0' && LA2_0 <= '9')||(LA2_0 >= 'A' && LA2_0 <= 'Z')||LA2_0=='_'||(LA2_0 >= 'a' && LA2_0 <= 'z')) ) {
+				if ( (LA2_0=='!'||LA2_0=='\''||(LA2_0 >= '0' && LA2_0 <= '9')||(LA2_0 >= 'A' && LA2_0 <= 'Z')||LA2_0=='_'||(LA2_0 >= 'a' && LA2_0 <= 'z')) ) {
 					alt2=1;
 				}
 
@@ -592,7 +592,7 @@ public class Z3OutputLexer extends Lexer {
 				case 1 :
 					// /Users/jkuo/PealApp-lift/antlr/Z3Output.g:
 					{
-					if ( input.LA(1)=='!'||(input.LA(1) >= '0' && input.LA(1) <= '9')||(input.LA(1) >= 'A' && input.LA(1) <= 'Z')||input.LA(1)=='_'||(input.LA(1) >= 'a' && input.LA(1) <= 'z') ) {
+					if ( input.LA(1)=='!'||input.LA(1)=='\''||(input.LA(1) >= '0' && input.LA(1) <= '9')||(input.LA(1) >= 'A' && input.LA(1) <= 'Z')||input.LA(1)=='_'||(input.LA(1) >= 'a' && input.LA(1) <= 'z') ) {
 						input.consume();
 					}
 					else {
@@ -964,9 +964,9 @@ public class Z3OutputLexer extends Lexer {
 	static final String DFA4_specialS =
 		"\122\uffff}>";
 	static final String[] DFA4_transitionS = {
-			"\2\21\1\uffff\2\21\22\uffff\1\21\7\uffff\1\1\1\2\1\3\1\4\1\uffff\1\5"+
-			"\1\17\1\6\12\17\2\uffff\1\7\1\10\1\uffff\1\11\1\uffff\4\20\1\16\14\20"+
-			"\1\12\10\20\2\uffff\1\13\3\uffff\22\20\1\14\1\20\1\15\5\20",
+			"\2\21\1\uffff\2\21\22\uffff\1\21\6\uffff\1\20\1\1\1\2\1\3\1\4\1\uffff"+
+			"\1\5\1\17\1\6\12\17\2\uffff\1\7\1\10\1\uffff\1\11\1\uffff\4\20\1\16\14"+
+			"\20\1\12\10\20\2\uffff\1\13\3\uffff\22\20\1\14\1\20\1\15\5\20",
 			"\1\22\2\uffff\1\23\1\27\1\24\2\uffff\1\25\3\uffff\1\26",
 			"",
 			"",
@@ -980,8 +980,8 @@ public class Z3OutputLexer extends Lexer {
 			"",
 			"\1\35",
 			"\1\36",
-			"\1\20\16\uffff\12\37\7\uffff\4\20\1\37\25\20\4\uffff\1\20\1\uffff\32"+
-			"\20",
+			"\1\20\5\uffff\1\20\10\uffff\12\37\7\uffff\4\20\1\37\25\20\4\uffff\1"+
+			"\20\1\uffff\32\20",
 			"",
 			"",
 			"",
@@ -998,12 +998,13 @@ public class Z3OutputLexer extends Lexer {
 			"\1\42",
 			"\1\43",
 			"\1\44\7\uffff\1\45",
-			"\1\20\16\uffff\12\37\7\uffff\4\20\1\37\25\20\4\uffff\1\20\1\uffff\32"+
-			"\20",
+			"\1\20\5\uffff\1\20\10\uffff\12\37\7\uffff\4\20\1\37\25\20\4\uffff\1"+
+			"\20\1\uffff\32\20",
 			"\1\46\2\uffff\1\47",
 			"\1\50",
 			"\1\51",
-			"\1\20\16\uffff\12\20\7\uffff\32\20\4\uffff\1\20\1\uffff\32\20",
+			"\1\20\5\uffff\1\20\10\uffff\12\20\7\uffff\32\20\4\uffff\1\20\1\uffff"+
+			"\32\20",
 			"\1\53",
 			"\1\54",
 			"",
@@ -1016,14 +1017,16 @@ public class Z3OutputLexer extends Lexer {
 			"\1\61",
 			"\1\62",
 			"\1\63",
-			"\1\20\16\uffff\12\20\7\uffff\32\20\4\uffff\1\20\1\uffff\32\20",
+			"\1\20\5\uffff\1\20\10\uffff\12\20\7\uffff\32\20\4\uffff\1\20\1\uffff"+
+			"\32\20",
 			"\1\65",
 			"\1\66",
 			"\1\67",
 			"",
 			"\1\70",
 			"\1\71",
-			"\1\20\16\uffff\12\20\7\uffff\32\20\4\uffff\1\20\1\uffff\32\20",
+			"\1\20\5\uffff\1\20\10\uffff\12\20\7\uffff\32\20\4\uffff\1\20\1\uffff"+
+			"\32\20",
 			"\1\73",
 			"\1\74",
 			"",

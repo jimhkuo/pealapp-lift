@@ -153,6 +153,6 @@ mult returns [Multiplier m]
 operator : 'max' | 'min' | '+' | '*';
 
 NUMBER : ('.'|'0'..'9'|'-'|'E')+ {if(ignore) skip();};
-IDENT : ('a'..'z' | 'A'..'Z')('a'..'z' | 'A'..'Z' | '0'..'9' | '_')* {if(ignore) skip();};
+IDENT : ('a'..'z' | 'A'..'Z' | '\'')('\'' | 'a'..'z' | 'A'..'Z' | '0'..'9' | '_')* {if(ignore) skip();};
 WS : (' ' | '\t' | '\n' | '\r' | '\f')+ { $channel = HIDDEN;};
 	
