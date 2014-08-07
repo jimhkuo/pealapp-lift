@@ -41,16 +41,16 @@ class ExtendedSynthesiserTest extends ShouldMatchersForJUnit with Z3ModelMatcher
       "(assert (= ignition_score (ite (or matches gas_stove electrical_sparc) (+ (ite matches 0.2 0.0) (ite gas_stove 0.1 0.0) (ite electrical_sparc 0.05 0.0)) 0.0)))\n" +
       "(assert (= fire_score (ite (or True True True) (* (ite True fuel'_score 1.0) (ite True ignition_score 1.0) (ite True oxygen_score 1.0)) 1.0)))\n" +
       "(assert (= fuel'_score (ite (or gasoline coal wood) (+ (ite gasoline 0.1 0.0) (ite coal 0.02 0.0) (ite wood 0.09 0.0)) 0.0)))\n" +
-      "(echo \"Result of analysis [cond1_vcf = always_false? cond1]:\")\n(push)\n(declare-const always_false_cond1_vcf Bool)\n(assert (= always_false_cond1_vcf cond1))\n(assert always_false_cond1_vcf)\n(check-sat)\n(get-model)\n(pop)\n" +
-      "(echo \"Result of analysis [cond1_vct = always_true? cond1]:\")\n(push)\n(declare-const always_true_cond1_vct Bool)\n(assert (= always_true_cond1_vct cond1))\n(assert (not always_true_cond1_vct))\n(check-sat)\n(get-model)\n(pop)\n" +
-      "(echo \"Result of analysis [cond2_vcf = always_false? cond2]:\")\n(push)\n(declare-const always_false_cond2_vcf Bool)\n(assert (= always_false_cond2_vcf cond2))\n(assert always_false_cond2_vcf)\n(check-sat)\n(get-model)\n(pop)\n" +
-      "(echo \"Result of analysis [cond2_vct = always_true? cond2]:\")\n(push)\n(declare-const always_true_cond2_vct Bool)\n(assert (= always_true_cond2_vct cond2))\n(assert (not always_true_cond2_vct))\n(check-sat)\n(get-model)\n(pop)\n" +
-      "(echo \"Result of analysis [cond3_vcf = always_false? cond3]:\")\n(push)\n(declare-const always_false_cond3_vcf Bool)\n(assert (= always_false_cond3_vcf cond3))\n(assert always_false_cond3_vcf)\n(check-sat)\n(get-model)\n(pop)\n" +
-      "(echo \"Result of analysis [cond3_vct = always_true? cond3]:\")\n(push)\n(declare-const always_true_cond3_vct Bool)\n(assert (= always_true_cond3_vct cond3))\n(assert (not always_true_cond3_vct))\n(check-sat)\n(get-model)\n(pop)\n" +
-      "(echo \"Result of analysis [cond45_vcf = always_false? cond45]:\")\n(push)\n(declare-const always_false_cond45_vcf Bool)\n(assert (= always_false_cond45_vcf cond45))\n(assert always_false_cond45_vcf)\n(check-sat)\n(get-model)\n(pop)\n" +
-      "(echo \"Result of analysis [cond45_vct = always_true? cond45]:\")\n(push)\n(declare-const always_true_cond45_vct Bool)\n(assert (= always_true_cond45_vct cond45))\n(assert (not always_true_cond45_vct))\n(check-sat)\n(get-model)\n(pop)\n" +
-      "(echo \"Result of analysis [cond4_vcf = always_false? cond4]:\")\n(push)\n(declare-const always_false_cond4_vcf Bool)\n(assert (= always_false_cond4_vcf cond4))\n(assert always_false_cond4_vcf)\n(check-sat)\n(get-model)\n(pop)\n" +
-      "(echo \"Result of analysis [cond4_vct = always_true? cond4]:\")\n(push)\n(declare-const always_true_cond4_vct Bool)\n(assert (= always_true_cond4_vct cond4))\n(assert (not always_true_cond4_vct))\n(check-sat)\n(get-model)\n(pop)\n" +
+      "(echo \"Result of analysis [a1_cond1_vct = always_true? cond1]:\")\n(push)\n(declare-const always_true_a1_cond1_vct Bool)\n(assert (= always_true_a1_cond1_vct cond1))\n(assert (not always_true_a1_cond1_vct))\n(check-sat)\n(get-model)\n(pop)\n" +
+      "(echo \"Result of analysis [a1_cond2_vct = always_true? cond2]:\")\n(push)\n(declare-const always_true_a1_cond2_vct Bool)\n(assert (= always_true_a1_cond2_vct cond2))\n(assert (not always_true_a1_cond2_vct))\n(check-sat)\n(get-model)\n(pop)\n" +
+      "(echo \"Result of analysis [a1_cond3_vct = always_true? cond3]:\")\n(push)\n(declare-const always_true_a1_cond3_vct Bool)\n(assert (= always_true_a1_cond3_vct cond3))\n(assert (not always_true_a1_cond3_vct))\n(check-sat)\n(get-model)\n(pop)\n" +
+      "(echo \"Result of analysis [a1_cond45_vct = always_true? cond45]:\")\n(push)\n(declare-const always_true_a1_cond45_vct Bool)\n(assert (= always_true_a1_cond45_vct cond45))\n(assert (not always_true_a1_cond45_vct))\n(check-sat)\n(get-model)\n(pop)\n" +
+      "(echo \"Result of analysis [a1_cond4_vct = always_true? cond4]:\")\n(push)\n(declare-const always_true_a1_cond4_vct Bool)\n(assert (= always_true_a1_cond4_vct cond4))\n(assert (not always_true_a1_cond4_vct))\n(check-sat)\n(get-model)\n(pop)\n" +
+      "(echo \"Result of analysis [a2_cond1_vcf = always_false? cond1]:\")\n(push)\n(declare-const always_false_a2_cond1_vcf Bool)\n(assert (= always_false_a2_cond1_vcf cond1))\n(assert always_false_a2_cond1_vcf)\n(check-sat)\n(get-model)\n(pop)\n" +
+      "(echo \"Result of analysis [a2_cond2_vcf = always_false? cond2]:\")\n(push)\n(declare-const always_false_a2_cond2_vcf Bool)\n(assert (= always_false_a2_cond2_vcf cond2))\n(assert always_false_a2_cond2_vcf)\n(check-sat)\n(get-model)\n(pop)\n" +
+      "(echo \"Result of analysis [a2_cond3_vcf = always_false? cond3]:\")\n(push)\n(declare-const always_false_a2_cond3_vcf Bool)\n(assert (= always_false_a2_cond3_vcf cond3))\n(assert always_false_a2_cond3_vcf)\n(check-sat)\n(get-model)\n(pop)\n" +
+      "(echo \"Result of analysis [a2_cond45_vcf = always_false? cond45]:\")\n(push)\n(declare-const always_false_a2_cond45_vcf Bool)\n(assert (= always_false_a2_cond45_vcf cond45))\n(assert always_false_a2_cond45_vcf)\n(check-sat)\n(get-model)\n(pop)\n" +
+      "(echo \"Result of analysis [a2_cond4_vcf = always_false? cond4]:\")\n(push)\n(declare-const always_false_a2_cond4_vcf Bool)\n(assert (= always_false_a2_cond4_vcf cond4))\n(assert always_false_a2_cond4_vcf)\n(check-sat)\n(get-model)\n(pop)\n" +
       "(echo \"Result of analysis [name1 = satisfiable? cond1]:\")\n(push)\n(declare-const satisfiable_name1 Bool)\n(assert (= satisfiable_name1 cond1))\n(assert satisfiable_name1)\n(check-sat)\n(get-model)\n(pop)\n(echo \"Result of analysis [name2 = satisfiable? cond2]:\")\n(push)\n(declare-const satisfiable_name2 Bool)\n(assert (= satisfiable_name2 cond2))\n(assert satisfiable_name2)\n(check-sat)\n(get-model)\n(pop)\n(echo \"Result of analysis [name3 = satisfiable? cond4]:\")\n(push)\n(declare-const satisfiable_name3 Bool)\n(assert (= satisfiable_name3 cond4))\n(assert satisfiable_name3)\n(check-sat)\n(get-model)\n(pop)\n")
   }
 
@@ -62,8 +62,8 @@ class ExtendedSynthesiserTest extends ShouldMatchersForJUnit with Z3ModelMatcher
 
     println(new ExtendedSynthesiser(input).generate(doVacuityCheck = true))
     new ExtendedSynthesiser(input).generate(doVacuityCheck = true).trim should be ("(declare-const b1_score Real)\n(declare-const pSet1_score Real)\n(declare-const cond1 Bool)\n\n\n(assert (= cond1 (<= b1_score 0.5)))\n(assert (= b1_score 1.0))\n" +
-      "(echo \"Result of analysis [cond1_vcf = always_false? cond1]:\")\n(push)\n(declare-const always_false_cond1_vcf Bool)\n(assert (= always_false_cond1_vcf cond1))\n(assert always_false_cond1_vcf)\n(check-sat)\n(get-model)\n(pop)\n" +
-      "(echo \"Result of analysis [cond1_vct = always_true? cond1]:\")\n(push)\n(declare-const always_true_cond1_vct Bool)\n(assert (= always_true_cond1_vct cond1))\n(assert (not always_true_cond1_vct))\n(check-sat)\n(get-model)\n(pop)\n" +
+      "(echo \"Result of analysis [a1_cond1_vct = always_true? cond1]:\")\n(push)\n(declare-const always_true_a1_cond1_vct Bool)\n(assert (= always_true_a1_cond1_vct cond1))\n(assert (not always_true_a1_cond1_vct))\n(check-sat)\n(get-model)\n(pop)\n" +
+      "(echo \"Result of analysis [a2_cond1_vcf = always_false? cond1]:\")\n(push)\n(declare-const always_false_a2_cond1_vcf Bool)\n(assert (= always_false_a2_cond1_vcf cond1))\n(assert always_false_a2_cond1_vcf)\n(check-sat)\n(get-model)\n(pop)\n" +
       "(echo \"Result of analysis [name1 = always_true? cond1]:\")\n(push)\n(declare-const always_true_name1 Bool)\n(assert (= always_true_name1 cond1))\n(assert (not always_true_name1))\n(check-sat)\n(get-model)\n(pop)")
   }
 
@@ -95,8 +95,8 @@ class ExtendedSynthesiserTest extends ShouldMatchersForJUnit with Z3ModelMatcher
       "ANALYSES\nname1 = always_true? cond1\n"
 
     new ExtendedSynthesiser(input).generate(doVacuityCheck = true) should be ("(declare-const q1 Bool)\n(declare-const b1_default_U Real)\n(assert (and (<= b1_default_U 0.2) (<= -0.2 b1_default_U)))\n(declare-const b1_score Real)\n(declare-const pSet1_score Real)\n(declare-const cond1 Bool)\n(declare-const b1_q1_U Real)\n(assert (and (<= b1_q1_U 0.1) (<= -0.1 b1_q1_U)))\n\n(assert (= cond1 (<= b1_score 0.5)))\n(assert (= b1_score (ite q1 (+ 0.5 b1_q1_U) (+ 1.0 b1_default_U))))\n" +
-      "(echo \"Result of analysis [cond1_vcf = always_false? cond1]:\")\n(push)\n(declare-const always_false_cond1_vcf Bool)\n(assert (= always_false_cond1_vcf cond1))\n(assert always_false_cond1_vcf)\n(check-sat)\n(get-model)\n(pop)\n" +
-      "(echo \"Result of analysis [cond1_vct = always_true? cond1]:\")\n(push)\n(declare-const always_true_cond1_vct Bool)\n(assert (= always_true_cond1_vct cond1))\n(assert (not always_true_cond1_vct))\n(check-sat)\n(get-model)\n(pop)\n" +
+      "(echo \"Result of analysis [a1_cond1_vct = always_true? cond1]:\")\n(push)\n(declare-const always_true_a1_cond1_vct Bool)\n(assert (= always_true_a1_cond1_vct cond1))\n(assert (not always_true_a1_cond1_vct))\n(check-sat)\n(get-model)\n(pop)\n" +
+      "(echo \"Result of analysis [a2_cond1_vcf = always_false? cond1]:\")\n(push)\n(declare-const always_false_a2_cond1_vcf Bool)\n(assert (= always_false_a2_cond1_vcf cond1))\n(assert always_false_a2_cond1_vcf)\n(check-sat)\n(get-model)\n(pop)\n" +
       "(echo \"Result of analysis [name1 = always_true? cond1]:\")\n(push)\n(declare-const always_true_name1 Bool)\n(assert (= always_true_name1 cond1))\n(assert (not always_true_name1))\n(check-sat)\n(get-model)\n(pop)\n")
   }
 
@@ -116,8 +116,8 @@ class ExtendedSynthesiserTest extends ShouldMatchersForJUnit with Z3ModelMatcher
       "ANALYSES\nname1 = always_true? cond1\n"
 
     new ExtendedSynthesiser(input).generate(doVacuityCheck = true) should be ("(declare-const q1 Bool)\n(declare-const b1_default_U Real)\n(assert (and (<= b1_default_U 0.2) (<= -0.2 b1_default_U)))\n(declare-const b1_score Real)\n(declare-const pSet1_score Real)\n(declare-const cond1 Bool)\n(declare-const b1_q1_U Real)\n(assert (and (<= b1_q1_U 0.1) (<= -0.1 b1_q1_U)))\n\n(assert (= cond1 (<= b1_score 0.5)))\n(assert (= b1_score (ite q1 (+ 0.5 b1_q1_U) (+ 1.0 b1_default_U))))\n" +
-      "(echo \"Result of analysis [cond1_vcf = always_false? cond1]:\")\n(push)\n(declare-const always_false_cond1_vcf Bool)\n(assert (= always_false_cond1_vcf cond1))\n(assert always_false_cond1_vcf)\n(check-sat)\n(get-model)\n(pop)\n" +
-      "(echo \"Result of analysis [cond1_vct = always_true? cond1]:\")\n(push)\n(declare-const always_true_cond1_vct Bool)\n(assert (= always_true_cond1_vct cond1))\n(assert (not always_true_cond1_vct))\n(check-sat)\n(get-model)\n(pop)\n" +
+      "(echo \"Result of analysis [a1_cond1_vct = always_true? cond1]:\")\n(push)\n(declare-const always_true_a1_cond1_vct Bool)\n(assert (= always_true_a1_cond1_vct cond1))\n(assert (not always_true_a1_cond1_vct))\n(check-sat)\n(get-model)\n(pop)\n" +
+      "(echo \"Result of analysis [a2_cond1_vcf = always_false? cond1]:\")\n(push)\n(declare-const always_false_a2_cond1_vcf Bool)\n(assert (= always_false_a2_cond1_vcf cond1))\n(assert always_false_a2_cond1_vcf)\n(check-sat)\n(get-model)\n(pop)\n" +
       "(echo \"Result of analysis [name1 = always_true? cond1]:\")\n(push)\n(declare-const always_true_name1 Bool)\n(assert (= always_true_name1 cond1))\n(assert (not always_true_name1))\n(check-sat)\n(get-model)\n(pop)\n")
   }
 
