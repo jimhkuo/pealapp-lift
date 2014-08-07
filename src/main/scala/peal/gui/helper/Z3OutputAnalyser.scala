@@ -26,13 +26,13 @@ object Z3OutputAnalyser {
     val alwaysFalseConditions = z3OutputModels.filter(m => m._1.endsWith("_vcf") && m._2.isUnSat).map(_._1.dropRight("_vcf".length)).toSeq.sorted
 
     val vacuityCheckBlock = z3OutputModels.keySet.exists(k => k.endsWith("_vct") || k.endsWith("_vcf")) match {
-      case true => <p style={style}>
+      case true => <div style={style}>
         <h4>Vacuity check on all conditions declared in CONDITIONS section above</h4>
         Conditions that are always true:
         {alwaysTrueConditions.mkString(", ")}<br/>
         Conditions that are always false:
         {alwaysFalseConditions.mkString(", ")}
-      </p>
+      </div>
       case false => <span/>
     }
 

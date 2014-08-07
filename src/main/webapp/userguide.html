@@ -41,11 +41,17 @@ b_minOne = + () default -1
     The scores within rules may be constants (e.g. 30000 in policy b1 above), negative numbers (e.g. -0.2 in policy
     b4 above), variables, or constants multiplied with variables (e.g. 0.05*x in policy b4 above). All variables
     within score expressions of rules are implictly assigned the type Real. Additionally, a score expression s may
-    be followed by an interval [l,u] where l and u are constant real numbers such that l &lt;= u. For example, in
+    be followed by an interval [l,u] where l and u are constant real numbers such that l &lt;= 0.0 &lt;= u. For example,
+    in
     policy b2 we have rule (hasOtherLicense 0.4 [-0.1,0.1]). The meaning of this score expression is that it can be
     any number 0.4 + z where z is in the interval [-0.1,0.1]. This
     interval therefore models non-deterministic uncertainty of score
-    expressions.
+    expressions. If you use the same predicate more than once in the same policy and in rules whose scores have an
+    interval, you should disambiguate these names so that, e.g., b1 = +((q 0.4 [-0.1,0.2]) (q [0.0,0.1]) default 0.0
+    becomes b1 = +((q 0.4 [-0.1,0.2]) (q_copy1 0.0,0.1]) default 0.0. Not doing this will mean that the non-determinism
+    in [-0.1,0.2] and in [0.0,0.1] will be resolved to the same value. This may lead to unexpected analysis results. Of
+    course, any constraints you formulate for q will have to be cloned for q_copy1 as well. Fortunately, we only seem to
+    need this when q models 'true' in the composition of tree-like models -- so no complicated constraints need cloning.
 </p>
 
 
@@ -206,6 +212,20 @@ name5 = equivalent? cond3 cond5
     </li>
 </ul>
 
+<h4> What's in a name?</h4>
+
+<p> PEALT has a global name space for its input. It has some tolerance towards reusing the same name in a different
+    section, e.g. you may declare a policy b1 and then declare a condition with the same name b1. We do not recommend
+    this, if only as it will make models and scenarios hard to read and appreciate.
+</p>
+
+<p> The legal names of predicates, score variables, policies, policy sets, conditions, and analyses all follow the same
+    grammar:
+</p>
+<pre>
+IDENT : ('a'..'z' | 'A'..'Z')('a'..'z' | 'A'..'Z' | '0'..'9' | '_')*
+</pre>
+
 <h4>Vacuity checking</h4>
 
 
@@ -279,26 +299,23 @@ Conditions that are always false:
     form similar to this example:
 </p>
 
-<!--<pre>Result of analysis [name4 = implies? cond2 cond1]-->
-<!--cond2 is pSet1 > 0.6 and cond1 is pSet1 > 0.5-->
 
-<!--cond2 implies cond1-->
-
-<!--Output of analysis [name4] is Unsat: so no certification performed and no specialized policies reported.-->
-<!--</pre>-->
-
-<p xmlns="http://www.w3.org/1999/xhtml"
+<div xmlns="http://www.w3.org/1999/xhtml"
    style="font-family: Monaco, Menlo, Consolas, &quot;Courier New&quot;, monospace;display: block;padding: 9.5px;margin: 0 0 10px;font-size: 13px;line-height: 1.428571429;color: #333;word-break: break-all;word-wrap: break-word;background-color: #f5f5f5;border: 1px solid #ccc;border-radius: 4px;">
-<h4>Result of analysis [name4 = implies? cond2 cond1]</h4><span>
+    <h4>Result of analysis [name4 = implies? cond2 cond1]</h4>
+    <span>
       cond2 is pSet1 &gt; 0.6 and cond1 is pSet1 &gt; 0.5<br/>
-    </span><br/><span>
+    </span><br/>
+    <span>
       cond2 implies cond1<br/>
-    </span><span>
+    </span>
+    <span>
       <br/>
-    </span><span>
+    </span>
+    <span>
       Output of analysis [name4] is Unsat: so no certification performed and no specialized policies reported.<br/>
     </span>
-</p>
+</div>
 
 <p>
     The above was generated using the Social Network Access Control example and the outcome was UNSAT. The first line
@@ -312,45 +329,8 @@ Conditions that are always false:
     for the Car Rental Risks example, when vacuity checking is set OFF:
 </p>
 
-<!--<pre>Result of analysis [name2 = always_true? cond3] cond3 is (pSet1 &lt;= 50000.0)  &amp;&amp; (pSet_b4 &gt; 0.4)-->
 
-<!--cond3 is NOT always true, for example, in the scenario in which:-->
-<!--onlyLongDistanceUsage is False-->
-<!--speaksEnglish is True-->
-<!--isLuxuryCar is False-->
-<!--isCompact is False-->
-<!--hasOtherLicense is True-->
-<!--onlyCityUsage is False-->
-<!--isSedan is False-->
-<!--travelsAlone is True-->
-<!--accidentFreeForYears is True-->
-<!--mixedUsage is True-->
-<!--femaleDriver is True-->
-<!--someOffRoadDriving is False-->
-<!--b_minOne_score is -1.0-->
-<!--b2_hasOtherLicense_U is 0.0-->
-<!--b1_score is 50000.0-->
-<!--b3_score is 1.0/4.0-->
-<!--b2_score is 2.0/5.0-->
-<!--x is 9.0-->
-<!--b4_score is 2.0/5.0-->
-
-<!--Certification of analysis [name2] succeeded.-->
-
-<!--Policy scores statically inferred in this certification process:-->
-<!--b1 has score 50000-->
-<!--b3 has score 0.25-->
-<!--b4 has score 0.4-->
-<!--b_minOne has score -1-->
-
-<!--Policies in analysis [name2] specialised with respect to the above scenario:-->
-<!--b1 = max () default 50000-->
-<!--b2 = min (([hasOtherLicense] 0.4) (hasUSLicense? 0.9) (hasUKLicense? 0.6) (hasEULicense? 0.7)) default 0-->
-<!--b4 = + (([accidentFreeForYears speaksEnglish travelsAlone femaleDriver] 0.4)) default 0-->
-<!--b_minOne = + () default -1-->
-<!--</pre>-->
-
-<p xmlns="http://www.w3.org/1999/xhtml"
+<div xmlns="http://www.w3.org/1999/xhtml"
    style="font-family: Monaco, Menlo, Consolas, &quot;Courier New&quot;, monospace;display: block;padding: 9.5px;margin: 0 0 10px;font-size: 13px;line-height: 1.428571429;color: #333;word-break: break-all;word-wrap: break-word;background-color: #f5f5f5;border: 1px solid #ccc;border-radius: 4px;">
 <h4>Result of analysis [name2 = always_true? cond3]</h4><span>
       cond3 is (pSet1 &lt;= 50000.0) &amp;&amp; (pSet_b4 &gt; 0.4)<br/>
@@ -417,14 +397,14 @@ Conditions that are always false:
         style="font-weight: bold;color:red">]</span> <span style="font-weight: bold;color:red">0.4</span>)<span
         style="font-weight: bold;color:green"></span>) default 0<br/></span><span>b_minOne = + (<span
         style="font-weight: bold;color:green"></span>) default <span style="font-weight: bold;color:red">-1</span><br/></span>
-</p>
+</div>
 
 <p>
     As before, this output recalls the condition(s) analyzed here. Then it
     gives an explanation, here why a condition is not always true, and
     reports a scenario next that supports this claim. This is followed by
     a statement of whether independent certification of that scenario on
-    the PEALT condition(s) succeeded or failed. Such certification is
+    the PEALT condition(s) succeeded or failed. Such certification should be
     agnostic of any Z3 code that was generated for this analysis.</p>
 
 <p>
@@ -469,51 +449,8 @@ Conditions that are always false:
     constructs of Z3. We here list the output when vauity checking is set ON:
 </p>
 
-<!--<pre>Result of analysis [name2 = always_true? cond3]-->
-<!--cond3 is (pSet1 &lt;= 50000.0)  &amp;&amp; (pSet_b4 &gt; 0.4)-->
 
-<!--cond3 is NOT always true, for example, in the scenario in which:-->
-<!--isLuxuryCar is False-->
-<!--isCompact is False-->
-<!--hasUKLicense is False-->
-<!--hasEULicense is False-->
-<!--hasUSLicense is True-->
-<!--accidentFreeForYears is True-->
-<!--mixedUsage is True-->
-<!--onlyLongDistanceUsage is False-->
-<!--speaksEnglish is True-->
-<!--hasOtherLicense is False-->
-<!--onlyCityUsage is False-->
-<!--isSedan is False-->
-<!--travelsAlone is False-->
-<!--femaleDriver is True-->
-<!--someOffRoadDriving is False-->
-<!--b1_score is 50000.0-->
-<!--b3_score is 1.0/4.0-->
-<!--b2_score is 9.0/10.0-->
-<!--b4_score is 2.0/5.0-->
-<!--b2_hasOtherLicense_U is 0.0-->
-<!--b_minOne_score is -1.0-->
-<!--x is 5.0-->
-
-<!--Certification of analysis [name2] succeeded.-->
-
-<!--Policy scores statically inferred in this certification process:-->
-<!--b1 has score 50000-->
-<!--b2 has score 0.9-->
-<!--b3 has score 0.25-->
-<!--b4 has score 0.4-->
-<!--b_minOne has score -1-->
-
-<!--Policies in analysis [name2] specialised with respect to the above scenario:-->
-<!--b1 = max () default 50000-->
-<!--b2 = min (([hasUSLicense] 0.9)) default 0-->
-<!--b4 = + (([accidentFreeForYears speaksEnglish femaleDriver] 0.4)) default 0-->
-<!--b_minOne = + () default -1-->
-<!--</pre>-->
-
-
-<p xmlns="http://www.w3.org/1999/xhtml"
+<div xmlns="http://www.w3.org/1999/xhtml"
    style="font-family: Monaco, Menlo, Consolas, &quot;Courier New&quot;, monospace;display: block;padding: 9.5px;margin: 0 0 10px;font-size: 13px;line-height: 1.428571429;color: #333;word-break: break-all;word-wrap: break-word;background-color: #f5f5f5;border: 1px solid #ccc;border-radius: 4px;">
 <h4>Result of analysis [name2 = always_true? cond3]</h4><span>
       cond3 is (pSet1 &lt;= 50000.0) &amp;&amp; (pSet_b4 &gt; 0.4)<br/>
@@ -588,7 +525,7 @@ Conditions that are always false:
         style="font-weight: bold;color:red">]</span> <span style="font-weight: bold;color:red">0.4</span>)<span
         style="font-weight: bold;color:green"></span>) default 0<br/></span><span>b_minOne = + (<span
         style="font-weight: bold;color:green"></span>) default <span style="font-weight: bold;color:red">-1</span><br/></span>
-</p>
+</div>
 
 
 <h4>Analysis options and syntax restrictions</h4>
@@ -629,12 +566,10 @@ Conditions that are always false:
     identified;
     for example, during parsing if scores contain variables or
     during certification if * policies contain scores not in
-    [0,1]. As already stated, our certification process applied to
-    found scenarios is agnostic to the manner in which the Z3 code
-    was generated for finding this scenario. Therefore,
-    a successfully certified scenario will be valid even if the
-    wrong option was clicked! Having said that, PEALT will only reach the
-    certification process for inputs with no variables in scores.
+    [0,1]. We cannot vouch for the correctness of "successful certification" if option "Non-negative, constant scores"
+    was used on in PEALT input that violates these input assumptions (e.g. by having a * policy with scores outside of
+    the unit interval [0,1]). Users need to ensure that they use the semantically correct option; if in doubt, option
+    "General scores" is always correct.
 </p>
 
 <p>
@@ -722,15 +657,17 @@ b2 = max (([q4] 0.4)) default 1
 </p>
 
 <h4>Failed certifications</h4>
+
 <p>
     When a certification fails, PEALT will only output a message to that
     effect with some diagnostic information for PEALT
     implementers. Fortunately, this occurs rarely and when it does it can
     be attributed to two potential causes that also have
-    work-arounds. We now discuss these caused and work-arounds:
-
+    work-arounds. We now discuss these causes and their work-arounds:
+</p>
 <ul>
-    <li> <strong>Writing p instead of p_score in score expressions:</strong> All variables appearing in score expressions of policies are
+    <li><strong>Writing p instead of p_score in score expressions:</strong> All variables appearing in score expressions
+        of policies are
         implicitly declared as real variables. This convenience in combination
         with a typo may break certification as follows. Suppose you declared a
         policy p and use "p" within a score expression; the latter is a typo
@@ -740,24 +677,112 @@ b2 = max (([q4] 0.4)) default 1
         real variable that certification will think of as the statically
         inferred score of policy p. So if certification fails, it is good to
         check that you used _score for all references to policies within score
-        expressions.</li>
+        expressions.
+    </li>
 
-    <li> <strong>Presence of non-linear constraints:</strong> PEALT uses
+    <li><strong>Presence of non-linear constraints:</strong> PEALT uses
         Z3's push construct for incremental solving to compute scenarios more
         efficiently. If the code generated from PEALT input contains
         non-linear constraints (e.g. for a * policy that contains two rules
         with score variables), use of push will make Z3 call a legacy solver
         that may occassionaly report an incorrect scenarios; see <a
                 href="http://z3.codeplex.com/workitem/108">Z3 work item 108</a> for
-        further details. There is a simple workaround for this: turn off
+        further details. There is a simple workaround for this: turn OFF
         vacuity checking in Settings and remove all other analyses from the
         PEALT input. The reason this works is that PEALT will not use the push
         construct when there is only one analysis declared, as there is no
         incentive then to do incremental solving. So the scenario should then
-        certify, at least we have then elimiated use of the push construct as a
-        potential failure source.</li>
+        certify, at least we have then eliminated use of the push construct as a
+        potential failure source. The reason why vacuity checks should be turned OFF for this is that
+        <!--we observed that some failed certification input, when run as a sole analysis with vacuity checking ON made the-->
+        <!--back-end Z3 not terminate. -->
+        when vacuity checking is turned on, PEALT creates additional analyses internally,
+        two for each condition (always_true? and always_false?). Thus, total number of analyses becomes greater than one
+        and this will bring back the push construct.
+
+    </li>
 </ul>
+
+
+<p>
+    Here is an example PEALT input for which certification fails (for version PealApp-lift-assembly-3.2.0.jar):
 </p>
+<pre>
+POLICIES
+b0 = min ((q14 0*vl) (q0 0.7850)) default 0.8919
+b1 = * ((q6 0.6819) (q7 0.7271)) default 0.5390
+b2 = * ((q12 0.3504) (q0 0.4032)) default 3*vp
+b3 = + ((q3 0.3078) (q7 0.1332)) default 0.7163
+b4 = max ((q3 0.0948 [-0.1435,0.4347]) (q11 0.1327)) default 0.8418
+b5 = * ((q3 0.3235) (q9 2*v0 [-0.3561,0.7747])) default 0*vy
+b6 = max ((q14 0.5613) (q4 0.6564)) default 0.6351
+b7 = + ((q8 vx) (q2 0.9709)) default 0.5696 [-0.8854,0.0560]
+b8 = * ((q14 0.7031) (q5 0.6469)) default 0.3753
+b9 = min ((q11 0.3598) (q7 0.4311)) default 0.0868
+b10 = * ((q10 0.1041) (q12 0.6119)) default 0.8983
+b11 = + ((q1 0.4650) (q4 0.6019)) default 0.3478
+b12 = min ((q3 3*vu [-0.2797,0.6717]) (q9 2*vu)) default 0.0223
+b13 = max ((q5 0.9802) (q2 0.9236)) default 0.8039
+b14 = min ((q6 2*vk) (q13 0.4516)) default 2*vl
+b15 = max ((q13 0.3230) (q12 0.9485)) default 0.6186
+b16 = + ((q1 0.8562 [-0.9047,0.6472]) (q11 3*vb)) default 0.6468
+b17 = + ((q4 2*vl) (q11 0.8956)) default 0.5290
+b18 = min ((q6 0.0261) (q4 0.8287)) default 0.9865
+b19 = max ((q0 0.0663) (q10 0.5418)) default 0.7368
+POLICY_SETS
+p0_1 = min(b0,b1)
+p2_3 = min(b2,b3)
+p4_5 = min(b4,b5)
+p6_7 = min(b6,b7)
+p8_9 = min(b8,b9)
+p10_11 = min(b10,b11)
+p12_13 = min(b12,b13)
+p14_15 = min(b14,b15)
+p0_3 = max(p0_1,p2_3)
+p4_7 = max(p4_5,p6_7)
+p8_11 = max(p8_9,p10_11)
+p12_15 = max(p12_13,p14_15)
+p0_7 = +(p0_3,p4_7)
+p8_15 = +(p8_11,p12_15)
+p0_15 = *(p0_7,p8_15)
+
+p16_17 = min(b16, b17)
+p18_19 = +(b18, b19)
+p0_15_0 = min(p0_15,p16_17)
+p0_15_1 = max(p0_15_0,p18_19)
+CONDITIONS
+cond1 = 0.50 &lt; p0_15_1
+cond2 = 0.60 &lt; p0_15_1
+ANALYSES
+analysis2 = always_false? cond2
+analysis3 = always_false? cond2
+</pre>
+<p>
+We need to use option "General scores" as there are variables in some score expressions. Running both analyses, we get
+the following certification results:
+</p>
+<pre>
+Certification of analysis [analysis2] failed.
+...
+Certification of analysis [analysis3] failed.
+Additional predicates set to false in this certification process are: Set(q13)
+</pre>
+<p>
+So both certifications failed, and only the second one refined one predicate q13. To see that this is attributable to
+the aforementioned Z3 bug, let us turn vacuity checking OFF under Settings, comment out the line declaring analysis3,
+and run this again. Now we obtain that certification succeeds (it won't use the push construct as only one analysis
+executed), by refining one score variable vy to 0.0:
+</p>
+<pre>
+Certification of analysis [analysis2] succeeded.
+Variables not defined in the Z3 model but are assumed to be 0 in this certification process are: Set(vy)
+</pre>
+<p>
+If we comment out analysis2 and execute analysis3 only, we also get that certification succeeds by only refining
+variable vy to 0.0.
+
+</p>
+
 
 </div>
 </div>
