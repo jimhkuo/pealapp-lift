@@ -101,7 +101,8 @@ cond5 = cond1 &amp;&amp; cond4
     The definition of conditions follows very similar conventions as that of defining policy sets. The composition
     operators are negation (!), conjunction (&amp;&amp;), disjunction (||), and comparison operators (&lt; and &lt;=).
 
-    All of these operators have to be applied one at a time in defining conditions. For example, in order to define a condition
+    All of these operators have to be applied one at a time in defining conditions. For example, in order to define a
+    condition
     cond as !isLuxuryCar &amp;&amp; (0.4 &lt; pSet4) we have to declare something similar to
 </p>
 <pre>% cast predicate into condition
@@ -115,9 +116,11 @@ cond = c1 &amp;&amp; c2
 </pre>
 <p>
     by inventing suitable intermediate condition variables such as isLuxuryCar_c, c1, and c2.
-    We realize that this may make specifications more verbose than necessary. But it did simplify the front end of our input processing
+    We realize that this may make specifications more verbose than necessary. But it did simplify the front end of our
+    input processing
     and means that vacuity checking (discussed below) applies to all
-    sub-conditions declared in this manner. Let us now show how we may add domain-specific knowledge or assumptions next:
+    sub-conditions declared in this manner. Let us now show how we may add domain-specific knowledge or assumptions
+    next:
 </p>
 
 
@@ -149,8 +152,12 @@ cond = c1 &amp;&amp; c2
     <li> we can use "%" to write comments in that section, our Z3 code generation will still ignore this text</li>
     <li> one should not explicitly declare variables in this section with Z3 statements if these variables are
         implicit in earlier policy declarations (e.g. PEALT will automatically generate such declarations for
-        isLuxuryCar of type Boolean and x of type Real)</li>
-    <li> one should however explicitly declare here Boolean variables that are cast into conditions without having been mentioned in any rules of policies; such castings would only occur if we wanted to define the meaning of such predicates here, e.g. as in</li>
+        isLuxuryCar of type Boolean and x of type Real)
+    </li>
+    <li> one should however explicitly declare here Boolean variables that are cast into conditions without having been
+        mentioned in any rules of policies; such castings would only occur if we wanted to define the meaning of such
+        predicates here, e.g. as in
+    </li>
 </ul>
 
 <pre>CONDITIONS
@@ -191,16 +198,25 @@ name5 = equivalent? cond3 cond5
     <li> satisfiable? c &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;can we make condition c true?</li>
     <li> always_false? c &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;can condition c never be made true?</li>
     <li> always_true? c &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; can condition c never be made false?</li>
-    <li> implies? c1 c2 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;does the truth of c1 logically imply the truth of c2?</li>
-    <li> equivalent? c1 c2 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;are conditions c1 and c2 logically equivalent?</li>
+    <li> implies? c1 c2 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;does the truth of c1 logically imply the truth
+        of c2?
+    </li>
+    <li> equivalent? c1 c2 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;are conditions c1 and c2 logically
+        equivalent?
+    </li>
 </ul>
 
 <h4>Vacuity checking</h4>
 
 
 <p>
-    The analyses always_true? and always_false? capture what is known as vacuity checking. Knowing that a condition is always true, or always false
-    may suggest that there is a specification error in the condition; for example if the condition were to be a temporal logic property that checks the equivalence of two hardware circuits. In the setting of PEALT, vacuities may well be specification errors. But they may alternatively establish desired invariants, for example, that the expected risk of some monetary losses is always below a constant threshold. It is up to the specifier to decide whether such vacuities are desired or indicate specification issues.
+    The analyses always_true? and always_false? capture what is known as vacuity checking. Knowing that a condition is
+    always true, or always false
+    may suggest that there is a specification error in the condition; for example if the condition were to be a temporal
+    logic property that checks the equivalence of two hardware circuits. In the setting of PEALT, vacuities may well be
+    specification errors. But they may alternatively establish desired invariants, for example, that the expected risk
+    of some monetary losses is always below a constant threshold. It is up to the specifier to decide whether such
+    vacuities are desired or indicate specification issues.
 </p>
 
 <p>
@@ -221,12 +237,14 @@ Conditions that are always false:
 <p>
     This output suggests that the monetary loss weighted with its
     perceived risk is always below 50000, and that no declared condition
-    is always false. Should the tool not be able to decide any of the vacuity analyses, those outcomes will be reported separately as "may always be true" and "may always be false", respectively.
+    is always false. Should the tool not be able to decide any of the vacuity analyses, those outcomes will be reported
+    separately as "may always be true" and "may always be false", respectively.
 </p>
 
 <h4> Three analysis buttons for each code generation option</h4>
 
-<p> Each of the code generation options, "General scores" and "Non-negative, constant score" have three ways of displaying analysis output:
+<p> Each of the code generation options, "General scores" and "Non-negative, constant score" have three ways of
+    displaying analysis output:
 </p>
 
 <ul>
@@ -236,7 +254,9 @@ Conditions that are always false:
 </ul>
 
 <p>
-    We should stress that use of the first way above is preferred. The latter two expose users to explicit Z3 code and Z3 output, and so are only of use for researchers who may want to modify or understand the inner workings of this tool. We will therefore only describe the output of the first, preferred way of reporting analysis findings.
+    We should stress that use of the first way above is preferred. The latter two expose users to explicit Z3 code and
+    Z3 output, and so are only of use for researchers who may want to modify or understand the inner workings of this
+    tool. We will therefore only describe the output of the first, preferred way of reporting analysis findings.
 </p>
 
 <p>
@@ -253,8 +273,10 @@ Conditions that are always false:
 <h4>Reporting format for analysis output</h4>
 
 <p>
-    Each analysis declared under keyword ANALYSES has its output reported in the same manner. There are two types of output, depending on whether the
-    outcome of the Z3 analysis is SAT, or one of UNSAT or UNKNOWN. In the latter case, the output will be given in the form similar to this example:
+    Each analysis declared under keyword ANALYSES has its output reported in the same manner. There are two types of
+    output, depending on whether the
+    outcome of the Z3 analysis is SAT, or one of UNSAT or UNKNOWN. In the latter case, the output will be given in the
+    form similar to this example:
 </p>
 
 <!--<pre>Result of analysis [name4 = implies? cond2 cond1]-->
@@ -265,24 +287,29 @@ Conditions that are always false:
 <!--Output of analysis [name4] is Unsat: so no certification performed and no specialized policies reported.-->
 <!--</pre>-->
 
-<p xmlns="http://www.w3.org/1999/xhtml" style="font-family: Monaco, Menlo, Consolas, &quot;Courier New&quot;, monospace;display: block;padding: 9.5px;margin: 0 0 10px;font-size: 13px;line-height: 1.428571429;color: #333;word-break: break-all;word-wrap: break-word;background-color: #f5f5f5;border: 1px solid #ccc;border-radius: 4px;">
+<p xmlns="http://www.w3.org/1999/xhtml"
+   style="font-family: Monaco, Menlo, Consolas, &quot;Courier New&quot;, monospace;display: block;padding: 9.5px;margin: 0 0 10px;font-size: 13px;line-height: 1.428571429;color: #333;word-break: break-all;word-wrap: break-word;background-color: #f5f5f5;border: 1px solid #ccc;border-radius: 4px;">
 <h4>Result of analysis [name4 = implies? cond2 cond1]</h4><span>
-      cond2 is pSet1 &gt; 0.6 and cond1 is pSet1 &gt; 0.5<br />
-    </span><br /><span>
-      cond2 implies cond1<br />
+      cond2 is pSet1 &gt; 0.6 and cond1 is pSet1 &gt; 0.5<br/>
+    </span><br/><span>
+      cond2 implies cond1<br/>
     </span><span>
-      <br />
+      <br/>
     </span><span>
-      Output of analysis [name4] is Unsat: so no certification performed and no specialized policies reported.<br />
+      Output of analysis [name4] is Unsat: so no certification performed and no specialized policies reported.<br/>
     </span>
 </p>
 
 <p>
-    The above was generated using the Social Network Access Control example and the outcome was UNSAT. The first line recalls the condition(s) involved in the analysis. The next line summarizes the finding, here that condition cond1 logically implies condition cond2. The last line lists the analysis outcome (here UNSAT) and explains that such an outcome won't trigger additional reporting.
+    The above was generated using the Social Network Access Control example and the outcome was UNSAT. The first line
+    recalls the condition(s) involved in the analysis. The next line summarizes the finding, here that condition cond1
+    logically implies condition cond2. The last line lists the analysis outcome (here UNSAT) and explains that such an
+    outcome won't trigger additional reporting.
 </p>
 
 <p>
-    Let us now discuss the output format when the analysis outcome is SAT. Below, we see the report for analysis name2 for the Car Rental Risks example, when vacuity checking is set OFF:
+    Let us now discuss the output format when the analysis outcome is SAT. Below, we see the report for analysis name2
+    for the Car Rental Risks example, when vacuity checking is set OFF:
 </p>
 
 <!--<pre>Result of analysis [name2 = always_true? cond3] cond3 is (pSet1 &lt;= 50000.0)  &amp;&amp; (pSet_b4 &gt; 0.4)-->
@@ -323,64 +350,73 @@ Conditions that are always false:
 <!--b_minOne = + () default -1-->
 <!--</pre>-->
 
-<p xmlns="http://www.w3.org/1999/xhtml" style="font-family: Monaco, Menlo, Consolas, &quot;Courier New&quot;, monospace;display: block;padding: 9.5px;margin: 0 0 10px;font-size: 13px;line-height: 1.428571429;color: #333;word-break: break-all;word-wrap: break-word;background-color: #f5f5f5;border: 1px solid #ccc;border-radius: 4px;">
+<p xmlns="http://www.w3.org/1999/xhtml"
+   style="font-family: Monaco, Menlo, Consolas, &quot;Courier New&quot;, monospace;display: block;padding: 9.5px;margin: 0 0 10px;font-size: 13px;line-height: 1.428571429;color: #333;word-break: break-all;word-wrap: break-word;background-color: #f5f5f5;border: 1px solid #ccc;border-radius: 4px;">
 <h4>Result of analysis [name2 = always_true? cond3]</h4><span>
-      cond3 is (pSet1 &lt;= 50000.0) &amp;&amp; (pSet_b4 &gt; 0.4)<br />
-    </span><br /><span>
-      cond3 is NOT always true, for example, in the scenario in which:<br />
+      cond3 is (pSet1 &lt;= 50000.0) &amp;&amp; (pSet_b4 &gt; 0.4)<br/>
+    </span><br/><span>
+      cond3 is NOT always true, for example, in the scenario in which:<br/>
     </span><span>
-      onlyLongDistanceUsage is False<br />
+      onlyLongDistanceUsage is False<br/>
     </span><span>
-      speaksEnglish is True<br />
+      speaksEnglish is True<br/>
     </span><span>
-      isLuxuryCar is False<br />
+      isLuxuryCar is False<br/>
     </span><span>
-      isCompact is False<br />
+      isCompact is False<br/>
     </span><span>
-      hasOtherLicense is True<br />
+      hasOtherLicense is True<br/>
     </span><span>
-      onlyCityUsage is False<br />
+      onlyCityUsage is False<br/>
     </span><span>
-      isSedan is False<br />
+      isSedan is False<br/>
     </span><span>
-      travelsAlone is True<br />
+      travelsAlone is True<br/>
     </span><span>
-      accidentFreeForYears is True<br />
+      accidentFreeForYears is True<br/>
     </span><span>
-      mixedUsage is True<br />
+      mixedUsage is True<br/>
     </span><span>
-      femaleDriver is True<br />
+      femaleDriver is True<br/>
     </span><span>
-      someOffRoadDriving is False<br />
+      someOffRoadDriving is False<br/>
     </span><span>
-      b_minOne_score is -1.0<br />
+      b_minOne_score is -1.0<br/>
     </span><span>
-      b2_hasOtherLicense_U is 0.0<br />
+      b2_hasOtherLicense_U is 0.0<br/>
     </span><span>
-      b1_score is 50000.0<br />
+      b1_score is 50000.0<br/>
     </span><span>
-      b3_score is 1.0/4.0<br />
+      b3_score is 1.0/4.0<br/>
     </span><span>
-      b2_score is 2.0/5.0<br />
+      b2_score is 2.0/5.0<br/>
     </span><span>
-      x is 9.0<br />
+      x is 9.0<br/>
     </span><span>
-      b4_score is 2.0/5.0<br />
-    </span><br /><span>
-      Certification of analysis [name2] succeeded.<br />
-    </span><br /><span>
-      Policy scores statically inferred in this certification process:<br />
+      b4_score is 2.0/5.0<br/>
+    </span><br/><span>
+      Certification of analysis [name2] succeeded.<br/>
+    </span><br/><span>
+      Policy scores statically inferred in this certification process:<br/>
     </span><span>
-      b1 has score 50000<br />
+      b1 has score 50000<br/>
     </span><span>
-      b3 has score 0.25<br />
+      b3 has score 0.25<br/>
     </span><span>
-      b4 has score 0.4<br />
+      b4 has score 0.4<br/>
     </span><span>
-      b_minOne has score -1<br />
-    </span><br /><span>
-      Policies in analysis [name2] specialised with respect to the above scenario:<br />
-    </span><span>b1 = max (<span style="font-weight: bold;color:green"></span>) default <span style="font-weight: bold;color:red">50000</span><br /></span><span>b2 = min ((<span style="font-weight: bold;color:red">[</span>hasOtherLicense<span style="font-weight: bold;color:red">]</span> <span style="font-weight: bold;color:red">0.4</span>)<span style="font-weight: bold;color:green"> (hasUSLicense? 0.9) (hasUKLicense? 0.6) (hasEULicense? 0.7)</span>) default 0<br /></span><span>b4 = + ((<span style="font-weight: bold;color:red">[</span>accidentFreeForYears speaksEnglish travelsAlone femaleDriver<span style="font-weight: bold;color:red">]</span> <span style="font-weight: bold;color:red">0.4</span>)<span style="font-weight: bold;color:green"></span>) default 0<br /></span><span>b_minOne = + (<span style="font-weight: bold;color:green"></span>) default <span style="font-weight: bold;color:red">-1</span><br /></span>
+      b_minOne has score -1<br/>
+    </span><br/><span>
+      Policies in analysis [name2] specialised with respect to the above scenario:<br/>
+    </span><span>b1 = max (<span style="font-weight: bold;color:green"></span>) default <span
+        style="font-weight: bold;color:red">50000</span><br/></span><span>b2 = min ((<span
+        style="font-weight: bold;color:red">[</span>hasOtherLicense<span
+        style="font-weight: bold;color:red">]</span> <span style="font-weight: bold;color:red">0.4</span>)<span
+        style="font-weight: bold;color:green"> (hasUSLicense? 0.9) (hasUKLicense? 0.6) (hasEULicense? 0.7)</span>) default 0<br/></span><span>b4 = + ((<span
+        style="font-weight: bold;color:red">[</span>accidentFreeForYears speaksEnglish travelsAlone femaleDriver<span
+        style="font-weight: bold;color:red">]</span> <span style="font-weight: bold;color:red">0.4</span>)<span
+        style="font-weight: bold;color:green"></span>) default 0<br/></span><span>b_minOne = + (<span
+        style="font-weight: bold;color:green"></span>) default <span style="font-weight: bold;color:red">-1</span><br/></span>
 </p>
 
 <p>
@@ -398,7 +434,7 @@ Conditions that are always false:
     variables it additionally had to set to 0.0. Such refinements reflect
     the tradeoff between the compositionality of this certification
     process (which uses Kleene's strong 3-valued propositional logic) and
-    its precision.  The certified scenario is the one that includes any
+    its precision. The certified scenario is the one that includes any
     additional 0.0 variable values or false predicates if such refinements
     did occur. This was not the case above.
 </p>
@@ -419,7 +455,9 @@ Conditions that are always false:
     policies are shown in red; and red brackets are used to group all true
     predicates within a policy (where applicable such as in b2 above) and
     report their aggregated score according to the certified scenario. If
-    no predicates are true, no rules are shown but the default score is shown in red as policy outcome. Note that predicates within policies that are shown in green end in a question mark, indicating that the truth values of these predicates did not matter in the certification of the scenario.
+    no predicates are true, no rules are shown but the default score is shown in red as policy outcome. Note that
+    predicates within policies that are shown in green end in a question mark, indicating that the truth values of these
+    predicates did not matter in the certification of the scenario.
 </p>
 
 <p>
@@ -427,7 +465,8 @@ Conditions that are always false:
     vacuity checking has been set to ON. We then see the reporting of a
     different scenario that is still certified successfully but where now
     no green predicates are shown in specialized policies. This phenomenon
-    is an artefact of the incremental analysis that Z3 uses, and that our code generator invokes with the push/pop constructs of Z3. We here list the output when vauity checking is set ON:
+    is an artefact of the incremental analysis that Z3 uses, and that our code generator invokes with the push/pop
+    constructs of Z3. We here list the output when vauity checking is set ON:
 </p>
 
 <!--<pre>Result of analysis [name2 = always_true? cond3]-->
@@ -474,72 +513,81 @@ Conditions that are always false:
 <!--</pre>-->
 
 
-<p xmlns="http://www.w3.org/1999/xhtml" style="font-family: Monaco, Menlo, Consolas, &quot;Courier New&quot;, monospace;display: block;padding: 9.5px;margin: 0 0 10px;font-size: 13px;line-height: 1.428571429;color: #333;word-break: break-all;word-wrap: break-word;background-color: #f5f5f5;border: 1px solid #ccc;border-radius: 4px;">
+<p xmlns="http://www.w3.org/1999/xhtml"
+   style="font-family: Monaco, Menlo, Consolas, &quot;Courier New&quot;, monospace;display: block;padding: 9.5px;margin: 0 0 10px;font-size: 13px;line-height: 1.428571429;color: #333;word-break: break-all;word-wrap: break-word;background-color: #f5f5f5;border: 1px solid #ccc;border-radius: 4px;">
 <h4>Result of analysis [name2 = always_true? cond3]</h4><span>
-      cond3 is (pSet1 &lt;= 50000.0) &amp;&amp; (pSet_b4 &gt; 0.4)<br />
-    </span><br /><span>
-      cond3 is NOT always true, for example, in the scenario in which:<br />
+      cond3 is (pSet1 &lt;= 50000.0) &amp;&amp; (pSet_b4 &gt; 0.4)<br/>
+    </span><br/><span>
+      cond3 is NOT always true, for example, in the scenario in which:<br/>
     </span><span>
-      isLuxuryCar is False<br />
+      isLuxuryCar is False<br/>
     </span><span>
-      isCompact is False<br />
+      isCompact is False<br/>
     </span><span>
-      hasUKLicense is False<br />
+      hasUKLicense is False<br/>
     </span><span>
-      hasEULicense is False<br />
+      hasEULicense is False<br/>
     </span><span>
-      hasUSLicense is True<br />
+      hasUSLicense is True<br/>
     </span><span>
-      accidentFreeForYears is True<br />
+      accidentFreeForYears is True<br/>
     </span><span>
-      mixedUsage is True<br />
+      mixedUsage is True<br/>
     </span><span>
-      onlyLongDistanceUsage is False<br />
+      onlyLongDistanceUsage is False<br/>
     </span><span>
-      speaksEnglish is True<br />
+      speaksEnglish is True<br/>
     </span><span>
-      hasOtherLicense is False<br />
+      hasOtherLicense is False<br/>
     </span><span>
-      onlyCityUsage is False<br />
+      onlyCityUsage is False<br/>
     </span><span>
-      isSedan is False<br />
+      isSedan is False<br/>
     </span><span>
-      travelsAlone is False<br />
+      travelsAlone is False<br/>
     </span><span>
-      femaleDriver is True<br />
+      femaleDriver is True<br/>
     </span><span>
-      someOffRoadDriving is False<br />
+      someOffRoadDriving is False<br/>
     </span><span>
-      b1_score is 50000.0<br />
+      b1_score is 50000.0<br/>
     </span><span>
-      b3_score is 1.0/4.0<br />
+      b3_score is 1.0/4.0<br/>
     </span><span>
-      b2_score is 9.0/10.0<br />
+      b2_score is 9.0/10.0<br/>
     </span><span>
-      b4_score is 2.0/5.0<br />
+      b4_score is 2.0/5.0<br/>
     </span><span>
-      b2_hasOtherLicense_U is 0.0<br />
+      b2_hasOtherLicense_U is 0.0<br/>
     </span><span>
-      b_minOne_score is -1.0<br />
+      b_minOne_score is -1.0<br/>
     </span><span>
-      x is 5.0<br />
-    </span><br /><span>
-      Certification of analysis [name2] succeeded.<br />
-    </span><br /><span>
-      Policy scores statically inferred in this certification process:<br />
+      x is 5.0<br/>
+    </span><br/><span>
+      Certification of analysis [name2] succeeded.<br/>
+    </span><br/><span>
+      Policy scores statically inferred in this certification process:<br/>
     </span><span>
-      b1 has score 50000<br />
+      b1 has score 50000<br/>
     </span><span>
-      b2 has score 0.9<br />
+      b2 has score 0.9<br/>
     </span><span>
-      b3 has score 0.25<br />
+      b3 has score 0.25<br/>
     </span><span>
-      b4 has score 0.4<br />
+      b4 has score 0.4<br/>
     </span><span>
-      b_minOne has score -1<br />
-    </span><br /><span>
-      Policies in analysis [name2] specialised with respect to the above scenario:<br />
-    </span><span>b1 = max (<span style="font-weight: bold;color:green"></span>) default <span style="font-weight: bold;color:red">50000</span><br /></span><span>b2 = min ((<span style="font-weight: bold;color:red">[</span>hasUSLicense<span style="font-weight: bold;color:red">]</span> <span style="font-weight: bold;color:red">0.9</span>)<span style="font-weight: bold;color:green"></span>) default 0<br /></span><span>b4 = + ((<span style="font-weight: bold;color:red">[</span>accidentFreeForYears speaksEnglish femaleDriver<span style="font-weight: bold;color:red">]</span> <span style="font-weight: bold;color:red">0.4</span>)<span style="font-weight: bold;color:green"></span>) default 0<br /></span><span>b_minOne = + (<span style="font-weight: bold;color:green"></span>) default <span style="font-weight: bold;color:red">-1</span><br /></span>
+      b_minOne has score -1<br/>
+    </span><br/><span>
+      Policies in analysis [name2] specialised with respect to the above scenario:<br/>
+    </span><span>b1 = max (<span style="font-weight: bold;color:green"></span>) default <span
+        style="font-weight: bold;color:red">50000</span><br/></span><span>b2 = min ((<span
+        style="font-weight: bold;color:red">[</span>hasUSLicense<span style="font-weight: bold;color:red">]</span> <span
+        style="font-weight: bold;color:red">0.9</span>)<span
+        style="font-weight: bold;color:green"></span>) default 0<br/></span><span>b4 = + ((<span
+        style="font-weight: bold;color:red">[</span>accidentFreeForYears speaksEnglish femaleDriver<span
+        style="font-weight: bold;color:red">]</span> <span style="font-weight: bold;color:red">0.4</span>)<span
+        style="font-weight: bold;color:green"></span>) default 0<br/></span><span>b_minOne = + (<span
+        style="font-weight: bold;color:green"></span>) default <span style="font-weight: bold;color:red">-1</span><br/></span>
 </p>
 
 
@@ -566,16 +614,19 @@ Conditions that are always false:
     The editor and runner interface of the tool offer buttons
     for generating random or example PEALT input. Amongst
     those buttons, the ones coulored in light blue should only
-    be analyzed by clicking on the light blue button  "General
+    be analyzed by clicking on the light blue button "General
     scores", whereas those coulored in dark blue may be
     analyzed by clicking either "General scores" or
-    "Non-negative, constant scores". Users should take care to only use that option when the input is known to meet the above score constraints.
+    "Non-negative, constant scores". Users should take care to only use that option when the input is known to meet the
+    above score constraints.
 </p>
 
 <p>
-    Using option "Non-negative, constant scores" may yield more scalable results for policies that have multiplication as
+    Using option "Non-negative, constant scores" may yield more scalable results for policies that have multiplication
+    as
     composition operator. But for PEALT input that has negative scores, non-constant scores or scores
-    outside of the unit interval in * policies it may produce errors. Fortunately, such errors are likely to be identified;
+    outside of the unit interval in * policies it may produce errors. Fortunately, such errors are likely to be
+    identified;
     for example, during parsing if scores contain variables or
     during certification if * policies contain scores not in
     [0,1]. As already stated, our certification process applied to
@@ -587,7 +638,8 @@ Conditions that are always false:
 </p>
 
 <p>
-    Note that we still can express conditions cond of form pSet &lt;= th for the  "Non-negative, constant scores" option. But we then have to state this as
+    Note that we still can express conditions cond of form pSet &lt;= th for the "Non-negative, constant scores" option.
+    But we then have to state this as
 </p>
 <pre>cond_aux = th &lt; pSet
 cond = !cond_aux
@@ -596,10 +648,12 @@ cond = !cond_aux
 <h4>Referring to policy scores in scores</h4>
 
 <p>
-    The Fire Fault Tree example of PEALT illustrates a powerful feature of its input language. For a declared policy p, we can write p_score for a
+    The Fire Fault Tree example of PEALT illustrates a powerful feature of its input language. For a declared policy p,
+    we can write p_score for a
     variable that represents its score, and therefore use that
     variable in score expressions within rules. Of course, this usage assumes that option "General scores"
-    is clicked. Some care should be exercised when using this feature. A policy q depends on policy p if variable p_score occurs in policy q.
+    is clicked. Some care should be exercised when using this feature. A policy q depends on policy p if variable
+    p_score occurs in policy q.
     The certification process may not terminate when this dependency relation contains a cycle.
     In the presence of cycles, PEALT will still produce raw Z3
     code and raw Z3 output in the third way of using that
@@ -666,6 +720,45 @@ b2 = max (([q4] 0.4)) default 1
     regress. This is
     why we said above that scores p_score should be used with care.
 </p>
+
+<h4>Failed certifications</h4>
+<p>
+    When a certification fails, PEALT will only output a message to that
+    effect with some diagnostic information for PEALT
+    implementers. Fortunately, this occurs rarely and when it does it can
+    be attributed to two potential causes that also have
+    work-arounds. We now discuss these caused and work-arounds:
+
+<ul>
+    <li> <strong>Writing p instead of p_score in score expressions:</strong> All variables appearing in score expressions of policies are
+        implicitly declared as real variables. This convenience in combination
+        with a typo may break certification as follows. Suppose you declared a
+        policy p and use "p" within a score expression; the latter is a typo
+        as you should use p_score in score expressions. This typo results in
+        the declaration of p as a real variable. And this may fatally confuse our
+        certification algorithm as the Z3 model may return a value for that
+        real variable that certification will think of as the statically
+        inferred score of policy p. So if certification fails, it is good to
+        check that you used _score for all references to policies within score
+        expressions.</li>
+
+    <li> <strong>Presence of non-linear constraints:</strong> PEALT uses
+        Z3's push construct for incremental solving to compute scenarios more
+        efficiently. If the code generated from PEALT input contains
+        non-linear constraints (e.g. for a * policy that contains two rules
+        with score variables), use of push will make Z3 call a legacy solver
+        that may occassionaly report an incorrect scenarios; see <a
+                href="http://z3.codeplex.com/workitem/108">Z3 work item 108</a> for
+        further details. There is a simple workaround for this: turn off
+        vacuity checking in Settings and remove all other analyses from the
+        PEALT input. The reason this works is that PEALT will not use the push
+        construct when there is only one analysis declared, as there is no
+        incentive then to do incremental solving. So the scenario should then
+        certify, at least we have then elimiated use of the push construct as a
+        potential failure source.</li>
+</ul>
+</p>
+
 </div>
 </div>
 
