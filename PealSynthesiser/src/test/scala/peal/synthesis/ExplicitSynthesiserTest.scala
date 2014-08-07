@@ -12,7 +12,7 @@ class ExplicitSynthesiserTest extends ShouldMatchersForJUnit with Z3ModelMatcher
 
   @Test
   def testCanDealWithDefaultInput() {
-    val input = "POLICIES\nb1 = min ((q1 0.2) (q2 0.4) (q3 0.9)) default 1\nb2 = + ((q4 0.1) (q5 0.2) (q6 0.2)) default 0\nPOLICY_SETS\npSet1 = max(b1, b2)\npSet2 = min(b1, b2)\n" +
+    val input = "POLICIES\nb1 = min ((q1' 0.2) (q2 0.4) (q3 0.9)) default 1\nb2 = + ((q4 0.1) (q5 0.2) (q6 0.2)) default 0\nPOLICY_SETS\npSet1 = max(b1, b2)\npSet2 = min(b1, b2)\n" +
       "CONDITIONS\n" +
       "cond1 = pSet1 <= 0.5\n" +
       "cond2 = 0.6 < pSet2\n" +
@@ -25,13 +25,19 @@ class ExplicitSynthesiserTest extends ShouldMatchersForJUnit with Z3ModelMatcher
       "(declare-const q4 Bool)\n" +
       "(declare-const q2 Bool)\n" +
       "(declare-const q3 Bool)\n" +
-      "(declare-const q1 Bool)\n" +
+      "(declare-const q1' Bool)\n" +
       "(declare-const q6 Bool)\n" +
       "(declare-const cond2 Bool)\n" +
       "(declare-const cond3 Bool)\n" +
       "(declare-const cond4 Bool)\n" +
       "(declare-const cond1 Bool)\n" +
-      "(assert (= cond1 (and (and (or q1 q2 q3) (or q1 q2)) (or (and (not q4) (not q5) (not q6)) (not false)))))\n(assert (= cond2 (and (or (and (not q1) (not q2) (not q3)) (not (or q1 q2))) (and (or q4 q5 q6) false))))\n(assert (= cond3 (and (or (and (not q1) (not q2) (not q3)) (not (or q1 q2))) (and (or q4 q5 q6) false))))\n(assert (= cond4 (and (or (and (not q1) (not q2) (not q3)) (not (or q1 q2))) (and (or q4 q5 q6) (and q6 q5 q4)))))\n(declare-const x Real)\n(declare-const y Real)\n(assert (= q1 (< x (+ y 1))))\n" +
+      "(assert (= cond1 (and (and (or q1' q2 q3) (or q1' q2)) (or (and (not q4) (not q5) (not q6)) (not false)))))\n" +
+      "(assert (= cond2 (and (or (and (not q1') (not q2) (not q3)) (not (or q1' q2))) (and (or q4 q5 q6) false))))\n" +
+      "(assert (= cond3 (and (or (and (not q1') (not q2) (not q3)) (not (or q1' q2))) (and (or q4 q5 q6) false))))\n" +
+      "(assert (= cond4 (and (or (and (not q1') (not q2) (not q3)) (not (or q1' q2))) (and (or q4 q5 q6) (and q6 q5 q4)))))\n" +
+      "(declare-const x Real)\n" +
+      "(declare-const y Real)\n" +
+      "(assert (= q1 (< x (+ y 1))))\n" +
       "(echo \"Result of analysis [name1 = always_true? cond1]:\")\n(declare-const always_true_name1 Bool)\n(assert (= always_true_name1 cond1))\n(assert (not always_true_name1))\n(check-sat)\n(get-model)\n"
     )
   }
