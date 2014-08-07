@@ -111,8 +111,6 @@ class ExtendedSynthesiser(input: String) extends Synthesiser {
       val sortedConditions = pealProgramParser.conds.keys.toSeq.sortWith(_ < _)
       for (cond <- sortedConditions) yield {
         Seq(cond + "_vct" -> AlwaysTrue(cond + "_vct", cond), cond + "_vcf" -> AlwaysFalse(cond + "_vcf", cond))
-        //        "(echo \"Result of vacuity check [" + trueVacuityCheck.analysisName + "]:\")\n" + trueVacuityCheck.z3SMTInput +
-        //          "(echo \"Result of vacuity check [" + falseVacuityCheck.analysisName + "]:\")\n" + falseVacuityCheck.z3SMTInput
       }
     } else {
       Seq()
