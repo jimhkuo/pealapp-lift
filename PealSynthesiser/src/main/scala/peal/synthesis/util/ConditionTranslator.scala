@@ -12,7 +12,7 @@ object ConditionTranslator {
     case c: AndCondition => "(and " + translate(c.lhs, conds) + " " + translate(c.rhs, conds) + ")"
     case c: LessThanThCondition => "(<= " + translatePolicySet(c.lhs) + " " + c.rhs.fold(lhs => lhs.toString(), rhs => translatePolicySet(rhs)) + ")"
     case c: GreaterThanThCondition => "(< " + c.rhs.fold(lhs => lhs.toString(), rhs => translatePolicySet(rhs)) + " " + translatePolicySet(c.lhs) + ")"
-    case _ => "Not supported condition " + condName
+    case _ => throw new RuntimeException("Not supported condition " + condName)
   }
 
   private def translatePolicySet(pSet: PolicySet): String = pSet match {
