@@ -16,6 +16,7 @@ class Boot {
       Menu.i("Settings") / "settings",
       Menu.i("About PEALT") / "aboutpealt",
       Menu.i("User guide") / "userguide",
+//      Menu.i("Cheat sheet") / "cheatsheet",
       Menu.i("About") / "done" >> Hidden,
       Menu.i("Acknowledgements") / "acknowledgements"
     )
