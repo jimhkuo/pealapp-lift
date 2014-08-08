@@ -707,8 +707,7 @@ b2 = max (([q4] 0.4)) default 1
 <p>
     Here is an example PEALT input for which certification fails (for version PealApp-lift-assembly-3.2.0.jar):
 </p>
-<pre>
-POLICIES
+<pre>POLICIES
 b0 = min ((q14 0*vl) (q0 0.7850)) default 0.8919
 b1 = * ((q6 0.6819) (q7 0.7271)) default 0.5390
 b2 = * ((q12 0.3504) (q0 0.4032)) default 3*vp
@@ -757,26 +756,29 @@ ANALYSES
 analysis2 = always_false? cond2
 analysis3 = always_false? cond2
 </pre>
+
 <p>
 We need to use option "General scores" as there are variables in some score expressions. Running both analyses, we get
 the following certification results:
 </p>
-<pre>
-Certification of analysis [analysis2] failed.
+
+<pre>Certification of analysis [analysis2] failed.
 ...
 Certification of analysis [analysis3] failed.
 Additional predicates set to false in this certification process are: Set(q13)
 </pre>
+
 <p>
 So both certifications failed, and only the second one refined one predicate q13. To see that this is attributable to
 the aforementioned Z3 bug, let us turn vacuity checking OFF under Settings, comment out the line declaring analysis3,
 and run this again. Now we obtain that certification succeeds (it won't use the push construct as only one analysis
 executed), by refining one score variable vy to 0.0:
 </p>
-<pre>
-Certification of analysis [analysis2] succeeded.
+
+<pre>Certification of analysis [analysis2] succeeded.
 Variables not defined in the Z3 model but are assumed to be 0 in this certification process are: Set(vy)
 </pre>
+
 <p>
 If we comment out analysis2 and execute analysis3 only, we also get that certification succeeds by only refining
 variable vy to 0.0.
