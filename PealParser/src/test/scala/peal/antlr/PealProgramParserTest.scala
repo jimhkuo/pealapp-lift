@@ -16,7 +16,7 @@ class PealProgramParserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
   val consts = Map[String, PealAst]("q0" -> Term("q0"), "q1" -> Term("q1"), "q2" -> Term("q2"), "q3" -> Term("q3"), "q4" -> Term("q4"), "q5" -> Term("q5"), "q6" -> Term("q6"))
 
   @Test
-  def testUnclaredThrowExceptionGreaterThanNum() {
+  def testUndeclaredThrowExceptionGreaterThanNum() {
     val ex = intercept[RuntimeException] {
       val input = "POLICIES\nb1 = + ((q0 0.1)(q1 0.1)(q2 0.1)(q3 0.1)(q4 0.1)) default 0\n" +
         "POLICY_SETS\npSet = b1\n" +
@@ -30,7 +30,7 @@ class PealProgramParserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
   }
 
   @Test
-  def testUnclaredThrowExceptionGreaterThanpSet() {
+  def testUndeclaredThrowExceptionGreaterThanpSet() {
     val ex = intercept[RuntimeException] {
       val input = "POLICIES\nb1 = + ((q0 0.1)(q1 0.1)(q2 0.1)(q3 0.1)(q4 0.1)) default 0\n" +
         "POLICY_SETS\npSet = b1\n" +
@@ -44,7 +44,7 @@ class PealProgramParserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
   }
 
   @Test
-  def testUnclaredThrowExceptionGreaterThanpSet2() {
+  def testUndeclaredThrowExceptionGreaterThanpSet2() {
     val ex = intercept[RuntimeException] {
       val input = "POLICIES\nb1 = + ((q0 0.1)(q1 0.1)(q2 0.1)(q3 0.1)(q4 0.1)) default 0\n" +
         "POLICY_SETS\npSet = b1\n" +
@@ -58,7 +58,7 @@ class PealProgramParserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
   }
 
   @Test
-  def testUnclaredThrowExceptionGreaterThanpSetCatchLhsFirst() {
+  def testUndeclaredThrowExceptionGreaterThanpSetCatchLhsFirst() {
     val ex = intercept[RuntimeException] {
       val input = "POLICIES\nb1 = + ((q0 0.1)(q1 0.1)(q2 0.1)(q3 0.1)(q4 0.1)) default 0\n" +
         "POLICY_SETS\npSet = b1\n" +
@@ -72,7 +72,7 @@ class PealProgramParserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
   }
 
   @Test
-  def testUnclaredThrowExceptionLessThanNum() {
+  def testUndeclaredThrowExceptionLessThanNum() {
     val ex = intercept[RuntimeException] {
       val input = "POLICIES\nb1 = + ((q0 0.1)(q1 0.1)(q2 0.1)(q3 0.1)(q4 0.1)) default 0\n" +
         "POLICY_SETS\npSet = b1\n" +
@@ -86,7 +86,7 @@ class PealProgramParserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
   }
 
   @Test
-  def testUnclaredThrowExceptionLessThanpSet() {
+  def testUndeclaredThrowExceptionLessThanpSet() {
     val ex = intercept[RuntimeException] {
       val input = "POLICIES\nb1 = + ((q0 0.1)(q1 0.1)(q2 0.1)(q3 0.1)(q4 0.1)) default 0\n" +
         "POLICY_SETS\npSet = b1\n" +
@@ -100,7 +100,7 @@ class PealProgramParserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
   }
 
   @Test
-  def testUnclaredThrowExceptionLessThanpSet2() {
+  def testUndeclaredThrowExceptionLessThanpSet2() {
     val ex = intercept[RuntimeException] {
       val input = "POLICIES\nb1 = + ((q0 0.1)(q1 0.1)(q2 0.1)(q3 0.1)(q4 0.1)) default 0\n" +
         "POLICY_SETS\npSet = b1\n" +
@@ -114,7 +114,7 @@ class PealProgramParserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
   }
 
   @Test
-  def testUnclaredThrowExceptionLessThanpSetLhsFirst() {
+  def testUndeclaredThrowExceptionLessThanpSetLhsFirst() {
     val ex = intercept[RuntimeException] {
       val input = "POLICIES\nb1 = + ((q0 0.1)(q1 0.1)(q2 0.1)(q3 0.1)(q4 0.1)) default 0\n" +
         "POLICY_SETS\npSet = b1\n" +
@@ -128,7 +128,7 @@ class PealProgramParserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
   }
 
   @Test
-  def testUnclaredThrowExceptionNotCondition() {
+  def testUndeclaredThrowExceptionNotCondition() {
     val ex = intercept[RuntimeException] {
       val input = "POLICIES\nb1 = + ((q0 0.1)(q1 0.1)(q2 0.1)(q3 0.1)(q4 0.1)) default 0\n" +
         "POLICY_SETS\npSet = b1\n" +
@@ -143,7 +143,7 @@ class PealProgramParserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
   }
 
   @Test
-  def testUnclaredThrowExceptionAndLhs() {
+  def testUndeclaredThrowExceptionAndLhs() {
     val ex = intercept[RuntimeException] {
       val input = "POLICIES\nb1 = + ((q0 0.1)(q1 0.1)(q2 0.1)(q3 0.1)(q4 0.1)) default 0\n" +
         "POLICY_SETS\npSet = b1\n" +
@@ -158,7 +158,7 @@ class PealProgramParserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
   }
 
   @Test
-  def testUnclaredThrowExceptionAndRhs() {
+  def testUndeclaredThrowExceptionAndRhs() {
     val ex = intercept[RuntimeException] {
       val input = "POLICIES\nb1 = + ((q0 0.1)(q1 0.1)(q2 0.1)(q3 0.1)(q4 0.1)) default 0\n" +
         "POLICY_SETS\npSet = b1\n" +
@@ -173,7 +173,7 @@ class PealProgramParserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
   }
 
   @Test
-  def testUnclaredThrowExceptionOrLhs() {
+  def testUndeclaredThrowExceptionOrLhs() {
     val ex = intercept[RuntimeException] {
       val input = "POLICIES\nb1 = + ((q0 0.1)(q1 0.1)(q2 0.1)(q3 0.1)(q4 0.1)) default 0\n" +
         "POLICY_SETS\npSet = b1\n" +
@@ -188,7 +188,7 @@ class PealProgramParserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
   }
 
   @Test
-  def testUnclaredThrowExceptionOrRhs() {
+  def testUndeclaredThrowExceptionOrRhs() {
     val ex = intercept[RuntimeException] {
       val input = "POLICIES\nb1 = + ((q0 0.1)(q1 0.1)(q2 0.1)(q3 0.1)(q4 0.1)) default 0\n" +
         "POLICY_SETS\npSet = b1\n" +
@@ -203,7 +203,7 @@ class PealProgramParserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
   }
 
   @Test
-  def testUnclaredThrowExceptionPredCondition() {
+  def testUndeclaredThrowExceptionPredCondition() {
     val ex = intercept[RuntimeException] {
       val input = "POLICIES\nb1 = + ((q0 0.1)(q1 0.1)(q2 0.1)(q3 0.1)(q4 0.1)) default 0\n" +
         "POLICY_SETS\npSet = b1\n" +
@@ -217,7 +217,7 @@ class PealProgramParserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
   }
 
   @Test
-  def testUnclaredThrowExceptionATAnalysis() {
+  def testUndeclaredThrowExceptionATAnalysis() {
     val ex = intercept[RuntimeException] {
       val input = "POLICIES\nb1 = + ((q0 0.1)(q1 0.1)(q2 0.1)(q3 0.1)(q4 0.1)) default 0\n" +
         "POLICY_SETS\npSet = b1\n" +
@@ -232,7 +232,7 @@ class PealProgramParserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
   }
 
   @Test
-  def testUnclaredThrowExceptionAFAnalysis() {
+  def testUndeclaredThrowExceptionAFAnalysis() {
     val ex = intercept[RuntimeException] {
       val input = "POLICIES\nb1 = + ((q0 0.1)(q1 0.1)(q2 0.1)(q3 0.1)(q4 0.1)) default 0\n" +
         "POLICY_SETS\npSet = b1\n" +
@@ -247,7 +247,7 @@ class PealProgramParserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
   }
 
   @Test
-  def testUnclaredThrowExceptionSatAnalysis() {
+  def testUndeclaredThrowExceptionSatAnalysis() {
     val ex = intercept[RuntimeException] {
       val input = "POLICIES\nb1 = + ((q0 0.1)(q1 0.1)(q2 0.1)(q3 0.1)(q4 0.1)) default 0\n" +
         "POLICY_SETS\npSet = b1\n" +
@@ -262,7 +262,7 @@ class PealProgramParserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
   }
 
   @Test
-  def testUnclaredThrowExceptionEquivalentAnalysis() {
+  def testUndeclaredThrowExceptionEquivalentAnalysis() {
     val ex = intercept[RuntimeException] {
       val input = "POLICIES\nb1 = + ((q0 0.1)(q1 0.1)(q2 0.1)(q3 0.1)(q4 0.1)) default 0\n" +
         "POLICY_SETS\npSet = b1\n" +
@@ -277,7 +277,7 @@ class PealProgramParserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
   }
 
   @Test
-  def testUnclaredThrowExceptionEquivalentAnalysis1() {
+  def testUndeclaredThrowExceptionEquivalentAnalysis1() {
     val ex = intercept[RuntimeException] {
       val input = "POLICIES\nb1 = + ((q0 0.1)(q1 0.1)(q2 0.1)(q3 0.1)(q4 0.1)) default 0\n" +
         "POLICY_SETS\npSet = b1\n" +
@@ -292,7 +292,7 @@ class PealProgramParserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
   }
 
   @Test
-  def testUnclaredThrowExceptionDifferentAnalysis() {
+  def testUndeclaredThrowExceptionDifferentAnalysis() {
     val ex = intercept[RuntimeException] {
       val input = "POLICIES\nb1 = + ((q0 0.1)(q1 0.1)(q2 0.1)(q3 0.1)(q4 0.1)) default 0\n" +
         "POLICY_SETS\npSet = b1\n" +
@@ -307,7 +307,7 @@ class PealProgramParserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
   }
 
   @Test
-  def testUnclaredThrowExceptionDifferentAnalysis1() {
+  def testUndeclaredThrowExceptionDifferentAnalysis1() {
     val ex = intercept[RuntimeException] {
       val input = "POLICIES\nb1 = + ((q0 0.1)(q1 0.1)(q2 0.1)(q3 0.1)(q4 0.1)) default 0\n" +
         "POLICY_SETS\npSet = b1\n" +
@@ -322,7 +322,7 @@ class PealProgramParserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
   }
 
   @Test
-  def testUnclaredThrowExceptionImpliesAnalysis() {
+  def testUndeclaredThrowExceptionImpliesAnalysis() {
     val ex = intercept[RuntimeException] {
       val input = "POLICIES\nb1 = + ((q0 0.1)(q1 0.1)(q2 0.1)(q3 0.1)(q4 0.1)) default 0\n" +
         "POLICY_SETS\npSet = b1\n" +
@@ -337,7 +337,7 @@ class PealProgramParserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
   }
 
   @Test
-  def testUnclaredThrowExceptionImpliesAnalysis1() {
+  def testUndeclaredThrowExceptionImpliesAnalysis1() {
     val ex = intercept[RuntimeException] {
       val input = "POLICIES\nb1 = + ((q0 0.1)(q1 0.1)(q2 0.1)(q3 0.1)(q4 0.1)) default 0\n" +
         "POLICY_SETS\npSet = b1\n" +
@@ -352,7 +352,7 @@ class PealProgramParserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
   }
 
   @Test
-  def testUnclaredThrowExceptionPSetAndPol() {
+  def testUndeclaredThrowExceptionPSetAndPol() {
     val ex = intercept[RuntimeException] {
       val input = "POLICIES\nb1 = + ((q0 0.1)(q1 0.1)(q2 0.1)(q3 0.1)(q4 0.1)) default 0\n" +
         "POLICY_SETS\n" +
@@ -368,7 +368,7 @@ class PealProgramParserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
   }
 
   @Test
-  def testUnclaredThrowExceptionPSetMax() {
+  def testUndeclaredThrowExceptionPSetMax() {
     val ex = intercept[RuntimeException] {
       val input = "POLICIES\nb1 = + ((q0 0.1)(q1 0.1)(q2 0.1)(q3 0.1)(q4 0.1)) default 0\n" +
         "POLICY_SETS\n" +
@@ -384,7 +384,7 @@ class PealProgramParserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
   }
 
   @Test
-  def testUnclaredThrowExceptionPSetMax1() {
+  def testUndeclaredThrowExceptionPSetMax1() {
     val ex = intercept[RuntimeException] {
       val input = "POLICIES\nb1 = + ((q0 0.1)(q1 0.1)(q2 0.1)(q3 0.1)(q4 0.1)) default 0\n" +
         "POLICY_SETS\n" +
@@ -400,7 +400,7 @@ class PealProgramParserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
   }
 
   @Test
-  def testUnclaredThrowExceptionPSetMin() {
+  def testUndeclaredThrowExceptionPSetMin() {
     val ex = intercept[RuntimeException] {
       val input = "POLICIES\nb1 = + ((q0 0.1)(q1 0.1)(q2 0.1)(q3 0.1)(q4 0.1)) default 0\n" +
         "POLICY_SETS\n" +
@@ -416,7 +416,7 @@ class PealProgramParserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
   }
 
   @Test
-  def testUnclaredThrowExceptionPSetMin1() {
+  def testUndeclaredThrowExceptionPSetMin1() {
     val ex = intercept[RuntimeException] {
       val input = "POLICIES\nb1 = + ((q0 0.1)(q1 0.1)(q2 0.1)(q3 0.1)(q4 0.1)) default 0\n" +
         "POLICY_SETS\n" +
@@ -432,7 +432,7 @@ class PealProgramParserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
   }
 
   @Test
-  def testUnclaredThrowExceptionPSetPlus() {
+  def testUndeclaredThrowExceptionPSetPlus() {
     val ex = intercept[RuntimeException] {
       val input = "POLICIES\nb1 = + ((q0 0.1)(q1 0.1)(q2 0.1)(q3 0.1)(q4 0.1)) default 0\n" +
         "POLICY_SETS\n" +
@@ -448,7 +448,7 @@ class PealProgramParserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
   }
 
   @Test
-  def testUnclaredThrowExceptionPSetPlus1() {
+  def testUndeclaredThrowExceptionPSetPlus1() {
     val ex = intercept[RuntimeException] {
       val input = "POLICIES\nb1 = + ((q0 0.1)(q1 0.1)(q2 0.1)(q3 0.1)(q4 0.1)) default 0\n" +
         "POLICY_SETS\n" +
@@ -464,7 +464,7 @@ class PealProgramParserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
   }
 
   @Test
-  def testUnclaredThrowExceptionPSetMul() {
+  def testUndeclaredThrowExceptionPSetMul() {
     val ex = intercept[RuntimeException] {
       val input = "POLICIES\nb1 = + ((q0 0.1)(q1 0.1)(q2 0.1)(q3 0.1)(q4 0.1)) default 0\n" +
         "POLICY_SETS\n" +
@@ -480,7 +480,7 @@ class PealProgramParserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
   }
 
   @Test
-  def testUnclaredThrowExceptionPSetMul1() {
+  def testUndeclaredThrowExceptionPSetMul1() {
     val ex = intercept[RuntimeException] {
       val input = "POLICIES\nb1 = + ((q0 0.1)(q1 0.1)(q2 0.1)(q3 0.1)(q4 0.1)) default 0\n" +
         "POLICY_SETS\n" +
@@ -507,7 +507,7 @@ class PealProgramParserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
   }
 
   @Test
-  def testCanIngoreComments() {
+  def testCanIngnoreComments() {
     val input =
       "POLICIES\nb1 = + ((q1 x) (q2 0.9)) default 1\n" +
         "b2 = + ((q3 x) (q4 0.8)) default 1\n" +
@@ -541,7 +541,7 @@ class PealProgramParserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
   }
 
   @Test
-  def testCanAggregratePolicySetUsingPlus() {
+  def testCanAggregatePolicySetUsingPlus() {
     val input =
       "POLICIES\nb1 = + ((q1 x) (q2 0.9)) default 1\n" +
         "b2 = + ((q3 x) (q4 0.9)) default 1\n" +
@@ -557,7 +557,7 @@ class PealProgramParserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
   }
 
   @Test
-  def testCanAggregratePolicySetUsingMul() {
+  def testCanAggregatePolicySetUsingMul() {
     val input =
       "POLICIES\nb1 = + ((q1 x) (q2 0.9)) default 1\n" +
         "b2 = + ((q3 x) (q4 0.9)) default 1\n" +
