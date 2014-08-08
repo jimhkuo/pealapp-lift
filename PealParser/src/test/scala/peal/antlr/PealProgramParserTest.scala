@@ -507,7 +507,7 @@ class PealProgramParserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
   }
 
   @Test
-  def testCanIngnoreComments() {
+  def testCanIgnoreComments() {
     val input =
       "POLICIES\nb1 = + ((q1 x) (q2 0.9)) default 1\n" +
         "b2 = + ((q3 x) (q4 0.8)) default 1\n" +
@@ -526,6 +526,22 @@ class PealProgramParserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
 
   @Test
   def testConditionCanBePredicate() {
+    val input =
+      "POLICIES\nb1 = + ((q1 x) (q2 0.9)) default 1\n" +
+        "b2 = + ((q3 x) (q4 0.9)) default 1\n" +
+        "POLICY_SETS\npSet = + (b1,b2)\n" +
+        "CONDITIONS\ncond = q4"
+
+    val pealProgramParser = ParserHelper.getPealParser(input)
+    pealProgramParser.program()
+
+    val allRules = pealProgramParser.pols.values().flatMap(pol => pol.rules).toSeq
+    allRules(0).score.underlyingScore.right.get.toZ3Expression should be("x")
+    allRules(1).score.underlyingScore.left.get should be(BigDecimal(0.9))
+  }
+
+  @Test
+  def testCanAccept() {
     val input =
       "POLICIES\nb1 = + ((q1 x) (q2 0.9)) default 1\n" +
         "b2 = + ((q3 x) (q4 0.9)) default 1\n" +

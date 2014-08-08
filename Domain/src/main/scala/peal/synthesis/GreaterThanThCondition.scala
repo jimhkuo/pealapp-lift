@@ -5,7 +5,6 @@ import peal.domain.Pol
 import peal.domain.z3.{PealAst, Or, And}
 
 //this is > th
-//TODO Condition should receive pSets in the constructor to support meaningful error messages
 case class GreaterThanThCondition(lhs: PolicySet, rhs: Either[BigDecimal,PolicySet]) extends Condition {
 
   if (lhs == null) throw new RuntimeException("Referred to undeclared policy set in GreaterThanThCondition")
