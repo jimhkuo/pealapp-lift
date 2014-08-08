@@ -9,6 +9,8 @@ case class GreaterThanThCondition(lhs: PolicySet, rhs: Either[BigDecimal,PolicyS
 
   if (lhs == null) throw new RuntimeException("Referred to undeclared policy set in GreaterThanThCondition")
 
+  //TODO if implementing equal condition, the first two cases change to comparing the maximum or minimum to th
+  //may need to involve ite
   def synthesis(consts: Map[String, PealAst]): PealAst = lhs match {
     case l: MinPolicySet => And(new GreaterThanThCondition(l.lhs, rhs).synthesis(consts), new GreaterThanThCondition(l.rhs, rhs).synthesis(consts))
     case l: MaxPolicySet => Or(new GreaterThanThCondition(l.lhs, rhs).synthesis(consts), new GreaterThanThCondition(l.rhs, rhs).synthesis(consts))
