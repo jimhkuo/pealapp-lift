@@ -9,7 +9,7 @@ trait Act
 case class ActLeaf(leafType : LeafType) extends Act
 case class AndLeaf(name : String, lhs: Act, rhs: Act*) extends Act
 case class OrLeaf(name : String, lhs: Act, rhs: Act*) extends Act
-case class NotLeaf(name : String, lhs: DmAct, rhs: DmAct*) extends Act
+case class NotLeaf(name : String, dm: DmAct) extends Act
 
 trait DmAct
 case class AndDmAct(name: String, lhs: DmAct, rhs: DmAct*) extends DmAct
