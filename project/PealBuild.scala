@@ -5,6 +5,8 @@ import Keys._
 
 object PealBuild extends Build {
 
+  lazy val actToPeal = Project(id = "ActToPeal", base = file("ActToPeal"))
+
   lazy val reporter = Project(id = "ReportMaker", base = file("ReportMaker")) dependsOn (domain % "test->test;compile->compile")
 
   lazy val expressionBuilder = Project(id = "ExpressionBuilder", base = file("ExpressionBuilder")) dependsOn (domain % "test->test;compile->compile")
