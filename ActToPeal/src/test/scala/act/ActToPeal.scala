@@ -14,13 +14,14 @@ object ActToPeal {
     case OrLeaf(name, lhs, rhs@_*) =>
       "prob_or_" + name + "= +((True 1.0) (True -1.0*prob_or_" + name + "_aux_score)) default 0.0\n" +
         "prob_or_" + name + "_aux = *(" + orAuxRules(name, Seq(lhs) ++ rhs: _*).mkString + ") default 0.0\n" +
-        orAux(name, Seq(lhs) ++ rhs: _*).mkString
-    case AttLeaf(name, pred, prob, cost, impact) => "prob_att_leaf_" + name + " = +((" + pred + " " + prob + ")) default 0.0"
-    case NotLeaf(name, dm) => "prob_not_" + name + " = +((True -1.0* " + policyName(dm) + ")) default 0.0"
+        orAux(name, Seq(lhs) ++ rhs: _*).mkString +
+        executeNext(lhs) +
+        rhs.map(executeNext).mkString
+    case AttLeaf(name, pred, prob, cost, impact) => "prob_att_leaf_" + name + " = +((" + pred + " " + prob + ")) default 0.0\n"
+    case NotLeaf(name, dm) => "prob_not_" + name + " = +((True -1.0* " + policyName(dm) + ")) default 0.0\n"
   }
 
   private def orAux(name: String, acts: Act*) = for ((act, i) <- acts.zipWithIndex) yield ("prob_or_" + name + "_aux" + (i + 1) + " = +((True 1.0) (True -1.0*" + policyName(act) + ")) default 0.0\n")
-
 
   private def orAuxRules(name: String, acts: Act*) = for ((act, i) <- acts.zipWithIndex) yield ("(True prob_or_" + name + "_aux" + (i + 1) + "_score)")
 
