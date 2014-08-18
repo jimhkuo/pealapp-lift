@@ -51,7 +51,7 @@ class ActTest extends ShouldMatchersForJUnit {
       "prob_or_2_aux2 = +((True 1.0) (True -1.0*prob_or_3_score)) default 0.0\n" +
       "prob_att_leaf_111 = +((sendRSTmessageToTCPStack 0.08)) default 0.0\n" +
       "prob_or_3 = +((True 1.0) (True -1.0*prob_or_3_aux_score)) default 0.0\n" +
-      "prob_or_3_aux = *((True prob_or_3_aux1_score) (True prob_or_3_aux2_score)  (True prob_or_3_aux3_score)) default 0.0\n" +
+      "prob_or_3_aux = *((True prob_or_3_aux1_score) (True prob_or_3_aux2_score) (True prob_or_3_aux3_score)) default 0.0\n" +
       "prob_or_3_aux1 = +((True 1.0) (True -1.0*prob_att_leaf_1121_score)) default 0.0\n" +
       "prob_or_3_aux2 = +((True 1.0) (True -1.0*prob_att_leaf_1122_score)) default 0.0\n" +
       "prob_or_3_aux3 = +((True 1.0) (True -1.0*prob_att_leaf_1123_score)) default 0.0\n" +
@@ -73,7 +73,7 @@ class ActTest extends ShouldMatchersForJUnit {
       "prob_not_2 = +((True 1.0) (True -1.0*prob_and_5_score)) default 0.0\n" +
       "prob_and_5 = *((True prob_det_leaf_2_score) (True prob_mit_leaf_2_score)) default 0.0\n" +
       "prob_det_leaf_2 = +((routerFirewallAlert 0.7)) default 0.0\n" +
-      "prob_mit_leaf_2 = +((secureRouter 0.5)) default 0.0"
+      "prob_mit_leaf_2 = +((secureRouter 0.5)) default 0.0\n"
 
     println(ActToPeal.execute(bgp))
     ActToPeal.execute(bgp) should be(expected)
