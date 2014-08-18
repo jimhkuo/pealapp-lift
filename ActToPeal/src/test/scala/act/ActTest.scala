@@ -53,6 +53,11 @@ class ActTest extends ShouldMatchersForJUnit {
     val a1122 = AttLeaf("1122", "open", 0.15, 70, 100)
     val a1121 = AttLeaf("1121", "notify", 0.1, 60, 130)
     val or3 = OrLeaf("3", a1121, a1122, a1123)
+    val a111 = AttLeaf("111", "sendRSTmessageToTCPStack", 0.08, 50, 200)
+    val or2 = OrLeaf("2", a111, or3)
+    val and3 = AndLeaf("3", or2, and6)
+    val and1 = AndLeaf("1", and3, not1)
+    val bgp = OrLeaf("or1", and1, and2)
   }
 
 }
