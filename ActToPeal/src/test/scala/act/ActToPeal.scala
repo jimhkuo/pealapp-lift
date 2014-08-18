@@ -4,7 +4,6 @@ object ActToPeal {
 
   def execute(act: Act): String = act match {
     case OrLeaf(name, lhs, rhs@_*) => "attack_success_probability = +((True prob_or_" + name + "_score)) default 0.0\n" + executeNext(act)
-
   }
 
   private def executeNext(act: Act): String = act match {
@@ -49,10 +48,5 @@ object ActToPeal {
     case AndDmAct(name, lhs, rhs@_*) => "prob_and_" + name + "_score"
     case DetLeaf(name, _,_,_) => "prob_det_leaf_" + name + "_score"
     case MitLeaf(name, _,_,_) => "prob_mit_leaf_" + name + "_score"
-
   }
-
-//  private def policyName(dmAct: DmAct): String = dmAct match {
-//    case AndDmAct(name, lhs, rhs@_*) => "prob_and_" + name + "_score"
-//  }
 }
