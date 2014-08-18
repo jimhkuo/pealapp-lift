@@ -9,7 +9,7 @@ object ActToPeal {
 
   private def executeNext(act: Act): String = act match {
     case AndLeaf(name, lhs, rhs@_*) =>
-      "prob_and_" + name + " = *((True " + policyName[Act](lhs) + "_score)" + rhs.map("(True " + policyName[Act](_) + ")").mkString(" ") + ") default 0.0\n" +
+      "prob_and_" + name + " = *((True " + policyName[Act](lhs) + ")" + rhs.map("(True " + policyName[Act](_) + ")").mkString(" ") + ") default 0.0\n" +
         executeNext(lhs) +
         rhs.map(executeNext).mkString
     case OrLeaf(name, lhs, rhs@_*) =>
@@ -26,7 +26,7 @@ object ActToPeal {
     case DetLeaf(name, pred, prob, cost) => "prob_det_leaf_" + name + " = +((" + pred + " " + prob + ")) default 0.0\n"
     case MitLeaf(name, pred, prob, cost) => "prob_mit_leaf_" + name + " = +((" + pred + " " + prob + ")) default 0.0\n"
     case AndDmAct(name, lhs, rhs@_*) =>
-      "prob_and_" + name + " = *((True " + policyName[DmAct](lhs) + "_score)" + rhs.map("(True " + policyName[DmAct](_) + ")").mkString(" ") + ") default 0.0\n" +
+      "prob_and_" + name + " = *((True " + policyName[DmAct](lhs) + ")" + rhs.map("(True " + policyName[DmAct](_) + ")").mkString(" ") + ") default 0.0\n" +
         executeNext(lhs) +
         rhs.map(executeNext).mkString
     case OrDmAct(name, lhs, rhs@_*) =>
