@@ -18,7 +18,7 @@ object ActToPeal {
         executeNext(lhs) +
         rhs.map(executeNext).mkString
     case AttLeaf(name, pred, prob, cost, impact) => "prob_att_leaf_" + name + " = +((" + pred + " " + prob + ")) default 0.0\n"
-    case NotLeaf(name, dm) => "prob_not_" + name + " = +((True -1.0* " + policyName[DmAct](dm) + ")) default 0.0\n" + executeNext(dm)
+    case NotLeaf(name, dm) => "prob_not_" + name + " = +((True 1.0) (True -1.0* " + policyName[DmAct](dm) + ")) default 0.0\n" + executeNext(dm)
   }
 
   private def executeNext(dmAct: DmAct): String = dmAct match {
