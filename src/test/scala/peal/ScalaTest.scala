@@ -30,16 +30,20 @@ class ScalaTest extends ShouldMatchersForJUnit {
     println(c)
   }
 
-  @Test
-  def testTry() {
-    val map = Map(1 -> 1, 2 -> 2)
+  def doSomething: Int = {
+    10
+    throw new RuntimeException
+  }
 
-    for (m <- map) {
-      println(m)
-    }
-    for (m <- Try(map)) {
-      println(m)
-    }
+  def doSomething2(i:Int)= {
+    Try(i)
+  }
+
+  @Test
+  def testTry(): Unit = {
+    val t = Try(doSomething)
+    val u = t.flatMap(i => doSomething2(i))
+    println(u)
   }
 
   @Test
