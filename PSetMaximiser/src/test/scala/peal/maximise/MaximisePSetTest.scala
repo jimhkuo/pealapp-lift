@@ -16,9 +16,8 @@ class MaximisePSetTest extends ShouldMatchersForJUnit {
       "(assert True)\n" +
       "ANALYSES\n" +
       "name8 = satisfiable? c8"
-    println(input)
-//    maximize_pealt! input, pSet, metric, 0.01
     val expected = 271.92
+    MaximisePSet(input, "pSet", 0.01, "metric").doIt() should be (expected)
   }
 
 }

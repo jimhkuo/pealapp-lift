@@ -1,5 +1,7 @@
 package peal.maximise
 
-object MaximisePSet {
+case class MaximisePSet(input : String, pSet: String, accuracy: BigDecimal, pol:String = "") {
+
+  def doIt() = 0.0
 
 }
