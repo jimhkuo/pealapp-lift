@@ -14,7 +14,7 @@ class ExtendedSynthesiser(input: String) extends Synthesiser {
   val pols = pealProgramParser.pols
   val conds = pealProgramParser.conds
   val pSets = pealProgramParser.pSets
-  val allRules = pealProgramParser.pols.values().flatMap(pol => pol.rules)
+  val allRules = pols.values().flatMap(pol => pol.rules)
   val predicateNames = allRules.map(r => r.q.name).toSet
   val variableDefaultScores: Set[String] = pols.foldLeft(Set[String]())((acc, tuple) => {
     tuple._2 match {
@@ -108,7 +108,7 @@ class ExtendedSynthesiser(input: String) extends Synthesiser {
     }
 
     val vacuityChecks = if (doVacuityCheck) {
-      val sortedConditions = pealProgramParser.conds.keys.toSeq.sortWith(_ < _)
+      val sortedConditions = conds.keys.toSeq.sortWith(_ < _)
       for (cond <- sortedConditions) yield {
         val trueName = "a1_" + cond + "_vct"
         val falseName = "a2_" +  cond + "_vcf"
