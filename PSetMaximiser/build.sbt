@@ -1,3 +1,11 @@
+import AssemblyKeys._
+
+assemblySettings
+
+test in assembly := {}
+
+mainClass in assembly := Some("peal.maximise.Main")
+
 name := "PSetMaximiser"
 
 version := "0.1"
