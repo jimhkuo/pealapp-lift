@@ -1,11 +1,9 @@
 package peal.synthesis
 
 import peal.antlr.util.ParserHelper
-import peal.synthesis.analysis.{AnalysisGenerator, AlwaysFalse, AlwaysTrue}
-import peal.synthesis.util.{Z3ScoreGenerator, ConditionTranslator}
-import scala.collection.JavaConversions._
-import peal.domain.operator._
 import peal.domain.Pol
+
+import scala.collection.JavaConversions._
 
 class ExtendedSynthesiser(input: String) extends Synthesiser {
 
