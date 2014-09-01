@@ -33,7 +33,7 @@ class ScalaTest extends ShouldMatchersForJUnit {
     println(c)
   }
 
-  def doSomething2(i:Int)= {
+  def doSomething2(i: Int) = {
     Try(i)
   }
 
@@ -131,12 +131,21 @@ class ScalaTest extends ShouldMatchersForJUnit {
 
   @Test
   def testFoldFuture() {
-    val f: Future[String] = Future { sys.error("f error") }
-    val g: Future[String] = Future { "g" }
-    val h: Future[String] = Future { sys.error("h error") }
-    val out = List(f,g,h).foldLeft[Future[String]](Future(sys.error("!")))((a, block) => block fallbackTo(a))
+    val f: Future[String] = Future {
+      "f"
+//      sys.error("f error")
+    }
+    val g: Future[String] = Future {
+//      "g"
+      sys.error("g error")
+    }
+    val h: Future[String] = Future {
+      "h"
+//      sys.error("h error")
+    }
+    val out = List[() => Future[String]](() => f, () => g, () => h).foldRight[() => Future[String]](() => Future(sys.error("!")))((block, a) => () => block() fallbackTo {a()})
 
-    println(Await.result(out, Duration.Zero))
+    println(Await.result(out(), Duration.Zero))
   }
 
   @Test
