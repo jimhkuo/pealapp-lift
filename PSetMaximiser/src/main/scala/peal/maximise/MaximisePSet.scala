@@ -10,7 +10,7 @@ import peal.z3.Z3Caller
 import scala.collection.JavaConversions._
 
 
-case class MaximisePSet(input : String, pSet: String, accuracy: BigDecimal, pol:String = "") {
+case class MaximisePSet(input: String, pSet: String, accuracy: BigDecimal, pol: String = "") {
   val pealProgramParser = ParserHelper.getPealParser(input)
   pealProgramParser.program()
   val pols = pealProgramParser.pols.toMap
@@ -31,23 +31,55 @@ case class MaximisePSet(input : String, pSet: String, accuracy: BigDecimal, pol:
   val pSets = pealProgramParser.pSets.toMap
   val domainSpecifics: Array[String] = input.split("\n").dropWhile(!_.startsWith("DOMAIN_SPECIFICS")).takeWhile(!_.startsWith("ANALYSES")).drop(1).filterNot(_.trim.startsWith("%"))
 
-  def isSatisfiable(threshold: BigDecimal) = {
+  def runSatisfiableAnalysis(threshold: BigDecimal) = {
     val conds: Map[String, GreaterThanThCondition] = Map("cond1" -> GreaterThanThCondition(pSets(pSet + (if (pol != "") "_" + pol else "")), Left(threshold)))
     val analyses: Map[String, Satisfiable] = Map("name1" -> new Satisfiable("name1", "cond1"))
     val z3Code = ExtendedSynthesiserCore(pols, conds, pSets, analyses, domainSpecifics, predicateNames, variableDefaultScores, variableScores).generate()
     val z3RawOutput = Z3Caller.call(z3Code)
     val I = Z3ModelExtractor.extractIUsingRational(z3RawOutput)("name1")
     println(I)
-
-    I.nonEmpty
+    I
   }
 
-  def doIt() = {
-//    if (isSatisfiable(0.0)) {
-//      if (pol != "") {
-//        val temp =
-//      }
-//    }
+  private def bisection(low: BigDecimal, high: BigDecimal) = {
+    "bisection low:" + low + " high:" + high
   }
 
+  def doIt(): String = {
+    val I = runSatisfiableAnalysis(0.0)
+    var low = BigDecimal(0.0)
+    if (I.nonEmpty) {
+      if (pol != "") {
+        val temp = I(pol + "_score").left.get.value
+        val J = runSatisfiableAnalysis(temp)
+        if (J.isEmpty) {
+          return "exact maximum is " + temp
+        }
+      }
+
+      var high = low.max(2.0)
+      var K = runSatisfiableAnalysis(high)
+      while (K.nonEmpty) {
+        if (pol != "") {
+          val temp = K(pol + "_score").left.get.value
+          val J = runSatisfiableAnalysis(temp)
+          if (J.isEmpty) {
+            return "exact maximum is " + temp
+          }
+          low = temp.max(high)
+          high = 2 * low.max(high)
+        }
+        else {
+          low = high
+          high = 2 * high
+        }
+        K = runSatisfiableAnalysis(high)
+      }
+
+      bisection(low, high)
+    }
+    else {
+      bisection(low, 0.0)
+    }
+  }
 }

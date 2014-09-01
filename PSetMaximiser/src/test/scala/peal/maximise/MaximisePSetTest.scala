@@ -16,8 +16,10 @@ class MaximisePSetTest extends ShouldMatchersForJUnit {
       "(assert True)\n" +
       "ANALYSES\n" +
       "name8 = satisfiable? c8"
+    println(input)
     val expected = 271.92
-    println(MaximisePSet(input, "pSet", 0.01, "metric").isSatisfiable(272))
+//    println(MaximisePSet(input, "pSet", 0.01, "metric").runSatisfiableAnalysis(272))
+    println(MaximisePSet(input, "pSet", 0.01, "metric").doIt())
   }
 
 }
