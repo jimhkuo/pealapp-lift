@@ -2,7 +2,7 @@ package peal.maximise
 
 import peal.antlr.util.ParserHelper
 import peal.domain.Pol
-import peal.synthesis.GreaterThanThCondition
+import peal.synthesis.{ExtendedSynthesiserCore, GreaterThanThCondition}
 import peal.synthesis.analysis.Satisfiable
 import scala.collection.JavaConversions._
 
@@ -33,7 +33,7 @@ case class MaximisePSet(input : String, pSet: String, accuracy: BigDecimal, pol:
   private def satisfiableZ3Code(threshold: BigDecimal) = {
     val conds: Map[String, GreaterThanThCondition] = Map("cond1" -> GreaterThanThCondition(pSets(pSet + "_" + pol), Left(0.0)))
     val analyses: Map[String, Satisfiable] = Map("name1" -> new Satisfiable("name1", "cond1"))
-    ExtendedSynthesiserCore
+    ExtendedSynthesiserCore(pols, conds, pSets, analyses, Array(), predicateNames, variableDefaultScores, variableScores).generate()
   }
 
   def doIt() = {

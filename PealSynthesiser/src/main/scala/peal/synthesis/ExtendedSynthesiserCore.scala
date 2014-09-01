@@ -74,7 +74,7 @@ case class ExtendedSynthesiserCore(pols: Map[String, Pol], conds: Map[String, Co
     }
   }
 
-  def generate(doVacuityCheck: Boolean): String = {
+  def generate(doVacuityCheck: Boolean = false): String = {
     val declarations = for (name <- predicateNames) yield "(declare-const " + name + " Bool)\n"
     val allRealDeclarations = (variableScores ++ variableDefaultScores ++ pols.keySet.map(_ + "_score") ++ pSets.keySet.map(_ + "_score")).toList.sorted
     val allVariableDeclarations = for (name <- allRealDeclarations) yield "(declare-const " + name + " Real)\n"
