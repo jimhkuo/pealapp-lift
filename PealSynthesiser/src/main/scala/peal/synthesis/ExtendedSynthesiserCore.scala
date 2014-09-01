@@ -1,34 +1,12 @@
 package peal.synthesis
 
-import peal.antlr.util.ParserHelper
-import peal.synthesis.analysis.{AnalysisGenerator, AlwaysFalse, AlwaysTrue}
-import peal.synthesis.util.{Z3ScoreGenerator, ConditionTranslator}
+import peal.domain.{PolicySet, Pol}
+import peal.domain.operator.{Mul, Plus, Min, Max}
 import scala.collection.JavaConversions._
-import peal.domain.operator._
-import peal.domain.Pol
+import peal.synthesis.analysis.{AnalysisGenerator, AlwaysFalse, AlwaysTrue}
+import peal.synthesis.util.{ConditionTranslator, Z3ScoreGenerator}
 
-class ExtendedSynthesiser(input: String) extends Synthesiser {
-
-  val pealProgramParser = ParserHelper.getPealParser(input)
-  pealProgramParser.program()
-  val pols = pealProgramParser.pols
-  val conds = pealProgramParser.conds
-  val pSets = pealProgramParser.pSets
-  val allRules = pols.values().flatMap(pol => pol.rules)
-  val predicateNames: Set[String] = allRules.map(r => r.q.name).toSet
-  val variableDefaultScores: Set[String] = pols.foldLeft(Set[String]())((acc, tuple) => {
-    tuple._2 match {
-      case p: Pol =>
-        def addVariables(set: Set[String]) = p.score.underlyingScore.fold(score => set, variable => set ++ variable.names)
-        addVariables(acc)
-      case _ => acc
-    }
-  })
-  val variableScores: Set[String] = allRules.foldLeft(Set[String]())((acc, rule) => {
-    def addVariables(set: Set[String]) = rule.score.underlyingScore.fold(score => set, variable => set ++ variable.names)
-    addVariables(acc)
-  })
-  val analyses = pealProgramParser.analyses
+case class ExtendedSynthesiserCore(pols: Map[String, Pol], conds: Map[String, Condition], pSets : Map[String, PolicySet], analyses: Map[String, AnalysisGenerator], domainSpecifics: List[String], predicateNames: Set[String], variableDefaultScores: Set[String], variableScores: Set[String]) {
 
   private def policyDefaultDeclaration = {
     for {
@@ -96,12 +74,12 @@ class ExtendedSynthesiser(input: String) extends Synthesiser {
     }
   }
 
-  override def generate(doVacuityCheck: Boolean): String = {
+  def generate(doVacuityCheck: Boolean): String = {
     val declarations = for (name <- predicateNames) yield "(declare-const " + name + " Bool)\n"
-    val allRealDeclarations = (variableScores ++ variableDefaultScores ++ pols.keySet().map(_ + "_score") ++ pSets.keySet().map(_ + "_score")).toList.sorted
+    val allRealDeclarations = (variableScores ++ variableDefaultScores ++ pols.keySet.map(_ + "_score") ++ pSets.keySet.map(_ + "_score")).toList.sorted
     val allVariableDeclarations = for (name <- allRealDeclarations) yield "(declare-const " + name + " Real)\n"
     val condDeclarations = for (name <- conds.keys) yield "(declare-const " + name + " Bool)\n"
-    val domainSpecifics = input.split("\n").dropWhile(!_.startsWith("DOMAIN_SPECIFICS")).takeWhile(!_.startsWith("ANALYSES")).drop(1).filterNot(_.trim.startsWith("%"))
+//    val domainSpecifics = input.split("\n").dropWhile(!_.startsWith("DOMAIN_SPECIFICS")).takeWhile(!_.startsWith("ANALYSES")).drop(1).filterNot(_.trim.startsWith("%"))
 
     val condDetails = for (name <- conds.keys) yield {
       "(assert (= " + name + " " + ConditionTranslator.translate(name, conds.toMap) + "))"
@@ -140,4 +118,5 @@ class ExtendedSynthesiser(input: String) extends Synthesiser {
       policyComposition.mkString("", "\n", "\n") +
       generatedAnalyses.mkString
   }
+
 }
