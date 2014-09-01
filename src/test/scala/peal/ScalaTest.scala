@@ -8,9 +8,12 @@ import org.junit.Test
 import org.scalatest.junit.ShouldMatchersForJUnit
 import peal.domain.Rational
 
+import scala.concurrent.duration.Duration
+import scala.concurrent.{Await, Future}
 import scala.sys.process._
 import scala.util.Try
 import scala.xml.{Elem, Node, NodeSeq}
+import scala.concurrent.ExecutionContext.Implicits.global
 
 //Test cases for me to try out Scala features, these do not test the functionalities of PEALT
 class ScalaTest extends ShouldMatchersForJUnit {
@@ -30,20 +33,8 @@ class ScalaTest extends ShouldMatchersForJUnit {
     println(c)
   }
 
-  def doSomething: Int = {
-    10
-    throw new RuntimeException
-  }
-
   def doSomething2(i:Int)= {
     Try(i)
-  }
-
-  @Test
-  def testTry(): Unit = {
-    val t = Try(doSomething)
-    val u = t.flatMap(i => doSomething2(i))
-    println(u)
   }
 
   @Test
@@ -139,18 +130,13 @@ class ScalaTest extends ShouldMatchersForJUnit {
 
 
   @Test
-  def testLeft() {
-    //    val m = collection.mutable.Map(1 -> 1, 2 -> 2)
-    //    m += (3 -> 3)
-    ////    m = m + (3 -> 3) //not allowed
-    //    println(m)
-    //
-    //    var i = 10
-    //    i += 1
-    //
-    //    println(i)
-    //
-    println(List[Int]().foldLeft(1)(_ + _))
+  def testFoldFuture() {
+    val f: Future[String] = Future { sys.error("f error") }
+    val g: Future[String] = Future { "g" }
+    val h: Future[String] = Future { sys.error("h error") }
+    val out = List(f,g,h).foldLeft[Future[String]](Future(sys.error("!")))((a, block) => block fallbackTo(a))
+
+    println(Await.result(out, Duration.Zero))
   }
 
   @Test
