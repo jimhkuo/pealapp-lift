@@ -136,16 +136,16 @@ class ScalaTest extends ShouldMatchersForJUnit {
       println("f")
     }
     val g: Future[Unit] = Future {
-//      sys.error("g error")
+      sys.error("g error")
       println("g")
     }
 
     val h: Future[Unit] = Future {
-      sys.error("h error")
+//      sys.error("h error")
       println("h")
     }
 
-    val out = List[() => Future[Unit]](() => f, () => g, () => h).foldLeft[() => Future[Unit]](() => Future(sys.error("!")))((a, block) => () => block() fallbackTo {
+    val out = List[() => Future[Unit]](() => f, () => g, () => h).foldRight[() => Future[Unit]](() => Future(sys.error("!")))((block, a) => () => block() fallbackTo {
       a()
     })
 
