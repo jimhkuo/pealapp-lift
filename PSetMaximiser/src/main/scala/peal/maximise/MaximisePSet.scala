@@ -37,12 +37,32 @@ case class MaximisePSet(input: String, pSet: String, accuracy: BigDecimal, pol: 
     val z3Code = ExtendedSynthesiserCore(pols, conds, pSets, analyses, domainSpecifics, predicateNames, variableDefaultScores, variableScores).generate()
     val z3RawOutput = Z3Caller.call(z3Code)
     val I = Z3ModelExtractor.extractIUsingRational(z3RawOutput)("name1")
-    println(I)
+//    println(I)
     I
   }
 
-  private def bisection(low: BigDecimal, high: BigDecimal) = {
-    "bisection low:" + low + " high:" + high
+  private def bisection(inputLow: BigDecimal, inputHigh: BigDecimal) : String = {
+    var low = inputLow
+    var high = inputHigh
+    while ((high - low) > accuracy) {
+      val middle = (low + high) / 2
+      val I = runSatisfiableAnalysis(middle)
+      if (I.nonEmpty) {
+        if (pol != "") {
+          val temp = I(pol + "_score").left.get.value
+          val J = runSatisfiableAnalysis(temp)
+          if (J.isEmpty) {
+            return "exact maximum is " + temp
+          }
+          low = temp.max(middle)
+        } else {
+          low = middle
+        }
+      } else {
+        high = middle
+      }
+    }
+    "exact maximum after bisection is " + low
   }
 
   def doIt(): String = {
