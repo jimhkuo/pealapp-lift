@@ -129,34 +129,63 @@ class ScalaTest extends ShouldMatchersForJUnit {
   }
 
 
+  def retry(noTimes: Int)(block: => Future[Int]): Future[Int] = {
+    val ns = (1 to noTimes).iterator
+    val attempts = ns.map(_ => () => block)
+    val failed: Future[Int] = Future.failed(new Exception)
+
+    attempts.foldRight(() => failed)((block, a) => () => {
+      block() fallbackTo {
+        a()
+      }
+    })()
+  }
+
   @Test
   def testFoldFuture() {
-    val f = Future {
-//      sys.error("f error")
+    val out = retry(3) {
+      Future {
+        sys.error("x");
+        print("*");
+        5
+      }
+    }
+    println(":" + Await.result(out, Duration.Zero))
+
+  }
+
+  @Test
+  def testFoldFuture2(): Unit = {
+
+    def f = Future {
+      sys.error("f error")
+      println("f")
       5
     }
-    val g = Future {
-//      sys.error("g error")
+    def g = Future {
+      println("g")
+      //      sys.error("g error")
       6
     }
 
-    val h = Future {
-      sys.error("h error")
+    def h = Future {
+      println("h")
+      //      sys.error("h error")
       7
     }
 
     val failed = Future.failed(new Exception)
 
-    val out = List[() => Future[Int]](() => f, () => g, () => h).foldRight[() => Future[Int]](() => {
+    val out = List(() => f, () => g, () => h).foldLeft[() => Future[Int]](() => {
       failed
-    })((block, a) => () => block() fallbackTo {
+    })((a, block) => () => block() fallbackTo {
       a()
     })
 
     println("fold:" + Await.result(out(), Duration.Zero))
 
-    val out2 = f fallbackTo( g fallbackTo(h fallbackTo(failed)))
-    println("unfold:" + Await.result(out2, Duration.Zero))
+    val out2 = f fallbackTo (g fallbackTo (h fallbackTo (failed)))
+    println("right:" + Await.result(out2, Duration.Zero))
 
   }
 
