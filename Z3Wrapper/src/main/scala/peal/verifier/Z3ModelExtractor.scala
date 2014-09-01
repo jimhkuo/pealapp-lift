@@ -1,8 +1,10 @@
 package peal.verifier
 
 import peal.antlr.util.ParserHelper
+import peal.domain.{ThreeWayBoolean, Rational}
 import peal.util.ConsoleLogger
 import scala.collection.JavaConversions._
+import scala.collection.mutable
 
 
 object Z3ModelExtractor {
@@ -17,7 +19,7 @@ object Z3ModelExtractor {
     }
   }
 
-  def extractIUsingRational(model: String) = {
+  def extractIUsingRational(model: String): mutable.Map[String, Map[String, Either[Rational, ThreeWayBoolean]]] = {
     val z3OutputParser = ParserHelper.getZ3OutputParser(model.mkString(""))
     z3OutputParser.results().map {
       case (name, z3Model) =>

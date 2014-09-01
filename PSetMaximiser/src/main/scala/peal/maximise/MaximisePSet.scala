@@ -5,6 +5,7 @@ import peal.domain.Pol
 import peal.domain.z3.Model
 import peal.synthesis.{ExtendedSynthesiserCore, GreaterThanThCondition}
 import peal.synthesis.analysis.Satisfiable
+import peal.verifier.Z3ModelExtractor
 import peal.z3.Z3Caller
 import scala.collection.JavaConversions._
 
@@ -28,20 +29,25 @@ case class MaximisePSet(input : String, pSet: String, accuracy: BigDecimal, pol:
     addVariables(acc)
   })
   val pSets = pealProgramParser.pSets.toMap
+  val domainSpecifics: Array[String] = input.split("\n").dropWhile(!_.startsWith("DOMAIN_SPECIFICS")).takeWhile(!_.startsWith("ANALYSES")).drop(1).filterNot(_.trim.startsWith("%"))
 
-  private def satisfiableZ3Code(threshold: BigDecimal, pol: String) = {
-    val conds: Map[String, GreaterThanThCondition] = Map("cond1" -> GreaterThanThCondition(pSets(pSet + (if (pol != "") "_" + pol else "")), Left(0.0)))
+  def isSatisfiable(threshold: BigDecimal) = {
+    val conds: Map[String, GreaterThanThCondition] = Map("cond1" -> GreaterThanThCondition(pSets(pSet + (if (pol != "") "_" + pol else "")), Left(threshold)))
     val analyses: Map[String, Satisfiable] = Map("name1" -> new Satisfiable("name1", "cond1"))
-    val z3Code = ExtendedSynthesiserCore(pols, conds, pSets, analyses, Array(), predicateNames, variableDefaultScores, variableScores).generate()
+    val z3Code = ExtendedSynthesiserCore(pols, conds, pSets, analyses, domainSpecifics, predicateNames, variableDefaultScores, variableScores).generate()
     val z3RawOutput = Z3Caller.call(z3Code)
-    val parser = ParserHelper.getZ3OutputParser(z3RawOutput)
-    val model: Map[String, Model] = parser.results().toMap
-    model("name1").isSat
+    val I = Z3ModelExtractor.extractIUsingRational(z3RawOutput)("name1")
+    println(I)
+
+    I.nonEmpty
   }
 
   def doIt() = {
-//    satisfiableZ3Code(0.0)
-    if (pol)
+//    if (isSatisfiable(0.0)) {
+//      if (pol != "") {
+//        val temp =
+//      }
+//    }
   }
 
 }
