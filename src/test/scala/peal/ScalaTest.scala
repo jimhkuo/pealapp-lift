@@ -131,25 +131,33 @@ class ScalaTest extends ShouldMatchersForJUnit {
 
   @Test
   def testFoldFuture() {
-    val f: Future[Unit] = Future {
+    val f = Future {
 //      sys.error("f error")
-      println("f")
+      5
     }
-    val g: Future[Unit] = Future {
-      sys.error("g error")
-      println("g")
-    }
-
-    val h: Future[Unit] = Future {
-//      sys.error("h error")
-      println("h")
+    val g = Future {
+//      sys.error("g error")
+      6
     }
 
-    val out = List[() => Future[Unit]](() => f, () => g, () => h).foldRight[() => Future[Unit]](() => Future(sys.error("!")))((block, a) => () => block() fallbackTo {
+    val h = Future {
+      sys.error("h error")
+      7
+    }
+
+    val failed = Future.failed(new Exception)
+
+    val out = List[() => Future[Int]](() => f, () => g, () => h).foldRight[() => Future[Int]](() => {
+      failed
+    })((block, a) => () => block() fallbackTo {
       a()
     })
 
-    println(":" + Await.result(out(), Duration.Zero))
+    println("fold:" + Await.result(out(), Duration.Zero))
+
+    val out2 = f fallbackTo( g fallbackTo(h fallbackTo(failed)))
+    println("unfold:" + Await.result(out2, Duration.Zero))
+
   }
 
   @Test
