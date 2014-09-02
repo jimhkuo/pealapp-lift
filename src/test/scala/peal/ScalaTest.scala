@@ -141,6 +141,7 @@ class ScalaTest extends ShouldMatchersForJUnit {
     })()
   }
 
+  //TODO need call by name for delayed evaluation to work
   @Test
   def testFoldFuture() {
     val out = retry(3) {
@@ -157,18 +158,18 @@ class ScalaTest extends ShouldMatchersForJUnit {
   @Test
   def testFoldFuture2(): Unit = {
 
-    def f = Future {
+    def f = () => Future {
 //      sys.error("f error")
       println("f")
       5
     }
-    def g = Future {
+    def g = () => Future {
       sys.error("g error")
       println("g")
       6
     }
 
-    def h = Future {
+    def h = () => Future {
 //      sys.error("h error")
       println("h")
       7
@@ -176,24 +177,26 @@ class ScalaTest extends ShouldMatchersForJUnit {
 
     val failed = Future.failed(new Exception)
 
-    val out = List(() => f, () => g, () => h).foldLeft[() => Future[Int]](() => {
-      failed
-    })((a, block) => () => block() fallbackTo {
-      a()
-    })
-
-    println("foldLeft:" + Await.result(out(), Duration.Inf))
-
-    val out1 = List(() => f, () => g, () => h).foldRight[() => Future[Int]](() => {
-      failed
-    })((block, a) => () => block() fallbackTo {
-      a()
-    })
-
-    println("foldRight:" + Await.result(out1(), Duration.Inf))
-
-    val out2 = f fallbackTo (g fallbackTo (h fallbackTo (failed)))
+    val out2 = f() fallbackTo (g() fallbackTo (h() fallbackTo (failed)))
     println("right:" + Await.result(out2, Duration.Inf))
+
+//    val out = List(() => f, () => g, () => h).foldLeft[() => Future[Int]](() => {
+//      failed
+//    })((a, block) => () => block() fallbackTo {
+//      a()
+//    })
+//
+//    println("foldLeft:" + Await.result(out(), Duration.Inf))
+//
+//    val out1 = List(() => f, () => g, () => h).foldRight[() => Future[Int]](() => {
+//      failed
+//    })((block, a) => () => block() fallbackTo {
+//      a()
+//    })
+//
+//    println("foldRight:" + Await.result(out1(), Duration.Inf))
+
+
 
   }
 
