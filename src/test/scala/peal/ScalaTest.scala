@@ -199,10 +199,10 @@ class ScalaTest extends ShouldMatchersForJUnit {
 
   @Test
   def testFuture3() {
-    def f = Future { sys.error("failed"); println("f") }
-    def g = Future { println("g"); 5 }
-    def h = Future { println("h"); 6 }
-    println(Await.result(f fallbackTo {g fallbackTo {h}}, Duration.Zero))
+    def f = Future { sys.error("failed"); print("f") }
+    def g = Future { print("g"); 5 }
+    def h = Future { print("h"); 6 }
+    println(Await.result(f fallbackTo {g fallbackTo h}, Duration.Zero))
   }
 
   @Test
