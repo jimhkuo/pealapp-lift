@@ -16,6 +16,12 @@ libraryDependencies += "com.novocode" % "junit-interface" % "0.8" % "test->defau
 
 libraryDependencies += "org.scalatest" % "scalatest_2.10" % "1.9.1" % "test"
 
+//libraryDependencies += "com.scalarx" %% "scalarx" % "0.2.6"
+
+libraryDependencies ++= Seq(
+  "com.netflix.rxjava" % "rxjava-scala" % "0.20.3"
+)
+
 //Lift stuff
 resolvers ++= Seq("snapshots"     at "http://oss.sonatype.org/content/repositories/snapshots",
   "releases"        at "http://oss.sonatype.org/content/repositories/releases"

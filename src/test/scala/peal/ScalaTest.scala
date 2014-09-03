@@ -3,7 +3,7 @@ package peal
 import java.io.File
 import java.util.ArrayList
 import java.util.Arrays
-
+import rx.lang.scala._
 import org.junit.Test
 import org.scalatest.junit.ShouldMatchersForJUnit
 import peal.domain.Rational
