@@ -11,7 +11,7 @@ import peal.domain.Rational
 import scala.concurrent.duration.Duration
 import scala.concurrent.{Await, Future}
 import scala.sys.process._
-import scala.util.Try
+import scala.util.{Failure, Success, Try}
 import scala.xml.{Elem, Node, NodeSeq}
 import scala.concurrent.ExecutionContext.Implicits.global
 
@@ -159,7 +159,7 @@ class ScalaTest extends ShouldMatchersForJUnit {
   def testFoldFuture2(): Unit = {
 
     def f = () => Future {
-//      sys.error("f error")
+      //      sys.error("f error")
       println("f")
       5
     }
@@ -170,39 +170,52 @@ class ScalaTest extends ShouldMatchersForJUnit {
     }
 
     def h = () => Future {
-//      sys.error("h error")
+      //      sys.error("h error")
       println("h")
       7
     }
 
     val failed = Future.failed(new Exception)
 
-    val out2 = f() fallbackTo (g() fallbackTo (h() fallbackTo (failed)))
-    println("right:" + Await.result(out2, Duration.Inf))
+    //    val out2 = f() fallbackTo (g() fallbackTo (h() fallbackTo (failed)))
+    //    println("right:" + Await.result(out2, Duration.Inf))
 
-//    val out = List(() => f, () => g, () => h).foldLeft[() => Future[Int]](() => {
-//      failed
-//    })((a, block) => () => block() fallbackTo {
-//      a()
-//    })
-//
-//    println("foldLeft:" + Await.result(out(), Duration.Inf))
-//
-//    val out1 = List(() => f, () => g, () => h).foldRight[() => Future[Int]](() => {
-//      failed
-//    })((block, a) => () => block() fallbackTo {
-//      a()
-//    })
-//
-//    println("foldRight:" + Await.result(out1(), Duration.Inf))
+    g() onComplete {
+      case Success(x) => println(x)
+      case Failure(t) => println(t)
+    }
+
+    //    val out = List(() => f, () => g, () => h).foldLeft[() => Future[Int]](() => {
+    //      failed
+    //    })((a, block) => () => block() fallbackTo {
+    //      a()
+    //    })
+    //
+    //    println("foldLeft:" + Await.result(out(), Duration.Inf))
+    //
+    //    val out1 = List(() => f, () => g, () => h).foldRight[() => Future[Int]](() => {
+    //      failed
+    //    })((block, a) => () => block() fallbackTo {
+    //      a()
+    //    })
+    //
+    //    println("foldRight:" + Await.result(out1(), Duration.Inf))
   }
 
   @Test
   def testFuture3() {
-    def f = Future { sys.error("failed"); print("f") }
-    def g = Future { print("g"); 5 }
-    def h = Future { print("h"); 6 }
-    println(Await.result(f fallbackTo {g fallbackTo h}, Duration.Zero))
+    def f = Future {
+      sys.error("failed"); print("f")
+    }
+    def g = Future {
+      print("g"); 5
+    }
+    def h = Future {
+      print("h"); 6
+    }
+    println(Await.result(f fallbackTo {
+      g fallbackTo h
+    }, Duration.Zero))
   }
 
   @Test
