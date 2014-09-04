@@ -67,7 +67,8 @@ case class MaximisePSet(input: String, pSet: String, accuracy: BigDecimal, pol: 
 
   def doIt(): String = {
     val I = runSatisfiableAnalysis(0.0)
-    var low = BigDecimal(0.0)
+    var high, low = BigDecimal(0.0)
+
     if (I.nonEmpty) {
       if (pol != "") {
         val temp = I(pol + "_score").left.get.value
@@ -77,7 +78,7 @@ case class MaximisePSet(input: String, pSet: String, accuracy: BigDecimal, pol: 
         }
       }
 
-      var high = low.max(2.0)
+      high = low.max(2.0)
       var K = runSatisfiableAnalysis(high)
       while (K.nonEmpty) {
         if (pol != "") {
