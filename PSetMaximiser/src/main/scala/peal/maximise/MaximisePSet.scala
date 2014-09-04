@@ -2,11 +2,11 @@ package peal.maximise
 
 import peal.antlr.util.ParserHelper
 import peal.domain.Pol
-import peal.domain.z3.Model
-import peal.synthesis.{ExtendedSynthesiserCore, GreaterThanThCondition}
 import peal.synthesis.analysis.Satisfiable
+import peal.synthesis.{ExtendedSynthesiserCore, GreaterThanThCondition}
 import peal.verifier.Z3ModelExtractor
 import peal.z3.Z3Caller
+
 import scala.collection.JavaConversions._
 
 
@@ -62,7 +62,7 @@ case class MaximisePSet(input: String, pSet: String, accuracy: BigDecimal, pol: 
         high = middle
       }
     }
-    "exact maximum after bisection is " + low
+    "exact maximum (after bisection(" + inputLow + ", " + inputHigh + ")) is " + low
   }
 
   def doIt(): String = {
