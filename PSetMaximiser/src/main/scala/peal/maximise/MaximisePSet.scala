@@ -62,7 +62,7 @@ case class MaximisePSet(input: String, pSet: String, accuracy: BigDecimal, pol: 
         high = middle
       }
     }
-    "exact maximum (after bisection(" + inputLow + ", " + inputHigh + ")) is " + low
+    "maximum (after bisection(" + inputLow + ", " + inputHigh + ")) is (" + low + ", " + high + "]"
   }
 
   def doIt(): String = {
