@@ -36,6 +36,7 @@ case class MaximisePSet(input: String, pSet: String, accuracy: BigDecimal, pol: 
     val analyses: Map[String, Satisfiable] = Map("name1" -> new Satisfiable("name1", "cond1"))
     val z3Code = ExtendedSynthesiserCore(pols, conds, pSets, analyses, domainSpecifics, predicateNames, variableDefaultScores, variableScores).generate()
     val z3RawOutput = Z3Caller.call(z3Code)
+    //TODO need to do certification here, throw exception if fails
     val I = Z3ModelExtractor.extractIUsingRational(z3RawOutput)("name1")
 //    println(I)
     I
@@ -69,7 +70,7 @@ case class MaximisePSet(input: String, pSet: String, accuracy: BigDecimal, pol: 
     val I = runSatisfiableAnalysis(0.0)
     var high, low = BigDecimal(0.0)
 
-    if (I.nonEmpty) {
+    if (I.nonEmpty) { //TODO need a better way to check status
       if (pol != "") {
         val temp = I(pol + "_score").left.get.value
         val J = runSatisfiableAnalysis(temp)
