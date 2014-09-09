@@ -2,10 +2,10 @@ package peal.maximise
 
 import peal.antlr.util.ParserHelper
 import peal.domain.z3.{Unsat, Sat, SatResult}
-import peal.domain.{ThreeWayBoolean, Rational, Pol}
+import peal.domain.{PealTrue, ThreeWayBoolean, Rational, Pol}
 import peal.synthesis.analysis.Satisfiable
 import peal.synthesis.{ExtendedSynthesiserCore, GreaterThanThCondition}
-import peal.verifier.Z3ModelExtractor
+import peal.verifier.{OutputVerifier, Z3ModelExtractor}
 import peal.z3.Z3Caller
 
 import scala.collection.JavaConversions._
@@ -38,7 +38,13 @@ case class MaximisePSet(input: String, pSet: String, accuracy: BigDecimal, pol: 
     val z3Code = ExtendedSynthesiserCore(pols, conds, pSets, analyses, domainSpecifics, predicateNames, variableDefaultScores, variableScores).generate()
     val z3RawOutput = Z3Caller.call(z3Code)
     //TODO need to do certification here, throw exception if fails
-    Z3ModelExtractor.extractIUsingRational(z3RawOutput)("name1")
+    //TODO need to modify input, clean up conditions and analyses
+    //TODO need a peal input writer
+    OutputVerifier(input).verifyModel(z3RawOutput, "name1")._1 match {
+      case PealTrue => Z3ModelExtractor.extractIUsingRational(z3RawOutput)("name1")
+      case _ => throw new RuntimeException("Certification in maximize_pset failed for " + conds("cond1") )
+    }
+
   }
 
   private def bisection(inputLow: BigDecimal, inputHigh: BigDecimal) : String = {

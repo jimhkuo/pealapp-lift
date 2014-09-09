@@ -15,7 +15,7 @@ class MaximisePSetTest extends ShouldMatchersForJUnit {
       "DOMAIN_SPECIFICS\n" +
       "(assert True)\n" +
       "ANALYSES\n" +
-      "name8 = satisfiable? c8"
+      "name1 = satisfiable? c8"
     MaximisePSet(input, "pSet", 0.01, "metric").doIt() should be ("exact maximum is 271.92")
   }
 
