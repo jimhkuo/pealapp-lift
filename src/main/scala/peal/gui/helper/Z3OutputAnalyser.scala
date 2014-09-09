@@ -139,7 +139,7 @@ object Z3OutputAnalyser {
           if (verifiedModel._4.nonEmpty) section.append("Variables not defined in the Z3 model but are assumed to be 0 in this certification process are: " + verifiedModel._4)
           section.append(<br/>)
           section.append("Policy scores statically inferred in this certification process:")
-          verifiedModel._3.map(m => m._1 + " has score " + m._2.fold(r => displayScore(r), b => b)).toSeq.sorted.foreach(section.append)
+          verifiedModel._3.map(m => m._1 + " has score " + m._2.fold(r => r.value.toString(), b => b)).toSeq.sorted.foreach(section.append)
           section.append(<br/>)
           if (verifiedModel._2.nonEmpty) {
             section.append("Policies in analysis [" + analysisName + "] specialised with respect to the above scenario, extended with false predicates from ")
@@ -156,13 +156,6 @@ object Z3OutputAnalyser {
         </p>
     }
     entireAnalysis
-  }
-
-  private def displayScore(r: Rational) = DnOption.get match {
-//    case RationalFormat => if (r.denominator != BigDecimal("1")) r.numerator + "/" + r.denominator else r.value.toString()
-//    case DecimalFormat => r.value.toString()
-//    case _ => if (r.denominator != BigDecimal("1")) r.numerator + "/" + r.denominator + " = " + r.value + "" else r.value.toString()
-    case _ => r.value.toString()
   }
 
   private def getNaturalValue(originalString: String) = {
