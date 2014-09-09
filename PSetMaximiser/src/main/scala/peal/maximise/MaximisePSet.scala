@@ -1,7 +1,7 @@
 package peal.maximise
 
 import peal.antlr.util.ParserHelper
-import peal.domain.Pol
+import peal.domain.{ThreeWayBoolean, Rational, Pol}
 import peal.synthesis.analysis.Satisfiable
 import peal.synthesis.{ExtendedSynthesiserCore, GreaterThanThCondition}
 import peal.verifier.Z3ModelExtractor
@@ -31,7 +31,7 @@ case class MaximisePSet(input: String, pSet: String, accuracy: BigDecimal, pol: 
   val pSets = pealProgramParser.pSets.toMap
   val domainSpecifics: Array[String] = input.split("\n").dropWhile(!_.startsWith("DOMAIN_SPECIFICS")).takeWhile(!_.startsWith("ANALYSES")).drop(1).filterNot(_.trim.startsWith("%"))
 
-  def runSatisfiableAnalysis(threshold: BigDecimal) = {
+  def runSatisfiableAnalysis(threshold: BigDecimal): Map[String, Either[Rational, ThreeWayBoolean]] = {
     val conds: Map[String, GreaterThanThCondition] = Map("cond1" -> GreaterThanThCondition(pSets(pSet + (if (pol != "") "_" + pol else "")), Left(threshold)))
     val analyses: Map[String, Satisfiable] = Map("name1" -> new Satisfiable("name1", "cond1"))
     val z3Code = ExtendedSynthesiserCore(pols, conds, pSets, analyses, domainSpecifics, predicateNames, variableDefaultScores, variableScores).generate()
