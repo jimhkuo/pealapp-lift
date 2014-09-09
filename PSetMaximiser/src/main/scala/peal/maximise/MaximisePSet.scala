@@ -37,7 +37,7 @@ case class MaximisePSet(input: String, pSet: String, accuracy: BigDecimal, pol: 
     val z3Code = ExtendedSynthesiserCore(pols, conds, pSets, analyses, domainSpecifics, predicateNames, variableDefaultScores, variableScores).generate()
     val z3RawOutput = Z3Caller.call(z3Code)
     //TODO need to do certification here, throw exception if fails
-    val I: Map[String, Either[Rational, ThreeWayBoolean]] = Z3ModelExtractor.extractIUsingRational(z3RawOutput)("name1")
+    val I: Map[String, Either[Rational, ThreeWayBoolean]] = Z3ModelExtractor.extractIUsingRational(z3RawOutput)("name1")._2
 //    println(I)
     I
   }

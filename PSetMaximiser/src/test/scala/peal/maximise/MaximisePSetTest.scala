@@ -31,6 +31,6 @@ class MaximisePSetTest extends ShouldMatchersForJUnit {
       "ANALYSES\n" +
       "name8 = satisfiable? c8"
     println(input)
-    MaximisePSet(input, "pSet_impact_overall", 0.01).doIt() should be ("exact maximum (after bisection(512.0, 1024.0)) is 549.9921875")
+    MaximisePSet(input, "pSet_impact_overall", 0.01).doIt() should be ("maximum (after bisection(512.0, 1024.0)) is (549.9921875, 550.0]")
   }
 }
