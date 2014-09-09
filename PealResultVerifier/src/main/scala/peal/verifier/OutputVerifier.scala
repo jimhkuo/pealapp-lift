@@ -23,7 +23,7 @@ import scala.util.{Failure, Success, Try}
 // elseif (pSet == pol) { return I(pSet)}
 //
 //c. perform cert(cond, I, v), if it returns bottom, set one bottom predicate to false and go to #a. Keep the predicate remapped map.
-class OutputVerifier(input: String) {
+case class OutputVerifier(input: String) {
   val pealProgramParser = ParserHelper.getPealParser(input)
   pealProgramParser.program()
 

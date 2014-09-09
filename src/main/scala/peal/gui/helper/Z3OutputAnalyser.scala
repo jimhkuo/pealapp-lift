@@ -16,7 +16,7 @@ import scala.xml.NodeSeq
 
 object Z3OutputAnalyser {
 
-  def execute(analyses: Map[String, AnalysisGenerator], conditions: Map[String, Condition],  constsMap: Map[String, PealAst], inputPolicies: String, z3RawOutput: String)(implicit ov: OutputVerifier): NodeSeq = {
+  def execute(analyses: Map[String, AnalysisGenerator], conditions: Map[String, Condition],  constsMap: Map[String, PealAst], inputPolicies: String, z3RawOutput: String): NodeSeq = {
     val style = "font-family: Monaco, Menlo, Consolas, \"Courier New\", monospace;display: block;padding: 9.5px;margin: 0 0 10px;font-size: 13px;line-height: 1.428571429;color: #333;word-break: break-all;word-wrap: break-word;background-color: #f5f5f5;border: 1px solid #ccc;border-radius: 4px;"
 
     val z3OutputParser = ParserHelper.getZ3OutputParser(z3RawOutput)
@@ -127,7 +127,7 @@ object Z3OutputAnalyser {
 
         val cert = if (z3OutputModels(analysisName).satResult == Sat) {
           section.append(<br/>)
-          val verifiedModel = ov.verifyModel(z3RawOutput, analysisName)
+          val verifiedModel = OutputVerifier(inputPolicies).verifyModel(z3RawOutput, analysisName)
           val result = verifiedModel._1 match {
             case PealTrue => "succeeded"
             case PealFalse => "failed"
