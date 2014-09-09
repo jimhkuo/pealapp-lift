@@ -51,7 +51,7 @@ class OutputVerifier(input: String) {
 
   def verifyModel(rawModel: String, analysisName: String): (ThreeWayBoolean, Set[String], Map[String, Either[Rational, ThreeWayBoolean]], Set[String]) = {
     ConsoleLogger.log1("########## analysis " + analysisName)
-    val initialI = Z3ModelExtractor.extractIUsingRational(rawModel)(analysisName)
+    val initialI = Z3ModelExtractor.extractIUsingRational(rawModel)(analysisName)._2
     val out = certify(analysisName, initialI, Set(), Map())
     (out._1, out._2, out._3, resettedToZero)
   }

@@ -146,7 +146,7 @@ class ScalaTest extends ShouldMatchersForJUnit {
   def testFoldFuture() {
     val out = retry(3) {
       Future {
-        sys.error("x");
+//        sys.error("x");
         print("*");
         5
       }

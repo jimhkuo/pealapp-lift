@@ -14,7 +14,7 @@ class ScoreEvaluatorTest extends ShouldMatchersForJUnit {
     val model = "Result of analysis [name1 = implies? cond1 cond2]:\nsat\n(model \n  " +
       "(define-fun y () Real\n    (/ 5.0 12.0))\n" +
       ")"
-    implicit val I = Z3ModelExtractor.extractIUsingRational(model)("name1")
+    implicit val I = Z3ModelExtractor.extractIUsingRational(model)("name1")._2
     ScoreEvaluator.trueScore(new Score(Right(VariableFormula("y")) , None), null) should be (Rational("5","12"))
   }
 
@@ -23,7 +23,7 @@ class ScoreEvaluatorTest extends ShouldMatchersForJUnit {
     val model = "Result of analysis [name1 = implies? cond1 cond2]:\nsat\n(model \n  " +
       "(define-fun y () Real\n    (/ 5.0 12.0))\n" +
       ")"
-    implicit val I = Z3ModelExtractor.extractIUsingRational(model)("name1")
+    implicit val I = Z3ModelExtractor.extractIUsingRational(model)("name1")._2
     ScoreEvaluator.trueScore(new Score(Right(VariableFormula("y1")) , None), null) should be (Rational("0"))
   }
 
@@ -32,7 +32,7 @@ class ScoreEvaluatorTest extends ShouldMatchersForJUnit {
     val model = "Result of analysis [name1 = implies? cond1 cond2]:\nsat\n(model \n  " +
       "(define-fun z () Real\n    (/ 5.0 8.0))\n" +
       ")"
-    implicit val I = Z3ModelExtractor.extractIUsingRational(model)("name1")
+    implicit val I = Z3ModelExtractor.extractIUsingRational(model)("name1")._2
     ScoreEvaluator.trueScore(new Score(Right(VariableFormula(Multiplier(8, "z"))) , None), null) should be (Rational("5"))
   }
 
@@ -47,7 +47,7 @@ class ScoreEvaluatorTest extends ShouldMatchersForJUnit {
     val model = "Result of analysis [name1 = implies? cond1 cond2]:\nsat\n(model \n  " +
       "(define-fun z () Real\n    (/ 5.0 8.0))\n" +
       ")"
-    implicit val I = Z3ModelExtractor.extractIUsingRational(model)("name1")
+    implicit val I = Z3ModelExtractor.extractIUsingRational(model)("name1")._2
     ScoreEvaluator.trueScore(new Score(Right(VariableFormula(Multiplier(8, "z_score"))) , None), null) should be (Rational("5"))
   }
 
@@ -69,7 +69,7 @@ class ScoreEvaluatorTest extends ShouldMatchersForJUnit {
       "(define-fun z () Real\n    (/ 5.0 8.0))\n" +
       ")"
 
-    implicit val I = Z3ModelExtractor.extractIUsingRational(model)("name1")
+    implicit val I = Z3ModelExtractor.extractIUsingRational(model)("name1")._2
 
     ScoreEvaluator.trueScore(new Score(Right(VariableFormula("x")) , None), null) should be (Rational("0"))
     resetToZero should be (Set("x"))
