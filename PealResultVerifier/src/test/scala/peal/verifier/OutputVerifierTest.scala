@@ -332,6 +332,7 @@ class OutputVerifierTest extends ShouldMatchersForJUnit {
 
   @Test
   def testCaseSomeVariablesAreNotSet() {
+    //refinement is removed, now ScoreEvaluator will check 0 in multiplier
     ConsoleLogger.enable()
     val input = "POLICIES\nb0 = min ((q3 0*vn) (q6 0.1359)) default 2*vh\n" +
       "b1 = + ((q13 0.3730) (q14 0.6929)) default vj\n" +
@@ -361,7 +362,6 @@ class OutputVerifierTest extends ShouldMatchersForJUnit {
     result._1 should be(PealTrue)
     println(result._2)
     println(result._3)
-    result._4 should be (Set("ve", "vn"))
   }
 
   @Test
