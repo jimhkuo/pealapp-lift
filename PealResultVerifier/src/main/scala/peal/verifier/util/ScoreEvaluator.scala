@@ -20,11 +20,12 @@ object ScoreEvaluator {
         case "" =>
           ConsoleLogger.log1("********* ScoreEvaluator, \"\"")
           Rational(e.multiplier.toString())
-        case s =>
-          ConsoleLogger.log1("********* ScoreEvaluator, 0 assumed")
+        case s if e.multiplier == BigDecimal("0") => Rational("0")
+//        case s =>
+//          ConsoleLogger.log("********* ScoreEvaluator, 0 assumed " + s + ", e is " + e.multiplier)
           //report when this happens
-          reportSpecialCase(s)
-          Rational("0")
+//          reportSpecialCase(s)
+//          Rational("0")
       }
 
       ConsoleLogger.log1("eval:" + multiplierNamePurger(e) + " = " + out + ", it has multiplier " + Rational(e.multiplier.toString()))
