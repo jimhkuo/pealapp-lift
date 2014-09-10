@@ -262,21 +262,17 @@ class PolicySpecialisationMakerTest extends ShouldMatchersForJUnit {
 
   @Test
   def testCanAnalyseExtended2() {
-    ConsoleLogger.enable(1)
     val input = "POLICIES\nb0 = max ((q5 0.6971) (q3 0.1338) (q2 0.3440)) default vk\nb1 = * ((q4 0.8689)) default 0*vj\nb2 = + ((q5 0.7756) (q2 0.4698)) default 0.6451\nb3 = max ((q5 0*vf) (q1 0*v0) (q3 0.1135 [-0.7627,0.3058])) default 0.9094\nb4 = + ((q2 0.4641 [-0.6645,0.1467]) (q4 0.2861 [-0.1972,0.3757])) default 0.1326\nb5 = * ((q4 0.8916)) default 0.2009\nb6 = min ((q1 0.2133) (q5 0.8770) (q3 vx) (q2 0*va)) default 0.2424\nb7 = min ((q0 0.0585) (q4 0.1866) (q1 0.9557) (q2 0.7567)) default 0.7636\nPOLICY_SETS\np0_1 = min(b0,b1)\np2_3 = min(b2,b3)\np4_5 = min(b4,b5)\np6_7 = min(b6,b7)\np0_3 = max(p0_1,p2_3)\np4_7 = max(p4_5,p6_7)\n\nCONDITIONS\ncond1 = p4_7 < p0_3\nANALYSES\nanalysis1 = always_true? cond1\n"
-    val model = "Result of analysis [analysis1 = always_true? cond1]:\nsat\n(model \n  (define-fun q0 () Bool\n    false)\n  (define-fun b1_score () Real\n    0.0)\n  (define-fun always_true_analysis1 () Bool\n    false)\n  (define-fun b4_q4_U () Real\n    0.0)\n  (define-fun b6_score () Real\n    0.0)\n  (define-fun q4 () Bool\n    false)\n  (define-fun b0_score () Real\n    (/ 6971.0 10000.0))\n  (define-fun cond1 () Bool\n    false)\n  (define-fun b3_score () Real\n    (/ 227.0 2000.0))\n  (define-fun b7_score () Real\n    (/ 7567.0 10000.0))\n  (define-fun b4_q2_U () Real\n    (- (/ 329.0 1250.0)))\n  (define-fun vx () Real\n    0.0)\n  (define-fun q5 () Bool\n    true)\n  (define-fun b3_q3_U () Real\n    0.0)\n  (define-fun q3 () Bool\n    true)\n  (define-fun q2 () Bool\n    true)\n  (define-fun b5_score () Real\n    (/ 2009.0 10000.0))\n  (define-fun b2_score () Real\n    (/ 6227.0 5000.0))\n  (define-fun b4_score () Real\n    (/ 2009.0 10000.0))\n)"
-
-    ConsoleLogger.log(input)
+    val model = "Result of analysis [analysis1 = always_true? cond1]:\nsat\n(model \n  (define-fun q0 () Bool\n    false)\n  (define-fun b1_score () Real\n    0.0)\n  (define-fun always_true_analysis1 () Bool\n    false)\n  (define-fun b4_q4_U () Real\n    0.0)\n  (define-fun vk () Real\n    (/ 43.0 125.0))\n  (define-fun q4 () Bool\n    false)\n  (define-fun z3name!12 () Real\n    0.0)\n  (define-fun cond1 () Bool\n    false)\n  (define-fun b3_score () Real\n    (/ 1753.0 10000.0))\n  (define-fun q1 () Bool\n    false)\n  (define-fun z3name!1 () Real\n    0.0)\n  (define-fun z3name!6 () Real\n    0.0)\n  (define-fun q3 () Bool\n    true)\n  (define-fun z3name!7 () Real\n    0.0)\n  (define-fun b2_score () Real\n    (/ 2349.0 5000.0))\n  (define-fun z3name!2 () Real\n    (/ 1753.0 10000.0))\n  (define-fun z3name!3 () Real\n    0.0)\n  (define-fun b4_score () Real\n    (/ 1881.0 5000.0))\n  (define-fun z3name!13 () Real\n    (/ 1881.0 5000.0))\n  (define-fun z3name!0 () Real\n    (/ 1753.0 10000.0))\n  (define-fun b6_score () Real\n    0.0)\n  (define-fun b0_score () Real\n    (/ 43.0 125.0))\n  (define-fun b7_score () Real\n    (/ 7567.0 10000.0))\n  (define-fun b4_q2_U () Real\n    (- (/ 879.0 10000.0)))\n  (define-fun z3name!10 () Real\n    (/ 2009.0 10000.0))\n  (define-fun z3name!4 () Real\n    (/ 2009.0 10000.0))\n  (define-fun vx () Real\n    0.0)\n  (define-fun q5 () Bool\n    false)\n  (define-fun b3_q3_U () Real\n    (/ 309.0 5000.0))\n  (define-fun z3name!11 () Real\n    (/ 1881.0 5000.0))\n  (define-fun q2 () Bool\n    true)\n  (define-fun z3name!8 () Real\n    (/ 2349.0 5000.0))\n  (define-fun b5_score () Real\n    (/ 2009.0 10000.0))\n  (define-fun z3name!5 () Real\n    (/ 2009.0 10000.0))\n  (define-fun z3name!9 () Real\n    (/ 2349.0 5000.0))\n)"
     val out = new PolicySpecialisationMaker(input).doIt(model, "analysis1")
-    ConsoleLogger.log1(out.text)
-    out.text should be("b0 = max (([q5 q3 q2] 0.6971)) default 0" +
+    out.text should be("b0 = max (([q3 q2] 0.344)) default 0.344" +
       "b1 = * () default 0" +
-      "b2 = + (([q5 q2] 1.2454)) default 0.6451" +
-      "b3 = max (([q5 q3] 0.1135) (q1? 0)) default 0.9094" +
-      "b4 = + (([q2] 0.2009)) default 0.1326" +
+      "b2 = + (([q2] 0.4698)) default 0.6451" +
+      "b3 = max (([q3] 0.1753)) default 0.9094" +
+      "b4 = + (([q2] 0.3762)) default 0.1326" +
       "b5 = * () default 0.2009" +
-      "b6 = min (([q5 q3 q2] 0) (q1? 0.2133)) default 0.2424" +
-      "b7 = min (([q2] 0.7567) (q1? 0.9557)) default 0.7636")
+      "b6 = min (([q3 q2] 0)) default 0.2424" +
+      "b7 = min (([q2] 0.7567)) default 0.7636")
   }
 
   @Test
