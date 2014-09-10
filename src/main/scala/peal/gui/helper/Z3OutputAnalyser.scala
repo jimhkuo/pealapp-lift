@@ -136,7 +136,6 @@ object Z3OutputAnalyser {
 
           section.append("Certification of analysis [" + analysisName + "] " + result + ".")
           if (verifiedModel._2.nonEmpty) section.append("Additional predicates set to false in this certification process are: " + verifiedModel._2)
-          if (verifiedModel._4.nonEmpty) section.append("Variables not defined in the Z3 model but are assumed to be 0 in this certification process are: " + verifiedModel._4)
           section.append(<br/>)
           section.append("Policy scores statically inferred in this certification process:")
           verifiedModel._3.map(m => m._1 + " has score " + m._2.fold(r => r.value.toString(), b => b)).toSeq.sorted.foreach(section.append)
