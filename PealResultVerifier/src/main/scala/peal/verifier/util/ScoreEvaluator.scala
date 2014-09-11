@@ -10,22 +10,11 @@ object ScoreEvaluator {
     def eval(e: Multiplier): Rational = {
       ConsoleLogger.log1("eval: " + e.toNaturalExpression + " e.name is " + e.name + " e.multiplier is " + e.multiplier)
       val out = e.name match {
-        case s if s.contains("_score") =>
-          ConsoleLogger.log1("********* ScoreEvaluator, if s.contains(\"_score\")")
-          //The following * lines create duplicate 0 symptom
-          Rational(e.multiplier.toString()) * I(multiplierNamePurger(e)).left.get
-        case s if I.contains(s) && I(s).isLeft =>
-          ConsoleLogger.log1("********* ScoreEvaluator, if I.contains(s) && I(s).isLeft")
-          Rational(e.multiplier.toString()) * I(s).left.get
-        case "" =>
-          ConsoleLogger.log1("********* ScoreEvaluator, \"\"")
-          Rational(e.multiplier.toString())
+        case s if s.contains("_score") => ConsoleLogger.log1("********* ScoreEvaluator, if s.contains(\"_score\")"); Rational(e.multiplier.toString()) * I(multiplierNamePurger(e)).left.get
+        case s if I.contains(s) && I(s).isLeft => ConsoleLogger.log1("********* ScoreEvaluator, if I.contains(s) && I(s).isLeft"); Rational(e.multiplier.toString()) * I(s).left.get
+        case "" => ConsoleLogger.log1("********* ScoreEvaluator, \"\""); Rational(e.multiplier.toString())
         case s if e.multiplier == BigDecimal("0") => Rational("0")
-//        case s =>
-//          ConsoleLogger.log("********* ScoreEvaluator, 0 assumed " + s + ", e is " + e.multiplier)
-          //report when this happens
-//          reportSpecialCase(s)
-//          Rational("0")
+//        case s => //intentionally leave this case out for the code to blow up
       }
 
       ConsoleLogger.log1("eval:" + multiplierNamePurger(e) + " = " + out + ", it has multiplier " + Rational(e.multiplier.toString()))
