@@ -12,7 +12,11 @@ import scala.collection.JavaConversions._
 
 
 case class MaximisePSet(input: String, pSet: String, accuracy: BigDecimal, pol: String = "") {
-  val pealProgramParser = ParserHelper.getPealParser(input)
+
+  val inputWithoutConditionAndTheRest = input.split("\n").takeWhile(l => !l.startsWith("CONDITIONS") && !l.startsWith("DOMAIN_SPECIFICS") && !l.startsWith("ANALYSES")).
+    filterNot(_.trim.startsWith("%")).mkString("\n")
+
+  val pealProgramParser = ParserHelper.getPealParser(inputWithoutConditionAndTheRest)
   pealProgramParser.program()
   val pols = pealProgramParser.pols.toMap
   val allRules = pols.values.flatMap(pol => pol.rules)
@@ -34,9 +38,8 @@ case class MaximisePSet(input: String, pSet: String, accuracy: BigDecimal, pol: 
 
   def runSatisfiableAnalysis(threshold: BigDecimal): (SatResult, Map[String, Either[Rational, ThreeWayBoolean]]) = {
 
-    def inputWithConditionAndAnalysis = {
-      val inputWithoutDomainSpecific = input.split("\n").takeWhile(!_.startsWith("DOMAIN_SPECIFICS")).dropWhile(_.startsWith("DOMAIN_SPECIFICS")).filterNot(_.trim.startsWith("%"))
-      inputWithoutDomainSpecific.mkString("\n") + "\nCONDITIONS\ncond1 = " + threshold + " < " + pSet + (if (pol != "") "_" + pol else "") + "\n" +
+    def inputWithNewConditionAndAnalysis = {
+      inputWithoutConditionAndTheRest + "\nCONDITIONS\ncond1 = " + threshold + " < " + pSet + (if (pol != "") "_" + pol else "") + "\n" +
       "DOMAIN_SPECIFICS\n" + domainSpecifics.mkString("\n") +
       "\nANALYSES\nname1 = satisfiable? cond1"
     }
@@ -46,7 +49,7 @@ case class MaximisePSet(input: String, pSet: String, accuracy: BigDecimal, pol: 
     val z3Code = ExtendedSynthesiserCore(pols, conds, pSets, analyses, domainSpecifics, predicateNames, variableDefaultScores, variableScores).generate()
     val z3RawOutput = Z3Caller.call(z3Code)
 
-    OutputVerifier(inputWithConditionAndAnalysis).verifyModel(z3RawOutput, "name1")._1 match {
+    OutputVerifier(inputWithNewConditionAndAnalysis).verifyModel(z3RawOutput, "name1")._1 match {
       case PealTrue => Z3ModelExtractor.extractIAndStatusUsingRational(z3RawOutput)("name1")
       case _ => throw new RuntimeException("Certification in maximize_pset failed for " + conds("cond1") )
     }

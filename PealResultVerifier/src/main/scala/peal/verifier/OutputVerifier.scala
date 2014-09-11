@@ -16,6 +16,7 @@ import scala.collection.mutable
 import scala.util.{Failure, Success, Try}
 
 case class OutputVerifier(input: String) {
+  println(input)
   val pealProgramParser = ParserHelper.getPealParser(input)
   pealProgramParser.program()
 
