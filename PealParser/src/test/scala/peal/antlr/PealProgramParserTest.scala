@@ -529,9 +529,11 @@ class PealProgramParserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
     val input =
       "POLICIES\nb1 = + ((q1 x) (q2 0.9)) default 1\n" +
         "b2 = + ((q3 x) (q4 0.8)) default 1\n" +
-        "POLICY_SETS\npSet = + (b1,b2)\n"
-//        "CONDITIONS\ncond1 = q4\n" +
-//        "ANALYSES\nanalysis1 = always_true? cond1"
+        "POLICY_SETS\npSet = + (b1,b2)\n" +
+        //        "CONDITIONS\ncond1 = q4\n" +
+        "DOMAIN_SPECIFICS\n" +
+        "(declare-const x Real)\n"
+    //        "ANALYSES\nanalysis1 = always_true? cond1"
 
     val pealProgramParser = ParserHelper.getPealParser(input)
     pealProgramParser.program()
