@@ -38,7 +38,7 @@ case class OutputVerifier(input: String) {
 
   def verifyModel(rawModel: String, analysisName: String): (ThreeWayBoolean, Set[String], Map[String, Either[Rational, ThreeWayBoolean]]) = {
     ConsoleLogger.log1("########## analysis " + analysisName)
-    val z3Model = Z3ModelExtractor.extractIUsingRational(rawModel)(analysisName)
+    val z3Model = Z3ModelExtractor.extractIAndStatusUsingRational(rawModel)(analysisName)
 
     z3Model._1 match {
       case Sat => val out = certify(analysisName, z3Model._2, Set(), Map()); (out._1, out._2, out._3)

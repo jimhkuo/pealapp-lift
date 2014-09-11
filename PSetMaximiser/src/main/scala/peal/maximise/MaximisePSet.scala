@@ -47,7 +47,7 @@ case class MaximisePSet(input: String, pSet: String, accuracy: BigDecimal, pol: 
     val z3RawOutput = Z3Caller.call(z3Code)
 
     OutputVerifier(inputWithConditionAndAnalysis).verifyModel(z3RawOutput, "name1")._1 match {
-      case PealTrue => Z3ModelExtractor.extractIUsingRational(z3RawOutput)("name1")
+      case PealTrue => Z3ModelExtractor.extractIAndStatusUsingRational(z3RawOutput)("name1")
       case _ => throw new RuntimeException("Certification in maximize_pset failed for " + conds("cond1") )
     }
   }

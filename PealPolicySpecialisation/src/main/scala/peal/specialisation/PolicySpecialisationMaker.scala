@@ -22,7 +22,7 @@ class PolicySpecialisationMaker(input: String) {
 
   def doIt(rawModel: String, analysisName: String, overrides: Set[String] = Set()): NodeSeq = {
 
-    implicit val I = Z3ModelExtractor.extractIUsingRational(rawModel)(analysisName)._2 ++ overrides.map(o => (o, Right(PealFalse)))
+    implicit val I = Z3ModelExtractor.extractIAndStatusUsingRational(rawModel)(analysisName)._2 ++ overrides.map(o => (o, Right(PealFalse)))
     ConsoleLogger.log1(I)
 
     def pullPoliciesFromScores(scores: Set[Score]): Set[String] = {
