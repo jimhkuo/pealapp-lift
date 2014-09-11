@@ -46,7 +46,6 @@ case class MaximisePSet(input: String, pSet: String, accuracy: BigDecimal, pol: 
     val z3Code = ExtendedSynthesiserCore(pols, conds, pSets, analyses, domainSpecifics, predicateNames, variableDefaultScores, variableScores).generate()
     val z3RawOutput = Z3Caller.call(z3Code)
 
-    //TODO need to do certification here, throw exception if fails
     OutputVerifier(inputWithConditionAndAnalysis).verifyModel(z3RawOutput, "name1")._1 match {
       case PealTrue => Z3ModelExtractor.extractIUsingRational(z3RawOutput)("name1")
       case _ => throw new RuntimeException("Certification in maximize_pset failed for " + conds("cond1") )
