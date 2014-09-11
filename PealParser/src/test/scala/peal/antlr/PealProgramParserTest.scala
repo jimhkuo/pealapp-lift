@@ -26,7 +26,7 @@ class PealProgramParserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
       val pealProgramParser = ParserHelper.getPealParser(input)
       pealProgramParser.program()
     }
-    ex.getMessage should be ("PolicySet pSet1 is not declared but is used on line \"cond1 = 0 < pSet1\"")
+    ex.getMessage should be("PolicySet pSet1 is not declared but is used on line \"cond1 = 0 < pSet1\"")
   }
 
   @Test
@@ -40,7 +40,7 @@ class PealProgramParserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
       val pealProgramParser = ParserHelper.getPealParser(input)
       pealProgramParser.program()
     }
-    ex.getMessage should be ("PolicySet pSet1 is not declared but is used on line \"cond1 = pSet < pSet1\"")
+    ex.getMessage should be("PolicySet pSet1 is not declared but is used on line \"cond1 = pSet < pSet1\"")
   }
 
   @Test
@@ -54,7 +54,7 @@ class PealProgramParserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
       val pealProgramParser = ParserHelper.getPealParser(input)
       pealProgramParser.program()
     }
-    ex.getMessage should be ("PolicySet pSet1 is not declared but is used on line \"cond1 = pSet1 < pSet\"")
+    ex.getMessage should be("PolicySet pSet1 is not declared but is used on line \"cond1 = pSet1 < pSet\"")
   }
 
   @Test
@@ -68,7 +68,7 @@ class PealProgramParserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
       val pealProgramParser = ParserHelper.getPealParser(input)
       pealProgramParser.program()
     }
-    ex.getMessage should be ("PolicySet pSet1 is not declared but is used on line \"cond1 = pSet1 < pSet2\"")
+    ex.getMessage should be("PolicySet pSet1 is not declared but is used on line \"cond1 = pSet1 < pSet2\"")
   }
 
   @Test
@@ -82,7 +82,7 @@ class PealProgramParserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
       val pealProgramParser = ParserHelper.getPealParser(input)
       pealProgramParser.program()
     }
-    ex.getMessage should be ("PolicySet pSet1 is not declared but is used on line \"cond1 = pSet1 <= 0\"")
+    ex.getMessage should be("PolicySet pSet1 is not declared but is used on line \"cond1 = pSet1 <= 0\"")
   }
 
   @Test
@@ -96,7 +96,7 @@ class PealProgramParserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
       val pealProgramParser = ParserHelper.getPealParser(input)
       pealProgramParser.program()
     }
-    ex.getMessage should be ("PolicySet pSet1 is not declared but is used on line \"cond1 = pSet1 <= pSet\"")
+    ex.getMessage should be("PolicySet pSet1 is not declared but is used on line \"cond1 = pSet1 <= pSet\"")
   }
 
   @Test
@@ -110,7 +110,7 @@ class PealProgramParserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
       val pealProgramParser = ParserHelper.getPealParser(input)
       pealProgramParser.program()
     }
-    ex.getMessage should be ("PolicySet pSet1 is not declared but is used on line \"cond1 = pSet <= pSet1\"")
+    ex.getMessage should be("PolicySet pSet1 is not declared but is used on line \"cond1 = pSet <= pSet1\"")
   }
 
   @Test
@@ -124,7 +124,7 @@ class PealProgramParserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
       val pealProgramParser = ParserHelper.getPealParser(input)
       pealProgramParser.program()
     }
-    ex.getMessage should be ("PolicySet pSet2 is not declared but is used on line \"cond1 = pSet2 <= pSet1\"")
+    ex.getMessage should be("PolicySet pSet2 is not declared but is used on line \"cond1 = pSet2 <= pSet1\"")
   }
 
   @Test
@@ -139,7 +139,7 @@ class PealProgramParserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
       val pealProgramParser = ParserHelper.getPealParser(input)
       pealProgramParser.program()
     }
-    ex.getMessage should be ("Condition cond2 is not declared but is used on line \"cond3 = !cond2\"")
+    ex.getMessage should be("Condition cond2 is not declared but is used on line \"cond3 = !cond2\"")
   }
 
   @Test
@@ -154,7 +154,7 @@ class PealProgramParserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
       val pealProgramParser = ParserHelper.getPealParser(input)
       pealProgramParser.program()
     }
-    ex.getMessage should be ("Condition cond2 is not declared but is used on line \"cond3 = cond2 && cond1\"")
+    ex.getMessage should be("Condition cond2 is not declared but is used on line \"cond3 = cond2 && cond1\"")
   }
 
   @Test
@@ -169,7 +169,7 @@ class PealProgramParserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
       val pealProgramParser = ParserHelper.getPealParser(input)
       pealProgramParser.program()
     }
-    ex.getMessage should be ("Condition cond2 is not declared but is used on line \"cond3 = cond1 && cond2\"")
+    ex.getMessage should be("Condition cond2 is not declared but is used on line \"cond3 = cond1 && cond2\"")
   }
 
   @Test
@@ -184,7 +184,7 @@ class PealProgramParserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
       val pealProgramParser = ParserHelper.getPealParser(input)
       pealProgramParser.program()
     }
-    ex.getMessage should be ("Condition cond2 is not declared but is used on line \"cond3 = cond2 || cond1\"")
+    ex.getMessage should be("Condition cond2 is not declared but is used on line \"cond3 = cond2 || cond1\"")
   }
 
   @Test
@@ -199,7 +199,7 @@ class PealProgramParserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
       val pealProgramParser = ParserHelper.getPealParser(input)
       pealProgramParser.program()
     }
-    ex.getMessage should be ("Condition cond2 is not declared but is used on line \"cond3 = cond1 || cond2\"")
+    ex.getMessage should be("Condition cond2 is not declared but is used on line \"cond3 = cond1 || cond2\"")
   }
 
   @Test
@@ -213,7 +213,7 @@ class PealProgramParserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
       val pealProgramParser = ParserHelper.getPealParser(input)
       pealProgramParser.program()
     }
-    ex.getMessage should be ("Predicate q5 has not appeared in policies prior to this point but is on line \"cond1 = q5\"")
+    ex.getMessage should be("Predicate q5 has not appeared in policies prior to this point but is on line \"cond1 = q5\"")
   }
 
   @Test
@@ -228,7 +228,7 @@ class PealProgramParserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
       val pealProgramParser = ParserHelper.getPealParser(input)
       pealProgramParser.program()
     }
-    ex.getMessage should be ("Condition cond is not declared but is used on line \"analysis1 = always_true? cond\"")
+    ex.getMessage should be("Condition cond is not declared but is used on line \"analysis1 = always_true? cond\"")
   }
 
   @Test
@@ -243,7 +243,7 @@ class PealProgramParserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
       val pealProgramParser = ParserHelper.getPealParser(input)
       pealProgramParser.program()
     }
-    ex.getMessage should be ("Condition cond is not declared but is used on line \"analysis1 = always_false? cond\"")
+    ex.getMessage should be("Condition cond is not declared but is used on line \"analysis1 = always_false? cond\"")
   }
 
   @Test
@@ -258,7 +258,7 @@ class PealProgramParserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
       val pealProgramParser = ParserHelper.getPealParser(input)
       pealProgramParser.program()
     }
-    ex.getMessage should be ("Condition cond is not declared but is used on line \"analysis1 = satisfiable? cond\"")
+    ex.getMessage should be("Condition cond is not declared but is used on line \"analysis1 = satisfiable? cond\"")
   }
 
   @Test
@@ -273,7 +273,7 @@ class PealProgramParserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
       val pealProgramParser = ParserHelper.getPealParser(input)
       pealProgramParser.program()
     }
-    ex.getMessage should be ("Condition cond is not declared but is used on line \"analysis1 = equivalent? cond cond1\"")
+    ex.getMessage should be("Condition cond is not declared but is used on line \"analysis1 = equivalent? cond cond1\"")
   }
 
   @Test
@@ -288,7 +288,7 @@ class PealProgramParserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
       val pealProgramParser = ParserHelper.getPealParser(input)
       pealProgramParser.program()
     }
-    ex.getMessage should be ("Condition cond is not declared but is used on line \"analysis1 = equivalent? cond1 cond\"")
+    ex.getMessage should be("Condition cond is not declared but is used on line \"analysis1 = equivalent? cond1 cond\"")
   }
 
   @Test
@@ -303,7 +303,7 @@ class PealProgramParserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
       val pealProgramParser = ParserHelper.getPealParser(input)
       pealProgramParser.program()
     }
-    ex.getMessage should be ("Condition cond is not declared but is used on line \"analysis1 = different? cond cond1\"")
+    ex.getMessage should be("Condition cond is not declared but is used on line \"analysis1 = different? cond cond1\"")
   }
 
   @Test
@@ -318,7 +318,7 @@ class PealProgramParserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
       val pealProgramParser = ParserHelper.getPealParser(input)
       pealProgramParser.program()
     }
-    ex.getMessage should be ("Condition cond is not declared but is used on line \"analysis1 = different? cond1 cond\"")
+    ex.getMessage should be("Condition cond is not declared but is used on line \"analysis1 = different? cond1 cond\"")
   }
 
   @Test
@@ -333,7 +333,7 @@ class PealProgramParserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
       val pealProgramParser = ParserHelper.getPealParser(input)
       pealProgramParser.program()
     }
-    ex.getMessage should be ("Condition cond is not declared but is used on line \"analysis1 = implies? cond cond1\"")
+    ex.getMessage should be("Condition cond is not declared but is used on line \"analysis1 = implies? cond cond1\"")
   }
 
   @Test
@@ -348,7 +348,7 @@ class PealProgramParserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
       val pealProgramParser = ParserHelper.getPealParser(input)
       pealProgramParser.program()
     }
-    ex.getMessage should be ("Condition cond is not declared but is used on line \"analysis1 = implies? cond1 cond\"")
+    ex.getMessage should be("Condition cond is not declared but is used on line \"analysis1 = implies? cond1 cond\"")
   }
 
   @Test
@@ -364,7 +364,7 @@ class PealProgramParserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
       val pealProgramParser = ParserHelper.getPealParser(input)
       pealProgramParser.program()
     }
-    ex.getMessage should be ("Policy b0 is not declared but is used on line \"pSet = b0\"")
+    ex.getMessage should be("Policy b0 is not declared but is used on line \"pSet = b0\"")
   }
 
   @Test
@@ -380,7 +380,7 @@ class PealProgramParserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
       val pealProgramParser = ParserHelper.getPealParser(input)
       pealProgramParser.program()
     }
-    ex.getMessage should be ("pSet1 has not been declared as a policy or a policy set, but is used on line \"pSet = max(b1, pSet1)\"")
+    ex.getMessage should be("pSet1 has not been declared as a policy or a policy set, but is used on line \"pSet = max(b1, pSet1)\"")
   }
 
   @Test
@@ -396,7 +396,7 @@ class PealProgramParserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
       val pealProgramParser = ParserHelper.getPealParser(input)
       pealProgramParser.program()
     }
-    ex.getMessage should be ("pSet1 has not been declared as a policy or a policy set, but is used on line \"pSet = max(pSet1, b1)\"")
+    ex.getMessage should be("pSet1 has not been declared as a policy or a policy set, but is used on line \"pSet = max(pSet1, b1)\"")
   }
 
   @Test
@@ -412,7 +412,7 @@ class PealProgramParserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
       val pealProgramParser = ParserHelper.getPealParser(input)
       pealProgramParser.program()
     }
-    ex.getMessage should be ("pSet1 has not been declared as a policy or a policy set, but is used on line \"pSet = min(b1, pSet1)\"")
+    ex.getMessage should be("pSet1 has not been declared as a policy or a policy set, but is used on line \"pSet = min(b1, pSet1)\"")
   }
 
   @Test
@@ -428,7 +428,7 @@ class PealProgramParserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
       val pealProgramParser = ParserHelper.getPealParser(input)
       pealProgramParser.program()
     }
-    ex.getMessage should be ("pSet1 has not been declared as a policy or a policy set, but is used on line \"pSet = min(pSet1, b1)\"")
+    ex.getMessage should be("pSet1 has not been declared as a policy or a policy set, but is used on line \"pSet = min(pSet1, b1)\"")
   }
 
   @Test
@@ -444,7 +444,7 @@ class PealProgramParserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
       val pealProgramParser = ParserHelper.getPealParser(input)
       pealProgramParser.program()
     }
-    ex.getMessage should be ("pSet1 has not been declared as a policy or a policy set, but is used on line \"pSet = +(b1, pSet1)\"")
+    ex.getMessage should be("pSet1 has not been declared as a policy or a policy set, but is used on line \"pSet = +(b1, pSet1)\"")
   }
 
   @Test
@@ -460,7 +460,7 @@ class PealProgramParserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
       val pealProgramParser = ParserHelper.getPealParser(input)
       pealProgramParser.program()
     }
-    ex.getMessage should be ("pSet1 has not been declared as a policy or a policy set, but is used on line \"pSet = +(pSet1, b1)\"")
+    ex.getMessage should be("pSet1 has not been declared as a policy or a policy set, but is used on line \"pSet = +(pSet1, b1)\"")
   }
 
   @Test
@@ -476,7 +476,7 @@ class PealProgramParserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
       val pealProgramParser = ParserHelper.getPealParser(input)
       pealProgramParser.program()
     }
-    ex.getMessage should be ("pSet1 has not been declared as a policy or a policy set, but is used on line \"pSet = *(b1, pSet1)\"")
+    ex.getMessage should be("pSet1 has not been declared as a policy or a policy set, but is used on line \"pSet = *(b1, pSet1)\"")
   }
 
   @Test
@@ -492,7 +492,7 @@ class PealProgramParserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
       val pealProgramParser = ParserHelper.getPealParser(input)
       pealProgramParser.program()
     }
-    ex.getMessage should be ("pSet1 has not been declared as a policy or a policy set, but is used on line \"pSet = *(pSet1, b1)\"")
+    ex.getMessage should be("pSet1 has not been declared as a policy or a policy set, but is used on line \"pSet = *(pSet1, b1)\"")
   }
 
   @Test
@@ -515,6 +515,23 @@ class PealProgramParserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
         "%b1 = + ((q3 x) (q2 0.6)) default 1\n" +
         "POLICY_SETS\npSet = + (b1,b2)\n" +
         "CONDITIONS\ncond = q4"
+
+    val pealProgramParser = ParserHelper.getPealParser(input)
+    pealProgramParser.program()
+
+    val allRules = pealProgramParser.pols.values().flatMap(pol => pol.rules).toSeq
+    allRules(0).score.underlyingScore.right.get.toZ3Expression should be("x")
+    allRules(1).score.underlyingScore.left.get should be(BigDecimal(0.9))
+  }
+
+  @Test
+  def testOmitConditionAndAnalyses() {
+    val input =
+      "POLICIES\nb1 = + ((q1 x) (q2 0.9)) default 1\n" +
+        "b2 = + ((q3 x) (q4 0.8)) default 1\n" +
+        "POLICY_SETS\npSet = + (b1,b2)\n"
+//        "CONDITIONS\ncond1 = q4\n" +
+//        "ANALYSES\nanalysis1 = always_true? cond1"
 
     val pealProgramParser = ParserHelper.getPealParser(input)
     pealProgramParser.program()

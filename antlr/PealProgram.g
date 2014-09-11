@@ -72,7 +72,7 @@ program
 	(pol {pols.put($pol.p.getPolicyName(), $pol.p);})*
 	('POLICY_SETS')
 	(pSet)+
-	('CONDITIONS')
+	(('CONDITIONS')
 	(
 	id0=IDENT '=' id2=IDENT '<=' num=NUMBER {catchError(pSets, "PolicySet $ is not declared but is used on line \""+ $id0.text + " = " + $id2.text + " <= " + $num.text + "\"", $id2.text); Condition cond = new LessThanThCondition(pSets.get($id2.text), new Left<BigDecimal,PolicySet>(BigDecimal.valueOf(Double.valueOf($num.text)))); conds.put($id0.text, cond);}
     	|
@@ -93,7 +93,7 @@ program
 	id0 =IDENT '=' 'false' {Condition cond = new FalseCondition(); conds.put($id0.text, cond);}
 	|
 	id0 =IDENT '=' id1=IDENT {findInPredicates(pols, "Predicate $ has not appeared in policies prior to this point but is on line \"" + $id0.text + " = " + $id1.text + "\"", $id1.text); Condition cond = new PredicateCondition($id1.text); conds.put($id0.text, cond);}
-	)+
+	)+)?
 	('DOMAIN_SPECIFICS' {ignore = true;}
 	(IDENT | NUMBER | '+' | '*' | '=' | '(' | ')' | '<' | '<=' | '/' )*)?
 	('ANALYSES' {ignore = false;}
