@@ -94,16 +94,19 @@ class VerificationExperimentRunner(doDomainSpecifics: Boolean, system: ActorSyst
               verificationResult._2.size match {
                 case 0 =>
                 case _ => print("*" + verificationResult._2.size)
-//                  val input = File.createTempFile("pealInput-recursive-verification", "")
-//                  FileUtil.writeToFile(input.getAbsolutePath, model)
+                //                  val input = File.createTempFile("pealInput-recursive-verification", "")
+                //                  FileUtil.writeToFile(input.getAbsolutePath, model)
               }
 
               verificationResult._1 match {
                 case PealTrue => print("t," + "%.2f".format(lapse.toDouble / 1000000) + ",")
-                case PealFalse => print("F," + "%.2f".format(lapse.toDouble / 1000000) + ",")
+                case _ => print("F," + "%.2f".format(lapse.toDouble / 1000000) + ",")
                   FileUtil.writeToFile(File.createTempFile("verificationFailed-false-", "").getAbsolutePath, model)
-                case PealBottom => print("B," + "%.2f".format(lapse.toDouble / 1000000) + ",")
-                  FileUtil.writeToFile(File.createTempFile("verificationFailed-bottom-", "").getAbsolutePath, model)
+                  throw new RuntimeException("certification failed")
+                //                case PealFalse => print("F," + "%.2f".format(lapse.toDouble / 1000000) + ",")
+                //                  FileUtil.writeToFile(File.createTempFile("verificationFailed-false-", "").getAbsolutePath, model)
+                //                case PealBottom => print("B," + "%.2f".format(lapse.toDouble / 1000000) + ",")
+                //                  FileUtil.writeToFile(File.createTempFile("verificationFailed-bottom-", "").getAbsolutePath, model)
               }
             } catch {
               case e: Exception => print("u,0,")
