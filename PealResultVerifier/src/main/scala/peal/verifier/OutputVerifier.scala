@@ -3,6 +3,7 @@ package peal.verifier
 import peal.antlr.util.ParserHelper
 import peal.domain._
 import peal.domain.operator.{Max, Min, Mul, Plus}
+import peal.domain.z3.{Unsat, Sat}
 import peal.synthesis._
 import peal.synthesis.analysis.{AlwaysFalse, AlwaysTrue, Different, Equivalent, Implies, Satisfiable}
 import peal.util.ConsoleLogger
@@ -46,9 +47,12 @@ case class OutputVerifier(input: String) {
 
   def verifyModel(rawModel: String, analysisName: String): (ThreeWayBoolean, Set[String], Map[String, Either[Rational, ThreeWayBoolean]]) = {
     ConsoleLogger.log1("########## analysis " + analysisName)
-    val initialI = Z3ModelExtractor.extractIUsingRational(rawModel)(analysisName)._2
-    val out = certify(analysisName, initialI, Set(), Map())
-    (out._1, out._2, out._3)
+    val z3Model = Z3ModelExtractor.extractIUsingRational(rawModel)(analysisName)
+
+    z3Model._1 match {
+      case Sat => val out = certify(analysisName, z3Model._2, Set(), Map()); (out._1, out._2, out._3)
+      case Unsat => (PealTrue, Set(), Map()) //if the model is Unsat, don't perform certification
+    }
   }
 
   def certify(analysisName: String, I: Map[String, Either[Rational, ThreeWayBoolean]], remap: Set[String], previouslyCheckedPolicies: Map[String, Either[Rational, ThreeWayBoolean]]): (ThreeWayBoolean, Set[String], Map[String, Either[Rational, ThreeWayBoolean]]) = {
@@ -190,7 +194,7 @@ case class OutputVerifier(input: String) {
       }
     } catch {
       case e: Exception =>
-//        e.printStackTrace()
+        //        e.printStackTrace()
         PealBottom
     }
   }
