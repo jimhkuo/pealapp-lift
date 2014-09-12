@@ -8,7 +8,7 @@ mainClass in assembly := Some("peal.maximise.Main")
 
 name := "PSetMaximiser"
 
-version := "0.1"
+version := "0.2"
 
 scalaVersion := "2.10.4"
 
