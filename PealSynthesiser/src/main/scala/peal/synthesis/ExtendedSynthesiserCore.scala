@@ -79,7 +79,6 @@ case class ExtendedSynthesiserCore(pols: Map[String, Pol], conds: Map[String, Co
     val allRealDeclarations = (variableScores ++ variableDefaultScores ++ pols.keySet.map(_ + "_score") ++ pSets.keySet.map(_ + "_score")).toList.sorted
     val allVariableDeclarations = for (name <- allRealDeclarations) yield "(declare-const " + name + " Real)\n"
     val condDeclarations = for (name <- conds.keys) yield "(declare-const " + name + " Bool)\n"
-//    val domainSpecifics = input.split("\n").dropWhile(!_.startsWith("DOMAIN_SPECIFICS")).takeWhile(!_.startsWith("ANALYSES")).drop(1).filterNot(_.trim.startsWith("%"))
 
     val condDetails = for (name <- conds.keys) yield {
       "(assert (= " + name + " " + ConditionTranslator.translate(name, conds.toMap) + "))"
