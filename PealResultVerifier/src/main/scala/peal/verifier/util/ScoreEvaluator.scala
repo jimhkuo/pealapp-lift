@@ -24,7 +24,7 @@ object ScoreEvaluator {
     }
 
     def evaluateFormula(vf: VariableFormula): Rational = {
-      vf.operations.foldLeft(Rational("0"))((l, r) => l + eval(r))
+      vf.operations.foldLeft(Rational("0"))((acc, e) => acc + eval(e))
     }
 
     score.scoreRange match {
