@@ -22,8 +22,8 @@ object Z3OutputAnalyser {
     val z3OutputParser = ParserHelper.getZ3OutputParser(z3RawOutput)
     val z3OutputModels: Map[String, Model] = z3OutputParser.results().toMap
 
-    val alwaysTrueConditions = z3OutputModels.filter(m => m._1.endsWith("_vct") && m._2.isUnSat).map(_._1.dropRight("_vct".length)).toSeq.sorted
-    val alwaysFalseConditions = z3OutputModels.filter(m => m._1.endsWith("_vcf") && m._2.isUnSat).map(_._1.dropRight("_vcf".length)).toSeq.sorted
+    val alwaysTrueConditions = z3OutputModels.filter(m => m._1.endsWith("_vct") && m._2.isUnSat).map(_._1.dropRight("_vct".length).drop("a1_".length)).toSeq.sorted
+    val alwaysFalseConditions = z3OutputModels.filter(m => m._1.endsWith("_vcf") && m._2.isUnSat).map(_._1.dropRight("_vcf".length).drop("a2_".length)).toSeq.sorted
 
     val vacuityCheckBlock = z3OutputModels.keySet.exists(k => k.endsWith("_vct") || k.endsWith("_vcf")) match {
       case true => <div style={style}>
