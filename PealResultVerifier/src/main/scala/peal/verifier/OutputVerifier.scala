@@ -221,7 +221,6 @@ case class OutputVerifier(input: String) {
     out
   }
 
-  //if certPSet is not BigDecimal, throw exception to be handled in the upper layer
   private def certPSet(pSet: Either[BigDecimal, PolicySet])(implicit I: Map[String, Either[Rational, ThreeWayBoolean]], multiplierNamePurger: Multiplier => String): BigDecimal = {
 
     def extractScore(pSet: PolicySet): Rational = {
@@ -230,6 +229,7 @@ case class OutputVerifier(input: String) {
         case BasicPolicySet(pol, name) => extractScore(pol)
         case Pol(_, _, _, name) =>
           I.get(name) match {
+            //if certPSet is not BigDecimal, or hasn't been set up yet, throw exception to be handled in the upper layer
             case Some(x) if x.isLeft => x.fold(r => r, tw => throw new RuntimeException("should be a rational but is not"))
             case None => throw new RuntimeException("certPSet.extractScore(), Pol " + name + " is not set up")
           }
