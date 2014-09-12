@@ -24,8 +24,7 @@ class MaximisePSetTest extends ShouldMatchersForJUnit {
       "pSet_goal = goal\npSet_cost_overall =  cost_overall\npSet_impact_overall =  impact_overall\npSet_metric = metric\n" +
       "DOMAIN_SPECIFICS\n" +
       "(assert True)\n"
-    println(input)
-    MaximisePSet(input, "pSet_impact_overall", 0.01).doIt() should be("maximum (after bisection(512.0, 1024.0)) is (549.9921875, 550.0]")
+    MaximisePSet(input, "pSet_impact_overall", 0.01).doIt() should be("maximum (after calling bisection method with low = 512.0 and high = 1024.0) is in half-open interval (549.9921875, 550.0]")
   }
 
   @Test
