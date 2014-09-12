@@ -76,7 +76,7 @@ case class MaximisePSet(input: String, pSet: String, accuracy: BigDecimal, pol: 
         high = middle
       }
     }
-    "maximum (after bisection(" + inputLow + ", " + inputHigh + ")) is (" + low + ", " + high + "]"
+    "maximum (after calling bisection method with low = " + inputLow + " and high = " + inputHigh + ") is in half-open interval (" + low + ", " + high + "]"
   }
 
   def doIt(): String = {

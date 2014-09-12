@@ -43,6 +43,7 @@ case class OutputVerifier(input: String) {
     z3Model._1 match {
       case Sat => val out = certify(analysisName, z3Model._2, Set(), Map()); (out._1, out._2, out._3)
       case Unsat => (PealTrue, Set(), Map()) //if the model is Unsat, don't perform certification
+        //TODO add when z3Model status is unknown case
     }
   }
 
