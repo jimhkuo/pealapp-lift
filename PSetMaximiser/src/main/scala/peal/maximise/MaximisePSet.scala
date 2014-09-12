@@ -2,7 +2,7 @@ package peal.maximise
 
 import peal.antlr.util.ParserHelper
 import peal.domain.z3.{Unsat, Sat, SatResult}
-import peal.domain.{PealTrue, ThreeWayBoolean, Rational, Pol}
+import peal.domain._
 import peal.synthesis.analysis.Satisfiable
 import peal.synthesis.{ExtendedSynthesiserCore, GreaterThanThCondition}
 import peal.verifier.{OutputVerifier, Z3ModelExtractor}
@@ -38,8 +38,10 @@ case class MaximisePSet(input: String, pSet: String, accuracy: BigDecimal, pol: 
 
   def runSatisfiableAnalysis(threshold: BigDecimal): (SatResult, Map[String, Either[Rational, ThreeWayBoolean]]) = {
 
+    val pSetName = pSet + (if (pol != "") "_" + pol else "")
+
     def inputWithReplacedConditionAndAnalysis = {
-      inputWithoutConditionAndTheRest + "\nCONDITIONS\ncond1 = " + threshold + " < " + pSet + (if (pol != "") "_" + pol else "") + "\n" +
+      inputWithoutConditionAndTheRest + "\nCONDITIONS\ncond1 = " + threshold + " < " + pSetName + "\n" +
       "DOMAIN_SPECIFICS\n" + domainSpecifics.mkString("\n") +
       "\nANALYSES\nname1 = satisfiable? cond1"
     }
@@ -51,7 +53,8 @@ case class MaximisePSet(input: String, pSet: String, accuracy: BigDecimal, pol: 
 
     OutputVerifier(inputWithReplacedConditionAndAnalysis).verifyModel(z3RawOutput, "name1")._1 match {
       case PealTrue => Z3ModelExtractor.extractIAndStatusUsingRational(z3RawOutput)("name1")
-      case _ => throw new RuntimeException("Certification in maximize_pset failed for " + conds("cond1") )
+      case PealBottom => throw new RuntimeException(s"satisfiable? $threshold < $pSetName is UNKNOWN")
+      case PealFalse => throw new RuntimeException(s"Certification of $threshold < $pSet failed")
     }
   }
 
