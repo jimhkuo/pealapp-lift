@@ -38,18 +38,18 @@ case class MaximisePSet(input: String, pSet: String, accuracy: BigDecimal, pol: 
 
   def runSatisfiableAnalysis(threshold: BigDecimal): (SatResult, Map[String, Either[Rational, ThreeWayBoolean]]) = {
 
-    def inputWithNewConditionAndAnalysis = {
+    def inputWithReplacedConditionAndAnalysis = {
       inputWithoutConditionAndTheRest + "\nCONDITIONS\ncond1 = " + threshold + " < " + pSet + (if (pol != "") "_" + pol else "") + "\n" +
       "DOMAIN_SPECIFICS\n" + domainSpecifics.mkString("\n") +
       "\nANALYSES\nname1 = satisfiable? cond1"
     }
 
-    val conds: Map[String, GreaterThanThCondition] = Map("cond1" -> GreaterThanThCondition(pSets(pSet + (if (pol != "") "_" + pol else "")), Left(threshold)))
-    val analyses: Map[String, Satisfiable] = Map("name1" -> new Satisfiable("name1", "cond1"))
-    val z3Code = ExtendedSynthesiserCore(pols, conds, pSets, analyses, domainSpecifics, predicateNames, variableDefaultScores, variableScores).generate()
-    val z3RawOutput = Z3Caller.call(z3Code)
+    val conds = Map("cond1" -> GreaterThanThCondition(pSets(pSet + (if (pol != "") "_" + pol else "")), Left(threshold)))
+    val analyses = Map("name1" -> new Satisfiable("name1", "cond1"))
+    val generatedZ3Code = ExtendedSynthesiserCore(pols, conds, pSets, analyses, domainSpecifics, predicateNames, variableDefaultScores, variableScores).generate()
+    val z3RawOutput = Z3Caller.call(generatedZ3Code)
 
-    OutputVerifier(inputWithNewConditionAndAnalysis).verifyModel(z3RawOutput, "name1")._1 match {
+    OutputVerifier(inputWithReplacedConditionAndAnalysis).verifyModel(z3RawOutput, "name1")._1 match {
       case PealTrue => Z3ModelExtractor.extractIAndStatusUsingRational(z3RawOutput)("name1")
       case _ => throw new RuntimeException("Certification in maximize_pset failed for " + conds("cond1") )
     }
