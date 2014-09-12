@@ -14,7 +14,7 @@ object ScoreEvaluator {
         case s if I.contains(s) && I(s).isLeft => ConsoleLogger.log1("********* ScoreEvaluator, if I.contains(s) && I(s).isLeft"); Rational(e.multiplier.toString()) * I(s).left.get
         case "" => ConsoleLogger.log1("********* ScoreEvaluator, \"\""); Rational(e.multiplier.toString())
         case s if e.multiplier == BigDecimal("0") => Rational("0")
-//        case s => //intentionally leave this case out for the code to blow up
+//        case s => //intentionally leave this case out for the code to blow up if it ever reaches this point
       }
 
       ConsoleLogger.log1("eval:" + multiplierNamePurger(e) + " = " + out + ", it has multiplier " + Rational(e.multiplier.toString()))
