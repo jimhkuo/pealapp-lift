@@ -62,7 +62,7 @@ case class MaximisePSet(input: String, pSet: String, accuracy: BigDecimal, pol: 
       val middle = (low + high) / 2
       val I = runSatisfiableAnalysis(middle)
       if (I._1 == Sat) {
-        if (pol != "") {
+        if (pol.nonEmpty) {
           val temp = I._2(pol + "_score").left.get.value
           val J = runSatisfiableAnalysis(temp)._1
           if (J == Unsat) {
@@ -84,7 +84,7 @@ case class MaximisePSet(input: String, pSet: String, accuracy: BigDecimal, pol: 
     var high, low = BigDecimal(0.0)
 
     if (I._1 == Sat) {
-      if (pol != "") {
+      if (pol.nonEmpty) {
         val temp = I._2(pol + "_score").left.get.value
         val J = runSatisfiableAnalysis(temp)._1
         if (J == Unsat) {
@@ -95,7 +95,7 @@ case class MaximisePSet(input: String, pSet: String, accuracy: BigDecimal, pol: 
       high = low.max(2.0)
       var K = runSatisfiableAnalysis(high)
       while (K._1 == Sat) {
-        if (pol != "") {
+        if (pol.nonEmpty) {
           val temp = K._2(pol + "_score").left.get.value
           val J = runSatisfiableAnalysis(temp)._1
           if (J == Unsat) {
