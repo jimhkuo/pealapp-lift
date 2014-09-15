@@ -52,4 +52,14 @@ class ScoreEvaluatorTest extends ShouldMatchersForJUnit {
     implicit val I = Z3ModelExtractor.extractIAndStatusUsingRational(model)("name1")._2
     ScoreEvaluator.trueScore(new Score(Right(VariableFormula(Multiplier(8, "z_score"))) , None), null) should be (Rational("5"))
   }
+
+  @Test
+  def testSummingOverOptions() {
+    val model = "Result of analysis [name1 = implies? cond1 cond2]:\nsat\n(model \n  " +
+      "(define-fun y () Real\n    (/ 5.0 12.0))\n" +
+      ")"
+    implicit val I = Z3ModelExtractor.extractIAndStatusUsingRational(model)("name1")._2
+    ScoreEvaluator.trueScoreOption(new Score(Right(VariableFormula("y")) , None), null) should be (Some(Rational("5","12")))
+
+  }
 }
