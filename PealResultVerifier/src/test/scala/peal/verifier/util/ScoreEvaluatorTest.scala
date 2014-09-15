@@ -72,7 +72,7 @@ class ScoreEvaluatorTest extends ShouldMatchersForJUnit {
       "(define-fun y1 () Real\n    (/ 1.0 2.0))\n" +
       ")"
     implicit val I = Z3ModelExtractor.extractIAndStatusUsingRational(model)("name1")._2
-    ScoreEvaluator.trueScoreOption(new Score(Right(VariableFormula("y + y1")) , None), null) should be (Some(Rational("1")))
+    ScoreEvaluator.trueScoreOption(new Score(Right(VariableFormula(Multiplier(1, "y")).add(Multiplier(1, "y1"))) , None), null) should be (Some(Rational("1")))
 
   }
 }
