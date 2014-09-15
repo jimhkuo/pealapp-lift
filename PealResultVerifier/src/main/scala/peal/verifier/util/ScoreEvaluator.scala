@@ -55,20 +55,19 @@ object ScoreEvaluator {
       out
     }
 
-    def sum(values: Option[Rational]*): Option[Rational] = values.flatten match {
-      case Nil => None
-      case l => println(l); Some(l.foldLeft(Rational("0"))((acc, r) => acc + r))
+    def sum(lhs: Option[Rational], rhs: Option[Rational]): Option[Rational] = lhs match {
+      case None => None
+      case Some(l) => rhs match {
+        case None => None
+        case Some(r) => Some(l + r)
+      }
     }
 
     def evaluateFormula(vf: VariableFormula): Option[Rational] = {
       println(vf.toNaturalExpression)
       var acc: Option[Rational] = Some(Rational("0"))
-      for {
-        e <- vf.operations
-        o <- eval(e)
-      } {
-        acc = sum(acc, Some(o))
-        println(acc)
+      for (e <- vf.operations) {
+        acc = sum(acc, eval(e))
       }
 
       acc

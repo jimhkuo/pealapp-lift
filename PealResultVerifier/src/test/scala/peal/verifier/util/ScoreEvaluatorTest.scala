@@ -63,7 +63,6 @@ class ScoreEvaluatorTest extends ShouldMatchersForJUnit {
     ScoreEvaluator.trueScore(new Score(Right(VariableFormula(Multiplier(1, "y")).add(Multiplier(1, "y1"))) , None), null) should be (Rational("1"))
   }
 
-
   @Test
   def testSummingOverOptions() {
     ConsoleLogger.enable()
@@ -73,6 +72,14 @@ class ScoreEvaluatorTest extends ShouldMatchersForJUnit {
       ")"
     implicit val I = Z3ModelExtractor.extractIAndStatusUsingRational(model)("name1")._2
     ScoreEvaluator.trueScoreOption(new Score(Right(VariableFormula(Multiplier(1, "y")).add(Multiplier(1, "y1"))) , None), null) should be (Some(Rational("1")))
+  }
 
+  @Test
+  def testSummingOverOptionsWithUndefined() {
+    val model = "Result of analysis [name1 = implies? cond1 cond2]:\nsat\n(model \n  " +
+      "(define-fun y () Real\n    (/ 1.0 2.0))\n" +
+      ")"
+    implicit val I = Z3ModelExtractor.extractIAndStatusUsingRational(model)("name1")._2
+    ScoreEvaluator.trueScoreOption(new Score(Right(VariableFormula(Multiplier(1, "y")).add(Multiplier(1, "y1"))) , None), null) should be (None)
   }
 }
