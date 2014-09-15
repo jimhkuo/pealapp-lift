@@ -3,6 +3,8 @@ package peal.verifier.util
 import peal.domain._
 import peal.util.ConsoleLogger
 
+import scala.collection.JavaConverters._
+
 object ScoreEvaluator {
 
   def trueScore(score: Score, rangeVarName: String)(implicit I: Map[String, Either[Rational, ThreeWayBoolean]], multiplierNamePurger: Multiplier => String = x => x.name, reportSpecialCase: String => Unit = x => ()): Rational = {
@@ -18,7 +20,7 @@ object ScoreEvaluator {
         //        case s => //intentionally leave this case out for the code to blow up if it ever reaches this point
       }
 
-      ConsoleLogger.log1("eval:" + multiplierNamePurger(e) + " = " + out + ", it has multiplier " + Rational(e.multiplier.toString()))
+      ConsoleLogger.log("eval:" + multiplierNamePurger(e) + " = " + out + ", it has multiplier " + Rational(e.multiplier.toString()))
 
       out
     }
@@ -48,18 +50,33 @@ object ScoreEvaluator {
         case _ => None
       }
 
-      ConsoleLogger.log1("eval:" + multiplierNamePurger(e) + " = " + out + ", it has multiplier " + Rational(e.multiplier.toString()))
+      ConsoleLogger.log("eval:" + multiplierNamePurger(e) + " = " + out + ", it has multiplier " + Rational(e.multiplier.toString()))
 
       out
     }
 
+    def sum(values: Option[Rational]*): Option[Rational] = values.flatten match {
+      case Nil => None
+      case l => println(l); Some(l.foldLeft(Rational("0"))((acc, r) => acc + r))
+    }
+
     def evaluateFormula(vf: VariableFormula): Option[Rational] = {
-      None
+      println(vf.toNaturalExpression)
+      var acc: Option[Rational] = Some(Rational("0"))
+      for {
+        e <- vf.operations
+        o <- eval(e)
+      } {
+        acc = sum(acc, Some(o))
+        println(acc)
+      }
+
+      acc
     }
 
     score.scoreRange match {
       case None => score.underlyingScore.fold(s => Some(Rational(s.toString())), f => evaluateFormula(f))
-//      case Some(_) => score.underlyingScore.fold(s => Some(Rational(s.toString())), f => evaluateFormula(f)) + I(rangeVarName).fold(s => s, vf => throw new RuntimeException("illegal variable format"))
+      //      case Some(_) => score.underlyingScore.fold(s => Some(Rational(s.toString())), f => evaluateFormula(f)) + I(rangeVarName).fold(s => s, vf => throw new RuntimeException("illegal variable format"))
     }
   }
 }
