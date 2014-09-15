@@ -2,7 +2,7 @@ package peal.verifier.util
 
 import org.junit.Test
 import org.scalatest.junit.ShouldMatchersForJUnit
-import peal.domain.{Multiplier, Rational, VariableFormula, Score}
+import peal.domain._
 import peal.util.ConsoleLogger
 import peal.verifier.Z3ModelExtractor
 
@@ -72,6 +72,17 @@ class ScoreEvaluatorTest extends ShouldMatchersForJUnit {
       ")"
     implicit val I = Z3ModelExtractor.extractIAndStatusUsingRational(model)("name1")._2
     ScoreEvaluator.trueScoreOption(new Score(Right(VariableFormula(Multiplier(1, "y")).add(Multiplier(1, "y1"))) , None), null) should be (Some(Rational("1")))
+  }
+
+  @Test
+  def testSummingOverOptionsWithDefaultScore() {
+    val model = "Result of analysis [name1 = implies? cond1 cond2]:\nsat\n(model \n  " +
+      "(define-fun y () Real\n    (/ 1.0 2.0))\n" +
+      "(define-fun y1 () Real\n    (/ 1.0 2.0))\n" +
+      "(define-fun y2 () Real\n    2.0)\n" +
+      ")"
+    implicit val I = Z3ModelExtractor.extractIAndStatusUsingRational(model)("name1")._2
+    ScoreEvaluator.trueScoreOption(new Score(Right(VariableFormula(Multiplier(1, "y")).add(Multiplier(1, "y1"))) , Some(ScoreRange(0,1))), "y2") should be (Some(Rational("3")))
   }
 
   @Test

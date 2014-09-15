@@ -75,7 +75,8 @@ object ScoreEvaluator {
 
     score.scoreRange match {
       case None => score.underlyingScore.fold(s => Some(Rational(s.toString())), f => evaluateFormula(f))
-      //      case Some(_) => score.underlyingScore.fold(s => Some(Rational(s.toString())), f => evaluateFormula(f)) + I(rangeVarName).fold(s => s, vf => throw new RuntimeException("illegal variable format"))
+      case Some(_) => sum(score.underlyingScore.fold(s => Some(Rational(s.toString())), f => evaluateFormula(f)),
+        I(rangeVarName).fold(s => Some(s), vf => throw new RuntimeException("illegal variable format")))
     }
   }
 }
