@@ -202,10 +202,10 @@ case class OutputVerifier(input: String) {
           throw new RuntimeException("PealBottom reached in certPSet because some predicates are not defined in I: " + notDefined + " in " + policyName + " " + rules)
         }
         else if (!rules.exists(r => I(r.q.name).fold(score => PealBottom, bool => bool) == PealTrue)) {
-          ScoreEvaluator.trueScore(score, policyName + "_default_U")
+          ScoreEvaluator.trueScore(score, policyName + "_default_U").get
         }
         else {
-          val okScores = rules.filter(r => I(r.q.name).fold(score => PealBottom, bool => bool) == PealTrue).map(r => ScoreEvaluator.trueScore(r.score, policyName + "_" + r.q.name + "_U"))
+          val okScores = rules.filter(r => I(r.q.name).fold(score => PealBottom, bool => bool) == PealTrue).map(r => ScoreEvaluator.trueScore(r.score, policyName + "_" + r.q.name + "_U").get)
           ConsoleLogger.log2("okScores are: " + okScores + " op is " + op)
           val rational = op match {
             case Min => okScores.reduceLeft((acc, score) => acc.min(score))
