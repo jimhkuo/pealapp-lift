@@ -144,7 +144,10 @@ object Z3OutputAnalyser {
             section.append("Policies in analysis [" + analysisName + "] specialised with respect to the above scenario, extended with false predicates from ")
             section.append("" + verifiedModel._2 + ":")
           }
-          else section.append("Policies in analysis [" + analysisName + "] specialised with respect to the above scenario:")
+          else {
+            section.append("Policies in analysis [" + analysisName + "] specialised with respect to the above scenario:")
+          }
+
           section.append(new PolicySpecialisationMaker(inputPolicies).doIt(z3RawOutput, analysisName, verifiedModel._2))
         }
         else {

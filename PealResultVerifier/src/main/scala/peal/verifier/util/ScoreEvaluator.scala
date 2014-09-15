@@ -8,7 +8,7 @@ object ScoreEvaluator {
   def trueScore(score: Score, rangeVarName: String)(implicit I: Map[String, Either[Rational, ThreeWayBoolean]], multiplierNamePurger: Multiplier => String = x => x.name, reportSpecialCase: String => Unit = x => ()): Rational = {
 
     def eval(e: Multiplier): Rational = {
-      ConsoleLogger.log1("eval: " + e.toNaturalExpression + " e.name is " + e.name + " e.multiplier is " + e.multiplier)
+      ConsoleLogger.log("eval: " + e.toNaturalExpression + " e.name is " + e.name + " e.multiplier is " + e.multiplier + " " + rangeVarName)
       val out = e.name match {
         case s if s.contains("_score") => ConsoleLogger.log1("********* ScoreEvaluator, if s.contains(\"_score\")"); Rational(e.multiplier.toString()) * I(multiplierNamePurger(e)).left.get
         case s if I.contains(s) && I(s).isLeft => ConsoleLogger.log1("********* ScoreEvaluator, if I.contains(s) && I(s).isLeft"); Rational(e.multiplier.toString()) * I(s).left.get

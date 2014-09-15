@@ -95,13 +95,16 @@ class PolicySpecialisationMaker(input: String) {
             ""
           }
 
-          ConsoleLogger.log1(okRules)
+          ConsoleLogger.log(okRules)
 
           if (okRules.isEmpty) {
-            <span>{p} = {operator} (<span style="font-weight: bold;color:green">{undefined}</span>) default <span style="font-weight: bold;color:red">{ScoreEvaluator.trueScore(defaultScore, p + "_default_U").value}</span><br/></span>
+            <span>{p} = {operator} (<span style="font-weight: bold;color:green">{undefined}</span>) default <span style="font-weight: bold;color:red">
+              {ScoreEvaluator.trueScore(defaultScore, p + "_default_U").value}</span><br/></span>
           }
           else {
-            <span>{p} = {operator} ((<span style="font-weight: bold;color:red">[</span>{okRules.map(r => r.q.name).mkString("", " ", "")}<span style="font-weight: bold;color:red">]</span> <span style="font-weight: bold;color:red">{accumulateScores(operator, okRules.toSet, p)}</span>)<span style="font-weight: bold;color:green">{undefined}</span>) default {ScoreEvaluator.trueScore(defaultScore, p + "_default_U").value}<br/></span>
+            <span>{p} = {operator} ((<span style="font-weight: bold;color:red">[</span>{okRules.map(r => r.q.name).mkString("", " ", "")}<span style="font-weight: bold;color:red">]</span>
+              <span style="font-weight: bold;color:red">{accumulateScores(operator, okRules.toSet, p)}</span>)<span style="font-weight: bold;color:green">{undefined}</span>) default
+              {ScoreEvaluator.trueScore(defaultScore, p + "_default_U").value}<br/></span>
           }
       }
     }
