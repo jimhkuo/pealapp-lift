@@ -50,7 +50,7 @@ class PolicySpecialisationMakerTest extends ShouldMatchersForJUnit {
       "b17 = + (([q4 q11] 1.8441)) default 0.529" +
       "b18 = min (([q4] 0.8287)) default 0.9865" +
       "b19 = max (([q10] 0.5418)) default 0.7368" +
-      "b2 = * (([q12] 0.3504)) default ???" +
+      "b2 = * (([q12] 0.3504)) default \"don't care\"" +
       "b3 = + () default 0.7163" +
       "b4 = max (([q11] 0.1327)) default 0.8418" +
       "b5 = * (([q9] -0.14007909)) default 0" +
