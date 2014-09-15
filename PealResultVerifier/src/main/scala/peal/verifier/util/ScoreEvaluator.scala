@@ -11,7 +11,7 @@ object ScoreEvaluator {
                      (implicit I: Map[String, Either[Rational, ThreeWayBoolean]], multiplierNamePurger: Multiplier => String = x => x.name, reportSpecialCase: String => Unit = x => ()): Option[Rational] = {
 
     def eval(e: Multiplier): Option[Rational] = {
-      ConsoleLogger.log("eval: " + e.toNaturalExpression + " e.name is " + e.name + " e.multiplier is " + e.multiplier + " " + rangeVarName)
+      ConsoleLogger.log1("eval: " + e.toNaturalExpression + " e.name is " + e.name + " e.multiplier is " + e.multiplier + " " + rangeVarName)
       val out = e.name match {
         case s if s.contains("_score") => ConsoleLogger.log1("********* ScoreEvaluator, if s.contains(\"_score\")");
           Some(Rational(e.multiplier.toString()) * I(multiplierNamePurger(e)).left.get)
@@ -22,7 +22,7 @@ object ScoreEvaluator {
         case _ => None
       }
 
-      ConsoleLogger.log("eval:" + multiplierNamePurger(e) + " = " + out + ", it has multiplier " + Rational(e.multiplier.toString()))
+      ConsoleLogger.log1("eval:" + multiplierNamePurger(e) + " = " + out + ", it has multiplier " + Rational(e.multiplier.toString()))
 
       out
     }
@@ -36,7 +36,6 @@ object ScoreEvaluator {
     }
 
     def evaluateFormula(vf: VariableFormula): Option[Rational] = {
-      println(vf.toNaturalExpression)
       var acc: Option[Rational] = Some(Rational("0"))
       for (e <- vf.operations) {
         acc = sum(acc, eval(e))

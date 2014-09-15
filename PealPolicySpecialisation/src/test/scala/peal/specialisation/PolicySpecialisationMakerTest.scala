@@ -9,7 +9,7 @@ class PolicySpecialisationMakerTest extends ShouldMatchersForJUnit {
 
   @Test
   def testRecursiveToTheEnd() {
-    ConsoleLogger.enable()
+//    ConsoleLogger.enable()
     val input = "POLICIES\npr_wood = min((teak 0.08) (birch 0.099) (walnut 0.07)) default 0.09\nfuel = +((gasoline 0.1) (coal 0.02) (wood pr_wood_score)) default 0\nignition = +((matches 0.2) (gas_stove 0.1) (electrical_sparc 0.05)) default 0\noxygen = +() default 1\nfire = *((Fuel fuel_score) (Ignition ignition_score) (Oxygen oxygen_score)) default 1\nPOLICY_SETS\npSet1 = fire\nCONDITIONS\ncond1 = 0.0734 < pSet1\ncond2 = 0.0735 < pSet1\ncond3 = pSet1 <= 0.00735\ncoal_cond = coal\ncond4 = !coal_cond\ncond5 = cond4 && cond1\nDOMAIN_SPECIFICS\n(assert (= Fuel (< 0 fuel_score)))\n(assert (= Oxygen (< 0 oxygen_score)))\n(assert (= Ignition (< 0 ignition_score)))\n(assert (and Fuel Ignition Oxygen))\nANALYSES\nname1 = satisfiable? cond1"
     val model = "Result of analysis [name1 = satisfiable? cond1]:\nsat\n(model \n  " +
       "(define-fun ignition_score () Real\n    (/ 7.0 20.0))\n  " +
@@ -23,9 +23,9 @@ class PolicySpecialisationMakerTest extends ShouldMatchersForJUnit {
       "(define-fun cond1 () Bool\n    true)\n  " +
       "(define-fun satisfiable_name1 () Bool\n    true)\n  " +
       "(define-fun fire_score () Real\n    (/ 147.0 2000.0))\n  (define-fun Oxygen () Bool\n    true)\n  (define-fun oxygen_score () Real\n    1.0)\n  (define-fun walnut () Bool\n    false)\n  (define-fun Ignition () Bool\n    true)\n  (define-fun cond4 () Bool\n    false)\n  (define-fun gas_stove () Bool\n    true)\n  (define-fun coal () Bool\n    true)\n  (define-fun electrical_sparc () Bool\n    true)\n  (define-fun fuel_score () Real\n    (/ 21.0 100.0))\n  (define-fun birch () Bool\n    false)\n  (define-fun matches () Bool\n    true)\n  (define-fun coal_cond () Bool\n    true)\n  (define-fun gasoline () Bool\n    true)\n)"
-    ConsoleLogger.log(input)
+//    ConsoleLogger.log(input)
     val out = new PolicySpecialisationMaker(input).doIt(model, "name1")
-    ConsoleLogger.log(out.text)
+    println(out.text)
     out.text should be("fire = * (([Fuel Ignition Oxygen] 0.0735)) default 1" +
       "fuel = + (([gasoline coal wood] 0.21)) default 0" +
       "ignition = + (([matches gas_stove electrical_sparc] 0.35)) default 0" +

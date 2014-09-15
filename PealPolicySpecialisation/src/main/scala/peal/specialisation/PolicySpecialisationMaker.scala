@@ -74,10 +74,10 @@ class PolicySpecialisationMaker(input: String) {
 
     def accumulateScores(operator: Operator, rules: Set[Rule], policyName: String): BigDecimal = {
       val rational = operator match {
-        case Min => rules.tail.foldLeft(ScoreEvaluator.trueScore(rules.head.score, policyName + "_" + rules.head.q.name + "_U"))((acc, r) => acc.min(ScoreEvaluator.trueScore(r.score, policyName + "_" + r.q.name + "_U")))
-        case Max => rules.tail.foldLeft(ScoreEvaluator.trueScore(rules.head.score, policyName + "_" + rules.head.q.name + "_U"))((acc, r) => acc.max(ScoreEvaluator.trueScore(r.score, policyName + "_" + r.q.name + "_U")))
-        case Plus => rules.tail.foldLeft(ScoreEvaluator.trueScore(rules.head.score, policyName + "_" + rules.head.q.name + "_U"))((acc, r) => acc + ScoreEvaluator.trueScore(r.score, policyName + "_" + r.q.name + "_U"))
-        case Mul => rules.tail.foldLeft(ScoreEvaluator.trueScore(rules.head.score, policyName + "_" + rules.head.q.name + "_U"))((acc, r) => acc * ScoreEvaluator.trueScore(r.score, policyName + "_" + r.q.name + "_U"))
+        case Min => rules.tail.foldLeft(ScoreEvaluator.trueScore(rules.head.score, policyName + "_" + rules.head.q.name + "_U").get)((acc, r) => acc.min(ScoreEvaluator.trueScore(r.score, policyName + "_" + r.q.name + "_U").get))
+        case Max => rules.tail.foldLeft(ScoreEvaluator.trueScore(rules.head.score, policyName + "_" + rules.head.q.name + "_U").get)((acc, r) => acc.max(ScoreEvaluator.trueScore(r.score, policyName + "_" + r.q.name + "_U").get))
+        case Plus => rules.tail.foldLeft(ScoreEvaluator.trueScore(rules.head.score, policyName + "_" + rules.head.q.name + "_U").get)((acc, r) => acc + ScoreEvaluator.trueScore(r.score, policyName + "_" + r.q.name + "_U").get)
+        case Mul => rules.tail.foldLeft(ScoreEvaluator.trueScore(rules.head.score, policyName + "_" + rules.head.q.name + "_U").get)((acc, r) => acc * ScoreEvaluator.trueScore(r.score, policyName + "_" + r.q.name + "_U").get)
       }
 
       rational.value
@@ -89,7 +89,7 @@ class PolicySpecialisationMaker(input: String) {
           val okRules = rules.filter(r => I.get(r.q.name) != None && I.get(r.q.name) == Some(Right(PealTrue)))
           val undefinedRules = rules.filter(r => I.get(r.q.name) == None)
           val undefined = if (undefinedRules.nonEmpty) {
-            (if (okRules.nonEmpty) " " else "") + undefinedRules.map(r => "(" + r.q.name + "? " + ScoreEvaluator.trueScore(r.score, p + "_" + r.q.name + "_U").value + ")").mkString(" ")
+            (if (okRules.nonEmpty) " " else "") + undefinedRules.map(r => "(" + r.q.name + "? " + ScoreEvaluator.trueScore(r.score, p + "_" + r.q.name + "_U").get.value + ")").mkString(" ")
           }
           else {
             ""
@@ -98,15 +98,12 @@ class PolicySpecialisationMaker(input: String) {
           ConsoleLogger.log(okRules)
 
           if (okRules.isEmpty) {
-            <span>{p} = {operator} (<span style="font-weight: bold;color:green">{undefined}</span>) default <span style="font-weight: bold;color:red">
-              {ScoreEvaluator.trueScore(defaultScore, p + "_default_U").value}</span><br/></span>
+            <span>{p} = {operator} (<span style="font-weight: bold;color:green">{undefined}</span>) default <span style="font-weight: bold;color:red">{ScoreEvaluator.trueScore(defaultScore, p + "_default_U").get.value}</span><br/></span>
           }
           else {
-            <span>{p} = {operator} ((<span style="font-weight: bold;color:red">[</span>{okRules.map(r => r.q.name).mkString("", " ", "")}<span style="font-weight: bold;color:red">]</span>
-              <span style="font-weight: bold;color:red">{accumulateScores(operator, okRules.toSet, p)}</span>)<span style="font-weight: bold;color:green">{undefined}</span>) default
-              {ScoreEvaluator.trueScore(defaultScore, p + "_default_U").value}<br/></span>
+            <span>{p} = {operator} ((<span style="font-weight: bold;color:red">[</span>{okRules.map(r => r.q.name).mkString("", " ", "")}<span style="font-weight: bold;color:red">]</span> <span style="font-weight: bold;color:red">{accumulateScores(operator, okRules.toSet, p)}</span>)<span style="font-weight: bold;color:green">{undefined}</span>) default {ScoreEvaluator.trueScore(defaultScore, p + "_default_U").get.value}<br/></span>
           }
-      }
+          }
     }
 
     analyses.foreach(ConsoleLogger.log2(_))
