@@ -101,9 +101,10 @@ class PolicySpecialisationMaker(input: String) {
             <span>{p} = {operator} (<span style="font-weight: bold;color:green">{undefined}</span>) default <span style="font-weight: bold;color:red">{ScoreEvaluator.trueScore(defaultScore, p + "_default_U").get.value}</span><br/></span>
           }
           else {
-            <span>{p} = {operator} ((<span style="font-weight: bold;color:red">[</span>{okRules.map(r => r.q.name).mkString("", " ", "")}<span style="font-weight: bold;color:red">]</span> <span style="font-weight: bold;color:red">{accumulateScores(operator, okRules.toSet, p)}</span>)<span style="font-weight: bold;color:green">{undefined}</span>) default {ScoreEvaluator.trueScore(defaultScore, p + "_default_U").get.value}<br/></span>
+            val score = ScoreEvaluator.trueScore(defaultScore, p + "_default_U").fold("???")(r => r.value.toString())
+            <span>{p} = {operator} ((<span style="font-weight: bold;color:red">[</span>{okRules.map(r => r.q.name).mkString("", " ", "")}<span style="font-weight: bold;color:red">]</span> <span style="font-weight: bold;color:red">{accumulateScores(operator, okRules.toSet, p)}</span>)<span style="font-weight: bold;color:green">{undefined}</span>) default {score}<br/></span>
           }
-          }
+      }
     }
 
     analyses.foreach(ConsoleLogger.log2(_))
