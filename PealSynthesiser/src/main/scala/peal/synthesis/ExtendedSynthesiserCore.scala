@@ -7,7 +7,7 @@ import peal.synthesis.analysis.{AnalysisGenerator, AlwaysFalse, AlwaysTrue}
 import peal.synthesis.util.{ConditionTranslator, Z3ScoreGenerator}
 
 //TODO need to find out why changing the type of pols to java map breaks this
-case class ExtendedSynthesiserCore(pols: Map[String, Pol], conds: Map[String, Condition], pSets : Map[String, PolicySet], analyses: Map[String, AnalysisGenerator], domainSpecifics: Array[String], predicateNames: Set[String], variableDefaultScores: Set[String], variableScores: Set[String]) {
+case class ExtendedSynthesiserCore(pols: java.util.Map[String, Pol], conds: Map[String, Condition], pSets : Map[String, PolicySet], analyses: Map[String, AnalysisGenerator], domainSpecifics: Array[String], predicateNames: Set[String], variableDefaultScores: Set[String], variableScores: Set[String]) {
 
   private def policyDefaultDeclaration = {
     for {

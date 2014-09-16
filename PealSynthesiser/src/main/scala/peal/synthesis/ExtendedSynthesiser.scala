@@ -9,7 +9,7 @@ class ExtendedSynthesiser(input: String) extends Synthesiser {
 
   val pealProgramParser = ParserHelper.getPealParser(input)
   pealProgramParser.program()
-  val pols = pealProgramParser.pols.toMap
+  val pols = pealProgramParser.pols
   val conds = pealProgramParser.conds.toMap
   val pSets = pealProgramParser.pSets.toMap
   val allRules = pols.values.flatMap(pol => pol.rules)
