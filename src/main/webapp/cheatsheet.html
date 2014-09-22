@@ -1,116 +1,44 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <meta content="text/html; charset=UTF-8" http-equiv="content-type"/>
-    <title>Peal Webapp</title>
+<meta content="text/html; charset=UTF-8" http-equiv="content-type"/>
+    <title>Peal Webapp, Cheat Sheet</title>
 </head>
 <body class="lift:content_id=main">
 <div id="main" class="lift:surround?with=default;at=content">
 
-    <!--<form data-lift="FileUploadSnippet?form=post;multipart=true">-->
-    <!--<label for="file">-->
-    <!--Select a file: <input id="file"></input>-->
-    <!--</label>-->
-    <!--<input type="submit" value="Submit"></input>-->
-    <!--</form>-->
+<div class="col-sm-12">
+<h4>Cheat Sheet</h4>
 
-    <div class="col-sm-12">
+<p>
+    The user guide for tool PEALT contains many complexities that are more a reflection of the history of tool development rather than of its present usage. A large part of that complexity stems from the availability of a more scalable code generation method for a highly restrictive fragment of the PEALT input language.</p>
 
-        <h1> Cheat Sheat for PEALT users</h1>
+<p>
+  However, our experience of using PEALT suggests that this more efficient code generation technique, called "Non-negative, constant scores" in the tool, is not really needed when using the tool on practical examples. We therefore offer here a quick cheat sheet that should help in using PEALT quickly, reliably, and effectively: </p>
 
-        <p> TO BE WRITTEN ... </p>
-      
-        <p> The PEALT tool is a workbench for articulating and analyzing policies that aggregate trust evidence. Such
-            policy-based evidence is then meant to inform decision making in a variety of contexts such as access
-            control, policy making, and risk management. PEALT is implemented by Jim Huan-Pu Kuo and the researchers on this
-            project are Michael Huth and Jim Huan-Pu Kuo.
-        </p>
+<ol>
+<li> Always use code generation options, "General scores", never use code generation option "Non-negative, constant score" (unless you expressly want to experiment with this).</li>
 
-        <p>
-            PEALT allows users to formulate conditions as the basis of decision making (be it online or offline), and to
-            statically analyze such conditions with two principal aims:
-        </p>
-        <ul>
-            <li> to determine whether specified conditions and the policies they contain meet expectations of how
-                perceived or observed risk and trust influence decision making
-            </li>
-            <li> to validate that the expectations that users have do not have unintended consequences when expressed
-                and enforced in such conditions.
-            </li>
-        </ul>
+<li> Using option "Non-negative, constant score" on Majority-voting sample may cause the used server to run out of resources even for small values of n, as resoure demand grows factorially in n.</li>
 
-        <p>
-            The tool PEALT is written to reflect the methodology of <strong>auto-interactive verification</strong>. This
-            means users can rely on automated verification tools that provide easily comprehended feedback which may
-            trigger subsequent automated verification. And this process would be repeated until users are satisfied to
-            have captured conditions as desired.
-        </p>
+<li> Always use the method "Display results of all analyses in pretty printed form and perform independent certification of results" (unless you expressly want to study Z3 code generated for your PEALT input).</li>
 
-        <p>
-            The input language for PEALT gives users two options:
-        </p>
-        <ul>
-            <li> to write policies whose scores are all non-negative and constant and where all policies with composition
-                operator * (multiplication) have scores in the unit interval [0,1]; users can then analyze conditions by
-                clicking on the dark blue button "Non-negative, constant scores"
-            </li>
-            <li> to write policies whose scores may contain negative numbers, variables, products of constants and
-                variables or uncertainty intervals; users then have to click on the light blue button "General scores"
-                in order to analyze conditions.
-            </li>
-        </ul>
+<li> If you refer to a policy p in a score expression of some policy, you need to write "p_score" and not "p" there. Doing the latter will implicitly declare a new real variable p causing undesired aliasing.</li>
 
-        <p>
-            The editor and runner interface of the tool offer buttons for generating analyzable conditions. Those buttons
-            coulored in light blue should only be analyzed by clicking on the light blue button  "General scores".
-            Buttons coulored in dark blue may be analyzed by clicking either "General scores" or "Non-negative, constant scores".
-        </p>
+<li> Related to the last point, real variables that are used in score expressions must not contain spelling mistakes as these will not be detected; rather, a real variable with the mispelled name will be implicitly declared.</li>
 
-        <p>
-            Using option "Non-negative, constant scores" for PEALT input that has negative scores, non-constant scores or scores
-            outside of the unit interval in * policies will produce errors. Fortunately, these errors are likely to be identified;
-            for example, during parsing if scores contain variables or during certification if * policies contain scores not in [0,1].
-            Users should take care to only use that option when the input is known to meet the above score constraints. At the same time,
-            since certification of found scenarios is agnostic to the manner in which the Z3 code was generated for finding this scenario,
-            a successfully certified scenario will be valid even if the wrong option was clicked; this will only occur for examples with no
-            variables in scores.
-        </p>
+<li> Only be confident in the value of a PEALT input and its analysis findings, if all found scenarios certified successfully; and if you did automated vacuity checking of all conditions on that input, and convinced yourself that the conditions that are always true and those that are always false have those properties for reasons justified by your PEALT input and modeling assumptions.</li>
 
-        <p>
-            The description of the available analyzes, of the parameters n, m, m_min etc. used in the Random sample
-            buttons of PEALT, and of the Z3 code generation for the PEALT input language with non-negative, constant
-            scores can be found in the paper
-        </p>
+<li> The parser for PEALT input is not very sophisticated. So some parsing errors may not give informative error diagnostics. And some parsing errors may be unexpected. For example, a score expression x*-0.2 is legal, as are 0.2*x, x*0.2 + 0.8, and x*0.2 +-0.5 (the latter means 0.2x - 0.5). Whereas x*(-0.2), 0.2*-x, and x*0.2 - 0.5 are not, for example.</li>
 
-        <p>
-            Huth M., Kuo H.-P. J., <a href="http://www.doc.ic.ac.uk/%7Emrh/security/PEALTAnAutomatedReasoningToolForNumericalAggregationOfTrustHuthKuo.pdf">PEALT:
-            An Automated Reasoning Tool for Numerical Aggregation of Trust Evidence</a>, proceedings of International
-            Conference on Tools and Algorithms for the Construction and Analysis of Systems (TACAS 2014), pp. 109-123,
-            Springer
-        </p>
+<li> Although comments begin with symbol "%", this symbol needs to be at the beginning of a new line otherwise parsing will fail.</li>
 
-        <p>
-            An informal description of the PEALT input language for general scores can be found in the paper
-        </p>
+<li> In zone DOMAIN_SPECIFICS, there is no need to declare real variables that feature in some score expression in zone POLICIES; and there is no need to declare Boolean variables that feature in some rule in zone POLICIES. The code generation in PEALT will add such declarations automatically (and will not declare them again if you happened to declare them).</li>
 
-        <p>
-            Huth M. and Kuo H.-P. J., <a href="http://www.doc.ic.ac.uk/%7Emrh/security/UsableTrustAggregationLanguagesHCII_HAS2014HuthKuo.pdf">On
-            Designing Usable Policy Languages for Declarative Trust Aggregation</a>, Best Paper Award, proceedings of
-            2nd
-            International Conference on Human Aspects of Information Security, Privacy, and Trust, pp. 45-56, part
-            of HCII 2014, Springer
-        </p>
+<li> If you have a policy with more than one rule containing an uncertainty interval, make sure that no predicate occurs in two or more rules that have such uncertainty. Otherwise, the nondeterminism will be resolved in the same manner for the intervals of such a predicate within that policy, and this is very likely to be unintended in your modeling assumptions. Please consult the case study "BGP Reset Session uncertainties example" to see how one may disambiguate such predicates when needed.</li>
+</ol>
 
-        <p>
-            <strong>Contact information:</strong>
-        </p>
-
-        <p>
-            If you have any comments or queries about the tool PEALT, or if you would like to contribute a case
-            study written in the PEALT input language, please get in touch with Michael Huth at
-            <it>m.huth@imperial.ac.uk</it>
-        </p>
-    </div>
+</div>
 </div>
 
 </body>
