@@ -36,8 +36,9 @@ case class MaximisePSet(input: String, pSet: String, accuracy: BigDecimal, pol: 
   val pSets = pealProgramParser.pSets.toMap
   val domainSpecifics: Array[String] = input.split("\n").dropWhile(!_.startsWith("DOMAIN_SPECIFICS")).takeWhile(!_.startsWith("ANALYSES")).drop(1).filterNot(_.trim.startsWith("%"))
 
-  private def runSatisfiableAnalysis(threshold: BigDecimal): (SatResult, Map[String, Either[Rational, ThreeWayBoolean]]) = {
+  private def runSatisfiableAnalysis(threshold: BigDecimal)(implicit doMin: Boolean): (SatResult, Map[String, Either[Rational, ThreeWayBoolean]]) = {
 
+    println(doMin + " runSatisfiableAnalysis")
     val pSetName = pSet + (if (pol != "") "_" + pol else "")
 
     def inputWithReplacedConditionAndAnalysis = {
@@ -58,7 +59,8 @@ case class MaximisePSet(input: String, pSet: String, accuracy: BigDecimal, pol: 
     }
   }
 
-  private def bisection(inputLow: BigDecimal, inputHigh: BigDecimal) : String = {
+  private def bisection(inputLow: BigDecimal, inputHigh: BigDecimal)(implicit doMin: Boolean) : String = {
+    println(doMin + " bisection")
     var low = inputLow
     var high = inputHigh
     while ((high - low) > accuracy) {
@@ -82,7 +84,8 @@ case class MaximisePSet(input: String, pSet: String, accuracy: BigDecimal, pol: 
     "maximum (after calling bisection method with low = " + inputLow + " and high = " + inputHigh + ") is in half-open interval (" + low + ", " + high + "]"
   }
 
-  def doIt(): String = {
+  def doIt(doMinFlag: Boolean = false): String = {
+    implicit val doMin = doMinFlag
     val I = runSatisfiableAnalysis(0.0)
     var high, low = BigDecimal(0.0)
 
