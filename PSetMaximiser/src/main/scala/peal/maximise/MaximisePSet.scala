@@ -37,8 +37,6 @@ case class MaximisePSet(input: String, pSet: String, accuracy: BigDecimal, pol: 
   val domainSpecifics: Array[String] = input.split("\n").dropWhile(!_.startsWith("DOMAIN_SPECIFICS")).takeWhile(!_.startsWith("ANALYSES")).drop(1).filterNot(_.trim.startsWith("%"))
 
   private def runSatisfiableAnalysis(threshold: BigDecimal)(implicit doMin: Boolean): (SatResult, Map[String, Either[Rational, ThreeWayBoolean]]) = {
-
-    println(doMin + " runSatisfiableAnalysis")
     val pSetName = pSet + (if (pol != "") "_" + pol else "")
 
     def inputWithReplacedConditionAndAnalysis = {
@@ -47,7 +45,7 @@ case class MaximisePSet(input: String, pSet: String, accuracy: BigDecimal, pol: 
       "\nANALYSES\nname1 = satisfiable? cond1"
     }
 
-    val conds = Map("cond1" -> GreaterThanThCondition(pSets(pSet + (if (pol != "") "_" + pol else "")), Left(threshold)))
+    val conds = Map("cond1" -> GreaterThanThCondition(pSets(pSetName), Left(threshold)))
     val analyses = Map("name1" -> new Satisfiable("name1", "cond1"))
     val generatedZ3Code = ExtendedSynthesiserCore(pols, conds, pSets, analyses, domainSpecifics, predicateNames, variableDefaultScores, variableScores).generate()
     val z3RawOutput = Z3Caller.call(generatedZ3Code)
@@ -60,7 +58,6 @@ case class MaximisePSet(input: String, pSet: String, accuracy: BigDecimal, pol: 
   }
 
   private def bisection(inputLow: BigDecimal, inputHigh: BigDecimal)(implicit doMin: Boolean) : String = {
-    println(doMin + " bisection")
     var low = inputLow
     var high = inputHigh
     while ((high - low) > accuracy) {
