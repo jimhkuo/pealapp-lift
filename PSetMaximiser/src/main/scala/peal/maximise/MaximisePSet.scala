@@ -36,7 +36,7 @@ case class MaximisePSet(input: String, pSet: String, accuracy: BigDecimal, pol: 
   val pSets = pealProgramParser.pSets.toMap
   val domainSpecifics: Array[String] = input.split("\n").dropWhile(!_.startsWith("DOMAIN_SPECIFICS")).takeWhile(!_.startsWith("ANALYSES")).drop(1).filterNot(_.trim.startsWith("%"))
 
-  def runSatisfiableAnalysis(threshold: BigDecimal): (SatResult, Map[String, Either[Rational, ThreeWayBoolean]]) = {
+  private def runSatisfiableAnalysis(threshold: BigDecimal): (SatResult, Map[String, Either[Rational, ThreeWayBoolean]]) = {
 
     val pSetName = pSet + (if (pol != "") "_" + pol else "")
 
