@@ -23,6 +23,8 @@ object PealBuild extends Build {
 
   lazy val maximisePSet = Project(id = "PSetMaximiser", base = file("PSetMaximiser")) dependsOn(parser, domain % "test->test;compile->compile",synthesiser, z3, parser, verifier)
 
+  lazy val minimisePSet = Project(id = "PSetMinimiser", base = file("PSetMinimiser")) dependsOn(parser, domain % "test->test;compile->compile",synthesiser, z3, parser, verifier, maximisePSet)
+
   lazy val z3 = Project(id = "Z3Wrapper", base = file("Z3Wrapper")) dependsOn(domain, parser)
 
   lazy val generator = Project(id = "PealModelGenerator", base = file("PealModelGenerator")) dependsOn(parser, domain % "test->test;compile->compile")
