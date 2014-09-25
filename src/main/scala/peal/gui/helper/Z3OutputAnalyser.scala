@@ -178,7 +178,6 @@ object Z3OutputAnalyser {
     }
   }
 
-  //TODO need to sort the output
   private def getReasons(model: Model, includeNames: Set[String], excludeNames: Set[String], constsMap: Map[String, PealAst]): List[String] = {
     val assignments = model.assignments.filterNot(_.value == "")
 
