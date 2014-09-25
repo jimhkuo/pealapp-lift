@@ -44,11 +44,17 @@ case class MaximisePSet(input: String, pSet: String, accuracy: BigDecimal, pol: 
     //TODO do something with doMin flag
     val pSetName = pSet + (if (pol != "") "_" + pol else "")
 
+    //TODO insert different additions for minisier
+    def setupPolicies = "POLICIES\n" + policiesSection + "\n"
+
+    def setupPolicySets = "POLICY_SETS\n" + policySetsSection + "\n"
+
+    def setupConditions = "CONDITIONS\ncond1 = " + threshold + " < " + pSetName + "\n"
+
     def inputWithReplacedConditionAndAnalysis = {
-      //TODO insert different additions for minisier
-      "POLICIES\n" + policiesSection + "\n" +
-        "POLICY_SETS\n" + policySetsSection + "\n" +
-        "CONDITIONS\ncond1 = " + threshold + " < " + pSetName + "\n" +
+      setupPolicies +
+        setupPolicySets +
+        setupConditions +
         "DOMAIN_SPECIFICS\n" + domainSpecifics.mkString("\n") + "\n" +
         "ANALYSES\nname1 = satisfiable? cond1"
     }
