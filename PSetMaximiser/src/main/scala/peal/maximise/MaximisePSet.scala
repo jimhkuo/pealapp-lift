@@ -19,7 +19,6 @@ case class MaximisePSet(input: String, pSet: String, accuracy: BigDecimal, pol: 
 
   val inputWithoutConditionAndTheRest = s"POLICIES\n$policiesSection\nPOLICY_SETS\n$policySetsSection\n"
 
-  println(inputWithoutConditionAndTheRest)
   val pealProgramParser = ParserHelper.getPealParser(inputWithoutConditionAndTheRest)
   pealProgramParser.program()
   val pols = pealProgramParser.pols.toMap
@@ -47,24 +46,33 @@ case class MaximisePSet(input: String, pSet: String, accuracy: BigDecimal, pol: 
     //TODO insert different additions for minisier
     def setupPolicies = doMin match {
       case false => "POLICIES\n" + policiesSection + "\n"
+      case _ => "POLICIES\n" + policiesSection + "\nb_min_1 = *((True -1)) default 0\n"
     }
 
     def setupPolicySets = doMin match {
       case false => "POLICY_SETS\n" + policySetsSection + "\n"
+      case _ => s"POLICY_SETS\n$policySetsSection\n${pSetName}_neg_1 = b_min_1\n${pSetName}_min = * (${pSetName}_neg_1, ${pSetName})\n"
     }
 
     def setupConditions = doMin match {
       case false => "CONDITIONS\ncond1 = " + threshold + " < " + pSetName + "\n"
+      case _ =>"CONDITIONS\ncond1 = " + threshold + " < " + pSetName + "_min\n"
+    }
+
+    def setupDomainSpecifics = doMin match {
+      case true if !domainSpecifics.contains("(assert True)") => "DOMAIN_SPECIFICS\n" + domainSpecifics.mkString("\n") + "\n(assert True)\n"
+      case _ => "DOMAIN_SPECIFICS\n" + domainSpecifics.mkString("\n") + "\n"
     }
 
     def inputWithReplacedConditionAndAnalysis = {
       setupPolicies +
         setupPolicySets +
         setupConditions +
-        "DOMAIN_SPECIFICS\n" + domainSpecifics.mkString("\n") + "\n" +
+        setupDomainSpecifics +
         "ANALYSES\nname1 = satisfiable? cond1"
     }
 
+    println("*********\n" + inputWithReplacedConditionAndAnalysis)
 
     //TODO insert new policy, policy set objects here, using randomised names?
     val conds = Map("cond1" -> GreaterThanThCondition(pSets(pSetName), Left(threshold)))
