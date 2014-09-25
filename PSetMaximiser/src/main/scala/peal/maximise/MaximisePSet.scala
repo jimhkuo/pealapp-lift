@@ -1,10 +1,12 @@
 package peal.maximise
 
 import peal.antlr.util.ParserHelper
+import peal.domain.operator.Mul
 import peal.domain.z3.{Unsat, Sat, SatResult}
 import peal.domain._
 import peal.synthesis.analysis.Satisfiable
 import peal.synthesis.{ExtendedSynthesiserCore, GreaterThanThCondition}
+import peal.util.ConsoleLogger
 import peal.verifier.{OutputVerifier, Z3ModelExtractor}
 import peal.z3.Z3Caller
 
@@ -36,14 +38,12 @@ case class MaximisePSet(input: String, pSet: String, accuracy: BigDecimal, pol: 
     def addVariables(set: Set[String]) = rule.score.underlyingScore.fold(score => set, variable => set ++ variable.names)
     addVariables(acc)
   })
-  val pSets = pealProgramParser.pSets.toMap
+  val pSets: Map[String, PolicySet] = pealProgramParser.pSets.toMap
 
   private def runSatisfiableAnalysis(threshold: BigDecimal)(implicit doMin: Boolean): (SatResult, Map[String, Either[Rational, ThreeWayBoolean]]) = {
 
     val pSetName = pSet + (if (pol != "") "_" + pol else "")
 
-    //TODO do something with doMin flag
-    //TODO insert different additions for minisier
     def setupPolicies = doMin match {
       case false => "POLICIES\n" + policiesSection + "\n"
       case _ => "POLICIES\n" + policiesSection + "\nb_min_1 = *((True -1)) default 0\n"
@@ -72,14 +72,34 @@ case class MaximisePSet(input: String, pSet: String, accuracy: BigDecimal, pol: 
         "ANALYSES\nname1 = satisfiable? cond1"
     }
 
-    println("*********\n" + inputWithReplacedConditionAndAnalysis)
+//    println("*********\n" + inputWithReplacedConditionAndAnalysis)
 
-    //TODO insert new policy, policy set objects here, using randomised names?
-    val conds = Map("cond1" -> GreaterThanThCondition(pSets(pSetName), Left(threshold)))
+    //TODO insert new policy, policy set objects here
+    //I do this to avoid parsing the entire peal input every time
+    val modifiedPols = doMin match {
+      case false => pols
+      case _ => pols ++ Map("b_min_1" -> new Pol(List(new Rule(new Predicate("True"), -1)), Mul, "0"))
+    }
+
+    val modifiedPSets = doMin match {
+      case false => pSets
+      case _ =>
+        val pol = Pol(List(new Rule(new Predicate("True"), -1)), Mul, new Score(Left(0), None) , "b_min_1")
+        val negOne = BasicPolicySet(pol, "b_min_1")
+        pSets ++ Map(pSetName + "_neg_1" -> negOne, pSetName + "_min" -> MulPolicySet(negOne, pSets(pSetName), pSetName + " _min"))
+    }
+
+    val conds = doMin match {
+      case false => Map("cond1" -> GreaterThanThCondition(pSets(pSetName), Left(threshold)))
+      case _ => Map("cond1" -> GreaterThanThCondition(modifiedPSets(pSetName + "_min"), Left(threshold)))
+    }
+
     val analyses = Map("name1" -> new Satisfiable("name1", "cond1"))
-    val generatedZ3Code = ExtendedSynthesiserCore(pols, conds, pSets, analyses, domainSpecifics, predicateNames, variableDefaultScores, variableScores).generate()
+    val generatedZ3Code = ExtendedSynthesiserCore(modifiedPols, conds, modifiedPSets, analyses, domainSpecifics, predicateNames, variableDefaultScores, variableScores).generate()
     val z3RawOutput = Z3Caller.call(generatedZ3Code)
-
+    ConsoleLogger.log("##########\n " + inputWithReplacedConditionAndAnalysis)
+    ConsoleLogger.log("##########\n " + generatedZ3Code)
+    ConsoleLogger.log("##########\n " + z3RawOutput)
     OutputVerifier(inputWithReplacedConditionAndAnalysis).verifyModel(z3RawOutput, "name1")._1 match {
       case PealTrue => Z3ModelExtractor.extractIAndStatusUsingRational(z3RawOutput)("name1")
       case PealBottom => throw new RuntimeException(s"satisfiable? $threshold < $pSetName is UNKNOWN")
