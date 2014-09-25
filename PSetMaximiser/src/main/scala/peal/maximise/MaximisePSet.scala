@@ -5,7 +5,7 @@ import peal.domain.operator.Mul
 import peal.domain.z3.{Unsat, Sat, SatResult}
 import peal.domain._
 import peal.synthesis.analysis.Satisfiable
-import peal.synthesis.{ExtendedSynthesiserCore, GreaterThanThCondition}
+import peal.synthesis.{LessThanThCondition, ExtendedSynthesiserCore, GreaterThanThCondition}
 import peal.util.ConsoleLogger
 import peal.verifier.{OutputVerifier, Z3ModelExtractor}
 import peal.z3.Z3Caller
@@ -40,7 +40,11 @@ case class MaximisePSet(input: String, pSet: String, accuracy: BigDecimal, pol: 
   })
   val pSets: Map[String, PolicySet] = pealProgramParser.pSets.toMap
 
-  private def runSatisfiableAnalysis(threshold: BigDecimal)(implicit doMin: Boolean): (SatResult, Map[String, Either[Rational, ThreeWayBoolean]]) = {
+  private def runStrictAnalysis(threshold: BigDecimal)(implicit doMin: Boolean): (SatResult, Map[String, Either[Rational, ThreeWayBoolean]]) = runAnalysis(threshold, "<")
+
+  private def runRelaxedAnalysis(threshold: BigDecimal)(implicit doMin: Boolean): (SatResult, Map[String, Either[Rational, ThreeWayBoolean]]) = runAnalysis(threshold, "<=")
+
+  private def runAnalysis(threshold: BigDecimal, operator: String)(implicit doMin: Boolean): (SatResult, Map[String, Either[Rational, ThreeWayBoolean]]) = {
 
     val pSetName = pSet + (if (pol != "") "_" + pol else "")
 
@@ -55,8 +59,14 @@ case class MaximisePSet(input: String, pSet: String, accuracy: BigDecimal, pol: 
     }
 
     def setupConditions = doMin match {
-      case false => "CONDITIONS\ncond1 = " + threshold + " < " + pSetName + "\n"
-      case _ =>"CONDITIONS\ncond1 = " + threshold + " < " + pSetName + "_min\n"
+      case false => operator match {
+        case "<" => "CONDITIONS\ncond1 = " + threshold + " < " + pSetName + "\n"
+        case _ => "CONDITIONS\ncond1 = " + pSetName + " <= " + threshold + "\n"
+      }
+      case _ => operator  match {
+        case "<" => "CONDITIONS\ncond1 = " + threshold + " < " + pSetName + "_min\n"
+        case _ => "CONDITIONS\ncond1 = " + pSetName + "_min <= " + threshold + "\n"
+      }
     }
 
     def setupDomainSpecifics = doMin match {
@@ -88,8 +98,14 @@ case class MaximisePSet(input: String, pSet: String, accuracy: BigDecimal, pol: 
     }
 
     val conds = doMin match {
-      case false => Map("cond1" -> GreaterThanThCondition(pSets(pSetName), Left(threshold)))
-      case _ => Map("cond1" -> GreaterThanThCondition(modifiedPSets(pSetName + "_min"), Left(threshold)))
+      case false => operator match {
+        case "<" => Map("cond1" -> GreaterThanThCondition(pSets(pSetName), Left(threshold)))
+        case _ => Map("cond1" -> LessThanThCondition (pSets(pSetName), Left(threshold)))
+      }
+      case _ =>operator match {
+        case "<" => Map ("cond1" -> GreaterThanThCondition (modifiedPSets (pSetName + "_min"), Left (threshold) ) )
+        case _ => Map ("cond1" -> LessThanThCondition (modifiedPSets (pSetName + "_min"), Left (threshold) ) )
+      }
     }
 
     val analyses = Map("name1" -> new Satisfiable("name1", "cond1"))
@@ -112,11 +128,11 @@ case class MaximisePSet(input: String, pSet: String, accuracy: BigDecimal, pol: 
     var high = inputHigh
     while ((high - low) > accuracy) {
       val middle = (low + high) / 2
-      val I = runSatisfiableAnalysis(middle)
+      val I = runStrictAnalysis(middle)
       if (I._1 == Sat) {
         if (pol.nonEmpty) {
           val temp = I._2(pol + "_score").left.get.value
-          val J = runSatisfiableAnalysis(temp)._1
+          val J = runStrictAnalysis(temp)._1
           if (J == Unsat) {
             return "exact maximum is " + temp
           }
@@ -133,24 +149,24 @@ case class MaximisePSet(input: String, pSet: String, accuracy: BigDecimal, pol: 
 
   def doIt(doMinFlag: Boolean = false): String = {
     implicit val doMin = doMinFlag
-    val I = runSatisfiableAnalysis(0.0)
+    val I = runStrictAnalysis(0.0)
     var high, low = BigDecimal(0.0)
 
     if (I._1 == Sat) {
       if (pol.nonEmpty) {
         val temp = I._2(pol + "_score").left.get.value
-        val J = runSatisfiableAnalysis(temp)._1
+        val J = runStrictAnalysis(temp)._1
         if (J == Unsat) {
           return "exact maximum is " + temp
         }
       }
 
       high = low.max(2.0)
-      var K = runSatisfiableAnalysis(high)
+      var K = runStrictAnalysis(high)
       while (K._1 == Sat) {
         if (pol.nonEmpty) {
           val temp = K._2(pol + "_score").left.get.value
-          val J = runSatisfiableAnalysis(temp)._1
+          val J = runStrictAnalysis(temp)._1
           if (J == Unsat) {
             return "exact maximum is " + temp
           }
@@ -161,14 +177,29 @@ case class MaximisePSet(input: String, pSet: String, accuracy: BigDecimal, pol: 
           low = high
           high = 2 * high
         }
-        K = runSatisfiableAnalysis(high)
+        K = runStrictAnalysis(high)
       }
 
       bisection(low, high)
     }
     else {
-      //TODO need to implement the second half of the algorithm
-      bisection(low, 0.0)
+      if (pol.nonEmpty) {
+        val I = runRelaxedAnalysis(0.0)
+        if (I._1 != Sat) {
+          throw new RuntimeException("Unsat in the else branch")
+        } else {
+          low = I._2(pol + "_score").left.get.value - accuracy
+        }
+      }
+      else {
+        low = BigDecimal("-2.0")
+        var J = runStrictAnalysis(low)
+        while (J._1 == Unsat) {
+          low = 2*low
+          J = runStrictAnalysis(low)
+        }
+      }
+      bisection(low, high)
     }
   }
 }
