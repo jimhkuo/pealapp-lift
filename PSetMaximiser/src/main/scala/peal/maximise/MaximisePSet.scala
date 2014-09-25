@@ -45,11 +45,17 @@ case class MaximisePSet(input: String, pSet: String, accuracy: BigDecimal, pol: 
 
     //TODO do something with doMin flag
     //TODO insert different additions for minisier
-    def setupPolicies = "POLICIES\n" + policiesSection + "\n"
+    def setupPolicies = doMin match {
+      case false => "POLICIES\n" + policiesSection + "\n"
+    }
 
-    def setupPolicySets = "POLICY_SETS\n" + policySetsSection + "\n"
+    def setupPolicySets = doMin match {
+      case false => "POLICY_SETS\n" + policySetsSection + "\n"
+    }
 
-    def setupConditions = "CONDITIONS\ncond1 = " + threshold + " < " + pSetName + "\n"
+    def setupConditions = doMin match {
+      case false => "CONDITIONS\ncond1 = " + threshold + " < " + pSetName + "\n"
+    }
 
     def inputWithReplacedConditionAndAnalysis = {
       setupPolicies +
