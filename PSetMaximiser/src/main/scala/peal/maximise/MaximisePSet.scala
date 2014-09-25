@@ -72,9 +72,7 @@ case class MaximisePSet(input: String, pSet: String, accuracy: BigDecimal, pol: 
         "ANALYSES\nname1 = satisfiable? cond1"
     }
 
-//    println("*********\n" + inputWithReplacedConditionAndAnalysis)
 
-    //TODO insert new policy, policy set objects here
     //I do this to avoid parsing the entire peal input every time
     val modifiedPols = doMin match {
       case false => pols
@@ -97,14 +95,16 @@ case class MaximisePSet(input: String, pSet: String, accuracy: BigDecimal, pol: 
     val analyses = Map("name1" -> new Satisfiable("name1", "cond1"))
     val generatedZ3Code = ExtendedSynthesiserCore(modifiedPols, conds, modifiedPSets, analyses, domainSpecifics, predicateNames, variableDefaultScores, variableScores).generate()
     val z3RawOutput = Z3Caller.call(generatedZ3Code)
-    ConsoleLogger.log("##########\n " + inputWithReplacedConditionAndAnalysis)
-    ConsoleLogger.log("##########\n " + generatedZ3Code)
-    ConsoleLogger.log("##########\n " + z3RawOutput)
-    OutputVerifier(inputWithReplacedConditionAndAnalysis).verifyModel(z3RawOutput, "name1")._1 match {
+//    ConsoleLogger.log("##########\n " + inputWithReplacedConditionAndAnalysis)
+//    ConsoleLogger.log("##########\n " + generatedZ3Code)
+//    ConsoleLogger.log("##########\n " + z3RawOutput)
+    val out = OutputVerifier(inputWithReplacedConditionAndAnalysis).verifyModel(z3RawOutput, "name1")._1 match {
       case PealTrue => Z3ModelExtractor.extractIAndStatusUsingRational(z3RawOutput)("name1")
       case PealBottom => throw new RuntimeException(s"satisfiable? $threshold < $pSetName is UNKNOWN")
       case PealFalse => throw new RuntimeException(s"Certification of $threshold < $pSet failed")
     }
+    println(out)
+    out
   }
 
   private def bisection(inputLow: BigDecimal, inputHigh: BigDecimal)(implicit doMin: Boolean): String = {
@@ -167,6 +167,7 @@ case class MaximisePSet(input: String, pSet: String, accuracy: BigDecimal, pol: 
       bisection(low, high)
     }
     else {
+      //TODO need to implement the second half of the algorithm
       bisection(low, 0.0)
     }
   }

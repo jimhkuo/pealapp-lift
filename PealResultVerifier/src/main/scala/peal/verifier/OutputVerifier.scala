@@ -37,8 +37,7 @@ case class OutputVerifier(input: String) {
   }
 
   def verifyModel(rawModel: String, analysisName: String): (ThreeWayBoolean, Set[String], Map[String, Either[Rational, ThreeWayBoolean]]) = {
-//    ConsoleLogger.log("##########\n " + input)
-//    ConsoleLogger.log("##########\n " + rawModel)
+    ConsoleLogger.log("########## " + analysisName)
     val z3Model = Z3ModelExtractor.extractIAndStatusUsingRational(rawModel)(analysisName)
 
     z3Model._1 match {

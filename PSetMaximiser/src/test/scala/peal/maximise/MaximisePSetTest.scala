@@ -60,7 +60,9 @@ class MaximisePSetTest extends ShouldMatchersForJUnit {
       "pSet_goal = goal\npSet_cost_overall =  cost_overall\npSet_impact_overall =  impact_overall\npSet_metric = metric\n" +
       "DOMAIN_SPECIFICS\n" +
       "(assert True)\n"
-    MaximisePSet(input, "pSet", 0.01, "metric").doIt(true) should be("exact maximum is 271.92")
+    val out: String = MaximisePSet(input, "pSet", 0.01, "metric").doIt(true)
+    println("test out: " + out)
+    out should be("exact maximum is 271.92")
   }
 }
 
