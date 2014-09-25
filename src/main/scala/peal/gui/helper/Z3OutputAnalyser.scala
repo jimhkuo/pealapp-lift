@@ -11,12 +11,14 @@ import peal.synthesis.analysis._
 import peal.verifier.{OutputVerifier, Z3ModelValueParser}
 
 import scala.collection.JavaConversions._
+import scala.collection.immutable.IndexedSeq
+import scala.collection.mutable
 import scala.xml.NodeSeq
 
 
 object Z3OutputAnalyser {
 
-  def execute(analyses: Map[String, AnalysisGenerator], conditions: Map[String, Condition],  constsMap: Map[String, PealAst], inputPolicies: String, z3RawOutput: String): NodeSeq = {
+  def execute(analyses: Map[String, AnalysisGenerator], conditions: Map[String, Condition], constsMap: Map[String, PealAst], inputPolicies: String, z3RawOutput: String): NodeSeq = {
     val style = "font-family: Monaco, Menlo, Consolas, \"Courier New\", monospace;display: block;padding: 9.5px;margin: 0 0 10px;font-size: 13px;line-height: 1.428571429;color: #333;word-break: break-all;word-wrap: break-word;background-color: #f5f5f5;border: 1px solid #ccc;border-radius: 4px;"
 
     val z3OutputParser = ParserHelper.getZ3OutputParser(z3RawOutput)
@@ -42,7 +44,9 @@ object Z3OutputAnalyser {
     sortedAnalyses.foreach {
       analysisName =>
         val section = MutableNodeSeq()
-        section.append(<h4>Result of analysis [{analyses(analysisName).analysisName}]</h4>)
+        section.append(<h4>Result of analysis [
+          {analyses(analysisName).analysisName}
+          ]</h4>)
         analyses(analysisName) match {
           case s: AlwaysTrue =>
             section.append(s.cond + " is " + ConditionExpressionBuilder.build(s.cond)(conditions))
@@ -175,21 +179,29 @@ object Z3OutputAnalyser {
   }
 
   //TODO need to sort the output
-  private def getReasons(model: Model, includeNames: Set[String], excludeNames: Set[String], constsMap: Map[String, PealAst]) = {
+  private def getReasons(model: Model, includeNames: Set[String], excludeNames: Set[String], constsMap: Map[String, PealAst]): List[String] = {
     val assignments = model.assignments.filterNot(_.value == "")
 
     val predicates = for (define: Assignment <- assignments if constsMap.contains(define.name)) yield {
-      define.name + " is " + getNaturalValue(define.value)
+      (define.name, getNaturalValue(define.value))
     }
 
     val conds = for (define: Assignment <- assignments if includeNames.contains(define.name)) yield {
-      define.name + " is " + getNaturalValue(define.value)
+      (define.name, getNaturalValue(define.value))
     }
 
     val additionals = for (define: Assignment <- assignments if !includeNames.contains(define.name) && !constsMap.contains(define.name) && excludeNames.filter(define.name.startsWith(_)).isEmpty) yield {
-      define.name + " is " + getNaturalValue(define.value)
+      (define.name, getNaturalValue(define.value))
     }
 
-    (predicates ++ conds ++ additionals).toList
+    val all: mutable.Buffer[(String, String)] = predicates ++ conds ++ additionals
+
+    val trueOnes = all.filter(t => t._2 == "True").sortBy(_._1)
+    val falseOnes = all.filter(t => t._2 == "False").sortBy(_._1)
+    val otherOnes = all.filterNot(t => t._2 == "False").filterNot(t => t._2 == "True").sortBy(_._1)
+
+    (trueOnes.map(t => t._1 + " is " + t._2) :+ "\n").toList ++
+      (falseOnes.map(t => t._1 + " is " + t._2) :+ "\n").toList ++
+      (otherOnes.map(t => t._1 + " is " + t._2) :+ "\n").toList
   }
 }
