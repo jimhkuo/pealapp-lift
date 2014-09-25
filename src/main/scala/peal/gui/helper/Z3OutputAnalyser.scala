@@ -161,7 +161,6 @@ object Z3OutputAnalyser {
   }
 
   private def getNaturalValue(originalString: String) = {
-
     def printValue(r: Rational): String = DnOption.get match {
       case RationalFormat => originalString
       case DecimalFormat => r.value.toString()
@@ -175,8 +174,10 @@ object Z3OutputAnalyser {
     }
   }
 
+  //TODO need to sort the output
   private def getReasons(model: Model, includeNames: Set[String], excludeNames: Set[String], constsMap: Map[String, PealAst]) = {
     val assignments = model.assignments.filterNot(_.value == "")
+
     val predicates = for (define: Assignment <- assignments if constsMap.contains(define.name)) yield {
       define.name + " is " + getNaturalValue(define.value)
     }
