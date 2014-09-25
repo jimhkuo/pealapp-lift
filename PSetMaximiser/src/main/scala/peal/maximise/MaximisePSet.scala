@@ -41,9 +41,9 @@ case class MaximisePSet(input: String, pSet: String, accuracy: BigDecimal, pol: 
 
   private def runSatisfiableAnalysis(threshold: BigDecimal)(implicit doMin: Boolean): (SatResult, Map[String, Either[Rational, ThreeWayBoolean]]) = {
 
-    //TODO do something with doMin flag
     val pSetName = pSet + (if (pol != "") "_" + pol else "")
 
+    //TODO do something with doMin flag
     //TODO insert different additions for minisier
     def setupPolicies = "POLICIES\n" + policiesSection + "\n"
 
@@ -59,7 +59,8 @@ case class MaximisePSet(input: String, pSet: String, accuracy: BigDecimal, pol: 
         "ANALYSES\nname1 = satisfiable? cond1"
     }
 
-    //TODO insert new policy, policy set here, randomised names?
+
+    //TODO insert new policy, policy set objects here, using randomised names?
     val conds = Map("cond1" -> GreaterThanThCondition(pSets(pSetName), Left(threshold)))
     val analyses = Map("name1" -> new Satisfiable("name1", "cond1"))
     val generatedZ3Code = ExtendedSynthesiserCore(pols, conds, pSets, analyses, domainSpecifics, predicateNames, variableDefaultScores, variableScores).generate()
