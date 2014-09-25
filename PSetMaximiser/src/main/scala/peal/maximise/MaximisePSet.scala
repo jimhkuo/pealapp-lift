@@ -13,6 +13,7 @@ import scala.collection.JavaConversions._
 
 case class MaximisePSet(input: String, pSet: String, accuracy: BigDecimal, pol: String = "") {
 
+  //TODO need to divide this into different sections
   val inputWithoutConditionAndTheRest = input.split("\n").takeWhile(l => !l.startsWith("CONDITIONS") && !l.startsWith("DOMAIN_SPECIFICS") && !l.startsWith("ANALYSES")).
     filterNot(_.trim.startsWith("%")).mkString("\n")
 
@@ -37,14 +38,18 @@ case class MaximisePSet(input: String, pSet: String, accuracy: BigDecimal, pol: 
   val domainSpecifics: Array[String] = input.split("\n").dropWhile(!_.startsWith("DOMAIN_SPECIFICS")).takeWhile(!_.startsWith("ANALYSES")).drop(1).filterNot(_.trim.startsWith("%"))
 
   private def runSatisfiableAnalysis(threshold: BigDecimal)(implicit doMin: Boolean): (SatResult, Map[String, Either[Rational, ThreeWayBoolean]]) = {
+
+    //TODO do something with doMin flag
     val pSetName = pSet + (if (pol != "") "_" + pol else "")
 
     def inputWithReplacedConditionAndAnalysis = {
+      //TODO insert different additions for minisier
       inputWithoutConditionAndTheRest + "\nCONDITIONS\ncond1 = " + threshold + " < " + pSetName + "\n" +
       "DOMAIN_SPECIFICS\n" + domainSpecifics.mkString("\n") +
       "\nANALYSES\nname1 = satisfiable? cond1"
     }
 
+    //TODO insert new policy, policy set here, randomised names?
     val conds = Map("cond1" -> GreaterThanThCondition(pSets(pSetName), Left(threshold)))
     val analyses = Map("name1" -> new Satisfiable("name1", "cond1"))
     val generatedZ3Code = ExtendedSynthesiserCore(pols, conds, pSets, analyses, domainSpecifics, predicateNames, variableDefaultScores, variableScores).generate()
