@@ -134,7 +134,7 @@ case class MaximisePSet(input: String, pSet: String, accuracy: BigDecimal, pol: 
           val temp = I._2(pol + "_score").left.get.value
           val J = runStrictAnalysis(temp)._1
           if (J == Unsat) {
-            return "exact maximum is " + temp
+            return outputProcessor(temp)
           }
           low = temp.max(middle)
         } else {
@@ -147,6 +147,10 @@ case class MaximisePSet(input: String, pSet: String, accuracy: BigDecimal, pol: 
     "maximum (after calling bisection method with low = " + inputLow + " and high = " + inputHigh + ") is in half-open interval (" + low + ", " + high + "]"
   }
 
+  private def outputProcessor(temp: BigDecimal)(implicit doMin: Boolean): String = {
+    "exact maximum is " + temp
+  }
+
   def doIt(doMinFlag: Boolean = false): String = {
     implicit val doMin = doMinFlag
     val I = runStrictAnalysis(0.0)
@@ -157,7 +161,7 @@ case class MaximisePSet(input: String, pSet: String, accuracy: BigDecimal, pol: 
         val temp = I._2(pol + "_score").left.get.value
         val J = runStrictAnalysis(temp)._1
         if (J == Unsat) {
-          return "exact maximum is " + temp
+          return outputProcessor(temp)
         }
       }
 
@@ -168,7 +172,7 @@ case class MaximisePSet(input: String, pSet: String, accuracy: BigDecimal, pol: 
           val temp = K._2(pol + "_score").left.get.value
           val J = runStrictAnalysis(temp)._1
           if (J == Unsat) {
-            return "exact maximum is " + temp
+            return outputProcessor(temp)
           }
           low = temp.max(high)
           high = 2 * low.max(high)
