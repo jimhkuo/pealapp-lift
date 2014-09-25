@@ -196,12 +196,12 @@ object Z3OutputAnalyser {
 
     val all: mutable.Buffer[(String, String)] = predicates ++ conds ++ additionals
 
-    val trueOnes = all.filter(t => t._2 == "True").sortBy(_._1)
-    val falseOnes = all.filter(t => t._2 == "False").sortBy(_._1)
-    val otherOnes = all.filterNot(t => t._2 == "False").filterNot(t => t._2 == "True").sortBy(_._1)
+    val trueOnes = all.filter(t => t._2 == "True").sortBy(_._1).map(t => t._1 + " is " + t._2).toList
+    val falseOnes = all.filter(t => t._2 == "False").sortBy(_._1).map(t => t._1 + " is " + t._2).toList
+    val otherOnes = all.filterNot(t => t._2 == "False").filterNot(t => t._2 == "True").sortBy(_._1).map(t => t._1 + " is " + t._2).toList
 
-    (trueOnes.map(t => t._1 + " is " + t._2) :+ "\n").toList ++
-      (falseOnes.map(t => t._1 + " is " + t._2) :+ "\n").toList ++
-      (otherOnes.map(t => t._1 + " is " + t._2) :+ "\n").toList
+    trueOnes ++
+      falseOnes ++
+      otherOnes
   }
 }
