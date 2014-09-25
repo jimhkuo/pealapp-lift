@@ -63,7 +63,7 @@ case class MaximisePSet(input: String, pSet: String, accuracy: BigDecimal, pol: 
         case "<" => "CONDITIONS\ncond1 = " + threshold + " < " + pSetName + "\n"
         case _ => "CONDITIONS\ncond1 = " + pSetName + " <= " + threshold + "\n"
       }
-      case _ => operator  match {
+      case _ => operator match {
         case "<" => "CONDITIONS\ncond1 = " + threshold + " < " + pSetName + "_min\n"
         case _ => "CONDITIONS\ncond1 = " + pSetName + "_min <= " + threshold + "\n"
       }
@@ -92,7 +92,7 @@ case class MaximisePSet(input: String, pSet: String, accuracy: BigDecimal, pol: 
     val modifiedPSets = doMin match {
       case false => pSets
       case _ =>
-        val pol = Pol(List(new Rule(new Predicate("True"), -1)), Mul, new Score(Left(0), None) , "b_min_1")
+        val pol = Pol(List(new Rule(new Predicate("True"), -1)), Mul, new Score(Left(0), None), "b_min_1")
         val negOne = BasicPolicySet(pol, "b_min_1")
         pSets ++ Map(pSetName + "_neg_1" -> negOne, pSetName + "_min" -> MulPolicySet(negOne, pSets(pSetName), pSetName + " _min"))
     }
@@ -100,27 +100,23 @@ case class MaximisePSet(input: String, pSet: String, accuracy: BigDecimal, pol: 
     val conds = doMin match {
       case false => operator match {
         case "<" => Map("cond1" -> GreaterThanThCondition(pSets(pSetName), Left(threshold)))
-        case _ => Map("cond1" -> LessThanThCondition (pSets(pSetName), Left(threshold)))
+        case _ => Map("cond1" -> LessThanThCondition(pSets(pSetName), Left(threshold)))
       }
-      case _ =>operator match {
-        case "<" => Map ("cond1" -> GreaterThanThCondition (modifiedPSets (pSetName + "_min"), Left (threshold) ) )
-        case _ => Map ("cond1" -> LessThanThCondition (modifiedPSets (pSetName + "_min"), Left (threshold) ) )
+      case _ => operator match {
+        case "<" => Map("cond1" -> GreaterThanThCondition(modifiedPSets(pSetName + "_min"), Left(threshold)))
+        case _ => Map("cond1" -> LessThanThCondition(modifiedPSets(pSetName + "_min"), Left(threshold)))
       }
     }
 
     val analyses = Map("name1" -> new Satisfiable("name1", "cond1"))
     val generatedZ3Code = ExtendedSynthesiserCore(modifiedPols, conds, modifiedPSets, analyses, domainSpecifics, predicateNames, variableDefaultScores, variableScores).generate()
     val z3RawOutput = Z3Caller.call(generatedZ3Code)
-//    ConsoleLogger.log("##########\n " + inputWithReplacedConditionAndAnalysis)
-//    ConsoleLogger.log("##########\n " + generatedZ3Code)
-//    ConsoleLogger.log("##########\n " + z3RawOutput)
-    val out = OutputVerifier(inputWithReplacedConditionAndAnalysis).verifyModel(z3RawOutput, "name1")._1 match {
+
+    OutputVerifier(inputWithReplacedConditionAndAnalysis).verifyModel(z3RawOutput, "name1")._1 match {
       case PealTrue => Z3ModelExtractor.extractIAndStatusUsingRational(z3RawOutput)("name1")
       case PealBottom => throw new RuntimeException(s"satisfiable? $threshold < $pSetName is UNKNOWN")
       case PealFalse => throw new RuntimeException(s"Certification of $threshold < $pSet failed")
     }
-    println(out)
-    out
   }
 
   private def bisection(inputLow: BigDecimal, inputHigh: BigDecimal)(implicit doMin: Boolean): String = {
@@ -144,11 +140,16 @@ case class MaximisePSet(input: String, pSet: String, accuracy: BigDecimal, pol: 
         high = middle
       }
     }
-    "maximum (after calling bisection method with low = " + inputLow + " and high = " + inputHigh + ") is in half-open interval (" + low + ", " + high + "]"
+
+    doMin match {
+      case false => "maximum (after calling bisection method with low = " + inputLow + " and high = " + inputHigh + ") is in half-open interval (" + low + ", " + high + "]"
+      case _ => "minimum (after calling bisection method with low = " + inputLow + " and high = " + inputHigh + ") is in half-open interval (" + (-high) + ", " + (-low) + "]"
+    }
   }
 
-  private def outputProcessor(temp: BigDecimal)(implicit doMin: Boolean): String = {
-    "exact maximum is " + temp
+  private def outputProcessor(temp: BigDecimal)(implicit doMin: Boolean): String = doMin match {
+    case false => "exact maximum is " + temp
+    case _ => "exact minimum is " + (-temp)
   }
 
   def doIt(doMinFlag: Boolean = false): String = {
@@ -199,7 +200,7 @@ case class MaximisePSet(input: String, pSet: String, accuracy: BigDecimal, pol: 
         low = BigDecimal("-2.0")
         var J = runStrictAnalysis(low)
         while (J._1 == Unsat) {
-          low = 2*low
+          low = 2 * low
           J = runStrictAnalysis(low)
         }
       }
