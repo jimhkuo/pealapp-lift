@@ -13,10 +13,13 @@ import scala.collection.JavaConversions._
 
 case class MaximisePSet(input: String, pSet: String, accuracy: BigDecimal, pol: String = "") {
 
-  //TODO need to divide this into different sections
-  val inputWithoutConditionAndTheRest = input.split("\n").takeWhile(l => !l.startsWith("CONDITIONS") && !l.startsWith("DOMAIN_SPECIFICS") && !l.startsWith("ANALYSES")).
-    filterNot(_.trim.startsWith("%")).mkString("\n")
+  val policiesSection = input.split("\n").dropWhile(!_.startsWith("POLICIES")).takeWhile(l => !l.startsWith("POLICY_SETS") && !l.startsWith("CONDITIONS") && !l.startsWith("DOMAIN_SPECIFICS") && !l.startsWith("ANALYSES")).drop(1).filterNot(_.trim.startsWith("%")).mkString("\n")
+  val policySetsSection = input.split("\n").dropWhile(!_.startsWith("POLICY_SETS")).takeWhile(l => !l.startsWith("CONDITIONS") && !l.startsWith("DOMAIN_SPECIFICS") && !l.startsWith("ANALYSES")).drop(1).filterNot(_.trim.startsWith("%")).mkString("\n")
+  val domainSpecifics = input.split("\n").dropWhile(!_.startsWith("DOMAIN_SPECIFICS")).takeWhile(!_.startsWith("ANALYSES")).drop(1).filterNot(_.trim.startsWith("%"))
 
+  val inputWithoutConditionAndTheRest = s"POLICIES\n$policiesSection\nPOLICY_SETS\n$policySetsSection\n"
+
+  println(inputWithoutConditionAndTheRest)
   val pealProgramParser = ParserHelper.getPealParser(inputWithoutConditionAndTheRest)
   pealProgramParser.program()
   val pols = pealProgramParser.pols.toMap
@@ -35,7 +38,6 @@ case class MaximisePSet(input: String, pSet: String, accuracy: BigDecimal, pol: 
     addVariables(acc)
   })
   val pSets = pealProgramParser.pSets.toMap
-  val domainSpecifics: Array[String] = input.split("\n").dropWhile(!_.startsWith("DOMAIN_SPECIFICS")).takeWhile(!_.startsWith("ANALYSES")).drop(1).filterNot(_.trim.startsWith("%"))
 
   private def runSatisfiableAnalysis(threshold: BigDecimal)(implicit doMin: Boolean): (SatResult, Map[String, Either[Rational, ThreeWayBoolean]]) = {
 
@@ -44,9 +46,11 @@ case class MaximisePSet(input: String, pSet: String, accuracy: BigDecimal, pol: 
 
     def inputWithReplacedConditionAndAnalysis = {
       //TODO insert different additions for minisier
-      inputWithoutConditionAndTheRest + "\nCONDITIONS\ncond1 = " + threshold + " < " + pSetName + "\n" +
-      "DOMAIN_SPECIFICS\n" + domainSpecifics.mkString("\n") +
-      "\nANALYSES\nname1 = satisfiable? cond1"
+      "POLICIES\n" + policiesSection + "\n" +
+        "POLICY_SETS\n" + policySetsSection + "\n" +
+        "CONDITIONS\ncond1 = " + threshold + " < " + pSetName + "\n" +
+        "DOMAIN_SPECIFICS\n" + domainSpecifics.mkString("\n") + "\n" +
+        "ANALYSES\nname1 = satisfiable? cond1"
     }
 
     //TODO insert new policy, policy set here, randomised names?
@@ -62,7 +66,7 @@ case class MaximisePSet(input: String, pSet: String, accuracy: BigDecimal, pol: 
     }
   }
 
-  private def bisection(inputLow: BigDecimal, inputHigh: BigDecimal)(implicit doMin: Boolean) : String = {
+  private def bisection(inputLow: BigDecimal, inputHigh: BigDecimal)(implicit doMin: Boolean): String = {
     var low = inputLow
     var high = inputHigh
     while ((high - low) > accuracy) {
