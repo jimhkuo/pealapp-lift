@@ -7,6 +7,7 @@ object ActToPeal {
 
   def execute(act: Act): String = act match {
     case OrLeaf(name, lhs, rhs, others@_*) => "attack_success_probability = +((True prob_or_" + name + "_score)) default 0.0\n" + executeNext(act)
+    //TODO need similar code for And, Att and Not, but they are not coded until I have test cases
   }
 
   private def executeNext(act: Act): String = act match {
@@ -31,9 +32,9 @@ object ActToPeal {
     case MitLeaf(name, pred, prob, cost) => "prob_mit_leaf_" + name + " = +((" + pred + " " + prob + ")) default 0.0\n"
     case AndDmAct(name, lhs, rhs, others@_*) =>
       "prob_and_" + name + " = *((True " + policyName[DmAct](lhs) + ") (True " + policyName[DmAct](rhs) + ")" + others.map("(True " + policyName[DmAct](_) + ")").mkString(" ") + ") default 0.0\n" +
-      executeNext(lhs) +
-      executeNext(rhs) +
-      others.map(executeNext).mkString
+        executeNext(lhs) +
+        executeNext(rhs) +
+        others.map(executeNext).mkString
     case OrDmAct(name, lhs, rhs, others@_*) =>
       "prob_or_" + name + " = +((True 1.0) (True -1.0*prob_or_" + name + "_aux_score)) default 0.0\n" +
         "prob_or_" + name + "_aux = *(" + orAuxRules[DmAct](name, Seq(lhs, rhs) ++ others: _*).mkString(" ") + ") default 0.0\n" +
