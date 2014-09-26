@@ -9,7 +9,7 @@ object ActToPeal {
     case OrLeaf(name, lhs, rhs, others@_*) => "attack_success_probability = +((True prob_or_" + name + "_score)) default 0.0\n" + executeNext(act)
     //TODO the following two cases haven't been unit tested (because the test cases haven't been constructed yet)
     case AndLeaf(name, lhs, rhs, others@_*) => "attack_success_probability = +((True prob_and_" + name + "_score)) default 0.0\n" + executeNext(act)
-    case NotLeaf(name, lhs, rhs, others@_*) => "attack_success_probability = +((True prob_not_" + name + "_score)) default 0.0\n" + executeNext(act)
+    case NotLeaf(name, dm) => "attack_success_probability = +((True prob_not_" + name + "_score)) default 0.0\n" + executeNext(act)
   }
 
   private def executeNext(act: Act): String = act match {
