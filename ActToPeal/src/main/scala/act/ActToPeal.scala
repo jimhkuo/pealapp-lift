@@ -1,5 +1,8 @@
 package act
 
+/**
+ * Created by jkuo on 26/09/2014.
+ */
 object ActToPeal {
 
   def execute(act: Act): String = act match {
