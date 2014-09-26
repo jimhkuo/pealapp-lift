@@ -7,7 +7,9 @@ object ActToPeal {
 
   def execute(act: Act): String = act match {
     case OrLeaf(name, lhs, rhs, others@_*) => "attack_success_probability = +((True prob_or_" + name + "_score)) default 0.0\n" + executeNext(act)
-    //TODO need similar code for And, and Not, but they are not coded until I have test cases
+    //TODO the following two cases haven't been unit tested (because the test cases haven't been constructed yet)
+    case AndLeaf(name, lhs, rhs, others@_*) => "attack_success_probability = +((True prob_and_" + name + "_score)) default 0.0\n" + executeNext(act)
+    case NotLeaf(name, lhs, rhs, others@_*) => "attack_success_probability = +((True prob_not_" + name + "_score)) default 0.0\n" + executeNext(act)
   }
 
   private def executeNext(act: Act): String = act match {
