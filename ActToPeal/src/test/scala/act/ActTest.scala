@@ -75,14 +75,8 @@ class ActTest extends ShouldMatchersForJUnit {
       "prob_det_leaf_2 = +((routerFirewallAlert 0.7)) default 0.0\n" +
       "prob_mit_leaf_2 = +((secureRouter 0.5)) default 0.0\n"
 
-    println(ActToPeal.execute(bgp))
-    ActToPeal.execute(bgp) should be(expected)
+    val out = ActToPeal.execute(bgp)
+    println(out)
+    out should be(expected)
   }
-
-  //TODO
-  @Test
-  def testNeedMoreTestsToCoverAllCases() {
-
-  }
-
 }
