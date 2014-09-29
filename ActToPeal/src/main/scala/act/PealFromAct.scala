@@ -1,9 +1,19 @@
-package act
+//package act
+import act._
 
-//dyn1204-114:~/PealApp-lift/target jkuo$ scalac -cp PealApp-lift-assembly-3.2.6.jar PealFromAct.scala
-//dyn1204-114:~/PealApp-lift/target jkuo$ scala -cp PealApp-lift-assembly-3.2.6.jar:. PealFromAct
+//Usage example, create a scala source like this one, then from the command line, 
+//assuming the PEALT jar is in the current directory, 
+//scala (download from scala-lang.org) is installed and its binaries are on the path,
+//do
+
+//scalac -cp PealApp-lift-assembly-3.2.6.jar PealFromAct.scala (to compile)
+
+//Then do,
+//scala -cp PealApp-lift-assembly-3.2.6.jar:. PealFromAct (to execute and output converted Peal input)
 
 object PealFromAct extends App {
+
+// look in Act.scala to see what parameters are required for the Act objects.
 
   val m2 = MitLeaf("2", "secureRouter", 0.5, 35)
   val d2 = DetLeaf("2", "routerFirewallAlert", 0.7, 15)
