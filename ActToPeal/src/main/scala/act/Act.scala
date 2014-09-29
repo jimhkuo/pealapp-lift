@@ -6,7 +6,6 @@ case class DetLeaf(name : String, pred : String, prob: BigDecimal, cost: BigDeci
 case class MitLeaf(name : String, pred : String, prob: BigDecimal, cost: BigDecimal) extends LeafType with DmAct
 
 trait Act
-case class ActLeaf(leafType : LeafType) extends Act
 case class AndLeaf(name : String, lhs: Act, rhs: Act, others: Act*) extends Act
 case class OrLeaf(name : String, lhs: Act, rhs: Act, others: Act*) extends Act
 case class NotLeaf(name : String, dm: DmAct) extends Act
