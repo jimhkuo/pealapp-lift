@@ -55,7 +55,7 @@ object ActToPeal {
     case OrLeaf(name, _, _, others@_*) => "prob_or_" + name + "_score"
     case NotLeaf(name, _) => "prob_not_" + name + "_score"
     case AttLeaf(name, _, _, _, _) => "prob_att_leaf_" + name + "_score"
-    case AndDmAct(name, lhs, rhs, others@_*) => "prob_and_" + name + "_score"
+    case AndDmAct(name, _, _, others@_*) => "prob_and_" + name + "_score"
     case DetLeaf(name, _, _, _) => "prob_det_leaf_" + name + "_score"
     case MitLeaf(name, _, _, _) => "prob_mit_leaf_" + name + "_score"
   }
