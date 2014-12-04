@@ -2,14 +2,18 @@ package bootstrap.liftweb
 
 import code.lib.PealInputData
 import net.liftweb.common.Full
-import net.liftweb.http.{LiftRules, Req, StreamingResponse}
+import net.liftweb.http.provider.servlet.containers.Servlet30AsyncProvider
+import net.liftweb.http.{Html5Properties, LiftRules, Req, StreamingResponse}
 import net.liftweb.sitemap.Loc.{Hidden, LocGroup}
 import net.liftweb.sitemap.Menu.{Menuable, WithSlash}
 import net.liftweb.sitemap.{Menu, SiteMap}
 
 class Boot {
   def boot {
+
     LiftRules.addToPackages("code")
+    LiftRules.addSyncProvider(Servlet30AsyncProvider)
+
 
     val entries: List[Menuable] = List(
       Menu.i("Editor and runner") / "index",
@@ -25,6 +29,8 @@ class Boot {
     LiftRules.ajaxStart = Full(() => LiftRules.jsArtifacts.show("ajax-loader").cmd)
 
     LiftRules.ajaxEnd = Full(() => LiftRules.jsArtifacts.hide("ajax-loader").cmd)
+
+    LiftRules.htmlProperties.default.set((r: Req) ⇒ new Html5Properties(r.userAgent))
 
     LiftRules.early.append(_.setCharacterEncoding("UTF-8"))
 
@@ -43,5 +49,8 @@ class Boot {
         )
       }
     }
+
+    LiftRules.passNotFoundToChain = true
+
   }
 }
