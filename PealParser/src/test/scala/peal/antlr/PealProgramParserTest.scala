@@ -519,7 +519,7 @@ class PealProgramParserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
     val pealProgramParser = ParserHelper.getPealParser(input)
     pealProgramParser.program()
 
-    val allRules = pealProgramParser.pols.values().flatMap(pol => pol.rules).toSeq.sortWith((r1, r2) => r1.toString < r2.toString)
+    val allRules = pealProgramParser.pols.values().flatMap(pol => pol.rules).toSeq
     allRules(0).score.underlyingScore.right.get.toZ3Expression should be("x")
     allRules(1).score.underlyingScore.left.get should be(BigDecimal(0.9))
   }
@@ -528,7 +528,7 @@ class PealProgramParserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
   def testOmitConditionsAndAnalyses() {
     val input =
       "POLICIES\nb1 = + ((q1 x) (q2 0.9)) default 1\n" +
-        "b2 = + ((q3 x1) (q4 0.8)) default 1\n" +
+        "b2 = + ((q3 x) (q4 0.8)) default 1\n" +
         "POLICY_SETS\npSet = + (b1,b2)\n" +
         //        "CONDITIONS\ncond1 = q4\n" +
         "DOMAIN_SPECIFICS\n" +
@@ -538,7 +538,7 @@ class PealProgramParserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
     val pealProgramParser = ParserHelper.getPealParser(input)
     pealProgramParser.program()
 
-    val allRules = pealProgramParser.pols.values().flatMap(pol => pol.rules).toSeq.sortWith((r1, r2) => r1.toString < r2.toString)
+    val allRules = pealProgramParser.pols.values().flatMap(pol => pol.rules).toSeq
     allRules(0).score.underlyingScore.right.get.toZ3Expression should be("x")
     allRules(1).score.underlyingScore.left.get should be(BigDecimal(0.9))
   }
