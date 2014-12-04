@@ -31,6 +31,7 @@ seq(webSettings :_*)
 
 unmanagedResourceDirectories in Test <+= (baseDirectory) { _ / "src/main/webapp" }
 
+
 scalacOptions ++= Seq("-deprecation", "-unchecked")
 
 libraryDependencies ++= {
