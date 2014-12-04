@@ -10,20 +10,20 @@ name := "ExperimentRunner"
 
 version := "0.5-certify-all"
 
-scalaVersion := "2.11.4"
-
-resolvers += "Typesafe Repository" at "http://repo.typesafe.com/typesafe/releases/"
-
-libraryDependencies +=  "com.typesafe.akka" %% "akka-actor" % "2.3.7"
+scalaVersion := "2.10.4"
 
 libraryDependencies += "com.novocode" % "junit-interface" % "0.8" % "test->default"
 
-libraryDependencies += "org.scalatest" %% "scalatest" % "2.2.2" % "test"
+libraryDependencies += "org.scalatest" % "scalatest_2.10" % "1.9.1" % "test"
 
 //Needed to get ScalaZ3 test to run repeatedly in sbt
 fork in Test := true
 
+resolvers += "Typesafe Repository" at "http://repo.typesafe.com/typesafe/releases/"
+
+libraryDependencies += "com.typesafe.akka" %% "akka-actor" % "2.2.0"
+
+libraryDependencies += "com.typesafe.akka" %% "akka-testkit" % "2.2.0"
 
 
-//libraryDependencies += "com.typesafe.akka" %% "akka-testkit" % "2.2.0" cross CrossVersion.full
 
