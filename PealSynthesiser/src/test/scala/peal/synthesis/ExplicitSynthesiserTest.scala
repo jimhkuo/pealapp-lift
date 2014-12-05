@@ -27,9 +27,9 @@ class ExplicitSynthesiserTest extends ShouldMatchersForJUnit with Z3ModelMatcher
       "(declare-const q3 Bool)\n" +
       "(declare-const q1' Bool)\n" +
       "(declare-const q6 Bool)\n" +
-      "(declare-const cond2 Bool)\n" +
-      "(declare-const cond3 Bool)\n" +
       "(declare-const cond4 Bool)\n" +
+      "(declare-const cond3 Bool)\n" +
+      "(declare-const cond2 Bool)\n" +
       "(declare-const cond1 Bool)\n" +
       "(assert (= cond1 (and (and (or q1' q2 q3) (or q1' q2)) (or (and (not q4) (not q5) (not q6)) (not false)))))\n" +
       "(assert (= cond2 (and (or (and (not q1') (not q2) (not q3)) (not (or q1' q2))) (and (or q4 q5 q6) false))))\n" +

@@ -27,7 +27,7 @@ class ExtendedSynthesiserTest extends ShouldMatchersForJUnit with Z3ModelMatcher
       "POLICY_SETS\npSet1 = fire\n" +
       "CONDITIONS\ncond1 = 0.0734 < pSet1\ncond2 = 0.0735 < pSet1\ncond3 = pSet1 <= 0.0735\ncond45 = coal\ncond4 = cond45 && cond3\n" +
       "DOMAIN_SPECIFICS\n(assert True)\nANALYSES\nname1 = satisfiable? cond1\nname2 = satisfiable? cond2\nname3 = satisfiable? cond4"
-    new ExtendedSynthesiser(input).generate(doVacuityCheck = true) should be("(declare-const gas_stove Bool)\n" +
+    new ExtendedSynthesiser(input).generate(doVacuityCheck = true) should beZ3Model("(declare-const gas_stove Bool)\n" +
       "(declare-const gasoline Bool)\n" +
       "(declare-const electrical_sparc Bool)\n" +
       "(declare-const coal Bool)\n(declare-const wood Bool)\n" +
