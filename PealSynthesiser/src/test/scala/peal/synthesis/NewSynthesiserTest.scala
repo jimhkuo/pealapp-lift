@@ -27,8 +27,8 @@ class NewSynthesiserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
       "(declare-const q3 Bool)\n" +
       "(declare-const z Real)\n" +
       "(declare-const y Real)\n" +
-      "(declare-const cond Bool)\n" +
       "(declare-const cond1 Bool)\n" +
+      "(declare-const cond Bool)\n" +
       "(declare-const b1_score Real)\n" +
       "(declare-const pSet1_score Real)\n" +
       "(assert (= pSet1_score b1_score))\n" +
@@ -36,8 +36,8 @@ class NewSynthesiserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
       "(assert (implies q2 (<= (* 0.2 z) b1_score)))\n" +
       "(assert (implies q3 (<= (* 0.4 y) b1_score)))\n" +
       "(assert (or (and (not (or q1 q2 q3)) (= b1_score 0.1)) (and q1 (= b1_score 0.1)) (and q2 (= b1_score (* 0.2 z))) (and q3 (= b1_score (* 0.4 y)))))\n" +
-      "(assert (= cond (<= pSet1_score 0.5)))\n" +
-      "(assert (= cond1 (< 0.4 pSet1_score)))\n\n" +
+      "(assert (= cond1 (< 0.4 pSet1_score)))\n" +
+      "(assert (= cond (<= pSet1_score 0.5)))\n\n" +
       "(echo \"Result of analysis [name1 = always_true? cond]:\")\n" +
       "(push)\n(declare-const always_true_name1 Bool)\n(assert (= always_true_name1 cond))\n" +
       "(assert (not always_true_name1))\n(check-sat)\n(get-model)\n(pop)"
