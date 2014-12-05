@@ -157,9 +157,9 @@ object Z3OutputAnalyser {
         else {
           section.append("\nOutput of analysis [" + analysisName + "] is " + z3OutputModels(analysisName).satResult + ": so no certification performed and no specialized policies reported.")
         }
-        entireAnalysis = entireAnalysis ++ <p style={style}>
+        entireAnalysis = entireAnalysis ++ (<span style={style}>
           {section.nodes}
-        </p>
+        </span>)
     }
     entireAnalysis
   }
