@@ -68,8 +68,8 @@ class NewSynthesiserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
       "(declare-const q3 Bool)\n" +
       "(declare-const z Real)\n" +
       "(declare-const y Real)\n" +
-      "(declare-const cond Bool)\n" +
       "(declare-const cond1 Bool)\n" +
+      "(declare-const cond Bool)\n" +
       "(declare-const b1_score Real)\n" +
       "(declare-const pSet1_score Real)\n" +
       "(assert (= pSet1_score b1_score))\n" +
@@ -77,8 +77,8 @@ class NewSynthesiserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
       "(assert (implies q2 (<= (* 0.2 z) b1_score)))\n" +
       "(assert (implies q3 (<= (* 0.4 y) b1_score)))\n" +
       "(assert (or (and (not (or q1 q2 q3)) (= b1_score 0.1)) (and q1 (= b1_score 0.1)) (and q2 (= b1_score (* 0.2 z))) (and q3 (= b1_score (* 0.4 y)))))\n" +
-      "(assert (= cond (<= pSet1_score 0.5)))\n" +
       "(assert (= cond1 (< 0.4 pSet1_score)))\n" +
+      "(assert (= cond (<= pSet1_score 0.5)))\n" +
       "(declare-const a Real)\n" +
       "(declare-const b Real)\n" +
       "(assert (= q1 (< a (+ b 1))))\n" +
@@ -121,7 +121,7 @@ class NewSynthesiserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
       "(push)\n(declare-const always_true_name1 Bool)\n(assert (= always_true_name1 cond))\n" +
       "(assert (not always_true_name1))\n(check-sat)\n(get-model)\n(pop)"
 
-    new NewSynthesiser(input).generate() should startWith(expected)
+    new NewSynthesiser(input).generate() should beZ3Model(expected)
   }
 
   @Test
@@ -146,10 +146,10 @@ class NewSynthesiserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
       "(declare-const cond Bool)\n" +
       "(declare-const b1_score Real)\n" +
       "(declare-const b2_score Real)\n" +
-      "(declare-const pSet1_score Real)\n" +
-      "(declare-const pSet2_score Real)\n"
+      "(declare-const pSet2_score Real)\n" +
+    "(declare-const pSet1_score Real)\n"
 
-    new NewSynthesiser(input).generate() should startWith(expected)
+    new NewSynthesiser(input).generate() should startsWithZ3Model(expected)
   }
 
   @Test
@@ -243,7 +243,7 @@ class NewSynthesiserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
       "(assert (implies q3 (<= b2_score 0.7)))\n" +
       ""
 
-    new NewSynthesiser(input).generate() should startWith(expected)
+    new NewSynthesiser(input).generate() should startsWithZ3Model(expected)
   }
 
   @Test
@@ -289,7 +289,7 @@ class NewSynthesiserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
       "(assert (implies (not (= 1.0 b2_score_q3)) q3))\n" +
       ""
 
-    new NewSynthesiser(input).generate() should startWith(expected)
+    new NewSynthesiser(input).generate() should startsWithZ3Model(expected)
   }
 
   @Test
@@ -325,7 +325,7 @@ class NewSynthesiserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
       "(assert (implies q3 (<= b2_score 0.7)))\n" +
       ""
 
-    new NewSynthesiser(input).generate() should startWith(expected)
+    new NewSynthesiser(input).generate() should startsWithZ3Model(expected)
   }
 
   @Test
@@ -360,7 +360,7 @@ class NewSynthesiserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
       "(assert (or (and (not (or q1 q2 q3)) (= b1_score 0.1)) (and q1 (= b1_score 0.1)) (and q2 (= b1_score 0.2)) (and q3 (= b1_score 0.4))))\n" +
       "(assert (or (and (not (or q1 q2 q3)) (= b2_score 0.2)) (and q1 (= b2_score 0.5)) (and q2 (= b2_score 0.6)) (and q3 (= b2_score 0.7))))\n" +
       ""
-    new NewSynthesiser(input).generate() should startWith(expected)
+    new NewSynthesiser(input).generate() should startsWithZ3Model(expected)
   }
 
   @Test
@@ -407,7 +407,7 @@ class NewSynthesiserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
       "(assert (= b1_score (ite (not (or q1 q2 q3)) 0.1 (+ b1_score_q1 b1_score_q2 b1_score_q3))))\n" +
       "(assert (= b2_score (ite (not (or q1 q2 q3)) 0.2 (* b2_score_q1 b2_score_q2 b2_score_q3))))\n" +
       ""
-    new NewSynthesiser(input).generate() should startWith(expected)
+    new NewSynthesiser(input).generate() should startsWithZ3Model(expected)
   }
 
   @Test
@@ -446,7 +446,7 @@ class NewSynthesiserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
       "(assert (or (and (not (or q1 q2 q3)) (= b1_score (+ (* 0.1 x) 0.9 b))) (and q1 (= b1_score 0.1)) (and q2 (= b1_score 0.2)) (and q3 (= b1_score 0.4))))\n" +
       "(assert (or (and (not (or q1 q2 q3)) (= b2_score (+ (* 0.2 y) a))) (and q1 (= b2_score 0.5)) (and q2 (= b2_score 0.6)) (and q3 (= b2_score 0.7))))\n" +
       ""
-    new NewSynthesiser(input).generate() should startWith(expected)
+    new NewSynthesiser(input).generate() should startsWithZ3Model(expected)
   }
 
   @Test
@@ -488,7 +488,7 @@ class NewSynthesiserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
         "(assert (or (and (not (or q1 q2 q3)) (= b1_score 0.1)) (and q1 (= b1_score 0.1)) (and q2 (= b1_score 0.2)) (and q3 (= b1_score (* 0.4 x)))))\n" +
         "(assert (or (and (not (or q4 q5 q6)) (= b2_score (* 0.2 y))) (and q4 (= b2_score 0.5)) (and q5 (= b2_score 0.6)) (and q6 (= b2_score (* 0.7 z)))))\n" +
         ""
-    new NewSynthesiser(input).generate() should startWith(expected)
+    new NewSynthesiser(input).generate() should startsWithZ3Model(expected)
   }
 
   @Test
@@ -539,7 +539,7 @@ class NewSynthesiserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
         "(get-model)\n" +
         "(pop)\n"
 
-    new NewSynthesiser(input).generate() should startWith(expected)
+    new NewSynthesiser(input).generate() should startsWithZ3Model(expected)
   }
 
   @Test
@@ -590,7 +590,7 @@ class NewSynthesiserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
         "(get-model)\n" +
         "(pop)\n"
 
-    new NewSynthesiser(input).generate() should startWith(expected)
+    new NewSynthesiser(input).generate() should startsWithZ3Model(expected)
   }
 
   @Ignore("not used")
