@@ -732,7 +732,7 @@ class PealProgramParserTest extends ShouldMatchersForJUnit with Z3ModelMatcher {
     val pealProgrmParser = ParserHelper.getPealParser(input)
     pealProgrmParser.program()
 
-    pealProgrmParser.conds("cond1").synthesis(consts) should beZ3Model("(and (and (or q1 q2 q3) (or q1 q2)) (or (and (not q4) (not q5) (not q6)) (not false))) ")
+    pealProgrmParser.conds("cond1").synthesis(consts) should beZ3Model("(and (and (or q1 q2 q3) (or q1 q2)) (or (and (not q4) (not q5) (not q6)) (not false)))")
     pealProgrmParser.analyses("name1") should be(new AlwaysTrue("name1", "cond1"))
   }
 
