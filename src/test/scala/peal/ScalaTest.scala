@@ -279,7 +279,7 @@ class ScalaTest extends ShouldMatchersForJUnit {
     }
   }
 
-  @Test
+  //@Test
   def testProcess() {
     println("ls".!!)
     println(Process(Seq("bash", "-c", "z3 -h"), None, "PATH" -> "/usr/local/bin").!!)
