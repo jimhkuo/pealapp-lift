@@ -34,6 +34,7 @@ class ActTest extends ShouldMatchersForJUnit {
   @Test
   def testCanConstructActTreeInNotes() {
     println(bgp)
+    fail()
   }
 
   @Test
