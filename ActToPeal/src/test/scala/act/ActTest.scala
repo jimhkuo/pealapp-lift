@@ -11,7 +11,7 @@ class ActTest extends ShouldMatchersForJUnit {
   val not2 = NotLeaf("2", and5)
   val a2 = AttLeaf("2", "alterConfigurationViaCompromisedRouter", 0.4, 190, 275)
   val and2 = AndLeaf("2", a2, not2)
-  val m1 = MitLeaf("1", "randomizeSequenceNumbers", 0.6, 30)
+//  val m1 = MitLeaf("1", "randomizeSequenceNumbers", 0.6, 30)
   val d1 = DetLeaf("1", "traceRouteCheck", 0.5, 10)
   val and4 = AndDmAct("4", d1, m1)
   val not1 = NotLeaf("1", and4)
